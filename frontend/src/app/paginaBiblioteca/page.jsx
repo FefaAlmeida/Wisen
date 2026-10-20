@@ -2,6 +2,7 @@
 import { BarraBusca } from "@/components/barraBusca";
 import { FiltrosBiblioteca } from "@/components/biblioteca/filtrosBiblioteca";
 import { CardConceito } from "@/components/biblioteca/cardConceito";
+import Sidebar from "@/components/sidebar";
 
 const conceitos = [
   {
@@ -73,7 +74,9 @@ const conceitos = [
 
 export default function Home() {
   return (
-    <main className="min-h-screen w-full bg-[radial-gradient(ellipse_at_65%_0%,#E4EAF3_0%,#F0F4F9_55%,#F0F4F9_100%)] px-5 pt-8 pb-12 font-[family-name:var(--font-geist-sans)] sm:px-7 lg:px-9 lg:pt-10">
+    <div className="min-h-screen">
+      <Sidebar activeItem="Conceitos" />
+      <main className="min-h-screen min-w-0 bg-[radial-gradient(ellipse_at_65%_0%,#E4EAF3_0%,#F0F4F9_55%,#F0F4F9_100%)] px-5 pt-8 pb-12 font-[family-name:var(--font-geist-sans)] sm:ml-[128px] sm:px-7 lg:ml-[220px] lg:px-9 lg:pt-10">
       <div className="mx-auto w-full max-w-[1500px]">
 
         {/* Apresentação da biblioteca */}
@@ -128,7 +131,7 @@ export default function Home() {
         </section>
 
       </div>
-    </main>
+      </main>
+    </div>
   );
 }
-

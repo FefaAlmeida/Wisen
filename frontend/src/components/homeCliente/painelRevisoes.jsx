@@ -61,9 +61,9 @@ export default function PainelRevisoes() {
             </span>
           </div>
 
-          <Button className="mt-7 h-11 w-fit rounded-lg bg-[#F3E69A] px-6 font-semibold text-[#263343] shadow-none hover:bg-[#EBDD80]">
+          <Button className="group mt-7 h-11 w-fit rounded-lg bg-[#F3E69A] px-6 font-semibold text-[#263343] shadow-none transition-all hover:-translate-y-0.5 hover:bg-[#EBDD80] hover:shadow-md active:translate-y-0">
             Iniciar revisões
-            <span aria-hidden="true" className="ml-3 text-lg">
+            <span aria-hidden="true" className="ml-3 text-lg transition-transform group-hover:translate-x-1">
               →
             </span>
           </Button>

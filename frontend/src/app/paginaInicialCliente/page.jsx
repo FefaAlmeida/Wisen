@@ -27,9 +27,9 @@ export default function Home() {
                 </h2>
               </div>
 
-              <span className="text-xs font-medium text-[#30466E]">
+              <span className="group inline-flex cursor-pointer items-center text-xs font-medium text-[#30466E] transition-colors hover:text-[#172338]">
                 Ver todas
-                <span className="ml-2 text-[#D6B92F]">→</span>
+                <span className="ml-2 text-[#D6B92F] transition-transform group-hover:translate-x-1">→</span>
               </span>
             </div>
 
@@ -114,9 +114,9 @@ export default function Home() {
                 </h2>
               </div>
 
-              <span className="text-xs font-medium text-[#30466E]">
+              <span className="group inline-flex cursor-pointer items-center text-xs font-medium text-[#30466E] transition-colors hover:text-[#172338]">
                 Ver mais
-                <span className="ml-2 text-[#D6B92F]">→</span>
+                <span className="ml-2 text-[#D6B92F] transition-transform group-hover:translate-x-1">→</span>
               </span>
             </div>
 

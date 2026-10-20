@@ -25,9 +25,9 @@ export default function HeroHome() {
           e evolua seu conhecimento de forma personalizada.
         </p>
 
-        <Button className="mt-5 h-10 rounded-lg bg-[#F3E69A] px-6 font-semibold text-[#192344] shadow-none hover:bg-[#EBDD80]">
+        <Button className="group mt-5 h-10 rounded-lg bg-[#F3E69A] px-6 font-semibold text-[#192344] shadow-none transition-all hover:-translate-y-0.5 hover:bg-[#EBDD80] hover:shadow-md active:translate-y-0">
           Explorar notícias
-          <span className="ml-3 text-lg" aria-hidden="true">
+          <span className="ml-3 text-lg transition-transform group-hover:translate-x-1" aria-hidden="true">
             →
           </span>
         </Button>

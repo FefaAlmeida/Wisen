@@ -4,17 +4,43 @@ import CardNoticia from "@/components/homeCliente/cardNoticia";
 import CardInteresse from "@/components/homeCliente/cardInteresse";
 import PainelRevisoes from "@/components/homeCliente/painelRevisoes";
 import Image from "next/image";
+import Link from "next/link";
+import { Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 export default function Home() {
   return (
     <div className="min-h-screen">
       <Sidebar activeItem="Início" />
-      <main className="min-h-screen min-w-0 bg-[#f1f3f6] font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
+      <main className="min-h-screen min-w-0 bg-[radial-gradient(ellipse_at_70%_0%,#E3EAF4_0%,#F0F4F9_55%,#F0F4F9_100%)] font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
       <div className="mx-auto w-full max-w-[1600px]">
 
 
         {/* Hero */}
-        <div className="relative flex min-h-[350px] items-center overflow-hidden">
+        <div className="relative flex min-h-[410px] items-center overflow-hidden pt-14 md:min-h-[350px] md:pt-0">
+          <div className="absolute inset-x-4 top-3 z-20 flex items-center justify-end gap-3 sm:left-auto sm:right-6 md:right-10">
+            <div role="search" className="relative min-w-0 flex-1 sm:w-[360px] sm:flex-none">
+              <Search
+                aria-hidden="true"
+                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#7182A1]"
+                size={16}
+              />
+              <Input
+                type="search"
+                aria-label="Buscar notícias, conceitos ou temas"
+                placeholder="Pesquise por notícias, conceitos ou temas..."
+                className="h-9 rounded-full border-[#DCE3ED] bg-white/90 pl-9 text-[11px] shadow-sm placeholder:text-[#8794AA] focus-visible:ring-[#DCE5F2]"
+              />
+            </div>
+            <Link
+              href="/paginaPerfil"
+              aria-label="Abrir perfil"
+              className="grid size-9 shrink-0 place-items-center rounded-full bg-[#F3E69A] text-[11px] font-semibold text-[#263551] shadow-sm transition-colors hover:bg-[#EBDD80]"
+            >
+              NB
+            </Link>
+          </div>
+
           <div className="relative z-10 w-full md:w-[60%]">
             <HeroHome />
           </div>

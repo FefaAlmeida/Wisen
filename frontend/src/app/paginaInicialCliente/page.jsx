@@ -3,6 +3,7 @@ import HeroHome from "@/components/homeCliente/heroHome";
 import CardNoticia from "@/components/homeCliente/cardNoticia";
 import CardInteresse from "@/components/homeCliente/cardInteresse";
 import PainelRevisoes from "@/components/homeCliente/painelRevisoes";
+import Image from "next/image";
 
 export default function Home() {
   return (
@@ -11,8 +12,24 @@ export default function Home() {
       <main className="min-h-screen min-w-0 bg-[#f1f3f6] font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
       <div className="mx-auto w-full max-w-[1600px]">
 
+
         {/* Hero */}
-        <HeroHome />
+        <div className="relative flex min-h-[350px] items-center overflow-hidden">
+          <div className="relative z-10 w-full md:w-[60%]">
+            <HeroHome />
+          </div>
+
+          <div className="relative hidden h-[350px] flex-1 md:block">
+            <Image
+              src="/foto_paginaInicialCliente.png"
+              alt="Planeta com conexões do Wisen"
+              fill
+              priority
+              sizes="(max-width: 1024px) 40vw, 35vw"
+              className="object-contain object-right"
+            />
+          </div>
+        </div>
 
         <div className="space-y-9 px-5 pb-12 md:px-8">
 

@@ -24,7 +24,10 @@ const revisoes = [
 
 export default function PainelRevisoes() {
   return (
-    <section className="overflow-hidden rounded-xl bg-[#263343] text-white">
+    <section
+      id="revisoes"
+      className="scroll-mt-6 overflow-hidden rounded-xl bg-[#263343] text-white"
+    >
       <div className="grid grid-cols-1 lg:grid-cols-[43%_57%]">
 
         {/* Resumo das revisões */}

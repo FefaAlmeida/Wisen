@@ -1,7 +1,7 @@
 
 import { BarraBusca } from "@/components/barraBusca";
-import { FiltrosBiblioteca } from "@/components/filtrosBiblioteca";
-import { CardConceito } from "@/components/cardConceito";
+import { FiltrosBiblioteca } from "@/components/biblioteca/filtrosBiblioteca";
+import { CardConceito } from "@/components/biblioteca/cardConceito";
 
 const conceitos = [
   {

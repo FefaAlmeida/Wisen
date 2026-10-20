@@ -1,8 +1,8 @@
 
-import HeroHome from "@/components/home/heroHome";
-import CardNoticia from "@/components/home/cardNoticia";
-import CardInteresse from "@/components/home/cardInteresse";
-import PainelRevisoes from "@/components/home/painelRevisoes";
+import HeroHome from "@/components/homeCliente/heroHome";
+import CardNoticia from "@/components/homeCliente/cardNoticia";
+import CardInteresse from "@/components/homeCliente/cardInteresse";
+import PainelRevisoes from "@/components/homeCliente/painelRevisoes";
 
 export default function Home() {
   return (

@@ -70,7 +70,7 @@ export function CardConceito({
   const estilos = getStatusStyles(status);
 
   return (
-    <Card className="flex h-full flex-col gap-0 overflow-hidden rounded-xl border border-[#E2E8F0] bg-white p-0 shadow-sm">
+    <Card className="flex h-full flex-col gap-0 overflow-hidden rounded-lg border border-[#E2E8F0] bg-white p-0 shadow-sm">
 
       {/* Imagem do conceito */}
       <div className="relative h-32 w-full shrink-0 overflow-hidden">

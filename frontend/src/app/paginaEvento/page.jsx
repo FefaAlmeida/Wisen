@@ -107,7 +107,7 @@ export default function PaginaEvento() {
           </div>
         </header>
 
-        <div className="mx-auto grid max-w-[1330px] grid-cols-1 gap-5 px-4 py-5 sm:px-5 md:grid-cols-[minmax(0,1.85fr)_minmax(210px,0.95fr)] md:gap-4 lg:px-7 lg:py-6">
+        <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-5 px-4 py-5 sm:px-5 md:grid-cols-[minmax(0,1.85fr)_minmax(210px,0.95fr)] md:gap-4 lg:px-7 lg:py-6">
           <section className="min-w-0">
             <div className="mb-3 flex items-center justify-between">
               <a

@@ -10,7 +10,7 @@ export default function CardNoticia({
   conceitos = [],
 }) {
   return (
-    <Card className="flex h-full flex-col gap-0 overflow-hidden rounded-xl border-0 bg-white p-0 shadow-none">
+    <Card className="flex h-full flex-col gap-0 overflow-hidden rounded-lg border-0 bg-white p-0 shadow-none">
       <img
         src={imagem}
         alt={titulo}

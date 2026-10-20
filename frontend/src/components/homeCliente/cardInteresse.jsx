@@ -7,7 +7,7 @@ export default function CardInteresse({
   porcentagem,
 }) {
   return (
-    <Card className="flex h-full flex-row items-center gap-0 overflow-hidden rounded-xl border border-[#E3E9F1] bg-white p-0 shadow-none">
+    <Card className="flex h-full flex-row items-center gap-0 overflow-hidden rounded-lg border border-[#E3E9F1] bg-white p-0 shadow-none">
       <div className="h-[86px] w-[94px] shrink-0 overflow-hidden">
         <img
           src={imagem}

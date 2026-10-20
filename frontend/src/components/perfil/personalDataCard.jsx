@@ -7,7 +7,7 @@ import { Camera } from "lucide-react";
 
 export function PersonalDataCard() {
   return (
-    <Card className="border border-slate-200/80 shadow-xs bg-white rounded-2xl">
+    <Card className="border border-slate-200/80 shadow-xs bg-white rounded-lg">
       <CardHeader className="pb-4">
         <CardTitle className="text-base font-bold text-slate-800">Dados pessoais</CardTitle>
         <CardDescription className="text-xs text-slate-500">

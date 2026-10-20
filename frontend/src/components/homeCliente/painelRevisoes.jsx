@@ -26,7 +26,7 @@ export default function PainelRevisoes() {
   return (
     <section
       id="revisoes"
-      className="scroll-mt-6 overflow-hidden rounded-xl bg-[#263343] text-white"
+      className="scroll-mt-6 overflow-hidden rounded-lg bg-[#263343] text-white"
     >
       <div className="grid grid-cols-1 lg:grid-cols-[43%_57%]">
 

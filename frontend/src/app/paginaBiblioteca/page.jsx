@@ -76,8 +76,8 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       <Sidebar activeItem="Conceitos" />
-      <main className="min-h-screen min-w-0 bg-[radial-gradient(ellipse_at_65%_0%,#E4EAF3_0%,#F0F4F9_55%,#F0F4F9_100%)] px-5 pt-8 pb-12 font-[family-name:var(--font-geist-sans)] sm:ml-[128px] sm:px-7 lg:ml-[220px] lg:px-9 lg:pt-10">
-      <div className="mx-auto w-full max-w-[1500px]">
+      <main className="min-h-screen min-w-0 bg-[#f1f3f6] px-4 pt-8 pb-12 font-[family-name:var(--font-geist-sans)] sm:ml-[128px] sm:px-5 lg:ml-[220px] lg:px-7 lg:pt-10">
+      <div className="mx-auto w-full max-w-[1600px]">
 
         {/* Apresentação da biblioteca */}
         <section className="relative mb-7 min-h-[145px] md:min-h-[170px] lg:mb-8 lg:min-h-[180px]">

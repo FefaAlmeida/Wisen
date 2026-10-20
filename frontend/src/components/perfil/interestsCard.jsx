@@ -9,7 +9,7 @@ export function InterestsCard() {
   const availableTags = ["Economia", "Política", "Ciência", "Educação", "Sociedade"];
 
   return (
-    <Card className="border border-slate-200/80 shadow-xs bg-white rounded-2xl">
+    <Card className="border border-slate-200/80 shadow-xs bg-white rounded-lg">
       <CardHeader className="pb-4">
         <CardTitle className="text-base font-bold text-slate-800">Interesses</CardTitle>
         <CardDescription className="text-xs text-slate-500">

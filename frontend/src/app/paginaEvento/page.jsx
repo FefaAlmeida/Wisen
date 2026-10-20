@@ -9,15 +9,8 @@ import {
   ChevronDown,
   ChevronRight,
   CircleHelp,
-  Clock3,
-  Compass,
-  GraduationCap,
-  Home,
   Lightbulb,
-  Link2,
-  Newspaper,
   Search,
-  Settings,
   Share2,
   Sparkles,
   X,
@@ -25,16 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-
-const navigation = [
-  { label: "Início", icon: Home },
-  { label: "Explorar", icon: Compass },
-  { label: "Revisões", icon: Clock3 },
-  { label: "Meu conhecimento", icon: GraduationCap },
-  { label: "Notícias", icon: Newspaper, active: true },
-  { label: "Conexões", icon: Link2 },
-  { label: "Aprendizado", icon: GraduationCap },
-];
+import Sidebar from "@/components/sidebar";
 
 const concepts = [
   { title: "Mudanças climáticas", detail: "Em revisão", color: "bg-amber-400" },
@@ -86,36 +70,7 @@ export default function PaginaEvento() {
       className="min-h-screen bg-[#f1f3f6] text-[#202a3b]"
       style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
     >
-      <aside className="fixed inset-y-0 left-0 z-20 hidden w-[128px] flex-col bg-[#202d3a] px-2.5 py-5 text-white sm:flex lg:w-[220px] lg:px-4">
-        <a href="#" className="mb-8 px-1 text-[20px] font-bold tracking-tight lg:text-[24px]">
-          Wisen<span className="align-top text-[9px] text-[#f3d96b]">•</span>
-        </a>
-
-        <nav aria-label="Navegação principal" className="flex flex-col gap-1.5">
-          {navigation.map(({ label, icon: Icon, active }) => (
-            <a
-              key={label}
-              href="#"
-              className={`flex h-10 items-center gap-2 rounded-md px-2 text-[10px] transition-colors lg:gap-3 lg:px-2.5 lg:text-[12px] ${
-                active
-                  ? "bg-[#fff2bc] font-semibold text-[#25303c]"
-                  : "text-[#c5ced8] hover:bg-white/10 hover:text-white"
-              }`}
-            >
-              <Icon size={17} strokeWidth={1.8} />
-              <span>{label}</span>
-            </a>
-          ))}
-        </nav>
-
-        <a
-          href="#"
-          className="mt-auto flex h-10 items-center gap-2 rounded-md px-2 text-[10px] text-[#c5ced8] hover:bg-white/10 hover:text-white lg:gap-3 lg:px-2.5 lg:text-[12px]"
-        >
-          <Settings size={17} strokeWidth={1.8} />
-          <span>Configurações</span>
-        </a>
-      </aside>
+      <Sidebar activeItem="Notícias" />
 
       <div className="min-h-screen sm:ml-[128px] lg:ml-[220px]">
         <header className="sticky top-0 z-10 flex h-[60px] items-center justify-between border-b border-[#e5e8ed] bg-[#f5f6f8]/95 px-4 backdrop-blur sm:px-5 lg:px-7">

@@ -1,4 +1,4 @@
-
+import Sidebar from "@/components/sidebar";
 import HeroHome from "@/components/homeCliente/heroHome";
 import CardNoticia from "@/components/homeCliente/cardNoticia";
 import CardInteresse from "@/components/homeCliente/cardInteresse";
@@ -6,7 +6,9 @@ import PainelRevisoes from "@/components/homeCliente/painelRevisoes";
 
 export default function Home() {
   return (
-    <main className="min-h-screen w-full bg-[radial-gradient(ellipse_at_70%_0%,#E3EAF4_0%,#F0F4F9_55%,#F0F4F9_100%)] font-[family-name:var(--font-geist-sans)]">
+    <div className="min-h-screen">
+      <Sidebar activeItem="Início" />
+      <main className="min-h-screen min-w-0 bg-[radial-gradient(ellipse_at_70%_0%,#E3EAF4_0%,#F0F4F9_55%,#F0F4F9_100%)] font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
       <div className="mx-auto w-full max-w-[1600px]">
 
         {/* Hero */}
@@ -150,6 +152,7 @@ export default function Home() {
 
         </div>
       </div>
-    </main>
+      </main>
+    </div>
   );
 }

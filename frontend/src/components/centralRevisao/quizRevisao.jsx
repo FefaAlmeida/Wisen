@@ -202,10 +202,10 @@ export default function QuizRevisao() {
 
               <div className="flex flex-wrap gap-2">
                 {[
-                  { nome: "Errei", emoji: "😣", cor: "bg-[#FDE7E9]" },
-                  { nome: "Difícil", emoji: "😟", cor: "bg-[#FFF0E3]" },
-                  { nome: "Médio", emoji: "🙂", cor: "bg-[#FFF8D9]" },
-                  { nome: "Fácil", emoji: "😊", cor: "bg-[#E3F5E9]" },
+                  { nome: "Errei", cor: "bg-[#FDE7E9]" },
+                  { nome: "Difícil", cor: "bg-[#FFF0E3]" },
+                  { nome: "Médio", cor: "bg-[#FFF8D9]" },
+                  { nome: "Fácil", cor: "bg-[#E3F5E9]" },
                 ].map((item) => (
                   <Button
                     key={item.nome}
@@ -217,13 +217,12 @@ export default function QuizRevisao() {
                         [indice]: item.nome,
                       }))
                     }
-                    className={`h-11 rounded-xl px-4 text-[12px] text-[#101A40] hover:opacity-80 ${item.cor} ${
-                      avaliacoes[indice] === item.nome
-                        ? "ring-2 ring-[#101A40]"
-                        : ""
-                    }`}
+                    className={`flex h-11 min-w-[100px] items-center justify-center rounded-xl px-4 text-center text-[12px] font-medium text-[#101A40] hover:opacity-80 ${item.cor} ${
+                    avaliacoes[indice] === item.nome
+                    ? "ring-2 ring-[#101A40]"
+                    : ""
+                  }`}
                   >
-                    <span className="mr-2 text-lg">{item.emoji}</span>
                     {item.nome}
                   </Button>
                 ))}

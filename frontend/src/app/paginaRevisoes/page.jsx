@@ -34,15 +34,19 @@ export default function PaginaRevisoes() {
           {/* Resumo geral */}
           <ResumoRevisoes />
 
-          {/* Área de estudo */}
-          <div className="mt-4 grid items-start gap-4 xl:grid-cols-[minmax(0,2.2fr)_minmax(300px,0.9fr)]">
+         
+          <div className="mt-4 grid items-stretch gap-4 xl:grid-cols-[minmax(0,2.2fr)_minmax(300px,0.9fr)]">
             <QuizRevisao />
-
-            <aside className="space-y-4">
+            
+            <aside className="flex flex-col gap-4">
               <SessaoHoje />
-              <DicaEstudo />
+            
+              <div className="mt-auto">
+                <DicaEstudo />
+              </div>
             </aside>
           </div>
+
 
         </div>
       </main>

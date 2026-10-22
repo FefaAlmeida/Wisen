@@ -1,28 +1,21 @@
 
 import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 
 export function BarraBusca() {
   return (
-    <div className="relative w-full">
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+    <div role="search" className="relative w-full">
+      <Search
         aria-hidden="true"
-        className="pointer-events-none absolute top-1/2 left-4 z-10 h-[18px] w-[18px] -translate-y-1/2 text-[#8D9BB2]"
-      >
-        <circle cx="11" cy="11" r="7" />
-        <path d="m20 20-4-4" />
-      </svg>
+        className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#7182A1]"
+        size={16}
+      />
 
       <Input
         type="search"
         aria-label="Buscar termo ou conceito"
         placeholder="Buscar termo ou conceito..."
-        className="h-12 w-full rounded-[10px] border border-[#DCE3ED] bg-white pr-4 pl-11 text-[14px] text-[#192344] shadow-none placeholder:text-[#9AA6BA] focus-visible:border-[#A9B8CD] focus-visible:ring-2 focus-visible:ring-[#DCE5F2]"
+        className="h-9 rounded-full border-[#DCE3ED] bg-white/90 pl-9 text-[11px] shadow-sm placeholder:text-[#8794AA] focus-visible:ring-[#DCE5F2]"
       />
     </div>
   );

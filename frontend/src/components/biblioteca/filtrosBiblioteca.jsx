@@ -53,7 +53,7 @@ export function FiltrosBiblioteca() {
   
 <Select defaultValue="relevantes">
   <SelectTrigger
-    className="h-9 w-[165px] rounded-lg border border-[#E1E7F0] bg-[#F8FAFD] px-3 text-xs font-medium text-[#344469] shadow-none focus:ring-0 [&>svg:last-child]:h-3.5 [&>svg:last-child]:w-3.5"
+  className="h-9 w-[165px] rounded-full border border-[#E1E7F0] bg-[#F8FAFD] px-3 text-xs font-medium text-[#344469] shadow-none focus:ring-0 [&>svg:last-child]:h-3.5 [&>svg:last-child]:w-3.5"
   >
     <div className="flex min-w-0 items-center gap-2">
       <svg

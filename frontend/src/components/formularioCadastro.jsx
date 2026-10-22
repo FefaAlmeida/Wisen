@@ -155,7 +155,7 @@ export default function FormularioCadastro() {
         <p className="mt-6 text-center text-xs text-[#8390A7]">
           Já tem uma conta?{" "}
           <Link
-            href="/login"
+            href="/paginaLogin"
             className="font-semibold text-[#30456D] underline underline-offset-2"
           >
             Entrar

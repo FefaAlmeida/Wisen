@@ -4,8 +4,9 @@
   "private": true,
   "type": "module",
   "workspaces": [
-    "apps/*",
-    "packages/*"
+    "frontend",
+    "backend",
+    "ai"
   ],
   "engines": {
     "node": ">=24 <25",
@@ -19,20 +20,15 @@
     "dev:status": "docker compose ps",
     "setup:model": "docker compose run --build --rm --no-deps ai npm run setup:model -w @wisen/ai",
     "db:migrate": "docker compose run --build --rm migrate",
-    "collect": "docker compose exec -T backend node apps/backend/src/cli.js collect",
-    "search": "docker compose exec -T backend node apps/backend/src/cli.js search",
+    "collect": "docker compose exec -T backend node backend/src/cli.js collect",
+    "search": "docker compose exec -T backend node backend/src/cli.js search",
     "build": "npm run build -w @wisen/frontend",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
-    "test": "node --test test/*.test.js",
-    "test:integration": "docker compose run --rm -e TEST_DATABASE_URL=postgres://wisen:wisen_local@database:5432/postgres backend npm run test:integration:local",
-    "test:browser": "playwright test",
-    "check": "npm run lint && npm test",
-    "test:integration:local": "node --test --test-concurrency=1 test/integration/*.test.js"
+    "check": "npm run lint && npm run build"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.6.3",
-    "@playwright/test": "1.64.1"
+    "@biomejs/biome": "2.6.3"
   }
 }

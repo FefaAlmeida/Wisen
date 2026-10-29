@@ -23,7 +23,7 @@ services:
   migrate:
     build: { context: ., target: backend }
     environment: *environment
-    command: node packages/database/src/migrate.js
+    command: node backend/src/database/migrate.js
     depends_on:
       database: { condition: service_healthy }
   backend:
@@ -50,7 +50,7 @@ services:
     user: root
     profiles: [tools]
     environment: *environment
-    command: sh -c 'node apps/ai/src/prepare-model.js && chown -R node:node /models'
+    command: sh -c 'node ai/src/prepare-model.js && chown -R node:node /models'
     volumes: ["model-cache:/models"]
   ai:
     mem_limit: ${AI_MEMORY_LIMIT:-1536m}

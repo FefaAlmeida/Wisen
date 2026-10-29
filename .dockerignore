@@ -7,7 +7,5 @@
 **/.env.*
 !**/.env.example
 **/coverage
-**/test-results
-**/playwright-report
 *.pdf
 *.docx

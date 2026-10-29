@@ -18,7 +18,7 @@ compose(
   "node",
   "--input-type=module",
   "-e",
-  "import {readFile} from 'node:fs/promises';import {MODEL_VERSION} from '@wisen/shared';const marker=await readFile('/models/wisen-model.json','utf8').catch(()=>null);if(!marker||JSON.parse(marker).version!==MODEL_VERSION){console.error('Execute npm run setup:model antes de iniciar.');process.exit(1)}",
+  "import {readFile} from 'node:fs/promises';import {MODEL_VERSION} from './backend/src/shared.js';const marker=await readFile('/models/wisen-model.json','utf8').catch(()=>null);if(!marker||JSON.parse(marker).version!==MODEL_VERSION){console.error('Execute npm run setup:model antes de iniciar.');process.exit(1)}",
 );
 compose("up", "-d", "--wait", "database");
 compose("run", "--rm", "migrate");

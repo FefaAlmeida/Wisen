@@ -37,7 +37,7 @@ services:
   migrate:
     <<: *app
     profiles: [tools]
-    command: node packages/database/src/migrate.js
+    command: node backend/src/database/migrate.js
     depends_on:
       database: { condition: service_healthy }
   backend:
@@ -67,7 +67,7 @@ services:
     volumes:
       - .:/app
       - node-modules:/app/node_modules
-      - next-cache:/app/apps/frontend/.next
+      - next-cache:/app/frontend/.next
     ports: ["127.0.0.1:${FRONTEND_HOST_PORT:-3000}:3000"]
     healthcheck:
       test:

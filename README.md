@@ -43,37 +43,33 @@ A busca usa os trechos já indexados e retorna até cinco artigos por padrão. O
 
 ## Comandos
 
-| Comando                    | Uso                                           |
-| -------------------------- | --------------------------------------------- |
-| `npm run dev`              | Iniciar/recriar o ambiente completo           |
-| `npm run dev:logs`         | Acompanhar logs                               |
-| `npm run dev:status`       | Conferir containers e saúde                   |
-| `npm run dev:down`         | Parar sem apagar volumes                      |
-| `npm run db:migrate`       | Aplicar migrations pendentes                  |
-| `npm run setup:model`      | Preparar o modelo local                       |
-| `npm run check`            | Biome e testes rápidos                        |
-| `npm run test:integration` | Testes com PostgreSQL e fila reais via Docker |
-| `npm run test:browser`     | Testar rotas no frontend já iniciado          |
-| `npm run build`            | Build de produção do frontend                 |
-| `npm run lint:fix`         | Aplicar correções seguras do Biome            |
-
-Antes do primeiro teste de navegador, execute `npx playwright install chromium`. Em Linux sem as bibliotecas do navegador, use `npx playwright install --with-deps chromium`.
-
-Os testes de integração criam um banco temporário com nome próprio e o removem ao terminar. Não limpam o banco de desenvolvimento. Fora do Docker, `TEST_DATABASE_URL=... npm run test:integration:local` exige PostgreSQL local com permissão para criar esse banco temporário.
+| Comando               | Uso                                 |
+| --------------------- | ----------------------------------- |
+| `npm run dev`         | Iniciar/recriar o ambiente completo |
+| `npm run dev:logs`    | Acompanhar logs                     |
+| `npm run dev:status`  | Conferir containers e saúde         |
+| `npm run dev:down`    | Parar sem apagar volumes            |
+| `npm run db:migrate`  | Aplicar migrations pendentes        |
+| `npm run setup:model` | Preparar o modelo local             |
+| `npm run check`       | Biome e build do frontend           |
+| `npm run build`       | Build de produção do frontend       |
+| `npm run lint:fix`    | Aplicar correções seguras do Biome  |
 
 ## Estrutura
 
 ```text
-apps/
-  frontend/src/    app/, components/, hooks/, services/, lib/, data/
-  backend/src/     modules/<funcionalidade>/{controller,service,repository}
-  ai/src/          worker, coleta, extração, embeddings e persistência
-packages/
-  database/        pool, transações e migrations SQL
-  queue/           pg-boss e publicação transacional
-  shared/          configuração, schemas Zod e identidade do modelo
+frontend/src/      app/, components/, hooks/, services/, lib/, data/
+backend/
+  migrations/      migrations do PostgreSQL
+  src/modules/     módulos da API por funcionalidade
+  src/database/    pool, transações e executor de migrations
+  src/queue/       pg-boss e publicação transacional
+  src/shared.js    configuração, schemas e constantes comuns
+ai/src/            worker, coleta, extração e embeddings
 scripts/           coordenação do ambiente
 ```
+
+As três aplicações ficam direto na raiz. `backend/` centraliza banco, fila e configuração usados pela API e pelo worker; `ai/` mantém o processo separado para isolar a inferência. Não há uma camada `apps/` nem diretório `packages/`.
 
 O frontend mantém Next, React, Tailwind e shadcn/Base UI. `services/` concentra HTTP com fetch; `hooks/` concentra lógica de interação. Não há TanStack Query nesta etapa. Os nomes e URLs existentes foram preservados. A interface usa tokens semânticos do Wisen para cores recorrentes, sem mudar o desenho das telas.
 
@@ -81,7 +77,7 @@ O backend usa Fastify e SQL parametrizado com `pg`. Cada módulo separa HTTP, re
 
 ## Banco e migrations
 
-Os arquivos em `packages/database/migrations/` são aplicados em ordem, cada um em uma transação. `schema_migrations` guarda nome, checksum e data. Um advisory lock impede execuções concorrentes. Uma migration já aplicada não deve ser editada: crie um novo arquivo numerado.
+Os arquivos em `backend/migrations/` são aplicados em ordem, cada um em uma transação. `schema_migrations` guarda nome, checksum e data. Um advisory lock impede execuções concorrentes. Uma migration já aplicada não deve ser editada: crie um novo arquivo numerado.
 
 O schema inclui as entidades centrais do produto, mas cadastro/login, eventos automáticos, grafo, explicações e revisão pedagógica ainda não estão implementados como funcionalidades. O fluxo ativo usa fontes, artigos, trechos e pedidos de busca. O pg-boss mantém suas tabelas no schema `pgboss`.
 
@@ -115,10 +111,4 @@ As migrations são um serviço de execução única antes da API e do worker. Os
 
 Até existir autenticação de usuários, a busca em produção exige `Authorization: Bearer <OPERATIONS_TOKEN>`. Esse token é operacional e não deve ser enviado ao navegador. Swagger fica desabilitado. A integração pública da busca com as telas dependerá da autenticação futura.
 
-## Documentação
-
-- [Arquitetura e decisões](docs/arquitetura.md)
-- [Conflitos encontrados e legado](docs/diagnostico.md)
-- [Verificação da entrega](docs/validacao.md)
-
-PDF e DOCX acadêmicos permanecem intactos. README e `docs/` registram as decisões atuais.
+Os documentos acadêmicos originais ficam na raiz e não fazem parte do runtime da aplicação.

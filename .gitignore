@@ -10,5 +10,10 @@ coverage/
 .vscode/
 .idea/
 .cache/
-test-results/
-playwright-report/
+/.vercel/
+*.pem
+*.tsbuildinfo
+next-env.d.ts
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

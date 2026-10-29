@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { requisitar } from "@/services/api";
 
-export default function FormularioCadastro() {
+export default function FormularioCadastro({ glass = false }) {
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [erro, setErro] = useState("");
   const [enviando, setEnviando] = useState(false);
@@ -35,68 +35,132 @@ export default function FormularioCadastro() {
   }
 
   return (
-    <Card className="w-full max-w-[450px] gap-0 rounded-lg border-0 bg-white py-0 shadow-[0_12px_45px_rgba(37,53,77,0.09)]">
-      <CardHeader className="space-y-1 px-8 pt-10 pb-6 sm:px-12">
-        <CardTitle className="text-[32px] font-semibold tracking-tight text-wisen-texto-forte">
+    <Card
+      className={`w-full max-w-[450px] gap-0 rounded-2xl border-t-[3px] border-t-wisen-destaque py-0 ${
+        glass
+          ? "border border-white/25 bg-[#17243A]/75 shadow-[inset_0_1px_1px_rgba(255,255,255,0.18),0_24px_80px_rgba(8,20,38,0.42)] backdrop-blur-2xl backdrop-saturate-150"
+          : "border-0 bg-white shadow-[0_20px_60px_rgba(37,53,77,0.14)]"
+      }`}
+    >
+      <CardHeader className="space-y-1 px-6 pt-8 pb-6 sm:px-10 sm:pt-10 sm:pb-7 lg:px-12">
+        <CardTitle
+          id="cadastro-title"
+          className={`text-[32px] font-semibold tracking-tight ${glass ? "text-white" : "text-wisen-texto-forte"}`}
+        >
           Criar conta
         </CardTitle>
 
         <CardDescription className="space-y-1">
-          <span className="block text-sm font-medium text-[#71809C]">Bem-vindo ao Wisen.</span>
+          <span
+            className={`block text-sm font-medium ${glass ? "text-white/90" : "text-[#71809C]"}`}
+          >
+            Bem-vindo ao Wisen.
+          </span>
 
-          <span className="block text-xs leading-relaxed text-[#8995AA]">
+          <span
+            className={`block text-xs leading-relaxed ${glass ? "text-white/75" : "text-[#8995AA]"}`}
+          >
             Crie sua conta para explorar notícias, análises e construir seu conhecimento.
           </span>
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="px-8 pb-10 sm:px-12">
-        <form className="space-y-5" onSubmit={handleSubmit}>
+      <CardContent className="px-6 pb-8 sm:px-10 sm:pb-10 lg:px-12">
+        <form aria-labelledby="cadastro-title" className="space-y-5" onSubmit={handleSubmit}>
           {/* Nome */}
           <div className="space-y-2">
-            <Label htmlFor="nome" className="text-xs font-semibold text-[#344563]">
+            <Label
+              htmlFor="nome"
+              className={`text-xs font-semibold ${glass ? "text-white/90" : "text-[#344563]"}`}
+            >
               Nome completo
             </Label>
 
-            <Input
-              id="nome"
-              name="name"
-              type="text"
-              placeholder="Seu nome completo"
-              autoComplete="name"
-              required
-              minLength={2}
-              maxLength={120}
-              disabled={enviando}
-              className="h-11 rounded-md border-[#D9E1ED] bg-white px-3 text-sm text-wisen-texto-forte placeholder:text-[#A7B2C3] focus-visible:ring-[#EEDC84]"
-            />
+            <div className="relative">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                aria-hidden="true"
+                className={`absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 ${glass ? "text-[#52647D]" : "text-[#9AA7BC]"}`}
+              >
+                <circle cx="12" cy="8" r="4" />
+                <path d="M5 21a7 7 0 0 1 14 0" />
+              </svg>
+
+              <Input
+                id="nome"
+                name="name"
+                type="text"
+                placeholder="Seu nome completo"
+                autoComplete="name"
+                required
+                minLength={2}
+                maxLength={120}
+                disabled={enviando}
+                className={`h-11 rounded-lg border-[#D9E1ED] pl-10 text-sm text-wisen-texto-forte placeholder:text-[#71809C] focus-visible:border-[#D6B947] focus-visible:ring-2 focus-visible:ring-[#EEDC84]/70 ${glass ? "bg-[#F1F5FC] text-[#17243A]" : "bg-white"}`}
+              />
+            </div>
           </div>
 
           {/* E-mail */}
           <div className="space-y-2">
-            <Label htmlFor="emailCadastro" className="text-xs font-semibold text-[#344563]">
+            <Label
+              htmlFor="emailCadastro"
+              className={`text-xs font-semibold ${glass ? "text-white/90" : "text-[#344563]"}`}
+            >
               E-mail
             </Label>
 
-            <Input
-              id="emailCadastro"
-              name="email"
-              type="email"
-              placeholder="seu@email.com"
-              autoComplete="email"
-              required
-              disabled={enviando}
-              className="h-11 rounded-md border-[#D9E1ED] bg-white px-3 text-sm text-wisen-texto-forte placeholder:text-[#A7B2C3] focus-visible:ring-[#EEDC84]"
-            />
+            <div className="relative">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                aria-hidden="true"
+                className={`absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 ${glass ? "text-[#52647D]" : "text-[#9AA7BC]"}`}
+              >
+                <rect x="3" y="5" width="18" height="14" rx="2" />
+                <path d="m3 7 9 6 9-6" />
+              </svg>
+
+              <Input
+                id="emailCadastro"
+                name="email"
+                type="email"
+                placeholder="seu@email.com"
+                autoComplete="email"
+                required
+                disabled={enviando}
+                className={`h-11 rounded-lg border-[#D9E1ED] pl-10 text-sm text-wisen-texto-forte placeholder:text-[#71809C] focus-visible:border-[#D6B947] focus-visible:ring-2 focus-visible:ring-[#EEDC84]/70 ${glass ? "bg-[#F1F5FC] text-[#17243A]" : "bg-white"}`}
+              />
+            </div>
           </div>
 
           {/* Senha */}
           <div className="space-y-2">
-            <Label htmlFor="senhaCadastro" className="text-xs font-semibold text-[#344563]">
+            <Label
+              htmlFor="senhaCadastro"
+              className={`text-xs font-semibold ${glass ? "text-white/90" : "text-[#344563]"}`}
+            >
               Senha
             </Label>
 
             <div className="relative">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                aria-hidden="true"
+                className={`absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 ${glass ? "text-[#52647D]" : "text-[#9AA7BC]"}`}
+              >
+                <rect x="5" y="10" width="14" height="11" rx="2" />
+                <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+              </svg>
+
               <Input
                 id="senhaCadastro"
                 name="password"
@@ -107,14 +171,15 @@ export default function FormularioCadastro() {
                 minLength={8}
                 maxLength={128}
                 disabled={enviando}
-                className="h-11 rounded-md border-[#D9E1ED] bg-white pr-20 pl-3 text-sm text-wisen-texto-forte placeholder:text-[#A7B2C3] focus-visible:ring-[#EEDC84] [&::-ms-reveal]:hidden [&::-ms-clear]:hidden"
+                className={`h-11 rounded-lg border-[#D9E1ED] pr-12 pl-10 text-sm text-wisen-texto-forte placeholder:text-[#71809C] focus-visible:border-[#D6B947] focus-visible:ring-2 focus-visible:ring-[#EEDC84]/70 [&::-ms-reveal]:hidden [&::-ms-clear]:hidden [&::-webkit-credentials-auto-fill-button]:hidden ${glass ? "bg-[#F1F5FC] text-[#17243A]" : "bg-white"}`}
               />
 
               <button
                 type="button"
                 onClick={() => setMostrarSenha(!mostrarSenha)}
+                aria-pressed={mostrarSenha}
                 aria-label={mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
-                className="absolute top-1/2 right-3.5 -translate-y-1/2 text-[#98A5BB] transition-colors hover:text-wisen-texto-forte"
+                className={`absolute top-1/2 right-3.5 -translate-y-1/2 rounded-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D6B947] hover:text-wisen-texto-forte ${glass ? "text-[#52647D]" : "text-[#98A5BB]"}`}
               >
                 {mostrarSenha ? (
                   <svg
@@ -146,7 +211,10 @@ export default function FormularioCadastro() {
           </div>
 
           {erro && (
-            <p role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+            <p
+              role="alert"
+              className={`rounded-md px-3 py-2 text-sm ${glass ? "bg-red-950/60 text-red-100" : "bg-red-50 text-red-700"}`}
+            >
               {erro}
             </p>
           )}
@@ -154,7 +222,7 @@ export default function FormularioCadastro() {
           <Button
             type="submit"
             disabled={enviando}
-            className="mt-2 h-11 w-full rounded-md bg-[#F3E69A] font-semibold text-[#273651] shadow-none hover:bg-[#EBDD80]"
+            className="mt-1 h-11 w-full rounded-md bg-[#F3E69A] font-semibold text-[#273651] shadow-none transition-colors hover:bg-[#EBDD80]"
           >
             {enviando ? "Criando conta…" : "Criar conta"}
             <span aria-hidden="true" className="ml-2 text-lg">
@@ -164,16 +232,16 @@ export default function FormularioCadastro() {
         </form>
 
         <div className="mt-7 flex items-center gap-3">
-          <div className="h-px flex-1 bg-[#E4E9F1]" />
-          <span className="text-xs text-[#9BA7B9]">ou</span>
-          <div className="h-px flex-1 bg-[#E4E9F1]" />
+          <div className={`h-px flex-1 ${glass ? "bg-white/30" : "bg-[#E4E9F1]"}`} />
+          <span className={`text-xs ${glass ? "text-white/70" : "text-[#9BA7B9]"}`}>ou</span>
+          <div className={`h-px flex-1 ${glass ? "bg-white/30" : "bg-[#E4E9F1]"}`} />
         </div>
 
-        <p className="mt-6 text-center text-xs text-[#8390A7]">
+        <p className={`mt-6 text-center text-xs ${glass ? "text-white/80" : "text-[#8390A7]"}`}>
           Já tem uma conta?{" "}
           <Link
             href="/paginaLogin"
-            className="font-semibold text-[#30456D] underline underline-offset-2"
+            className={`rounded-sm font-semibold underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F2DF83] ${glass ? "text-[#F2DF83]" : "text-[#30456D]"}`}
           >
             Entrar
           </Link>

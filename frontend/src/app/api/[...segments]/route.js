@@ -1,4 +1,4 @@
-const apiUrl = process.env.BACKEND_INTERNAL_URL || "http://localhost:8080/api";
+const apiUrl = process.env.BACKEND_INTERNAL_URL || "http://wisen-backend-1:8080/api";
 const allowedRoots = new Set(["articles", "auth", "health", "search"]);
 const allowedAuthActions = new Set(["login", "logout", "register", "session"]);
 

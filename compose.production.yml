@@ -1,0 +1,91 @@
+name: wisen-production
+x-environment: &environment
+  NODE_ENV: production
+  DATABASE_URL: postgres://wisen:${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD}@database:5432/wisen
+  FRONTEND_URL: ${FRONTEND_URL:?Defina FRONTEND_URL}
+  OPERATIONS_TOKEN: ${OPERATIONS_TOKEN:?Defina OPERATIONS_TOKEN}
+  MODEL_CACHE_DIR: /models
+  PORT: 8080
+services:
+  database:
+    image: pgvector/pgvector:pg17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: wisen
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: wisen
+    volumes: ["postgres-data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U wisen -d wisen"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  migrate:
+    build: { context: ., target: backend }
+    environment: *environment
+    command: node packages/database/src/migrate.js
+    depends_on:
+      database: { condition: service_healthy }
+  backend:
+    build: { context: ., target: backend }
+    init: true
+    restart: unless-stopped
+    environment: *environment
+    ports: ["127.0.0.1:${BACKEND_HOST_PORT:-8080}:8080"]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    healthcheck:
+      test:
+        [
+          CMD,
+          node,
+          -e,
+          "fetch('http://127.0.0.1:8080/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+  prepare-model:
+    build: { context: ., target: ai }
+    user: root
+    profiles: [tools]
+    environment: *environment
+    command: sh -c 'node apps/ai/src/prepare-model.js && chown -R node:node /models'
+    volumes: ["model-cache:/models"]
+  ai:
+    mem_limit: ${AI_MEMORY_LIMIT:-1536m}
+    cpus: 2
+    build: { context: ., target: ai }
+    init: true
+    restart: unless-stopped
+    stop_grace_period: 45s
+    environment: *environment
+    volumes: ["model-cache:/models"]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    healthcheck:
+      test:
+        [
+          CMD,
+          node,
+          -e,
+          "const fs=require('fs');process.exit(Date.now()-Number(fs.readFileSync('/tmp/wisen-worker-ready','utf8'))<20000?0:1)",
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 30s
+  frontend:
+    build:
+      context: .
+      target: frontend
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:?Defina NEXT_PUBLIC_API_URL}
+    init: true
+    restart: unless-stopped
+    ports: ["127.0.0.1:${FRONTEND_HOST_PORT:-3000}:3000"]
+    depends_on:
+      backend: { condition: service_healthy }
+volumes:
+  postgres-data:
+  model-cache:

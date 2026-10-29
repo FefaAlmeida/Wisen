@@ -1,56 +1,107 @@
+name: wisen
+x-app: &app
+  build: { context: ., target: development }
+  image: wisen-development
+  init: true
+  working_dir: /app
+  environment: &environment
+    NODE_ENV: development
+    DATABASE_URL: postgres://wisen:wisen_local@database:5432/wisen
+    FRONTEND_URL: http://localhost:${FRONTEND_HOST_PORT:-3000}
+    PORT: 8080
+    MODEL_CACHE_DIR: /models
+    NEXT_PUBLIC_API_URL: http://localhost:${BACKEND_HOST_PORT:-8080}/api
+    NEXT_TELEMETRY_DISABLED: "1"
+  volumes:
+    - .:/app
+    - node-modules:/app/node_modules
+    - model-cache:/models
 services:
   database:
-    build:
-      context: ./database
-    restart: unless-stopped
+    image: pgvector/pgvector:pg17
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_password}
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-app_db}
-      MYSQL_USER: ${MYSQL_USER:-app_user}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-app_password}
-    volumes:
-      - mysql-data:/var/lib/mysql
+      POSTGRES_USER: wisen
+      POSTGRES_PASSWORD: wisen_local
+      POSTGRES_DB: wisen
+    volumes: ["postgres-data:/var/lib/postgresql/data"]
+    ports: ["127.0.0.1:${DATABASE_HOST_PORT:-5432}:5432"]
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    expose:
-      - "3306"
-
+      test: [CMD-SHELL, "pg_isready -U wisen -d wisen"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+  dependencies:
+    <<: *app
+    profiles: [tools]
+    command: node scripts/install-dependencies.js
+  migrate:
+    <<: *app
+    profiles: [tools]
+    command: node packages/database/src/migrate.js
+    depends_on:
+      database: { condition: service_healthy }
   backend:
-    build:
-      context: ./backend
-    restart: unless-stopped
+    <<: *app
+    command: npm run dev -w @wisen/backend
+    ports: ["127.0.0.1:${BACKEND_HOST_PORT:-8080}:8080"]
     depends_on:
-      database:
-        condition: service_healthy
-    environment:
-      PORT: ${BACKEND_PORT:-8080}
-      NODE_ENV: production
-      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
-      DB_HOST: ${DB_HOST:-database}
-      DB_PORT: ${DB_PORT:-3306}
-      DB_USER: ${DB_USER:-app_user}
-      DB_PASSWORD: ${DB_PASSWORD:-app_password}
-      DB_NAME: ${DB_NAME:-app_db}
-    expose:
-      - "${BACKEND_PORT:-8080}"
-
+      database: { condition: service_healthy }
+    healthcheck:
+      test:
+        [
+          CMD,
+          node,
+          -e,
+          "fetch('http://127.0.0.1:8080/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
   frontend:
-    build:
-      context: ./frontend
-      args:
-        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8080/api}
-    restart: unless-stopped
-    depends_on:
-      - backend
+    <<: *app
+    command: npm run dev -w @wisen/frontend
     environment:
-      NODE_ENV: production
-      PORT: ${FRONTEND_PORT:-3000}
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8080/api}
-    expose:
-      - "${FRONTEND_PORT:-3000}"
-
+      <<: *environment
+      WATCHPACK_POLLING: "true"
+      PORT: 3000
+    volumes:
+      - .:/app
+      - node-modules:/app/node_modules
+      - next-cache:/app/apps/frontend/.next
+    ports: ["127.0.0.1:${FRONTEND_HOST_PORT:-3000}:3000"]
+    healthcheck:
+      test:
+        [
+          CMD,
+          node,
+          -e,
+          "fetch('http://127.0.0.1:3000').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 15s
+      retries: 15
+  ai:
+    mem_limit: ${AI_MEMORY_LIMIT:-1536m}
+    cpus: 2
+    <<: *app
+    command: npm run dev -w @wisen/ai
+    stop_grace_period: 45s
+    depends_on:
+      database: { condition: service_healthy }
+    healthcheck:
+      test:
+        [
+          CMD,
+          node,
+          -e,
+          "const fs=require('fs');process.exit(Date.now()-Number(fs.readFileSync('/tmp/wisen-worker-ready','utf8'))<20000?0:1)",
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 15
+      start_period: 30s
 volumes:
-  mysql-data:
+  postgres-data:
+  node-modules:
+  next-cache:
+  model-cache:

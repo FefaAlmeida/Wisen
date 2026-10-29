@@ -1,0 +1,19 @@
+{
+  "name": "@wisen/ai",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/worker.js",
+    "start": "node src/worker.js",
+    "setup:model": "node src/prepare-model.js"
+  },
+  "dependencies": {
+    "@wisen/database": "*",
+    "@wisen/shared": "*",
+    "@wisen/queue": "*",
+    "@huggingface/transformers": "4.3.2",
+    "cheerio": "1.2.0",
+    "rss-parser": "3.13.0"
+  }
+}

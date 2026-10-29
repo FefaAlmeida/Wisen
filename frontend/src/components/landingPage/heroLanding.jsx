@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 export function HeroLanding() {
   return (
     <section
-      className="relative w-full py-10 md:py-0  bg-cover bg-right "
+      className="relative w-full py-10 md:py-0 bg-cover bg-right lg:bg-[length:auto_120%]"
       style={{ backgroundImage: "url('/heroFundo.png')" }}
       id="inicio"
     >
-      <div className="absolute inset-0 bg-gradient-to-r from-slate-50 via-slate-50/80 to-transparent w-full md:w-1/2 pointer-events-none z-0" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#F1F3F6] via-[#F1F3F6]/85 to-transparent w-full md:w-3/5 pointer-events-none z-0" />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center min-h-[460px]">

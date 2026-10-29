@@ -9,6 +9,7 @@ export function DepoimentosLanding() {
         "O Wisen ajuda-me a entender temas que sempre pareceram muito complicados. As ideias conectam-se e fazem sentido.",
       nome: "Mariana S.",
       cargo: "Estudante",
+      corCartao: "bg-[#EEF1F4] border-[#DCE3ED]",
       avatar:
         "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150&auto=format&fit=crop",
     },
@@ -18,6 +19,7 @@ export function DepoimentosLanding() {
         "A plataforma é muito intuitiva e os conteúdos realmente são excelentes. Consigo ver o mundo com outros olhos.",
       nome: "Lucas T.",
       cargo: "Professor",
+      corCartao: "bg-[#F8F5DD] border-[#E8E191]",
       avatar:
         "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop",
     },
@@ -27,6 +29,7 @@ export function DepoimentosLanding() {
         "Mudou completamente a forma como me informo sobre os assuntos do dia. Os fechamentos de mapas mentais são incríveis.",
       nome: "Carla M.",
       cargo: "Analista",
+      corCartao: "bg-[#E8ECF1] border-[#D3DCE8]",
       avatar:
         "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150&auto=format&fit=crop",
     },
@@ -51,7 +54,7 @@ export function DepoimentosLanding() {
           {depoimentos.map((item) => (
             <Card
               key={item.id}
-              className="border border-slate-200/80 shadow-xs bg-white rounded-2xl flex flex-col justify-between p-6 hover:shadow-md transition-shadow"
+              className={`border ${item.corCartao} shadow-xs rounded-2xl flex flex-col justify-between p-6 hover:shadow-md transition-shadow`}
             >
               <CardContent className="p-0 space-y-6 flex flex-col justify-between h-full">
                 <p className="text-xs text-slate-600 leading-relaxed font-normal italic">

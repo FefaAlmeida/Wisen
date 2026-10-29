@@ -2,6 +2,9 @@ node_modules/
 .next/
 dist/
 coverage/
+test-results/
+playwright-report/
+.vitest/
 .env
 .env.*
 !.env.example

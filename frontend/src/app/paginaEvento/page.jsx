@@ -73,7 +73,7 @@ export default function PaginaEvento() {
       <Sidebar activeItem="Notícias" />
 
       <div className="min-h-screen sm:ml-[128px] lg:ml-[220px]">
-        <header className="sticky top-0 z-10 flex h-[60px] items-center justify-between border-b border-[#e5e8ed] bg-[#f5f6f8]/95 px-4 backdrop-blur sm:px-5 lg:px-7">
+        <header className="sticky top-[52px] z-10 flex h-[60px] items-center justify-between border-b border-[#e5e8ed] bg-[#f5f6f8]/95 px-4 backdrop-blur sm:px-5 lg:px-7">
           <div className="flex w-full max-w-[420px] items-center gap-2.5">
             <Search className="absolute ml-3 text-[#9099a6]" size={17} />
             <Input

@@ -10,7 +10,6 @@ x-app: &app
     FRONTEND_URL: http://localhost:${FRONTEND_HOST_PORT:-3000}
     PORT: 8080
     MODEL_CACHE_DIR: /models
-    NEXT_PUBLIC_API_URL: http://localhost:${BACKEND_HOST_PORT:-8080}/api
     NEXT_TELEMETRY_DISABLED: "1"
   volumes:
     - .:/app
@@ -63,6 +62,7 @@ services:
     environment:
       <<: *environment
       WATCHPACK_POLLING: "true"
+      BACKEND_INTERNAL_URL: http://backend:8080/api
       PORT: 3000
     volumes:
       - .:/app

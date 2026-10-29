@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -112,9 +113,12 @@ export default function QuizRevisao() {
         </div>
 
         <div className="flex flex-col gap-5 rounded-xl bg-[#F4F7FB] p-4 sm:flex-row">
-          <img
+          <Image
             src="/revisaoSelic.jpg"
+            width={460}
+            height={290}
             alt="Congresso Nacional em Brasília"
+            sizes="(max-width: 640px) 100vw, 230px"
             className="h-[145px] w-full shrink-0 rounded-lg object-cover sm:w-[230px]"
           />
 

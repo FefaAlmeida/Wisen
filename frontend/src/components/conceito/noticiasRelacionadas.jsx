@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -70,11 +71,9 @@ export default function NoticiasRelacionadas() {
               key={noticia.titulo}
               className="flex min-w-0 gap-3 rounded-xl border border-[#E1E8F2] p-2"
             >
-              <img
-                src={noticia.imagem}
-                alt=""
-                className="h-[78px] w-[100px] shrink-0 rounded-lg object-cover"
-              />
+              <div className="relative h-[78px] w-[100px] shrink-0 overflow-hidden rounded-lg">
+                <Image src={noticia.imagem} alt="" fill sizes="100px" className="object-cover" />
+              </div>
 
               <div className="flex min-w-0 flex-1 flex-col justify-between gap-2 py-1">
                 <h3 className="text-[12px] leading-[16px] font-semibold text-wisen-titulo">

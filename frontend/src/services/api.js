@@ -1,5 +1,3 @@
-const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
-
 export class ApiError extends Error {
   constructor(message, status, code) {
     super(message);
@@ -10,8 +8,9 @@ export class ApiError extends Error {
 }
 
 export async function requisitar(caminho, { body, headers, signal, ...options } = {}) {
-  const response = await fetch(`${baseUrl}${caminho}`, {
+  const response = await fetch(`/api${caminho}`, {
     ...options,
+    credentials: "same-origin",
     headers: { ...(body === undefined ? {} : { "Content-Type": "application/json" }), ...headers },
     body: body === undefined ? undefined : JSON.stringify(body),
     signal: signal ?? AbortSignal.timeout(15000),

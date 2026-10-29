@@ -2,17 +2,36 @@
 
 import Link from "next/link";
 import { useState } from "react";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { requisitar } from "@/services/api";
 
 export default function FormularioCadastro() {
   const [mostrarSenha, setMostrarSenha] = useState(false);
+  const [erro, setErro] = useState("");
+  const [enviando, setEnviando] = useState(false);
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
+    setErro("");
+    setEnviando(true);
+    const form = new FormData(event.currentTarget);
+    try {
+      await requisitar("/auth/register", {
+        method: "POST",
+        body: {
+          name: form.get("name"),
+          email: form.get("email"),
+          password: form.get("password"),
+        },
+      });
+      window.location.assign("/paginaInicialCliente");
+    } catch (error) {
+      setErro(error.message || "Não foi possível criar sua conta. Tente novamente.");
+      setEnviando(false);
+    }
   }
 
   return (
@@ -41,10 +60,14 @@ export default function FormularioCadastro() {
 
             <Input
               id="nome"
+              name="name"
               type="text"
               placeholder="Seu nome completo"
               autoComplete="name"
               required
+              minLength={2}
+              maxLength={120}
+              disabled={enviando}
               className="h-11 rounded-md border-[#D9E1ED] bg-white px-3 text-sm text-wisen-texto-forte placeholder:text-[#A7B2C3] focus-visible:ring-[#EEDC84]"
             />
           </div>
@@ -57,10 +80,12 @@ export default function FormularioCadastro() {
 
             <Input
               id="emailCadastro"
+              name="email"
               type="email"
               placeholder="seu@email.com"
               autoComplete="email"
               required
+              disabled={enviando}
               className="h-11 rounded-md border-[#D9E1ED] bg-white px-3 text-sm text-wisen-texto-forte placeholder:text-[#A7B2C3] focus-visible:ring-[#EEDC84]"
             />
           </div>
@@ -74,10 +99,14 @@ export default function FormularioCadastro() {
             <div className="relative">
               <Input
                 id="senhaCadastro"
+                name="password"
                 type={mostrarSenha ? "text" : "password"}
                 placeholder="Crie uma senha"
                 autoComplete="new-password"
                 required
+                minLength={8}
+                maxLength={128}
+                disabled={enviando}
                 className="h-11 rounded-md border-[#D9E1ED] bg-white pr-20 pl-3 text-sm text-wisen-texto-forte placeholder:text-[#A7B2C3] focus-visible:ring-[#EEDC84] [&::-ms-reveal]:hidden [&::-ms-clear]:hidden"
               />
 
@@ -116,11 +145,18 @@ export default function FormularioCadastro() {
             </div>
           </div>
 
+          {erro && (
+            <p role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+              {erro}
+            </p>
+          )}
+
           <Button
             type="submit"
+            disabled={enviando}
             className="mt-2 h-11 w-full rounded-md bg-[#F3E69A] font-semibold text-[#273651] shadow-none hover:bg-[#EBDD80]"
           >
-            Criar conta
+            {enviando ? "Criando conta…" : "Criar conta"}
             <span aria-hidden="true" className="ml-2 text-lg">
               →
             </span>

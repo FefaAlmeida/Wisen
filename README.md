@@ -53,7 +53,14 @@ A busca usa os trechos já indexados e retorna até cinco artigos por padrão. O
 | `npm run setup:model` | Preparar o modelo local             |
 | `npm run check`       | Biome e build do frontend           |
 | `npm run build`       | Build de produção do frontend       |
+| `npm test`            | Unidade, integração, frontend e E2E |
 | `npm run lint:fix`    | Aplicar correções seguras do Biome  |
+
+## Testes
+
+`npm test` roda unidades do backend, integração Fastify/PostgreSQL, componentes React e fluxos de navegador com Playwright. A primeira execução E2E precisa de `npx playwright install chromium`. As suítes de integração e E2E usam um PostgreSQL temporário em `127.0.0.1:55439`, aplicam as migrations e removem o container ao terminar; não usam o banco de desenvolvimento. Se a porta estiver ocupada, defina `TEST_DATABASE_HOST_PORT`.
+
+Também é possível rodar cada parte separadamente com `npm run test:unit`, `npm run test:integration`, `npm run test:frontend` e `npm run test:e2e`.
 
 ## Estrutura
 
@@ -79,7 +86,7 @@ O backend usa Fastify e SQL parametrizado com `pg`. Cada módulo separa HTTP, re
 
 Os arquivos em `backend/migrations/` são aplicados em ordem, cada um em uma transação. `schema_migrations` guarda nome, checksum e data. Um advisory lock impede execuções concorrentes. Uma migration já aplicada não deve ser editada: crie um novo arquivo numerado.
 
-O schema inclui as entidades centrais do produto, mas cadastro/login, eventos automáticos, grafo, explicações e revisão pedagógica ainda não estão implementados como funcionalidades. O fluxo ativo usa fontes, artigos, trechos e pedidos de busca. O pg-boss mantém suas tabelas no schema `pgboss`.
+A autenticação por sessão já está funcional. O fluxo ativo usa fontes, artigos, trechos e pedidos de busca; as páginas de conteúdo ainda usam dados de demonstração. Eventos automáticos, grafo, explicações e revisão pedagógica seguem fora do escopo funcional, apesar de já haver entidades modeladas. O pg-boss mantém suas tabelas no schema `pgboss`.
 
 Não use `docker compose down -v` para atualizar tabelas: esse comando apaga volumes. A configuração nova usa volume PostgreSQL próprio e não converte nem apaga bases MySQL externas.
 
@@ -88,18 +95,22 @@ Não use `docker compose down -v` para atualizar tabelas: esse comando apaga vol
 | Método | Rota                            | Comportamento                                               |
 | ------ | ------------------------------- | ----------------------------------------------------------- |
 | GET    | `/api/health`                   | Verifica API e banco                                        |
+| POST   | `/api/auth/register`            | Cria conta e inicia sessão                                  |
+| POST   | `/api/auth/login`               | Inicia sessão                                               |
+| GET    | `/api/auth/session`             | Consulta sessão atual                                       |
+| POST   | `/api/auth/logout`              | Encerra sessão                                              |
 | GET    | `/api/articles?page=1&limit=10` | Lista artigos coletados                                     |
 | GET    | `/api/articles/:id`             | Consulta artigo                                             |
 | POST   | `/api/search`                   | Recebe `{ "query": "juros", "limit": 5 }`; retorna 202 e id |
 | GET    | `/api/search/:id`               | Estado e resultados da busca                                |
 
-A busca é assíncrona para manter o modelo no worker. Estados: `pending`, `processing`, `completed`, `failed`. Há até três retentativas, com intervalo crescente; falhas transitórias não concluem o pedido prematuramente. Pedidos concluídos ou falhos expiram após sete dias. Swagger expõe os contratos em `/docs/json`, somente fora de produção.
+A sessão usa cookie `httpOnly` e as páginas da área do usuário redirecionam ao login quando ela não existe. A busca é assíncrona para manter o modelo no worker. Estados: `pending`, `processing`, `completed`, `failed`. Há até três retentativas, com intervalo crescente; falhas transitórias não concluem o pedido prematuramente. Pedidos concluídos ou falhos expiram após sete dias. Swagger expõe os contratos em `/docs/json`, somente fora de produção.
 
 ## Produção
 
-A configuração está preparada, mas nenhum deploy é realizado pelos comandos de desenvolvimento. Use `compose.production.yml`, com volumes separados e um proxy HTTPS à frente das portas locais. PostgreSQL não tem porta publicada nessa configuração.
+A configuração está preparada, mas nenhum deploy é realizado pelos comandos de desenvolvimento. Use `compose.production.yml`, com volumes separados e um proxy HTTPS à frente das portas locais. Configure o proxy para definir `X-Real-IP` com o IP de origem. PostgreSQL não tem porta publicada nessa configuração.
 
-Crie `.env.production` fora do Git com `POSTGRES_PASSWORD`, `FRONTEND_URL`, `NEXT_PUBLIC_API_URL` e `OPERATIONS_TOKEN`. Gere senha e token com valores aleatórios; uma senha hexadecimal evita caracteres reservados na URL de conexão. O token deve ter pelo menos 32 caracteres.
+Crie `.env.production` fora do Git com `POSTGRES_PASSWORD`, `FRONTEND_URL` e `OPERATIONS_TOKEN`. Gere senha e token com valores aleatórios; uma senha hexadecimal evita caracteres reservados na URL de conexão. O token deve ter pelo menos 32 caracteres.
 
 ```sh
 docker compose --env-file .env.production -f compose.production.yml build
@@ -107,8 +118,8 @@ docker compose --env-file .env.production -f compose.production.yml run --rm pre
 docker compose --env-file .env.production -f compose.production.yml up -d
 ```
 
-As migrations são um serviço de execução única antes da API e do worker. Os processos de aplicação usam usuário sem privilégios. O preparo do modelo ajusta a propriedade do volume para esse usuário. `NEXT_PUBLIC_API_URL` é incorporada no build do frontend: trocar essa URL exige reconstruí-lo.
+As migrations são um serviço de execução única antes da API e do worker. Os processos de aplicação usam usuário sem privilégios. O preparo do modelo ajusta a propriedade do volume para esse usuário. O frontend encaminha as chamadas para a API pelo próprio servidor, usando `BACKEND_INTERNAL_URL` na rede Docker.
 
-Até existir autenticação de usuários, a busca em produção exige `Authorization: Bearer <OPERATIONS_TOKEN>`. Esse token é operacional e não deve ser enviado ao navegador. Swagger fica desabilitado. A integração pública da busca com as telas dependerá da autenticação futura.
+A busca de uma pessoa autenticada fica vinculada à sua conta. O comando de busca pelo terminal usa `Authorization: Bearer <OPERATIONS_TOKEN>`. Esse token é operacional e não deve ser enviado ao navegador. Swagger fica desabilitado em produção.
 
 Os documentos acadêmicos originais ficam na raiz e não fazem parte do runtime da aplicação.

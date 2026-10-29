@@ -5,6 +5,7 @@ export function searchController(app, service) {
   app.post(
     "/api/search",
     {
+      preHandler: app.authenticateSearch,
       schema: {
         tags: ["Busca"],
         summary: "Agenda busca semântica no worker",
@@ -12,11 +13,13 @@ export function searchController(app, service) {
         response: { 202: z.object({ id: uuidSchema, status: z.literal("pending") }) },
       },
     },
-    async (request, reply) => reply.code(202).send(await service.create(request.body)),
+    async (request, reply) =>
+      reply.code(202).send(await service.create(request.body, request.user?.id ?? null)),
   );
   app.get(
     "/api/search/:id",
     {
+      preHandler: app.authenticateSearch,
       schema: {
         tags: ["Busca"],
         params: z.object({ id: uuidSchema }),
@@ -40,6 +43,6 @@ export function searchController(app, service) {
         },
       },
     },
-    (request) => service.find(request.params.id),
+    (request) => service.find(request.params.id, request.user?.id, request.isOperations),
   );
 }

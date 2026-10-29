@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 
@@ -12,9 +13,12 @@ function IconeMarcador() {
 export default function CardEventoSalvo({ evento }) {
   return (
     <Card className="flex-row items-center gap-3 rounded-xl border border-[#E2E8F0] bg-white p-3 shadow-none transition-colors hover:border-[#CDD8E8]">
-      <img
+      <Image
         src={evento.imagem}
+        width={120}
+        height={85}
         alt=""
+        sizes="(max-width: 640px) 108px, 120px"
         className="h-[85px] w-[108px] shrink-0 rounded-lg object-cover sm:w-[120px]"
       />
 

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 
 export function DepoimentosLanding() {
@@ -58,9 +59,12 @@ export function DepoimentosLanding() {
                 </p>
 
                 <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
-                  <img
+                  <Image
                     src={item.avatar}
+                    width={36}
+                    height={36}
                     alt={item.nome}
+                    sizes="36px"
                     className="w-9 h-9 rounded-full object-cover shrink-0 border border-slate-200"
                   />
                   <div>

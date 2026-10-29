@@ -20,7 +20,7 @@ const navigation = [
 export default function Sidebar({ activeItem }) {
   return (
     <aside
-      className="fixed inset-y-0 left-0 z-20 hidden w-[128px] flex-col bg-[#202d3a] px-2.5 py-5 text-white sm:flex lg:w-[220px] lg:px-4"
+      className="fixed top-[52px] bottom-0 left-0 z-20 hidden w-[128px] flex-col bg-[#202d3a] px-2.5 py-5 text-white sm:flex lg:w-[220px] lg:px-4"
       style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
     >
       <Link

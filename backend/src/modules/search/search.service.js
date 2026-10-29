@@ -1,10 +1,10 @@
 export function searchService(repository) {
   return {
-    create(input) {
-      return repository.create(input);
+    create(input, userId) {
+      return repository.create(input, userId);
     },
-    async find(id) {
-      const row = await repository.find(id);
+    async find(id, userId, isOperations) {
+      const row = await repository.find(id, userId, isOperations);
       if (!row) throw Object.assign(new Error("Busca não encontrada"), { statusCode: 404 });
       return row;
     },

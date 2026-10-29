@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function CardNoticia({
@@ -10,7 +11,14 @@ export default function CardNoticia({
 }) {
   return (
     <Card className="flex h-full flex-col gap-0 overflow-hidden rounded-lg border-0 bg-white p-0 shadow-none">
-      <img src={imagem} alt={titulo} className="h-28 w-full object-cover" />
+      <Image
+        src={imagem}
+        width={900}
+        height={350}
+        alt={titulo}
+        sizes="(max-width: 768px) 100vw, 33vw"
+        className="h-28 w-full object-cover"
+      />
 
       <CardContent className="flex flex-1 flex-col p-4">
         <div className="mb-1 flex items-center justify-between gap-2">

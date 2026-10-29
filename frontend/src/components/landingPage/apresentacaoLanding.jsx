@@ -1,4 +1,5 @@
 import { Bookmark, BrainCircuit, History, Home, Search, Settings, User } from "lucide-react";
+import Image from "next/image";
 
 export function ApresentacaoLanding() {
   return (
@@ -74,9 +75,12 @@ export function ApresentacaoLanding() {
                 </div>
 
                 <div className="relative rounded-2xl overflow-hidden border border-slate-100 shadow-xs">
-                  <img
+                  <Image
                     src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=600&auto=format&fit=crop"
+                    width={600}
+                    height={240}
                     alt="Destaque"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
                     className="w-full h-28 object-cover"
                   />
                   <div className="p-3 bg-white">

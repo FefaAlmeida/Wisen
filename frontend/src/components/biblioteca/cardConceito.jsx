@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -55,7 +56,13 @@ export function CardConceito({ titulo, descricao, status, progresso = 0 }) {
     <Card className="flex h-full flex-col gap-0 overflow-hidden rounded-lg border border-[#E2E8F0] bg-white p-0 shadow-sm">
       {/* Imagem do conceito */}
       <div className="relative h-32 w-full shrink-0 overflow-hidden">
-        <img src={imagens[titulo]} alt={titulo} className="h-full w-full object-cover" />
+        <Image
+          src={imagens[titulo]}
+          alt={titulo}
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 25vw"
+          className="object-cover"
+        />
 
         <Badge
           className={`absolute top-3 left-3 rounded-full border px-3 py-1 text-[11px] font-medium shadow-sm ${estilos.badge}`}

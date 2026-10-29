@@ -7,9 +7,40 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { requisitar } from "@/services/api";
 
 export default function FormularioLogin({ glass = false }) {
   const [mostrarSenha, setMostrarSenha] = useState(false);
+  const [lembrar, setLembrar] = useState(false);
+  const [erro, setErro] = useState("");
+  const [enviando, setEnviando] = useState(false);
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setErro("");
+    setEnviando(true);
+    const form = new FormData(event.currentTarget);
+    try {
+      await requisitar("/auth/login", {
+        method: "POST",
+        body: {
+          email: form.get("email"),
+          password: form.get("password"),
+          remember: lembrar,
+        },
+      });
+      const requestedPath = new URLSearchParams(window.location.search).get("next");
+      const destination = requestedPath ? new URL(requestedPath, window.location.origin) : null;
+      window.location.assign(
+        destination?.origin === window.location.origin
+          ? `${destination.pathname}${destination.search}${destination.hash}`
+          : "/paginaInicialCliente",
+      );
+    } catch (error) {
+      setErro(error.message || "Não foi possível entrar. Tente novamente.");
+      setEnviando(false);
+    }
+  }
 
   return (
     <Card
@@ -43,11 +74,7 @@ export default function FormularioLogin({ glass = false }) {
       </CardHeader>
 
       <CardContent className="px-6 pb-8 sm:px-10 sm:pb-10 lg:px-12">
-        <form
-          aria-labelledby="login-title"
-          className="space-y-5"
-          onSubmit={(event) => event.preventDefault()}
-        >
+        <form aria-labelledby="login-title" className="space-y-5" onSubmit={handleSubmit}>
           <div className="space-y-2">
             <Label
               htmlFor="email"
@@ -71,11 +98,12 @@ export default function FormularioLogin({ glass = false }) {
 
               <Input
                 id="email"
-                name="username"
+                name="email"
                 type="email"
                 placeholder="seu@email.com"
                 autoComplete="username"
                 required
+                disabled={enviando}
                 className={`h-11 rounded-lg border-[#D9E1ED] pl-10 text-sm text-wisen-texto-forte placeholder:text-[#71809C] focus-visible:border-[#D6B947] focus-visible:ring-2 focus-visible:ring-[#EEDC84]/70 ${glass ? "bg-[#F1F5FC] text-[#17243A]" : "bg-white"}`}
               />
             </div>
@@ -109,6 +137,7 @@ export default function FormularioLogin({ glass = false }) {
                 placeholder="Sua senha"
                 autoComplete="current-password"
                 required
+                disabled={enviando}
                 className={`h-11 rounded-lg border-[#D9E1ED] pr-12 pl-10 text-sm text-wisen-texto-forte placeholder:text-[#71809C] focus-visible:border-[#D6B947] focus-visible:ring-2 focus-visible:ring-[#EEDC84]/70 [&::-ms-reveal]:hidden [&::-ms-clear]:hidden [&::-webkit-credentials-auto-fill-button]:hidden ${glass ? "bg-[#F1F5FC] text-[#17243A]" : "bg-white"}`}
               />
 
@@ -148,10 +177,14 @@ export default function FormularioLogin({ glass = false }) {
             </div>
           </div>
 
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
               <Checkbox
                 id="lembrar"
+                name="remember"
+                value="true"
+                checked={lembrar}
+                onCheckedChange={(checked) => setLembrar(Boolean(checked))}
                 className="border-[#E4D57E] bg-[#F4E69B] text-wisen-texto-forte data-[state=checked]:border-[#E4D57E] data-[state=checked]:bg-[#F4E69B]"
               />
               <Label
@@ -161,20 +194,20 @@ export default function FormularioLogin({ glass = false }) {
                 Lembrar de mim
               </Label>
             </div>
-
-            <Link
-              href="/recuperarSenha"
-              className={`rounded-sm text-xs font-medium underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F2DF83] ${glass ? "text-[#F2DF83]" : "text-[#30456D]"}`}
-            >
-              Esqueci minha senha
-            </Link>
           </div>
+
+          {erro && (
+            <p role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+              {erro}
+            </p>
+          )}
 
           <Button
             type="submit"
+            disabled={enviando}
             className="mt-1 h-11 w-full rounded-md bg-[#F3E69A] font-semibold text-[#273651] shadow-none transition-colors hover:bg-[#EBDD80]"
           >
-            Entrar
+            {enviando ? "Entrando…" : "Entrar"}
             <span aria-hidden="true" className="ml-2 text-lg">
               →
             </span>

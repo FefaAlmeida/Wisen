@@ -1,0 +1,16 @@
+services:
+  database:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: wisen_test
+      POSTGRES_PASSWORD: wisen_test
+      POSTGRES_DB: wisen_test
+    ports:
+      - "127.0.0.1:${TEST_DATABASE_HOST_PORT:-55439}:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U wisen_test -d wisen_test"]
+      interval: 2s
+      timeout: 3s
+      retries: 30

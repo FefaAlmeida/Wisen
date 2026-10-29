@@ -10,8 +10,6 @@ FROM dependencies AS development
 COPY . .
 
 FROM development AS web-build
-ARG NEXT_PUBLIC_API_URL=http://localhost:8080/api
-ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build -w @wisen/frontend
 

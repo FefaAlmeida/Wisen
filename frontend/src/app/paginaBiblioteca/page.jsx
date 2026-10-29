@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { BarraBusca } from "@/components/barraBusca";
 import { CardConceito } from "@/components/biblioteca/cardConceito";
 import { FiltrosBiblioteca } from "@/components/biblioteca/filtrosBiblioteca";
@@ -26,8 +27,10 @@ export default function Home() {
             </div>
 
             {/* Imagem decorativa */}
-            <img
+            <Image
               src="/bibliotecaHero.png"
+              width={240}
+              height={200}
               alt="Ilustração de livros representando diferentes áreas do conhecimento"
               className="pointer-events-none absolute top-[-25px] right-0 hidden h-[170px] w-auto object-contain md:block lg:h-[200px]"
             />

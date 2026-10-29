@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export function BannerImpacto() {
   const metricas = [
     { valor: "+10 mil", legenda: "estudantes e profissionais" },
@@ -10,10 +12,12 @@ export function BannerImpacto() {
     <section className="py-6">
       <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-[#1E2530] via-[#2B333F] to-[#1E2530] text-white p-8 md:p-12 shadow-2xl border border-slate-800">
         <div className="absolute inset-0 opacity-30 pointer-events-none">
-          <img
+          <Image
             src="/meuBanner.png" /* <-- Nome exato do arquivo que você colocou na pasta public */
-            alt="Fundo do Banner"
-            className="w-full h-full object-cover mix-blend-overlay"
+            alt=""
+            fill
+            sizes="100vw"
+            className="object-cover mix-blend-overlay"
           />
         </div>
 

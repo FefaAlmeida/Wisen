@@ -1,10 +1,17 @@
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function CardInteresse({ imagem, titulo, porcentagem }) {
   return (
     <Card className="group flex h-full min-h-[108px] flex-row items-stretch gap-0 overflow-hidden rounded-lg border border-[#E3E9F1] bg-white p-0 shadow-none transition-shadow hover:shadow-md">
-      <div className="w-[100px] shrink-0 self-stretch overflow-hidden sm:w-[108px]">
-        <img src={imagem} alt={titulo} className="h-full w-full object-cover" />
+      <div className="relative w-[100px] shrink-0 self-stretch overflow-hidden sm:w-[108px]">
+        <Image
+          src={imagem}
+          alt={titulo}
+          fill
+          sizes="(max-width: 640px) 100px, 108px"
+          className="object-cover"
+        />
       </div>
 
       <CardContent className="flex min-w-0 flex-1 flex-row items-center gap-2 px-3 py-3 sm:px-4">

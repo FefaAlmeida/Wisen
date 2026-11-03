@@ -34,6 +34,11 @@ const updateProfileSchema = z.object({
 });
 const profileSchema = z.object({
   user: userSchema,
+  avatarDataUrl: z
+    .string()
+    .max(800_000)
+    .regex(/^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/]+={0,2}$/)
+    .nullable(),
   preferences: z.object({
     interests: z.array(z.string()),
     notifications: z.object({
@@ -41,6 +46,13 @@ const profileSchema = z.object({
       weeklySummary: z.boolean(),
     }),
   }),
+});
+const updateAvatarSchema = z.object({
+  avatarDataUrl: z
+    .string()
+    .max(800_000)
+    .regex(/^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/]+={0,2}$/)
+    .nullable(),
 });
 const changePasswordSchema = z
   .object({
@@ -129,6 +141,22 @@ export function authController(app, service, config) {
       schema: { tags: ["Autenticação"], response: { 200: profileSchema } },
     },
     (request) => service.getProfile(request.user.id),
+  );
+
+  app.put(
+    "/api/auth/avatar",
+    {
+      preHandler: app.authenticate,
+      config: { rateLimit: { max: 10, timeWindow: "1 minute" } },
+      schema: {
+        tags: ["Autenticação"],
+        body: updateAvatarSchema,
+        response: { 200: updateAvatarSchema },
+      },
+    },
+    async (request) => ({
+      avatarDataUrl: await service.updateAvatar(request.user.id, request.body.avatarDataUrl),
+    }),
   );
 
   // 2. Rota de atualização de perfil (Nome, E-mail, Tópicos e Notificações)

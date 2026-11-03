@@ -85,6 +85,10 @@ export function authService(repository) {
       return repository.findProfile(userId);
     },
 
+    async updateAvatar(userId, avatarDataUrl) {
+      return repository.updateAvatar(userId, avatarDataUrl);
+    },
+
     async changePassword(userId, { currentPassword, newPassword }) {
       if (currentPassword === newPassword) {
         throw Object.assign(new Error("A nova senha deve ser diferente da senha atual"), {

@@ -13,6 +13,18 @@ export function authRepository(pool) {
       return rows[0] ?? null;
     },
 
+    async findPasswordHashById(userId) {
+      const { rows } = await pool.query("SELECT password_hash FROM users WHERE id = $1", [userId]);
+      return rows[0]?.password_hash ?? null;
+    },
+
+    async updatePasswordHash(userId, passwordHash) {
+      await pool.query(
+        "UPDATE users SET password_hash = $1, updated_at = now() WHERE id = $2",
+        [passwordHash, userId],
+      );
+    },
+
     async createAccount({ name, email, passwordHash, tokenHash, expiresAt }) {
       return transaction(pool, async (client) => {
         const {

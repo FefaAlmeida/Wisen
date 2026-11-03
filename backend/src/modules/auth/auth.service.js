@@ -85,6 +85,21 @@ export function authService(repository) {
       return repository.findProfile(userId);
     },
 
+    async changePassword(userId, { currentPassword, newPassword }) {
+      if (currentPassword === newPassword) {
+        throw Object.assign(new Error("A nova senha deve ser diferente da senha atual"), {
+          statusCode: 400,
+        });
+      }
+
+      const storedHash = await repository.findPasswordHashById(userId);
+      if (!(await verifyPassword(currentPassword, storedHash))) {
+        throw Object.assign(new Error("A senha atual está incorreta"), { statusCode: 400 });
+      }
+
+      await repository.updatePasswordHash(userId, await hashPassword(newPassword));
+    },
+
     async updateProfile(userId, data) {
       const { email } = data;
 

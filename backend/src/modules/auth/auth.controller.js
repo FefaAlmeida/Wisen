@@ -42,6 +42,15 @@ const profileSchema = z.object({
     }),
   }),
 });
+const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(8).max(128),
+    newPassword: z.string().min(8).max(128),
+  })
+  .refine((data) => data.currentPassword !== data.newPassword, {
+    path: ["newPassword"],
+    message: "A nova senha deve ser diferente da senha atual",
+  });
 
 export function authController(app, service, config) {
   app.decorateRequest("user", null);
@@ -136,6 +145,23 @@ export function authController(app, service, config) {
     async (request, reply) => {
       const user = await service.updateProfile(request.user.id, request.body);
       return reply.code(200).send({ user });
+    },
+  );
+
+  app.put(
+    "/api/auth/password",
+    {
+      preHandler: app.authenticate,
+      config: { rateLimit: { max: 5, timeWindow: "1 minute" } },
+      schema: {
+        tags: ["Autenticação"],
+        body: changePasswordSchema,
+        response: { 200: z.object({ message: z.string() }) },
+      },
+    },
+    async (request, reply) => {
+      await service.changePassword(request.user.id, request.body);
+      return reply.send({ message: "Senha alterada com sucesso" });
     },
   );
 }

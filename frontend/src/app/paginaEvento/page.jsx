@@ -14,11 +14,12 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
+import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
+import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import Sidebar from "@/components/sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import MenuPerfil from "@/components/homeCliente/menuPerfil";
 
 const concepts = [
   { title: "Mudanças climáticas", detail: "Em revisão", color: "bg-amber-400" },
@@ -67,12 +68,13 @@ export default function PaginaEvento() {
 
   return (
     <main
-      className="min-h-screen bg-wisen-superficie text-[#202a3b]"
+      className="relative isolate min-h-screen bg-wisen-superficie text-[#202a3b]"
       style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
     >
+      <ConnectionsBackground />
       <Sidebar activeItem="Notícias" />
 
-      <div className="min-h-screen sm:ml-[128px] lg:ml-[220px]">
+      <div className="relative z-10 min-h-screen sm:ml-[128px] lg:ml-[220px]">
         {/* Pesquisa e perfil - padrão visual da página inicial */}
         <div className="relative z-50 mx-auto flex w-full max-w-[1600px] items-center justify-end gap-3 px-4 pt-3 sm:px-5 lg:px-7">
           <search className="relative min-w-0 flex-1 sm:w-[360px] sm:flex-none">

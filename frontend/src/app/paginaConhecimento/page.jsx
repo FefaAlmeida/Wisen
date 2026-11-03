@@ -1,15 +1,15 @@
 
 import { Search } from "lucide-react";
 
+import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
+import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import { CabecalhoConhecimento } from "@/components/meuConhecimento/cabecalhoConhecimento";
 import { CartaoFocoAtual } from "@/components/meuConhecimento/cartaoFocoAtual";
 import { CartoesEstatisticas } from "@/components/meuConhecimento/cartoesEstatisticas";
 import { DistribuicaoCategorias } from "@/components/meuConhecimento/distribuicaoCategorias";
 import { GraficoEvolucao } from "@/components/meuConhecimento/graficoEvolucao";
 import { HistoricoAtividades } from "@/components/meuConhecimento/historicoAtividades";
-
 import Sidebar from "@/components/sidebar";
-import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import { Input } from "@/components/ui/input";
 
 export default function PaginaConhecimento() {
@@ -17,8 +17,9 @@ export default function PaginaConhecimento() {
     <div className="min-h-screen">
       <Sidebar activeItem="Meu conhecimento" />
 
-      <main className="min-h-screen min-w-0 bg-[radial-gradient(ellipse_at_60%_0%,#E4EDF5_0%,#F0F4F9_60%,#F0F4F9_100%)] font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
-        <div className="mx-auto w-full max-w-[1600px]">
+      <main className="relative isolate min-h-screen min-w-0 bg-[radial-gradient(ellipse_at_60%_0%,#E4EDF5_0%,#F0F4F9_60%,#F0F4F9_100%)] font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
+        <ConnectionsBackground />
+        <div className="relative z-10 mx-auto w-full max-w-[1600px]">
 
           {/* Barra de pesquisa e perfil */}
           <div className="relative z-50 flex items-center justify-end gap-3 px-5 pt-3 md:px-8">

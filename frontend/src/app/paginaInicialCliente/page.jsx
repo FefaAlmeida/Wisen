@@ -1,20 +1,21 @@
 import { Search } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import CardInteresse from "@/components/homeCliente/cardInteresse";
 import CardNoticia from "@/components/homeCliente/cardNoticia";
+import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
 import HeroHome from "@/components/homeCliente/heroHome";
+import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import PainelRevisoes from "@/components/homeCliente/painelRevisoes";
 import Sidebar from "@/components/sidebar";
 import { Input } from "@/components/ui/input";
-import MenuPerfil from "@/components/homeCliente/menuPerfil";
 
 export default function Home() {
   return (
     <div className="min-h-screen">
       <Sidebar activeItem="Início" />
-      <main className="min-h-screen min-w-0 bg-[radial-gradient(ellipse_at_70%_0%,#E3EAF4_0%,#F0F4F9_55%,#F0F4F9_100%)] font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
-        <div className="mx-auto w-full max-w-[1600px]">
+      <main className="relative isolate min-h-screen min-w-0 bg-[radial-gradient(ellipse_at_70%_0%,#E3EAF4_0%,#F0F4F9_55%,#F0F4F9_100%)] font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
+        <ConnectionsBackground />
+        <div className="relative z-10 mx-auto w-full max-w-[1600px]">
           {/* Hero */}
           <div className="relative flex min-h-[410px] items-center overflow-hidden pt-14 md:min-h-[350px] md:pt-0">
             <div className="absolute inset-x-4 top-3 z-20 flex items-center justify-end gap-3 sm:left-auto sm:right-6 md:right-10">

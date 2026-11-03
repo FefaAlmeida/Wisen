@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
+import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import { InterestsCard } from "@/components/perfil/interestsCard";
 import { NotificationsCard } from "@/components/perfil/notificationsCard";
 import { PersonalDataCard } from "@/components/perfil/personalDataCard";
 import { ProfileHeader } from "@/components/perfil/profileHeader";
 import { SecurityCard } from "@/components/perfil/securityCard";
-
 import Sidebar from "@/components/sidebar";
-import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import { Input } from "@/components/ui/input";
 
 export default function PerfilPage() {
@@ -132,8 +132,9 @@ export default function PerfilPage() {
     <div className="min-h-screen">
       <Sidebar activeItem="Configurações" />
 
-      <main className="min-h-screen min-w-0 bg-wisen-superficie font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
-        <div className="mx-auto w-full max-w-[1600px]">
+      <main className="relative isolate min-h-screen min-w-0 bg-wisen-superficie font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
+        <ConnectionsBackground />
+        <div className="relative z-10 mx-auto w-full max-w-[1600px]">
           <div className="relative z-50 flex items-center justify-end gap-3 px-4 pt-3 sm:px-5 lg:px-7">
             <search className="relative min-w-0 flex-1 sm:w-[360px] sm:flex-none">
               <Search

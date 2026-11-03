@@ -1,13 +1,12 @@
 
 import { Search } from "lucide-react";
-
 import DicaEstudo from "@/components/centralRevisao/dicaEstudo";
 import QuizRevisao from "@/components/centralRevisao/quizRevisao";
 import ResumoRevisoes from "@/components/centralRevisao/resumoRevisoes";
 import SessaoHoje from "@/components/centralRevisao/sessaoHoje";
-
-import Sidebar from "@/components/sidebar";
+import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
 import MenuPerfil from "@/components/homeCliente/menuPerfil";
+import Sidebar from "@/components/sidebar";
 import { Input } from "@/components/ui/input";
 
 export default function PaginaRevisoes() {
@@ -15,8 +14,9 @@ export default function PaginaRevisoes() {
     <div className="min-h-screen">
       <Sidebar activeItem="Revisões" />
 
-      <main className="min-h-screen min-w-0 bg-[radial-gradient(ellipse_at_60%_0%,#E4EDF5_0%,#F0F4F9_60%,#F0F4F9_100%)] font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
-        <div className="mx-auto w-full max-w-[1600px]">
+      <main className="relative isolate min-h-screen min-w-0 bg-[radial-gradient(ellipse_at_60%_0%,#E4EDF5_0%,#F0F4F9_60%,#F0F4F9_100%)] font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
+        <ConnectionsBackground />
+        <div className="relative z-10 mx-auto w-full max-w-[1600px]">
 
           {/* Barra de pesquisa e perfil */}
           <div className="relative z-50 flex items-center justify-end gap-3 px-5 pt-3 md:px-8">

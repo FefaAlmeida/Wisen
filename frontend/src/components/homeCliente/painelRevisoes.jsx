@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const revisoes = [
   {
@@ -56,7 +56,10 @@ export default function PainelRevisoes() {
             </span>
           </div>
 
-          <Button className="group mt-7 h-11 w-fit rounded-lg bg-[#F3E69A] px-6 font-semibold text-[#263343] shadow-none transition-all hover:-translate-y-0.5 hover:bg-[#EBDD80] hover:shadow-md active:translate-y-0">
+          <Link
+            href="/paginaSessaoRevisao"
+            className="group mt-7 inline-flex h-11 w-fit items-center rounded-lg bg-[#F3E69A] px-6 font-semibold text-[#263343] shadow-none transition-all hover:-translate-y-0.5 hover:bg-[#EBDD80] hover:shadow-md active:translate-y-0"
+          >
             Iniciar revisões
             <span
               aria-hidden="true"
@@ -64,7 +67,7 @@ export default function PainelRevisoes() {
             >
               →
             </span>
-          </Button>
+          </Link>
         </div>
 
         {/* Lista de revisões */}

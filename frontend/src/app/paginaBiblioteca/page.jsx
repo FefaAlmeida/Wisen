@@ -4,15 +4,12 @@ import Image from "next/image";
 
 import { CardConceito } from "@/components/biblioteca/cardConceito";
 import { FiltrosBiblioteca } from "@/components/biblioteca/filtrosBiblioteca";
-
+import { Footer } from "@/components/footer";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
 import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import Sidebar from "@/components/sidebar";
 import { Input } from "@/components/ui/input";
-
 import { conceitos } from "@/data/conceitos";
-
-import { Footer } from "@/components/footer";
 
 
 
@@ -107,7 +104,7 @@ export default function Home() {
         </div>
       </main>
 
-        <Footer />
+        <Footer variant="cliente" />
     </div>
   );
 }

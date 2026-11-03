@@ -1,5 +1,6 @@
-import { useState } from "react";
 import { Plus, Search, X } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
@@ -14,7 +15,7 @@ const allTags = [
   "Sociedade",
 ];
 
-export function InterestsCard({ interests, onToggle }) {
+export function InterestsCard({ interests, onToggle, onSave, saving, hasChanges, feedback }) {
   const [search, setSearch] = useState("");
   const visibleTags = allTags.filter((tag) => tag.toLowerCase().includes(search.toLowerCase()));
   const selectedTags = [...new Set(interests)];
@@ -49,6 +50,7 @@ export function InterestsCard({ interests, onToggle }) {
               type="button"
               key={tag}
               onClick={() => onToggle(tag)}
+              disabled={saving}
               className="inline-flex items-center bg-[#E8E191] hover:bg-[#d8d181] text-[#2B333F] text-xs font-semibold px-3 py-1.5 rounded-xl gap-1.5 border-none transition-colors cursor-pointer"
             >
               {tag}
@@ -62,12 +64,36 @@ export function InterestsCard({ interests, onToggle }) {
               type="button"
               key={tag}
               onClick={() => onToggle(tag)}
+              disabled={saving}
               className="inline-flex items-center bg-slate-50/80 hover:bg-slate-100 text-[#2B333F]/80 border-slate-200 text-xs font-normal px-3 py-1.5 rounded-xl gap-1.5 transition-colors cursor-pointer"
             >
               {tag}
               <Plus className="w-3 h-3 text-slate-400" />
             </button>
           ))}
+        </div>
+
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
+          {feedback ? (
+            <p
+              role={feedback.type === "error" ? "alert" : "status"}
+              className={`text-xs ${feedback.type === "error" ? "text-red-600" : "text-green-700"}`}
+            >
+              {feedback.text}
+            </p>
+          ) : (
+            <p className="text-xs text-slate-500">
+              {hasChanges ? "Você tem alterações pendentes." : "Seus assuntos estão salvos."}
+            </p>
+          )}
+          <Button
+            type="button"
+            onClick={onSave}
+            disabled={!hasChanges || saving}
+            className="h-8 rounded-lg bg-[#E8E191] px-4 text-xs font-semibold text-[#2B333F] shadow-none hover:bg-[#d8d181]"
+          >
+            {saving ? "Salvando..." : "Salvar interesses"}
+          </Button>
         </div>
       </CardContent>
     </Card>

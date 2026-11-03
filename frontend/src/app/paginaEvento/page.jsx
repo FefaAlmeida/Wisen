@@ -284,7 +284,7 @@ export default function PaginaEvento() {
         )}
 
       </div>
-      <Footer />
+      <Footer variant="cliente" />
     </main>
   );
 }

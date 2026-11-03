@@ -138,7 +138,15 @@ export function ConnectionsBackground() {
   }, []);
 
   return (
-    <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
+      style={{
+        maskImage: "linear-gradient(to bottom, transparent 0, transparent 370px, black 560px)",
+        WebkitMaskImage:
+          "linear-gradient(to bottom, transparent 0, transparent 370px, black 560px)",
+      }}
+    >
       <canvas ref={canvasRef} className="h-full w-full" />
     </div>
   );

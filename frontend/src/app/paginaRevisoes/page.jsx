@@ -4,12 +4,11 @@ import DicaEstudo from "@/components/centralRevisao/dicaEstudo";
 import QuizRevisao from "@/components/centralRevisao/quizRevisao";
 import ResumoRevisoes from "@/components/centralRevisao/resumoRevisoes";
 import SessaoHoje from "@/components/centralRevisao/sessaoHoje";
+import { Footer } from "@/components/footer";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
 import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import Sidebar from "@/components/sidebar";
 import { Input } from "@/components/ui/input";
-
-import { Footer } from "@/components/footer";
 
 export default function PaginaRevisoes() {
   return (
@@ -85,8 +84,8 @@ export default function PaginaRevisoes() {
 
           </div>
         </div>
+        <Footer variant="cliente" />
       </main>
-        <Footer />
     </div>
   );
 }

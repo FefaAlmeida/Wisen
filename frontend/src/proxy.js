@@ -67,11 +67,13 @@ export const config = {
   matcher: [
     "/paginaInicialCliente/:path*",
     "/paginaBiblioteca/:path*",
+    "/paginaExplorar/:path*",
     "/paginaConceito/:path*",
     "/paginaConhecimento/:path*",
     "/paginaEvento/:path*",
     "/paginaGuardados/:path*",
     "/paginaRevisoes/:path*",
+    "/paginaSessaoRevisao/:path*",
     "/paginaPerfil/:path*",
     "/paginaInicioAdm/:path*",
     "/paginaCuidadoriaEventosAdm/:path*",

@@ -1,7 +1,7 @@
 "use client";
 
 import { Camera, Loader2 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -17,14 +17,15 @@ export function PersonalDataCard({
   feedback,
 }) {
 
-  const initials = name
-    ? name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .slice(0, 2)
-        .toUpperCase()
-    : "NB";
+  const initials =
+    name
+      ?.trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0])
+      .join("")
+      .toLocaleUpperCase("pt-BR") || "?";
 
   return (
     <Card className="border border-slate-200/80 shadow-xs bg-white rounded-2xl">
@@ -40,10 +41,6 @@ export function PersonalDataCard({
           <div className="flex items-center gap-4">
             <div className="relative shrink-0">
               <Avatar className="w-20 h-20 border border-slate-100">
-                <AvatarImage
-                  src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=250&auto=format&fit=crop"
-                  alt={name || "Avatar"}
-                />
                 <AvatarFallback className="bg-[#E8E191] text-[#2B333F] font-bold">
                   {initials}
                 </AvatarFallback>

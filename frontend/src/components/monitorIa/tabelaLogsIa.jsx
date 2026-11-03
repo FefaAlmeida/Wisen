@@ -1,0 +1,211 @@
+import React from 'react';
+import { 
+  Search, 
+  Filter, 
+  Cloud, 
+  Laptop, 
+  MoreVertical, 
+  ChevronLeft, 
+  ChevronRight 
+} from "lucide-react";
+
+export function TabelaLogsIa() {
+  const logs = [
+    {
+      dataHora: "23/10/2026 14:32",
+      modelo: "GPT-4o",
+      tipo: "API externa",
+      isCloud: true,
+      operacao: "Resumo de notícia",
+      tokens: "1.240 / 390",
+      latencia: "3,2 s",
+      custo: "0,042",
+      status: "Sucesso"
+    },
+    {
+      dataHora: "23/10/2026 14:18",
+      modelo: "Transformers.js",
+      tipo: "Local",
+      isCloud: false,
+      operacao: "Extração de conceitos",
+      tokens: "950 / 210",
+      latencia: "1,1 s",
+      custo: "0,000",
+      status: "Sucesso"
+    },
+    {
+      dataHora: "23/10/2026 13:55",
+      modelo: "Claude 3.5",
+      tipo: "API externa",
+      isCloud: true,
+      operacao: "Relacionamento de conceitos",
+      tokens: "1.560 / 420",
+      latencia: "4,8 s",
+      custo: "0,065",
+      status: "Sucesso"
+    },
+    {
+      dataHora: "23/10/2026 12:41",
+      modelo: "ONNX (Local)",
+      tipo: "Local",
+      isCloud: false,
+      operacao: "Classificação de tema",
+      tokens: "620 / 180",
+      latencia: "0,9 s",
+      custo: "0,000",
+      status: "Sucesso"
+    },
+    {
+      dataHora: "23/10/2026 11:07",
+      modelo: "Gemini 1.5",
+      tipo: "API externa",
+      isCloud: true,
+      operacao: "Geração de explicação",
+      tokens: "1.800 / 560",
+      latencia: "5,1 s",
+      custo: "0,071",
+      status: "Sucesso"
+    },
+  ];
+
+  return (
+    <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-2xs space-y-5">
+      
+      {/* Cabeçalho da Tabela com Busca e Filtros */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h3 className="text-sm font-bold text-[#2B333F]">Logs de chamadas de IA</h3>
+          <p className="text-xs text-slate-400">
+            Registros individuais de cada requisição, com detalhes de consumo, latência e custo.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <div className="relative w-full sm:w-64">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <input 
+              type="text" 
+              placeholder="Buscar por modelo, operação ou ID..." 
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#2B333F]/20"
+            />
+          </div>
+
+          <button className="flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer shrink-0">
+            <Filter className="w-3.5 h-3.5 text-slate-500" />
+            <span>Filtros</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Tabela de Dados */}
+      <div className="overflow-x-auto">
+        <table className="w-full text-left text-xs">
+          <thead>
+            <tr className="border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              <th className="py-3 px-2">Data e hora</th>
+              <th className="py-3 px-2">Modelo</th>
+              <th className="py-3 px-2">Tipo</th>
+              <th className="py-3 px-2">Operação</th>
+              <th className="py-3 px-2">Tokens (entrada / saída)</th>
+              <th className="py-3 px-2">Latência</th>
+              <th className="py-3 px-2">Custo (R$)</th>
+              <th className="py-3 px-2">Status</th>
+              <th className="py-3 px-2 text-right">Ações</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {logs.map((item, idx) => (
+              <tr key={idx} className="hover:bg-slate-50/60 transition-colors">
+                <td className="py-3.5 px-2 text-slate-500 font-medium whitespace-nowrap">
+                  {item.dataHora}
+                </td>
+
+                <td className="py-3.5 px-2 font-bold text-[#2B333F] whitespace-nowrap">
+                  {item.modelo}
+                </td>
+
+                <td className="py-3.5 px-2 whitespace-nowrap">
+                  <div className="flex items-center gap-1.5 text-slate-600 font-medium">
+                    {item.isCloud ? (
+                      <Cloud className="w-3.5 h-3.5 text-slate-400" />
+                    ) : (
+                      <Laptop className="w-3.5 h-3.5 text-slate-400" />
+                    )}
+                    <span>{item.tipo}</span>
+                  </div>
+                </td>
+
+                <td className="py-3.5 px-2 text-slate-600 font-medium whitespace-nowrap">
+                  {item.operacao}
+                </td>
+
+                <td className="py-3.5 px-2 text-slate-500 whitespace-nowrap">
+                  {item.tokens}
+                </td>
+
+                <td className="py-3.5 px-2 text-slate-500 font-medium whitespace-nowrap">
+                  {item.latencia}
+                </td>
+
+                <td className="py-3.5 px-2 font-bold text-[#2B333F] whitespace-nowrap">
+                  {item.custo}
+                </td>
+
+                <td className="py-3.5 px-2 whitespace-nowrap">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                    {item.status}
+                  </span>
+                </td>
+
+                <td className="py-3.5 px-2 text-right whitespace-nowrap">
+                  <button className="p-1 rounded-lg text-slate-400 hover:text-[#2B333F] hover:bg-slate-100 transition-colors cursor-pointer">
+                    <MoreVertical className="w-4 h-4" />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Paginação */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-slate-100 text-xs text-slate-500 font-medium">
+        <span>Mostrando 1-5 de 1.248 requisições</span>
+
+        <div className="flex items-center gap-1">
+          <button className="p-1.5 rounded-lg border border-slate-200 text-slate-400 hover:bg-slate-50 cursor-pointer">
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          
+          <button className="w-8 h-8 rounded-lg bg-[#2B333F] text-white font-bold text-xs flex items-center justify-center">
+            1
+          </button>
+          <button className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-600 font-medium text-xs flex items-center justify-center cursor-pointer">
+            2
+          </button>
+          <button className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-600 font-medium text-xs flex items-center justify-center cursor-pointer">
+            3
+          </button>
+          <button className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-600 font-medium text-xs flex items-center justify-center cursor-pointer">
+            4
+          </button>
+          <button className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-600 font-medium text-xs flex items-center justify-center cursor-pointer">
+            5
+          </button>
+          
+          <span className="px-1 text-slate-400">...</span>
+          
+          <button className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-600 font-medium text-xs flex items-center justify-center cursor-pointer">
+            250
+          </button>
+
+          <button className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 cursor-pointer">
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
+    </div>
+  );
+}

@@ -2,7 +2,7 @@ import { Bell, Calendar } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 
-export function NotificationsCard() {
+export function NotificationsCard({ notifications, onChange }) {
   return (
     <Card className="border border-slate-200/80 shadow-xs bg-white rounded-2xl">
       <CardHeader className="pb-4">
@@ -26,7 +26,11 @@ export function NotificationsCard() {
               </p>
             </div>
           </div>
-          <Switch defaultChecked className="data-[state=checked]:bg-[#E8E191]" />
+          <Switch
+            checked={notifications.reviewReminders}
+            onCheckedChange={(checked) => onChange("reviewReminders", checked)}
+            className="data-[state=checked]:bg-[#E8E191]"
+          />
         </div>
 
         {/* Item 2 */}
@@ -42,7 +46,10 @@ export function NotificationsCard() {
               </p>
             </div>
           </div>
-          <Switch />
+          <Switch
+            checked={notifications.weeklySummary}
+            onCheckedChange={(checked) => onChange("weeklySummary", checked)}
+          />
         </div>
       </CardContent>
     </Card>

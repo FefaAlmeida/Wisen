@@ -81,6 +81,10 @@ export function authService(repository) {
       if (token) await repository.deleteSession(hashToken(token));
     },
 
+    async getProfile(userId) {
+      return repository.findProfile(userId);
+    },
+
     async updateProfile(userId, data) {
       const { email } = data;
 

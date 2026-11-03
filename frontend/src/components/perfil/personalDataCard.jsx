@@ -1,92 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Camera, Loader2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
-export function PersonalDataCard() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [loadingSession, setLoadingSession] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [feedback, setFeedback] = useState(null);
-
-  async function parseResponse(response) {
-    const text = await response.text();
-    try {
-      return text ? JSON.parse(text) : {};
-    } catch {
-      return { message: text };
-    }
-  }
-
-  // 1. Carrega os dados da sessão
-  useEffect(() => {
-    async function loadUserData() {
-      try {
-        const response = await fetch("/api/auth/session");
-        if (response.ok) {
-          const data = await parseResponse(response);
-          if (data?.user) {
-            setName(data.user.name || "");
-            setEmail(data.user.email || "");
-          }
-        }
-      } catch (error) {
-        console.error("Erro ao carregar dados do usuário:", error);
-      } finally {
-        setLoadingSession(false);
-      }
-    }
-    loadUserData();
-  }, []);
-
-  // 2. Envia a atualização
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setSaving(true);
-    setFeedback(null);
-
-    try {
-      const response = await fetch("/api/auth/profile", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          topics: [],
-          notifications: {
-            reviewReminders: true,
-            weeklySummary: false,
-          },
-        }),
-      });
-
-      const data = await parseResponse(response);
-
-      if (!response.ok) {
-        // Extrai a mensagem real enviada pelo backend/Zod/Proxy
-        const msg = Array.isArray(data.message)
-          ? data.message.map((m) => m.message || m).join(", ")
-          : data.message || data.error || `Erro HTTP ${response.status}`;
-        throw new Error(msg);
-      }
-
-      setFeedback({ type: "success", text: "Perfil atualizado com sucesso!" });
-    } catch (error) {
-      setFeedback({
-        type: "error",
-        text: error.message || "Erro ao atualizar dados pessoais.",
-      });
-    } finally {
-      setSaving(false);
-    }
-  }
+export function PersonalDataCard({
+  name,
+  email,
+  onNameChange,
+  onEmailChange,
+  onSubmit,
+  loading,
+  saving,
+  feedback,
+}) {
 
   const initials = name
     ? name
@@ -107,7 +36,7 @@ export function PersonalDataCard() {
       </CardHeader>
 
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={onSubmit} className="space-y-4">
           <div className="flex items-center gap-4">
             <div className="relative shrink-0">
               <Avatar className="w-20 h-20 border border-slate-100">
@@ -136,8 +65,8 @@ export function PersonalDataCard() {
                 <Input
                   id="perfil-nome"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  disabled={loadingSession || saving}
+                  onChange={(e) => onNameChange(e.target.value)}
+                  disabled={loading || saving}
                   required
                   className="h-9 text-xs bg-slate-50/50 border-slate-200 focus-visible:ring-[#E8E191] rounded-lg text-[#2B333F]"
                 />
@@ -150,8 +79,8 @@ export function PersonalDataCard() {
                   id="perfil-email"
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={loadingSession || saving}
+                  onChange={(e) => onEmailChange(e.target.value)}
+                  disabled={loading || saving}
                   required
                   className="h-9 text-xs bg-slate-50/50 border-slate-200 focus-visible:ring-[#E8E191] rounded-lg text-[#2B333F]"
                 />
@@ -174,7 +103,7 @@ export function PersonalDataCard() {
           <div className="pt-2 pl-24">
             <Button
               type="submit"
-              disabled={loadingSession || saving}
+              disabled={loading || saving}
               className="bg-[#E8E191] hover:bg-[#d8d181] text-[#2B333F] font-semibold text-xs h-9 px-5 rounded-xl border-none shadow-none transition-colors disabled:opacity-50 cursor-pointer"
             >
               {saving ? (

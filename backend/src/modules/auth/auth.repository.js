@@ -54,9 +54,30 @@ export function authRepository(pool) {
       await pool.query("DELETE FROM auth_sessions WHERE token_hash = $1", [tokenHash]);
     },
 
-    async updateProfile(userId, { name, email, topics = [], notifications = {} }) {
+    async findProfile(userId) {
+      const { rows } = await pool.query(
+        `SELECT ${sessionUserColumns}, user_preferences.interests,
+                user_preferences.review_reminders, user_preferences.weekly_summary
+           FROM users
+           JOIN user_preferences ON user_preferences.user_id = users.id
+          WHERE users.id = $1`,
+        [userId],
+      );
+      const profile = rows[0];
+      if (!profile) return null;
+
+      const { id, email, name, role, interests, review_reminders, weekly_summary } = profile;
+      return {
+        user: { id, email, name, role },
+        preferences: {
+          interests,
+          notifications: { reviewReminders: review_reminders, weeklySummary: weekly_summary },
+        },
+      };
+    },
+
+    async updateProfile(userId, { name, email, interests = [], notifications = {} }) {
       return transaction(pool, async (client) => {
-        // 1. Atualiza dados principais do usuário
         const {
           rows: [user],
         } = await client.query(
@@ -67,28 +88,21 @@ export function authRepository(pool) {
           [name, email, userId],
         );
 
-        // 2. Atualiza preferências de notificação
         await client.query(
-          `INSERT INTO user_preferences (user_id, review_reminders, weekly_summary)
-           VALUES ($1, $2, $3)
+          `INSERT INTO user_preferences (user_id, interests, review_reminders, weekly_summary)
+           VALUES ($1, $2, $3, $4)
            ON CONFLICT (user_id) DO UPDATE 
-           SET review_reminders = EXCLUDED.review_reminders,
-               weekly_summary = EXCLUDED.weekly_summary`,
+           SET interests = EXCLUDED.interests,
+               review_reminders = EXCLUDED.review_reminders,
+               weekly_summary = EXCLUDED.weekly_summary,
+               updated_at = now()`,
           [
             userId,
+            interests,
             notifications.reviewReminders ?? true,
             notifications.weeklySummary ?? false,
           ],
         );
-
-        // 3. Substitui os tópicos de interesse selecionados
-        await client.query("DELETE FROM user_topics WHERE user_id = $1", [userId]);
-        for (const topicSlug of topics) {
-          await client.query(
-            "INSERT INTO user_topics (user_id, topic_slug) VALUES ($1, $2)",
-            [userId, topicSlug],
-          );
-        }
 
         return user;
       });

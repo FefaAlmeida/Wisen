@@ -26,10 +26,20 @@ const loginSchema = credentialsSchema.extend({ remember: z.boolean().optional().
 const updateProfileSchema = z.object({
   name: z.string().trim().min(2).max(120),
   email: z.email().trim().toLowerCase(),
-  topics: z.array(z.string()).default([]),
+  interests: z.array(z.string()).default([]),
   notifications: z.object({
     reviewReminders: z.boolean(),
     weeklySummary: z.boolean(),
+  }),
+});
+const profileSchema = z.object({
+  user: userSchema,
+  preferences: z.object({
+    interests: z.array(z.string()),
+    notifications: z.object({
+      reviewReminders: z.boolean(),
+      weeklySummary: z.boolean(),
+    }),
   }),
 });
 
@@ -101,6 +111,15 @@ export function authController(app, service, config) {
       reply.clearCookie(sessionCookie, cookieOptions(config));
       return reply.code(204).send();
     },
+  );
+
+  app.get(
+    "/api/auth/profile",
+    {
+      preHandler: app.authenticate,
+      schema: { tags: ["Autenticação"], response: { 200: profileSchema } },
+    },
+    (request) => service.getProfile(request.user.id),
   );
 
   // 2. Rota de atualização de perfil (Nome, E-mail, Tópicos e Notificações)

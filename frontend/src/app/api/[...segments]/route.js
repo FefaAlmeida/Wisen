@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const apiUrl = process.env.BACKEND_INTERNAL_URL || "http://wisen-backend-1:8080/api";
+const apiUrl = process.env.BACKEND_INTERNAL_URL || "http://localhost:8080/api";
 const allowedRoots = new Set(["articles", "auth", "health", "search"]);
 
 // 1. Incluído "profile" nas ações permitidas de auth
@@ -20,9 +20,10 @@ async function forward(request, context) {
     return Response.json({ message: "Rota não encontrada" }, { status: 404 });
   }
 
-  // 2. Regras ajustadas: session = GET, profile = PUT, login/logout/register = POST
+  // 2. Restringe os métodos aceitos por recurso.
   const isMethodAllowed =
     (root === "auth" && action === "session" && request.method === "GET") ||
+    (root === "auth" && action === "profile" && request.method === "GET") ||
     (root === "auth" && action === "profile" && request.method === "PUT") ||
     (root === "auth" && ["login", "logout", "register"].includes(action) && request.method === "POST") ||
     ((root === "articles" || root === "health") && request.method === "GET") ||

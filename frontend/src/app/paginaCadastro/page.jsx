@@ -1,5 +1,7 @@
 import FormularioCadastro from "@/components/formularioCadastro";
 
+import { Footer } from "@/components/footer";
+
 export default function CadastroPage() {
   return (
     <main className="relative isolate grid min-h-screen grid-cols-1 overflow-hidden font-[family-name:var(--font-geist-sans)] lg:grid-cols-[56%_44%]">
@@ -50,5 +52,6 @@ export default function CadastroPage() {
         </div>
       </section>
     </main>
+    
   );
 }

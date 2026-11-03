@@ -19,6 +19,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import MenuPerfil from "@/components/homeCliente/menuPerfil";
+import { Footer } from "@/components/footer";
+
 
 const concepts = [
   { title: "Mudanças climáticas", detail: "Em revisão", color: "bg-amber-400" },
@@ -331,7 +333,9 @@ export default function PaginaEvento() {
             </button>
           </div>
         )}
+        
       </div>
+      <Footer />
     </main>
   );
 }

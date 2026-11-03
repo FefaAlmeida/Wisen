@@ -11,6 +11,8 @@ import { HistoricoAtividades } from "@/components/meuConhecimento/historicoAtivi
 import Sidebar from "@/components/sidebar";
 import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import { Input } from "@/components/ui/input";
+import { Footer } from "@/components/footer";
+
 
 export default function PaginaConhecimento() {
   return (
@@ -78,6 +80,7 @@ export default function PaginaConhecimento() {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

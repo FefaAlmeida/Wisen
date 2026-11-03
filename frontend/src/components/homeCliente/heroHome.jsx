@@ -24,7 +24,7 @@ export default function HeroHome() {
     <section className="relative min-h-[310px] overflow-hidden px-6 pt-10 pb-8 md:px-12 md:pt-12">
       <div className="relative z-10 max-w-[650px]">
         <p className="mb-5 text-[11px] font-semibold tracking-[0.25em] text-[#93A3BE]">
-          BOM DIA{name ? `, ${name.toLocaleUpperCase("pt-BR")}` : ""} ☀️
+          BOM DIA{name ? `, ${name.toLocaleUpperCase("pt-BR")}` : ""}
         </p>
 
         <h1 className="text-[36px] leading-[1.05] font-medium tracking-[-1.5px] text-wisen-titulo sm:text-[44px] lg:text-[50px]">

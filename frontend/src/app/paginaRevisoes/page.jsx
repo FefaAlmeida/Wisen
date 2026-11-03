@@ -44,7 +44,7 @@ export default function PaginaRevisoes() {
             {/* Apresentação */}
             <header className="mb-6">
               <p className="mb-5 text-[11px] font-semibold tracking-[0.25em] text-[#93A3BE]">
-                BOM DIA, NATALIA ☀️
+                BOM DIA, NATALIA
               </p>
 
               <h1 className="text-[38px] font-semibold leading-tight tracking-[-1.5px] text-wisen-titulo md:text-[46px]">

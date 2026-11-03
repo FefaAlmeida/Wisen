@@ -4,10 +4,19 @@ import { Button } from "@/components/ui/button";
 export function HeroLanding() {
   return (
     <section
-      className="relative w-full py-10 md:py-0 bg-cover bg-right lg:bg-[length:auto_120%]"
-      style={{ backgroundImage: "url('/heroFundo.png')" }}
+      className="relative w-full overflow-hidden py-10 md:py-0"
       id="inicio"
     >
+      <video
+        className="absolute inset-0 z-0 h-full w-full object-cover object-right"
+        autoPlay
+        loop
+        muted
+        playsInline
+      >
+        <source src="/download.mp4" type="video/mp4" />
+      </video>
+
       <div className="absolute inset-0 bg-gradient-to-r from-[#F1F3F6] via-[#F1F3F6]/85 to-transparent w-full md:w-3/5 pointer-events-none z-0" />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6">

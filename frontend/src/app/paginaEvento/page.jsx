@@ -19,6 +19,7 @@ import Sidebar from "@/components/sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { BarraBusca } from "@/components/barraBusca";
 
 const concepts = [
   { title: "Mudanças climáticas", detail: "Em revisão", color: "bg-amber-400" },
@@ -76,16 +77,7 @@ export default function PaginaEvento() {
         <header className="sticky top-[52px] z-10 flex h-[60px] items-center justify-between border-b border-[#e5e8ed] bg-[#f5f6f8]/95 px-4 backdrop-blur sm:px-5 lg:px-7">
           <div className="flex w-full max-w-[420px] items-center gap-2.5">
             <Search className="absolute ml-3 text-[#9099a6]" size={17} />
-            <Input
-              aria-label="Buscar"
-              placeholder="Buscar por notícias, conceitos ou temas..."
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              className="h-10 border-[#e2e5e9] bg-white pl-10 text-[13px] shadow-none placeholder:text-[#9aa2ad]"
-            />
-            <kbd className="hidden shrink-0 rounded border border-[#e0e3e7] bg-white px-2 py-1.5 text-[10px] text-[#818a97] md:block">
-              Ctrl K
-            </kbd>
+            <BarraBusca/>
           </div>
           <div className="ml-4 flex shrink-0 items-center gap-3">
             <Button

@@ -169,11 +169,29 @@ test("perfil lê e salva dados pessoais, interesses e notificações", async () 
   assert.equal(savedProfile.statusCode, 200, savedProfile.body);
   assert.deepEqual(savedProfile.json(), {
     user: { ...body.user, name: "Perfil Atualizado" },
+    avatarDataUrl: null,
     preferences: {
       interests: ["Tecnologia", "Saúde"],
       notifications: { reviewReminders: false, weeklySummary: true },
     },
   });
+
+  const avatarDataUrl = "data:image/webp;base64,aGVsbG8=";
+  const avatarUpdate = await app.inject({
+    method: "PUT",
+    url: "/api/auth/avatar",
+    headers,
+    payload: { avatarDataUrl },
+  });
+  assert.equal(avatarUpdate.statusCode, 200, avatarUpdate.body);
+  assert.equal(avatarUpdate.json().avatarDataUrl, avatarDataUrl);
+
+  const profileWithAvatar = await app.inject({
+    method: "GET",
+    url: "/api/auth/profile",
+    headers,
+  });
+  assert.equal(profileWithAvatar.json().avatarDataUrl, avatarDataUrl);
 });
 
 test("login valida credenciais e persiste a duração de lembrar-me", async () => {

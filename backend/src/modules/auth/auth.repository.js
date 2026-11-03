@@ -68,7 +68,7 @@ export function authRepository(pool) {
 
     async findProfile(userId) {
       const { rows } = await pool.query(
-        `SELECT ${sessionUserColumns}, user_preferences.interests,
+        `SELECT ${sessionUserColumns}, users.avatar_data_url, user_preferences.interests,
                 user_preferences.review_reminders, user_preferences.weekly_summary
            FROM users
            JOIN user_preferences ON user_preferences.user_id = users.id
@@ -78,9 +78,19 @@ export function authRepository(pool) {
       const profile = rows[0];
       if (!profile) return null;
 
-      const { id, email, name, role, interests, review_reminders, weekly_summary } = profile;
+      const {
+        id,
+        email,
+        name,
+        role,
+        avatar_data_url,
+        interests,
+        review_reminders,
+        weekly_summary,
+      } = profile;
       return {
         user: { id, email, name, role },
+        avatarDataUrl: avatar_data_url,
         preferences: {
           interests,
           notifications: { reviewReminders: review_reminders, weeklySummary: weekly_summary },
@@ -118,6 +128,14 @@ export function authRepository(pool) {
 
         return user;
       });
+    },
+
+    async updateAvatar(userId, avatarDataUrl) {
+      await pool.query("UPDATE users SET avatar_data_url = $1, updated_at = now() WHERE id = $2", [
+        avatarDataUrl,
+        userId,
+      ]);
+      return avatarDataUrl;
     },
   };
 }

@@ -1,7 +1,8 @@
 "use client";
 
+import { useRef, useState } from "react";
 import { Camera, Loader2 } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -9,6 +10,8 @@ import { Input } from "@/components/ui/input";
 export function PersonalDataCard({
   name,
   email,
+  avatarDataUrl,
+  onAvatarUpload,
   onNameChange,
   onEmailChange,
   onSubmit,
@@ -16,6 +19,8 @@ export function PersonalDataCard({
   saving,
   feedback,
 }) {
+  const photoInput = useRef(null);
+  const [photoError, setPhotoError] = useState("");
 
   const initials =
     name
@@ -26,6 +31,48 @@ export function PersonalDataCard({
       .map((part) => part[0])
       .join("")
       .toLocaleUpperCase("pt-BR") || "?";
+
+  async function handlePhotoChange(event) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    setPhotoError("");
+    try {
+      if (!file.type.startsWith("image/")) {
+        throw new Error("Escolha um arquivo de imagem.");
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        throw new Error("A imagem deve ter no máximo 10 MB.");
+      }
+
+      const image = await createImageBitmap(file);
+      const scale = Math.min(1, 384 / Math.max(image.width, image.height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.max(1, Math.round(image.width * scale));
+      canvas.height = Math.max(1, Math.round(image.height * scale));
+      const context = canvas.getContext("2d");
+      if (!context) throw new Error("Não foi possível processar a imagem.");
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+      image.close();
+
+      const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/webp", 0.82));
+      if (!blob) throw new Error("Não foi possível processar a imagem.");
+
+      const photoDataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error("Não foi possível ler a imagem."));
+        reader.readAsDataURL(blob);
+      });
+      if (photoDataUrl.length > 800_000) {
+        throw new Error("A imagem ficou muito grande. Escolha outra foto.");
+      }
+      await onAvatarUpload(photoDataUrl);
+    } catch (error) {
+      setPhotoError(error.message || "Não foi possível atualizar a foto.");
+    }
+  }
 
   return (
     <Card className="border border-slate-200/80 shadow-xs bg-white rounded-2xl">
@@ -41,17 +88,29 @@ export function PersonalDataCard({
           <div className="flex items-center gap-4">
             <div className="relative shrink-0">
               <Avatar className="w-20 h-20 border border-slate-100">
+                <AvatarImage src={avatarDataUrl || undefined} alt={name || "Foto de perfil"} />
                 <AvatarFallback className="bg-[#E8E191] text-[#2B333F] font-bold">
                   {initials}
                 </AvatarFallback>
               </Avatar>
               <button
                 type="button"
-                className="absolute bottom-0 right-0 p-1.5 bg-[#E8E191] hover:bg-[#d8d181] text-[#2B333F] rounded-full border-2 border-white shadow-xs transition-colors cursor-pointer"
+                onClick={() => photoInput.current?.click()}
+                disabled={loading || saving}
+                aria-label="Escolher foto de perfil"
+                className="absolute bottom-0 right-0 p-1.5 bg-[#E8E191] hover:bg-[#d8d181] text-[#2B333F] rounded-full border-2 border-white shadow-xs transition-colors cursor-pointer disabled:opacity-50"
                 title="Alterar foto"
               >
                 <Camera className="w-3.5 h-3.5" />
               </button>
+              <input
+                ref={photoInput}
+                type="file"
+                accept="image/*"
+                className="sr-only"
+                onChange={handlePhotoChange}
+                tabIndex={-1}
+              />
             </div>
 
             <div className="flex-1 space-y-3">
@@ -95,6 +154,12 @@ export function PersonalDataCard({
             >
               {feedback.text}
             </div>
+          )}
+
+          {photoError && (
+            <p role="alert" className="pl-24 text-xs text-red-600">
+              {photoError}
+            </p>
           )}
 
           <div className="pt-2 pl-24">

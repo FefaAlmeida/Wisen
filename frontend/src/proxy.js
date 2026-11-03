@@ -36,7 +36,6 @@ export async function proxy(request) {
 
 export const config = {
   matcher: [
-    "/",
     "/paginaInicialCliente/:path*",
     "/paginaBiblioteca/:path*",
     "/paginaConceito/:path*",

@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -35,6 +34,30 @@ export default function PainelUsuario({
   const [permissao, setPermissao] = useState("Usuário");
   const [status, setStatus] = useState("Ativo");
 
+  const historicoAcoes = [
+    {
+      titulo: "Perfil atualizado",
+      descricao: "Alterou o e-mail do usuário para atualização cadastral.",
+      data: "08/11/2026",
+      hora: "14:42",
+      tipo: "perfil",
+    },
+    {
+      titulo: "Permissão alterada",
+      descricao: "Modificou a permissão para Administrador.",
+      data: "04/11/2026",
+      hora: "09:15",
+      tipo: "permissao",
+    },
+    {
+      titulo: "Login realizado",
+      descricao: "Acesso concluído com sucesso ao painel administrativo.",
+      data: "02/11/2026",
+      hora: "08:30",
+      tipo: "login",
+    },
+  ];
+
   useEffect(() => {
     if (usuario) {
       setPermissao(usuario.permissao ?? "Usuário");
@@ -51,6 +74,8 @@ export default function PainelUsuario({
     });
   }
 
+  const mostrarAvisoBloqueio = status === "Bloqueado" || status === "Inativo";
+
   return (
     <Dialog
       open={aberto}
@@ -58,210 +83,223 @@ export default function PainelUsuario({
         if (!valor) aoFechar();
       }}
     >
-      <DialogContent className="max-h-[90vh] w-[calc(100%-2rem)] gap-0 overflow-y-auto rounded-xl border border-[#E2E8F0] bg-white p-0 shadow-xl sm:max-w-[580px]">
-
+      <DialogContent className="w-[calc(100%-2rem)] max-w-[600px] gap-0 overflow-hidden rounded-[18px] border border-[#EAE7D6] bg-white p-0 shadow-[0_20px_50px_rgba(16,26,64,0.12)] sm:max-w-[600px]">
         {usuario && (
           <>
-            {/* Cabeçalho do usuário */}
-            <DialogHeader className="border-b border-[#E8EDF4] bg-[#F8FAFD] px-6 pt-7 pb-5">
-              <div className="flex items-center gap-4 pr-6">
-                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#E8EDF8] text-xl font-semibold text-[#30466E]">
+            <DialogHeader className="bg-[#F7F3CD] px-4 pb-3 pt-4 sm:px-5">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#101A40] text-sm font-semibold text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]">
                   {usuario.iniciais}
                 </div>
 
                 <div className="min-w-0 flex-1 text-left">
                   <div className="flex flex-wrap items-center gap-2">
-                    <DialogTitle className="text-[21px] font-semibold text-[#101A40]">
+                    <DialogTitle className="text-[20px] font-semibold tracking-[-0.02em] text-[#101A40]">
                       {usuario.nome}
                     </DialogTitle>
 
                     <Badge
-                      className={`gap-1.5 rounded-full border-0 px-3 py-1 text-[11px] font-medium shadow-none ${
+                      className={`gap-1.5 rounded-full border-0 px-2.5 py-1 text-[10px] font-medium shadow-none ${
                         status === "Ativo"
-                          ? "bg-[#E5F5EB] text-[#278453]"
-                          : "bg-[#FDEBED] text-[#C34048]"
+                          ? "bg-[#E3F7EA] text-[#1F7A4C]"
+                          : "bg-[#FCEAEA] text-[#B54046]"
                       }`}
                     >
                       <span
-                        className={`h-2 w-2 rounded-full ${
-                          status === "Ativo"
-                            ? "bg-[#35AE75]"
-                            : "bg-[#E24A55]"
+                        className={`h-1.5 w-1.5 rounded-full ${
+                          status === "Ativo" ? "bg-[#27A56A]" : "bg-[#D24952]"
                         }`}
                       />
                       {status}
                     </Badge>
                   </div>
 
-                  <DialogDescription className="mt-1 text-[13px] text-[#7183A6]">
+                  <DialogDescription className="mt-1 text-[12.5px] text-[#30466E]">
                     {usuario.email}
                   </DialogDescription>
 
-                  <p className="mt-1 text-[12px] text-[#91A0B8]">
+                  <p className="mt-1 text-[11.5px] text-[#465C7C]">
                     Usuário desde {usuario.dataCadastro}
                   </p>
                 </div>
               </div>
             </DialogHeader>
 
-            {/* Abas */}
             <Tabs defaultValue="informacoes" className="gap-0">
-
-              <TabsList className="h-12 w-full justify-start rounded-none border-b border-[#E8EDF4] bg-white px-6">
+              <TabsList
+                variant="line"
+                className="h-11 w-full justify-start rounded-none border-0 bg-white px-5 sm:px-6"
+              >
                 <TabsTrigger
                   value="informacoes"
-                  className="h-full rounded-none border-b-2 border-transparent px-4 text-[13px] text-[#7183A6] shadow-none data-[state=active]:border-[#E8E191] data-[state=active]:bg-transparent data-[state=active]:font-semibold data-[state=active]:text-[#101A40] data-[state=active]:shadow-none"
+                  className="h-full rounded-none border-b-[2px] border-transparent px-4 text-[13px] text-[#30466E]/75 shadow-none transition-colors duration-200 data-[state=active]:border-[#E0C43F] data-[state=active]:bg-white data-[state=active]:text-[#101A40] data-[state=active]:font-semibold"
                 >
                   Informações
                 </TabsTrigger>
 
                 <TabsTrigger
                   value="historico"
-                  className="h-full rounded-none border-b-2 border-transparent px-4 text-[13px] text-[#7183A6] shadow-none data-[state=active]:border-[#E8E191] data-[state=active]:bg-transparent data-[state=active]:font-semibold data-[state=active]:text-[#101A40] data-[state=active]:shadow-none"
+                  className="h-full rounded-none border-b-[2px] border-transparent px-4 text-[13px] text-[#30466E]/75 shadow-none transition-colors duration-200 data-[state=active]:border-[#E0C43F] data-[state=active]:bg-white data-[state=active]:text-[#101A40] data-[state=active]:font-semibold"
                 >
                   Histórico de ações
                 </TabsTrigger>
               </TabsList>
 
-              {/* Informações */}
-              <TabsContent
-                value="informacoes"
-                className="space-y-6 px-6 py-6"
-              >
-                <section>
-                  <h3 className="mb-3 text-[15px] font-semibold text-[#101A40]">
-                    Informações pessoais
-                  </h3>
+              <TabsContent value="informacoes" className="space-y-6 bg-white px-5 py-5 sm:px-6 sm:py-5">
+                <section className="space-y-3">
+                  <div className="flex items-center gap-2.5">
+                    <span className="h-4 w-[3px] rounded-full bg-[#E8E191]" />
+                    <h3 className="text-[15px] font-semibold tracking-[-0.01em] text-[#101A40]">
+                      Informações pessoais
+                    </h3>
+                  </div>
 
-                  <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="space-y-3">
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <div className="flex flex-col gap-1 border-b border-[#EAEFF5] pb-2.5">
+                        <p className="text-[10.5px] font-medium uppercase tracking-[0.05em] text-[#6A7A96]">
+                          Nome completo
+                        </p>
+                        <p className="text-[13px] font-medium text-[#101A40]">
+                          {usuario.nome}
+                        </p>
+                      </div>
 
-                    <div className="rounded-lg border border-[#E2E8F0] bg-[#FAFBFD] p-3">
-                      <p className="text-[11px] text-[#8192B2]">
-                        Nome completo
-                      </p>
-                      <p className="mt-1 text-[13px] font-medium text-[#30466E]">
-                        {usuario.nome}
-                      </p>
+                      <div className="flex flex-col gap-1 border-b border-[#EAEFF5] pb-2.5">
+                        <p className="text-[10.5px] font-medium uppercase tracking-[0.05em] text-[#6A7A96]">
+                          Data de cadastro
+                        </p>
+                        <p className="text-[13px] font-medium text-[#101A40]">
+                          {usuario.dataCadastro}
+                        </p>
+                      </div>
                     </div>
 
-                    <div className="rounded-lg border border-[#E2E8F0] bg-[#FAFBFD] p-3">
-                      <p className="text-[11px] text-[#8192B2]">
-                        Data de cadastro
-                      </p>
-                      <p className="mt-1 text-[13px] font-medium text-[#30466E]">
-                        {usuario.dataCadastro}
-                      </p>
-                    </div>
-
-                    <div className="rounded-lg border border-[#E2E8F0] bg-[#FAFBFD] p-3 sm:col-span-2">
-                      <p className="text-[11px] text-[#8192B2]">
+                    <div className="flex flex-col gap-1 border-b border-[#EAEFF5] pb-2.5">
+                      <p className="text-[10.5px] font-medium uppercase tracking-[0.05em] text-[#6A7A96]">
                         E-mail
                       </p>
-                      <p className="mt-1 break-all text-[13px] font-medium text-[#30466E]">
+                      <p className="break-all text-[13px] font-medium text-[#101A40]">
                         {usuario.email}
                       </p>
                     </div>
                   </div>
                 </section>
 
-                <div className="border-t border-[#E8EDF4]" />
-
-                {/* Configurações da conta */}
                 <section className="space-y-4">
-                  <h3 className="text-[15px] font-semibold text-[#101A40]">
-                    Configurações da conta
-                  </h3>
-
-                  <div className="space-y-2">
-                    <label className="text-[13px] font-medium text-[#30466E]">
-                      Permissões
-                    </label>
-
-                    <Select
-                      value={permissao}
-                      onValueChange={setPermissao}
-                    >
-                      <SelectTrigger className="h-10 w-full rounded-lg border-[#DFE6F0] bg-white text-[13px] text-[#30466E] shadow-none">
-                        <SelectValue />
-                      </SelectTrigger>
-
-                      <SelectContent>
-                        <SelectItem value="Admin">
-                          Administrador
-                        </SelectItem>
-                        <SelectItem value="Usuário">
-                          Usuário
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
+                  <div className="flex items-center gap-2.5">
+                    <span className="h-4 w-[3px] rounded-full bg-[#E8E191]" />
+                    <h3 className="text-[15px] font-semibold tracking-[-0.01em] text-[#101A40]">
+                      Configurações da conta
+                    </h3>
                   </div>
 
-                  <div className="space-y-2">
-                    <label className="text-[13px] font-medium text-[#30466E]">
-                      Status da conta
-                    </label>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <label className="text-[12px] font-medium text-[#30466E]">
+                        Permissões
+                      </label>
 
-                    <Select
-                      value={status}
-                      onValueChange={setStatus}
-                    >
-                      <SelectTrigger className="h-10 w-full rounded-lg border-[#DFE6F0] bg-white text-[13px] text-[#30466E] shadow-none">
-                        <SelectValue />
-                      </SelectTrigger>
+                      <Select value={permissao} onValueChange={setPermissao}>
+                        <SelectTrigger className="h-10 w-full rounded-[8px] border border-[#DCE3EA] bg-white text-[13px] text-[#101A40] shadow-none transition-colors focus:border-[#E8E191] focus:ring-3 focus:ring-[#E8E191]/25">
+                          <SelectValue />
+                        </SelectTrigger>
 
-                      <SelectContent>
-                        <SelectItem value="Ativo">
-                          Ativo
-                        </SelectItem>
-                        <SelectItem value="Bloqueado">
-                          Bloqueado
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
+                        <SelectContent className="bg-white text-[#101A40]">
+                          <SelectItem value="Admin">Administrador</SelectItem>
+                          <SelectItem value="Usuário">Usuário</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                    <p className="text-[11px] text-[#8192B2]">
+                    <div className="space-y-2">
+                      <label className="text-[12px] font-medium text-[#30466E]">
+                        Status da conta
+                      </label>
+
+                      <Select value={status} onValueChange={setStatus}>
+                        <SelectTrigger className="h-10 w-full rounded-[8px] border border-[#DCE3EA] bg-white text-[13px] text-[#101A40] shadow-none transition-colors focus:border-[#E8E191] focus:ring-3 focus:ring-[#E8E191]/25">
+                          <SelectValue />
+                        </SelectTrigger>
+
+                        <SelectContent className="bg-white text-[#101A40]">
+                          <SelectItem value="Ativo">Ativo</SelectItem>
+                          <SelectItem value="Bloqueado">Bloqueado</SelectItem>
+                          <SelectItem value="Inativo">Inativo</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  {mostrarAvisoBloqueio && (
+                    <div className="rounded-[8px] border border-[#F1EFC9] bg-[#FAF9F1] px-3 py-2 text-[11.5px] leading-5 text-[#4E5E7D]">
                       Usuários bloqueados não podem acessar o sistema.
-                    </p>
-                  </div>
+                    </div>
+                  )}
                 </section>
+              </TabsContent>
 
-                {/* Botões */}
-                <div className="flex flex-col-reverse gap-3 border-t border-[#E8EDF4] pt-5 sm:flex-row">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={aoFechar}
-                    className="h-11 flex-1 rounded-lg border-[#DFE6F0] bg-white text-[#30466E] shadow-none"
-                  >
-                    Cancelar
-                  </Button>
+              <TabsContent value="historico" className="bg-white px-5 py-5 sm:px-6 sm:py-5">
+                <div className="mb-4 flex items-center gap-2.5">
+                  <span className="h-4 w-[3px] rounded-full bg-[#E8E191]" />
+                  <h3 className="text-[15px] font-semibold tracking-[-0.01em] text-[#101A40]">
+                    Histórico de ações
+                  </h3>
+                </div>
 
-                  <Button
-                    type="button"
-                    onClick={salvarAlteracoes}
-                    className="h-11 flex-1 rounded-lg bg-[#E8E191] font-semibold text-[#101A40] shadow-none hover:bg-[#DCD47B]"
-                  >
-                    Salvar alterações
-                  </Button>
+                <div className="space-y-3">
+                  {historicoAcoes.map((acao) => (
+                    <div
+                      key={`${acao.titulo}-${acao.data}-${acao.hora}`}
+                      className="rounded-[10px] border border-[#EEF1F5] bg-[#F9FAFB] px-3 py-3"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#F4F0C5] text-[12px] font-semibold text-[#30466E]">
+                          {acao.tipo === "perfil" && "•"}
+                          {acao.tipo === "permissao" && "↺"}
+                          {acao.tipo === "login" && "✓"}
+                        </div>
+
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <p className="text-[13px] font-semibold text-[#101A40]">
+                              {acao.titulo}
+                            </p>
+                            <p className="text-[11px] text-[#6D7E99]">
+                              {acao.data} · {acao.hora}
+                            </p>
+                          </div>
+                          <p className="mt-1 text-[12px] leading-5 text-[#5D6F8E]">
+                            {acao.descricao}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </TabsContent>
-
-              {/* Histórico */}
-              <TabsContent
-                value="historico"
-                className="px-6 py-8"
-              >
-                <h3 className="text-[15px] font-semibold text-[#101A40]">
-                  Histórico de ações
-                </h3>
-
-                <p className="mt-2 text-[13px] leading-5 text-[#8192B2]">
-                  Os registros das ações deste usuário aparecerão
-                  aqui quando o sistema de auditoria estiver integrado.
-                </p>
-              </TabsContent>
-
             </Tabs>
+
+            <div className="border-t border-[#F0EFC9] bg-white px-5 py-3 sm:px-6">
+              <div className="flex justify-end gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={aoFechar}
+                  className="h-9 rounded-lg border-[#E2E8F0] bg-white text-[12.5px] font-medium text-[#30466E] shadow-none transition-colors hover:bg-[#F8FAFC]"
+                >
+                  Cancelar
+                </Button>
+
+                <Button
+                  type="button"
+                  onClick={salvarAlteracoes}
+                  className="h-9 rounded-lg bg-[#101A40] text-[12.5px] font-medium text-white shadow-none transition-colors hover:bg-[#30466E]"
+                >
+                  Salvar alterações
+                </Button>
+              </div>
+            </div>
           </>
         )}
       </DialogContent>

@@ -1,11 +1,11 @@
 
 import { Search } from "lucide-react";
+import { Footer } from "@/components/footer";
 import PainelGuardados from "@/components/guardados/painelGuardados";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
 import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import Sidebar from "@/components/sidebar";
 import { Input } from "@/components/ui/input";
-import { Footer } from "@/components/footer";
 
 export default function PaginaGuardados() {
   return (
@@ -81,7 +81,7 @@ export default function PaginaGuardados() {
           </div>
         </div>
       </main>
-       <Footer />
+      <Footer variant="cliente" />
     </div>
   );
 }

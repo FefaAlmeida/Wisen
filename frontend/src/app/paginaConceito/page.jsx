@@ -5,12 +5,11 @@ import CabecalhoConceito from "@/components/conceito/cabecalhoConceito";
 import DefinicaoConceito from "@/components/conceito/definicaoConceito";
 import NoticiasRelacionadas from "@/components/conceito/noticiasRelacionadas";
 import PainelAprendizado from "@/components/conceito/painelAprendizado";
+import { Footer } from "@/components/footer";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
 import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import Sidebar from "@/components/sidebar";
 import { Input } from "@/components/ui/input";
-
-import { Footer } from "@/components/footer";
 
 export default function PaginaConceito() {
   return (
@@ -60,7 +59,7 @@ export default function PaginaConceito() {
           </div>
         </div>
       </main>
-      <Footer />
+      <Footer variant="cliente" />
     </div>
 
   );

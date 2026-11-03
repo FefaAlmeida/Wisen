@@ -1,5 +1,6 @@
 import { Search } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { Footer } from "@/components/footer";
 import CardInteresse from "@/components/homeCliente/cardInteresse";
 import CardNoticia from "@/components/homeCliente/cardNoticia";
@@ -153,12 +154,15 @@ export default function Home() {
                   </h2>
                 </div>
 
-                <span className="group inline-flex cursor-pointer items-center text-xs font-medium text-[#30466E] transition-colors hover:text-[#172338]">
+                <Link
+                  href="/paginaExplorar"
+                  className="group inline-flex items-center text-xs font-medium text-[#30466E] transition-colors hover:text-[#172338]"
+                >
                   Ver mais
                   <span className="ml-2 text-[#D6B92F] transition-transform group-hover:translate-x-1">
                     →
                   </span>
-                </span>
+                </Link>
               </div>
 
               <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -193,7 +197,7 @@ export default function Home() {
           </div>
         </div>
       </main>
-       <Footer />
+      <Footer variant="cliente" />
     </div>
   );
 }

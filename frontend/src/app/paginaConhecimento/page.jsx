@@ -1,6 +1,6 @@
 
 import { Search } from "lucide-react";
-
+import { Footer } from "@/components/footer";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
 import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import { CabecalhoConhecimento } from "@/components/meuConhecimento/cabecalhoConhecimento";
@@ -11,7 +11,6 @@ import { GraficoEvolucao } from "@/components/meuConhecimento/graficoEvolucao";
 import { HistoricoAtividades } from "@/components/meuConhecimento/historicoAtividades";
 import Sidebar from "@/components/sidebar";
 import { Input } from "@/components/ui/input";
-import { Footer } from "@/components/footer";
 
 
 export default function PaginaConhecimento() {
@@ -81,7 +80,7 @@ export default function PaginaConhecimento() {
           </div>
         </div>
       </main>
-      <Footer />
+      <Footer variant="cliente" />
     </div>
   );
 }

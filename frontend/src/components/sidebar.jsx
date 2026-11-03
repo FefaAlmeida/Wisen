@@ -5,7 +5,6 @@ import {
   Compass,
   GraduationCap,
   Home,
-  Link2,
   Menu,
   Newspaper,
   Settings,
@@ -16,15 +15,14 @@ import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/com
 
 const navigation = [
   { label: "Início", href: "/paginaInicialCliente", icon: Home },
-  { label: "Explorar", icon: Compass },
-  { label: "Revisões", href: "/paginaInicialCliente#revisoes", icon: Clock3 },
+  { label: "Explorar", href: "/paginaExplorar", icon: Compass },
+  { label: "Revisões", href: "/paginaSessaoRevisao", icon: Clock3 },
   {
     label: "Meu conhecimento",
     href: "/paginaBiblioteca",
     icon: GraduationCap,
   },
   { label: "Notícias", href: "/paginaEvento", icon: Newspaper },
-  { label: "Conexões", icon: Link2 },
   { label: "Aprendizado", icon: GraduationCap },
 ];
 

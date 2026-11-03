@@ -1,10 +1,8 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
-
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -19,19 +17,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export default function PainelUsuario({
-  usuario,
-  aberto,
-  aoFechar,
-  aoSalvar,
-}) {
+export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
   const [permissao, setPermissao] = useState("Usuário");
   const [status, setStatus] = useState("Ativo");
 
@@ -59,7 +47,6 @@ export default function PainelUsuario({
       }}
     >
       <DialogContent className="max-h-[90vh] w-[calc(100%-2rem)] gap-0 overflow-y-auto rounded-xl border border-[#E2E8F0] bg-white p-0 shadow-xl sm:max-w-[580px]">
-
         {usuario && (
           <>
             {/* Cabeçalho do usuário */}
@@ -84,9 +71,7 @@ export default function PainelUsuario({
                     >
                       <span
                         className={`h-2 w-2 rounded-full ${
-                          status === "Ativo"
-                            ? "bg-[#35AE75]"
-                            : "bg-[#E24A55]"
+                          status === "Ativo" ? "bg-[#35AE75]" : "bg-[#E24A55]"
                         }`}
                       />
                       {status}
@@ -106,7 +91,6 @@ export default function PainelUsuario({
 
             {/* Abas */}
             <Tabs defaultValue="informacoes" className="gap-0">
-
               <TabsList className="h-12 w-full justify-start rounded-none border-b border-[#E8EDF4] bg-white px-6">
                 <TabsTrigger
                   value="informacoes"
@@ -124,39 +108,27 @@ export default function PainelUsuario({
               </TabsList>
 
               {/* Informações */}
-              <TabsContent
-                value="informacoes"
-                className="space-y-6 px-6 py-6"
-              >
+              <TabsContent value="informacoes" className="space-y-6 px-6 py-6">
                 <section>
                   <h3 className="mb-3 text-[15px] font-semibold text-[#101A40]">
                     Informações pessoais
                   </h3>
 
                   <div className="grid gap-3 sm:grid-cols-2">
-
                     <div className="rounded-lg border border-[#E2E8F0] bg-[#FAFBFD] p-3">
-                      <p className="text-[11px] text-[#8192B2]">
-                        Nome completo
-                      </p>
-                      <p className="mt-1 text-[13px] font-medium text-[#30466E]">
-                        {usuario.nome}
-                      </p>
+                      <p className="text-[11px] text-[#8192B2]">Nome completo</p>
+                      <p className="mt-1 text-[13px] font-medium text-[#30466E]">{usuario.nome}</p>
                     </div>
 
                     <div className="rounded-lg border border-[#E2E8F0] bg-[#FAFBFD] p-3">
-                      <p className="text-[11px] text-[#8192B2]">
-                        Data de cadastro
-                      </p>
+                      <p className="text-[11px] text-[#8192B2]">Data de cadastro</p>
                       <p className="mt-1 text-[13px] font-medium text-[#30466E]">
                         {usuario.dataCadastro}
                       </p>
                     </div>
 
                     <div className="rounded-lg border border-[#E2E8F0] bg-[#FAFBFD] p-3 sm:col-span-2">
-                      <p className="text-[11px] text-[#8192B2]">
-                        E-mail
-                      </p>
+                      <p className="text-[11px] text-[#8192B2]">E-mail</p>
                       <p className="mt-1 break-all text-[13px] font-medium text-[#30466E]">
                         {usuario.email}
                       </p>
@@ -173,49 +145,47 @@ export default function PainelUsuario({
                   </h3>
 
                   <div className="space-y-2">
-                    <label className="text-[13px] font-medium text-[#30466E]">
+                    <label
+                      htmlFor="admin-user-role"
+                      className="text-[13px] font-medium text-[#30466E]"
+                    >
                       Permissões
                     </label>
 
-                    <Select
-                      value={permissao}
-                      onValueChange={setPermissao}
-                    >
-                      <SelectTrigger className="h-10 w-full rounded-lg border-[#DFE6F0] bg-white text-[13px] text-[#30466E] shadow-none">
+                    <Select value={permissao} onValueChange={setPermissao}>
+                      <SelectTrigger
+                        id="admin-user-role"
+                        className="h-10 w-full rounded-lg border-[#DFE6F0] bg-white text-[13px] text-[#30466E] shadow-none"
+                      >
                         <SelectValue />
                       </SelectTrigger>
 
                       <SelectContent>
-                        <SelectItem value="Admin">
-                          Administrador
-                        </SelectItem>
-                        <SelectItem value="Usuário">
-                          Usuário
-                        </SelectItem>
+                        <SelectItem value="Admin">Administrador</SelectItem>
+                        <SelectItem value="Usuário">Usuário</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[13px] font-medium text-[#30466E]">
+                    <label
+                      htmlFor="admin-user-status"
+                      className="text-[13px] font-medium text-[#30466E]"
+                    >
                       Status da conta
                     </label>
 
-                    <Select
-                      value={status}
-                      onValueChange={setStatus}
-                    >
-                      <SelectTrigger className="h-10 w-full rounded-lg border-[#DFE6F0] bg-white text-[13px] text-[#30466E] shadow-none">
+                    <Select value={status} onValueChange={setStatus}>
+                      <SelectTrigger
+                        id="admin-user-status"
+                        className="h-10 w-full rounded-lg border-[#DFE6F0] bg-white text-[13px] text-[#30466E] shadow-none"
+                      >
                         <SelectValue />
                       </SelectTrigger>
 
                       <SelectContent>
-                        <SelectItem value="Ativo">
-                          Ativo
-                        </SelectItem>
-                        <SelectItem value="Bloqueado">
-                          Bloqueado
-                        </SelectItem>
+                        <SelectItem value="Ativo">Ativo</SelectItem>
+                        <SelectItem value="Bloqueado">Bloqueado</SelectItem>
                       </SelectContent>
                     </Select>
 
@@ -247,20 +217,14 @@ export default function PainelUsuario({
               </TabsContent>
 
               {/* Histórico */}
-              <TabsContent
-                value="historico"
-                className="px-6 py-8"
-              >
-                <h3 className="text-[15px] font-semibold text-[#101A40]">
-                  Histórico de ações
-                </h3>
+              <TabsContent value="historico" className="px-6 py-8">
+                <h3 className="text-[15px] font-semibold text-[#101A40]">Histórico de ações</h3>
 
                 <p className="mt-2 text-[13px] leading-5 text-[#8192B2]">
-                  Os registros das ações deste usuário aparecerão
-                  aqui quando o sistema de auditoria estiver integrado.
+                  Os registros das ações deste usuário aparecerão aqui quando o sistema de auditoria
+                  estiver integrado.
                 </p>
               </TabsContent>
-
             </Tabs>
           </>
         )}

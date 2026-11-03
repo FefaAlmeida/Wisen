@@ -1,13 +1,8 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-
 import {
   Dialog,
   DialogContent,
@@ -15,7 +10,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -23,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 
 const formularioVazio = {
   nome: "",
@@ -32,27 +29,20 @@ const formularioVazio = {
   ativo: true,
 };
 
-export default function FormularioFonte({
-  aberto,
-  aoFechar,
-  fonte,
-  aoSalvar,
-}) {
+export default function FormularioFonte({ aberto, aoFechar, fonte, aoSalvar }) {
   const [dados, setDados] = useState(formularioVazio);
 
-  
-useEffect(() => {
-  if (aberto) {
-    setDados({
-      nome: fonte?.nome ?? "",
-      url: fonte?.url ?? "",
-      categoria: fonte?.categoria ?? "",
-      frequencia: fonte?.frequencia ?? "A cada 15 min",
-      ativo: fonte?.ativo ?? true,
-    });
-  }
-}, [aberto, fonte]);
-
+  useEffect(() => {
+    if (aberto) {
+      setDados({
+        nome: fonte?.nome ?? "",
+        url: fonte?.url ?? "",
+        categoria: fonte?.categoria ?? "",
+        frequencia: fonte?.frequencia ?? "A cada 15 min",
+        ativo: fonte?.ativo ?? true,
+      });
+    }
+  }, [aberto, fonte]);
 
   function atualizar(campo, valor) {
     setDados((anterior) => ({
@@ -81,7 +71,6 @@ useEffect(() => {
       }}
     >
       <DialogContent className="max-h-[90vh] overflow-y-auto rounded-xl border border-[#E2E8F0] bg-white p-0 shadow-xl sm:max-w-[520px]">
-
         <DialogHeader className="border-b border-[#EBEFF5] px-7 pt-7 pb-5">
           <div className="flex items-start gap-4 pr-6">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#FFF5CB]">
@@ -116,13 +105,9 @@ useEffect(() => {
         </DialogHeader>
 
         <form onSubmit={salvar} className="space-y-5 px-7 py-6">
-
           {/* Nome do veículo */}
           <div className="space-y-2">
-            <Label
-              htmlFor="nomeFonte"
-              className="text-[13px] font-medium text-[#101A40]"
-            >
+            <Label htmlFor="nomeFonte" className="text-[13px] font-medium text-[#101A40]">
               Nome do veículo
               <span className="ml-1 text-[#D6AD30]">*</span>
             </Label>
@@ -130,9 +115,7 @@ useEffect(() => {
             <Input
               id="nomeFonte"
               value={dados.nome}
-              onChange={(event) =>
-                atualizar("nome", event.target.value)
-              }
+              onChange={(event) => atualizar("nome", event.target.value)}
               placeholder="Ex.: G1, BBC Brasil, Agência Brasil"
               required
               className="h-11 rounded-lg border-[#DCE4EF] bg-white px-3 text-[13px] text-[#101A40] shadow-none placeholder:text-[#A0ACC0] focus-visible:border-[#D6C36D] focus-visible:ring-[#F4E9AD]"
@@ -141,10 +124,7 @@ useEffect(() => {
 
           {/* URL RSS */}
           <div className="space-y-2">
-            <Label
-              htmlFor="urlFonte"
-              className="text-[13px] font-medium text-[#101A40]"
-            >
+            <Label htmlFor="urlFonte" className="text-[13px] font-medium text-[#101A40]">
               URL do feed RSS
               <span className="ml-1 text-[#D6AD30]">*</span>
             </Label>
@@ -153,35 +133,27 @@ useEffect(() => {
               id="urlFonte"
               type="url"
               value={dados.url}
-              onChange={(event) =>
-                atualizar("url", event.target.value)
-              }
+              onChange={(event) => atualizar("url", event.target.value)}
               placeholder="https://exemplo.com/feed.xml"
               required
               className="h-11 rounded-lg border-[#DCE4EF] bg-white px-3 text-[13px] text-[#101A40] shadow-none placeholder:text-[#A0ACC0] focus-visible:border-[#D6C36D] focus-visible:ring-[#F4E9AD]"
             />
 
             <p className="text-[11px] leading-4 text-[#8B99B1]">
-              Insira o endereço que disponibiliza as notícias
-              em formato RSS ou Atom.
+              Insira o endereço que disponibiliza as notícias em formato RSS ou Atom.
             </p>
           </div>
 
           {/* Categoria */}
           <div className="space-y-2">
-            <Label
-              htmlFor="categoriaFonte"
-              className="text-[13px] font-medium text-[#101A40]"
-            >
+            <Label htmlFor="categoriaFonte" className="text-[13px] font-medium text-[#101A40]">
               Categoria principal
             </Label>
 
-
-              <Select
-                value={dados.categoria ?? ""}
-                onValueChange={(valor) => atualizar("categoria", valor)}
-              >
-
+            <Select
+              value={dados.categoria ?? ""}
+              onValueChange={(valor) => atualizar("categoria", valor)}
+            >
               <SelectTrigger
                 id="categoriaFonte"
                 className="h-11 w-full rounded-lg border-[#DCE4EF] bg-white px-3 text-[13px] text-[#344469] shadow-none"
@@ -190,43 +162,26 @@ useEffect(() => {
               </SelectTrigger>
 
               <SelectContent>
-                <SelectItem value="Economia">
-                  Economia
-                </SelectItem>
-                <SelectItem value="Política">
-                  Política
-                </SelectItem>
-                <SelectItem value="Tecnologia">
-                  Tecnologia
-                </SelectItem>
-                <SelectItem value="Meio ambiente">
-                  Meio ambiente
-                </SelectItem>
-                <SelectItem value="Educação">
-                  Educação
-                </SelectItem>
-                <SelectItem value="Geral">
-                  Geral
-                </SelectItem>
+                <SelectItem value="Economia">Economia</SelectItem>
+                <SelectItem value="Política">Política</SelectItem>
+                <SelectItem value="Tecnologia">Tecnologia</SelectItem>
+                <SelectItem value="Meio ambiente">Meio ambiente</SelectItem>
+                <SelectItem value="Educação">Educação</SelectItem>
+                <SelectItem value="Geral">Geral</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           {/* Frequência */}
           <div className="space-y-2">
-            <Label
-              htmlFor="frequenciaFonte"
-              className="text-[13px] font-medium text-[#101A40]"
-            >
+            <Label htmlFor="frequenciaFonte" className="text-[13px] font-medium text-[#101A40]">
               Frequência de coleta
             </Label>
-
 
             <Select
               value={dados.frequencia ?? "A cada 15 min"}
               onValueChange={(valor) => atualizar("frequencia", valor)}
             >
-
               <SelectTrigger
                 id="frequenciaFonte"
                 className="h-11 w-full rounded-lg border-[#DCE4EF] bg-white px-3 text-[13px] text-[#344469] shadow-none"
@@ -235,24 +190,12 @@ useEffect(() => {
               </SelectTrigger>
 
               <SelectContent>
-                <SelectItem value="A cada 15 min">
-                  A cada 15 minutos
-                </SelectItem>
-                <SelectItem value="30 minutos">
-                  A cada 30 minutos
-                </SelectItem>
-                <SelectItem value="1 hora">
-                  A cada 1 hora
-                </SelectItem>
-                <SelectItem value="6 horas">
-                  A cada 6 horas
-                </SelectItem>
-                <SelectItem value="12 horas">
-                  A cada 12 horas
-                </SelectItem>
-                <SelectItem value="24 horas">
-                  A cada 24 horas
-                </SelectItem>
+                <SelectItem value="A cada 15 min">A cada 15 minutos</SelectItem>
+                <SelectItem value="30 minutos">A cada 30 minutos</SelectItem>
+                <SelectItem value="1 hora">A cada 1 hora</SelectItem>
+                <SelectItem value="6 horas">A cada 6 horas</SelectItem>
+                <SelectItem value="12 horas">A cada 12 horas</SelectItem>
+                <SelectItem value="24 horas">A cada 24 horas</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -260,10 +203,7 @@ useEffect(() => {
           {/* Status */}
           <div className="flex items-center justify-between gap-4 rounded-lg border border-[#E5EAF2] bg-[#F8FAFD] p-4">
             <div className="space-y-1">
-              <Label
-                htmlFor="statusFonte"
-                className="text-[13px] font-semibold text-[#101A40]"
-              >
+              <Label htmlFor="statusFonte" className="text-[13px] font-semibold text-[#101A40]">
                 Fonte ativa
               </Label>
 
@@ -274,12 +214,12 @@ useEffect(() => {
               </p>
             </div>
 
-          <Switch
-            id="statusFonte"
-            checked={dados.ativo ?? true}
-            onCheckedChange={(valor) => atualizar("ativo", valor)}
-            className="data-[state=checked]:bg-[#E8D65E]"
-          />
+            <Switch
+              id="statusFonte"
+              checked={dados.ativo ?? true}
+              onCheckedChange={(valor) => atualizar("ativo", valor)}
+              className="data-[state=checked]:bg-[#E8D65E]"
+            />
           </div>
 
           {/* Informação */}
@@ -299,9 +239,8 @@ useEffect(() => {
             </svg>
 
             <p className="text-[11px] leading-[17px] text-[#7183A6]">
-              O cadastro registra as configurações da fonte
-              nesta demonstração. A coleta automática será
-              realizada quando o backend estiver integrado.
+              O cadastro registra as configurações da fonte nesta demonstração. A coleta automática
+              será realizada quando o backend estiver integrado.
             </p>
           </div>
 

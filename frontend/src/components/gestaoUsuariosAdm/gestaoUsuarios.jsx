@@ -1,11 +1,9 @@
-
 "use client";
 
 import { useState } from "react";
-
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -13,15 +11,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
-
-import TabelaUsuarios from "./tabelaUsuarios";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PainelUsuario from "./painelUsuario";
+import TabelaUsuarios from "./tabelaUsuarios";
 
 const usuariosIniciais = [
   {
@@ -131,50 +123,31 @@ export default function GestaoUsuarios() {
   const [historico, setHistorico] = useState([]);
 
   const usuariosFiltrados = usuarios.filter((usuario) => {
-    const correspondeBusca =
-      `${usuario.nome} ${usuario.email}`
-        .toLocaleLowerCase("pt-BR")
-        .includes(busca.toLocaleLowerCase("pt-BR"));
+    const correspondeBusca = `${usuario.nome} ${usuario.email}`
+      .toLocaleLowerCase("pt-BR")
+      .includes(busca.toLocaleLowerCase("pt-BR"));
 
     const correspondePermissao =
-      permissaoFiltro === "todos" ||
-      usuario.permissao === permissaoFiltro;
+      permissaoFiltro === "todos" || usuario.permissao === permissaoFiltro;
 
-    const correspondeStatus =
-      statusFiltro === "todos" ||
-      usuario.status === statusFiltro;
+    const correspondeStatus = statusFiltro === "todos" || usuario.status === statusFiltro;
 
     const correspondeData =
-      !dataFiltro ||
-      usuario.dataCadastro ===
-        dataFiltro.split("-").reverse().join("/");
+      !dataFiltro || usuario.dataCadastro === dataFiltro.split("-").reverse().join("/");
 
-    return (
-      correspondeBusca &&
-      correspondePermissao &&
-      correspondeStatus &&
-      correspondeData
-    );
+    return correspondeBusca && correspondePermissao && correspondeStatus && correspondeData;
   });
 
-  const totalPaginas = Math.max(
-    1,
-    Math.ceil(usuariosFiltrados.length / tamanhoPagina)
-  );
+  const totalPaginas = Math.max(1, Math.ceil(usuariosFiltrados.length / tamanhoPagina));
 
   const paginaAtual = Math.min(pagina, totalPaginas);
   const inicio = (paginaAtual - 1) * tamanhoPagina;
 
-  const usuariosPagina = usuariosFiltrados.slice(
-    inicio,
-    inicio + tamanhoPagina
-  );
+  const usuariosPagina = usuariosFiltrados.slice(inicio, inicio + tamanhoPagina);
 
   function selecionarUsuario(id, marcado) {
     setSelecionados((anteriores) =>
-      marcado
-        ? [...new Set([...anteriores, id])]
-        : anteriores.filter((item) => item !== id)
+      marcado ? [...new Set([...anteriores, id])] : anteriores.filter((item) => item !== id),
     );
   }
 
@@ -184,7 +157,7 @@ export default function GestaoUsuarios() {
     setSelecionados((anteriores) =>
       marcado
         ? [...new Set([...anteriores, ...idsPagina])]
-        : anteriores.filter((id) => !idsPagina.includes(id))
+        : anteriores.filter((id) => !idsPagina.includes(id)),
     );
   }
 
@@ -201,23 +174,15 @@ export default function GestaoUsuarios() {
     const mudancas = [];
 
     if (anterior.permissao !== alteracoes.permissao) {
-      mudancas.push(
-        `Permissão: ${anterior.permissao} → ${alteracoes.permissao}`
-      );
+      mudancas.push(`Permissão: ${anterior.permissao} → ${alteracoes.permissao}`);
     }
 
     if (anterior.status !== alteracoes.status) {
-      mudancas.push(
-        `Status: ${anterior.status} → ${alteracoes.status}`
-      );
+      mudancas.push(`Status: ${anterior.status} → ${alteracoes.status}`);
     }
 
     setUsuarios((anteriores) =>
-      anteriores.map((usuario) =>
-        usuario.id === id
-          ? { ...usuario, ...alteracoes }
-          : usuario
-      )
+      anteriores.map((usuario) => (usuario.id === id ? { ...usuario, ...alteracoes } : usuario)),
     );
 
     if (mudancas.length > 0) {
@@ -258,7 +223,6 @@ export default function GestaoUsuarios() {
         <TabsContent value="usuarios" className="mt-0">
           <Card className="gap-0 rounded-xl border border-[#E3E9F1] bg-white p-0 shadow-none">
             <CardContent className="p-4 md:p-5">
-
               {/* Filtros */}
               <div className="mb-5 flex flex-wrap items-center gap-3">
                 <div className="relative min-w-[230px] flex-1">
@@ -298,15 +262,9 @@ export default function GestaoUsuarios() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="todos">
-                      Todas as permissões
-                    </SelectItem>
-                    <SelectItem value="Admin">
-                      Administrador
-                    </SelectItem>
-                    <SelectItem value="Usuário">
-                      Usuário
-                    </SelectItem>
+                    <SelectItem value="todos">Todas as permissões</SelectItem>
+                    <SelectItem value="Admin">Administrador</SelectItem>
+                    <SelectItem value="Usuário">Usuário</SelectItem>
                   </SelectContent>
                 </Select>
 
@@ -321,15 +279,9 @@ export default function GestaoUsuarios() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="todos">
-                      Todos os status
-                    </SelectItem>
-                    <SelectItem value="Ativo">
-                      Ativo
-                    </SelectItem>
-                    <SelectItem value="Bloqueado">
-                      Bloqueado
-                    </SelectItem>
+                    <SelectItem value="todos">Todos os status</SelectItem>
+                    <SelectItem value="Ativo">Ativo</SelectItem>
+                    <SelectItem value="Bloqueado">Bloqueado</SelectItem>
                   </SelectContent>
                 </Select>
 
@@ -361,7 +313,7 @@ export default function GestaoUsuarios() {
                     ? "Nenhum usuário encontrado"
                     : `Mostrando ${inicio + 1}–${Math.min(
                         inicio + tamanhoPagina,
-                        usuariosFiltrados.length
+                        usuariosFiltrados.length,
                       )} de ${usuariosFiltrados.length} usuários`}
                 </p>
 
@@ -377,10 +329,7 @@ export default function GestaoUsuarios() {
                     ‹
                   </Button>
 
-                  {Array.from(
-                    { length: totalPaginas },
-                    (_, index) => index + 1
-                  ).map((numero) => (
+                  {Array.from({ length: totalPaginas }, (_, index) => index + 1).map((numero) => (
                     <Button
                       key={numero}
                       variant={paginaAtual === numero ? "default" : "outline"}
@@ -413,9 +362,7 @@ export default function GestaoUsuarios() {
 
         <TabsContent value="historico" className="mt-0">
           <Card className="gap-0 rounded-xl border border-[#E3E9F1] bg-white p-5 shadow-none">
-            <h2 className="text-[19px] font-semibold text-[#101A40]">
-              Histórico de ações
-            </h2>
+            <h2 className="text-[19px] font-semibold text-[#101A40]">Histórico de ações</h2>
 
             <p className="mt-1 text-[12px] text-[#8192B2]">
               Alterações realizadas nesta sessão de demonstração.
@@ -428,21 +375,12 @@ export default function GestaoUsuarios() {
                 </p>
               ) : (
                 historico.map((registro) => (
-                  <div
-                    key={registro.id}
-                    className="flex flex-wrap justify-between gap-3 py-4"
-                  >
+                  <div key={registro.id} className="flex flex-wrap justify-between gap-3 py-4">
                     <div>
-                      <p className="text-[13px] font-semibold text-[#101A40]">
-                        {registro.usuario}
-                      </p>
-                      <p className="mt-1 text-[12px] text-[#7183A6]">
-                        {registro.descricao}
-                      </p>
+                      <p className="text-[13px] font-semibold text-[#101A40]">{registro.usuario}</p>
+                      <p className="mt-1 text-[12px] text-[#7183A6]">{registro.descricao}</p>
                     </div>
-                    <span className="text-[11px] text-[#8192B2]">
-                      {registro.data}
-                    </span>
+                    <span className="text-[11px] text-[#8192B2]">{registro.data}</span>
                   </div>
                 ))
               )}

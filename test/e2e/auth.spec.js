@@ -58,3 +58,19 @@ test("formulário impede senha curta no navegador", async ({ page }) => {
   await expect(page).toHaveURL(/\/paginaCadastro$/);
   await expect(page.getByLabel("Senha", { exact: true })).toBeFocused();
 });
+
+test("rotas de administração exigem sessão e papel de administrador", async ({ page }) => {
+  await page.goto("/paginaCadastro");
+  await page.getByLabel("Nome completo").fill("Pessoa comum");
+  await page.getByLabel("E-mail").fill(`admin-route-${Date.now()}@example.test`);
+  await page.getByLabel("Senha", { exact: true }).fill("senha-de-teste-123");
+  await page.getByRole("button", { name: /criar conta/i }).click();
+  await expect(page).toHaveURL(/\/paginaInicialCliente$/);
+
+  await page.goto("/paginaGestaoUsuariosAdm");
+  await expect(page).toHaveURL(/\/paginaInicialCliente$/);
+
+  await page.context().clearCookies();
+  await page.goto("/paginaGestaoUsuariosAdm");
+  await expect(page).toHaveURL(/\/paginaLogin\?next=/);
+});

@@ -1,15 +1,12 @@
-
 "use client";
 
 import { useState } from "react";
-
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-
-import TabelaFontes from "./tabelaFontes";
 import FormularioFonte from "./formularioFonte";
 import LogsColeta from "./logsColeta";
+import TabelaFontes from "./tabelaFontes";
 
 const fontesIniciais = [
   {
@@ -62,10 +59,9 @@ export default function GestaoFontes() {
   const [fonteEditando, setFonteEditando] = useState(null);
 
   const fontesFiltradas = fontes.filter((fonte) => {
-    const correspondeBusca =
-      `${fonte.nome} ${fonte.url}`
-        .toLowerCase()
-        .includes(busca.toLowerCase());
+    const correspondeBusca = `${fonte.nome} ${fonte.url}`
+      .toLowerCase()
+      .includes(busca.toLowerCase());
 
     const correspondeFiltro =
       filtro === "todos" ||
@@ -93,11 +89,7 @@ export default function GestaoFontes() {
   function salvarFonte(dados) {
     if (fonteEditando) {
       setFontes((anteriores) =>
-        anteriores.map((fonte) =>
-          fonte.id === fonteEditando.id
-            ? { ...fonte, ...dados }
-            : fonte
-        )
+        anteriores.map((fonte) => (fonte.id === fonteEditando.id ? { ...fonte, ...dados } : fonte)),
       );
     } else {
       setFontes((anteriores) => [
@@ -115,11 +107,7 @@ export default function GestaoFontes() {
 
   function alternarStatus(id) {
     setFontes((anteriores) =>
-      anteriores.map((fonte) =>
-        fonte.id === id
-          ? { ...fonte, ativo: !fonte.ativo }
-          : fonte
-      )
+      anteriores.map((fonte) => (fonte.id === id ? { ...fonte, ativo: !fonte.ativo } : fonte)),
     );
   }
 
@@ -128,9 +116,7 @@ export default function GestaoFontes() {
       <Card className="gap-0 rounded-xl border border-[#E3E9F1] bg-white p-0 shadow-none">
         <CardContent className="p-5">
           <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
-            <h2 className="text-[20px] font-semibold text-[#101A40]">
-              Fontes cadastradas
-            </h2>
+            <h2 className="text-[20px] font-semibold text-[#101A40]">Fontes cadastradas</h2>
 
             <div className="flex flex-wrap items-center gap-3">
               <div className="relative w-full sm:w-[250px]">
@@ -162,20 +148,12 @@ export default function GestaoFontes() {
                 variant="outline"
                 onClick={() =>
                   setFiltro((atual) =>
-                    atual === "todos"
-                      ? "ativos"
-                      : atual === "ativos"
-                      ? "inativos"
-                      : "todos"
+                    atual === "todos" ? "ativos" : atual === "ativos" ? "inativos" : "todos",
                   )
                 }
                 className="h-10 rounded-lg border-[#DFE6F0] bg-white px-4 text-[#101A40]"
               >
-                {filtro === "todos"
-                  ? "Filtros"
-                  : filtro === "ativos"
-                  ? "Ativas"
-                  : "Inativas"}
+                {filtro === "todos" ? "Filtros" : filtro === "ativos" ? "Ativas" : "Inativas"}
               </Button>
 
               <Button

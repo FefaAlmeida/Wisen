@@ -1,4 +1,3 @@
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,46 +9,25 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-export default function TabelaFontes({
-  fontes,
-  aoEditar,
-  aoAlternarStatus,
-}) {
+export default function TabelaFontes({ fontes, aoEditar, aoAlternarStatus }) {
   return (
     <div className="w-full overflow-x-auto">
       <Table className="w-full min-w-[850px]">
         <TableHeader>
           <TableRow className="border-none bg-[#F1F5FA] hover:bg-[#F1F5FA]">
-            <TableHead className="h-12 pl-4 text-xs text-[#52617E]">
-              Veículo
-            </TableHead>
-            <TableHead className="text-xs text-[#52617E]">
-              URL do feed RSS
-            </TableHead>
-            <TableHead className="text-xs text-[#52617E]">
-              Status
-            </TableHead>
-            <TableHead className="text-xs text-[#52617E]">
-              Última coleta
-            </TableHead>
-            <TableHead className="text-xs text-[#52617E]">
-              Frequência
-            </TableHead>
-            <TableHead className="pr-4 text-right text-xs text-[#52617E]">
-              Ações
-            </TableHead>
+            <TableHead className="h-12 pl-4 text-xs text-[#52617E]">Veículo</TableHead>
+            <TableHead className="text-xs text-[#52617E]">URL do feed RSS</TableHead>
+            <TableHead className="text-xs text-[#52617E]">Status</TableHead>
+            <TableHead className="text-xs text-[#52617E]">Última coleta</TableHead>
+            <TableHead className="text-xs text-[#52617E]">Frequência</TableHead>
+            <TableHead className="pr-4 text-right text-xs text-[#52617E]">Ações</TableHead>
           </TableRow>
         </TableHeader>
 
         <TableBody>
           {fontes.map((fonte) => (
-            <TableRow
-              key={fonte.id}
-              className="border-[#E8EDF4] hover:bg-[#F8FAFD]"
-            >
-              <TableCell className="py-4 pl-4 font-semibold text-[#101A40]">
-                {fonte.nome}
-              </TableCell>
+            <TableRow key={fonte.id} className="border-[#E8EDF4] hover:bg-[#F8FAFD]">
+              <TableCell className="py-4 pl-4 font-semibold text-[#101A40]">{fonte.nome}</TableCell>
 
               <TableCell className="max-w-[350px] truncate text-[13px] text-[#617398]">
                 {fonte.url}
@@ -58,9 +36,7 @@ export default function TabelaFontes({
               <TableCell>
                 <Badge
                   className={`gap-2 rounded-full border-0 px-3 py-1 text-xs font-medium shadow-none ${
-                    fonte.ativo
-                      ? "bg-[#E9F8EE] text-[#217A4B]"
-                      : "bg-[#F0F3F8] text-[#607398]"
+                    fonte.ativo ? "bg-[#E9F8EE] text-[#217A4B]" : "bg-[#F0F3F8] text-[#607398]"
                   }`}
                 >
                   <span
@@ -72,13 +48,9 @@ export default function TabelaFontes({
                 </Badge>
               </TableCell>
 
-              <TableCell className="text-[13px] text-[#617398]">
-                {fonte.ultimaColeta}
-              </TableCell>
+              <TableCell className="text-[13px] text-[#617398]">{fonte.ultimaColeta}</TableCell>
 
-              <TableCell className="text-[13px] text-[#617398]">
-                {fonte.frequencia}
-              </TableCell>
+              <TableCell className="text-[13px] text-[#617398]">{fonte.frequencia}</TableCell>
 
               <TableCell>
                 <div className="flex justify-end gap-2">
@@ -122,9 +94,7 @@ export default function TabelaFontes({
       </Table>
 
       {fontes.length === 0 && (
-        <p className="py-10 text-center text-sm text-[#8392AD]">
-          Nenhuma fonte encontrada.
-        </p>
+        <p className="py-10 text-center text-sm text-[#8392AD]">Nenhuma fonte encontrada.</p>
       )}
     </div>
   );

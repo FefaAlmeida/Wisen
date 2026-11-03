@@ -21,7 +21,22 @@ export async function proxy(request) {
     );
   }
 
-  if (response.ok) return NextResponse.next();
+  if (response.ok) {
+    const adminPaths = ["/paginaInicioAdm", "/paginaGestaoFonteAdm", "/paginaGestaoUsuariosAdm"];
+    const isAdminRoute = adminPaths.some(
+      (path) =>
+        request.nextUrl.pathname === path || request.nextUrl.pathname.startsWith(`${path}/`),
+    );
+
+    if (isAdminRoute) {
+      const session = await response.json().catch(() => null);
+      if (session?.user?.role !== "admin") {
+        return NextResponse.redirect(new URL("/paginaInicialCliente", request.url));
+      }
+    }
+
+    return NextResponse.next();
+  }
   if (response.status !== 401 && response.status !== 403) {
     return NextResponse.json(
       { message: "Não foi possível verificar sua sessão." },
@@ -36,7 +51,6 @@ export async function proxy(request) {
 
 export const config = {
   matcher: [
-    "/",
     "/paginaInicialCliente/:path*",
     "/paginaBiblioteca/:path*",
     "/paginaConceito/:path*",
@@ -45,5 +59,8 @@ export const config = {
     "/paginaGuardados/:path*",
     "/paginaRevisoes/:path*",
     "/paginaPerfil/:path*",
+    "/paginaInicioAdm/:path*",
+    "/paginaGestaoFonteAdm/:path*",
+    "/paginaGestaoUsuariosAdm/:path*",
   ],
 };

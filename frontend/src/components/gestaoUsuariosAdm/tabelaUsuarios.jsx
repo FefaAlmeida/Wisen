@@ -1,6 +1,5 @@
-
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Table,
@@ -19,8 +18,7 @@ export default function TabelaUsuarios({
   aoAbrirUsuario,
 }) {
   const todosSelecionados =
-    usuarios.length > 0 &&
-    usuarios.every((usuario) => selecionados.includes(usuario.id));
+    usuarios.length > 0 && usuarios.every((usuario) => selecionados.includes(usuario.id));
 
   return (
     <div className="w-full overflow-x-auto">
@@ -30,36 +28,22 @@ export default function TabelaUsuarios({
             <TableHead className="w-12 pl-4">
               <Checkbox
                 checked={todosSelecionados}
-                onCheckedChange={(valor) =>
-                  aoSelecionarTodos(Boolean(valor))
-                }
+                onCheckedChange={(valor) => aoSelecionarTodos(Boolean(valor))}
                 aria-label="Selecionar todos os usuários da página"
               />
             </TableHead>
 
-            <TableHead className="text-[12px] text-[#344469]">
-              Usuário
-            </TableHead>
+            <TableHead className="text-[12px] text-[#344469]">Usuário</TableHead>
 
-            <TableHead className="text-[12px] text-[#344469]">
-              E-mail
-            </TableHead>
+            <TableHead className="text-[12px] text-[#344469]">E-mail</TableHead>
 
-            <TableHead className="text-[12px] text-[#344469]">
-              Tipo de permissão
-            </TableHead>
+            <TableHead className="text-[12px] text-[#344469]">Tipo de permissão</TableHead>
 
-            <TableHead className="text-[12px] text-[#344469]">
-              Status
-            </TableHead>
+            <TableHead className="text-[12px] text-[#344469]">Status</TableHead>
 
-            <TableHead className="text-[12px] text-[#344469]">
-              Data de cadastro
-            </TableHead>
+            <TableHead className="text-[12px] text-[#344469]">Data de cadastro</TableHead>
 
-            <TableHead className="text-right text-[12px] text-[#344469]">
-              Ações
-            </TableHead>
+            <TableHead className="text-right text-[12px] text-[#344469]">Ações</TableHead>
           </TableRow>
         </TableHeader>
 
@@ -70,15 +54,10 @@ export default function TabelaUsuarios({
               className="cursor-pointer border-[#E8EDF4] hover:bg-[#F7F9FD]"
               onClick={() => aoAbrirUsuario(usuario)}
             >
-              <TableCell
-                className="pl-4"
-                onClick={(evento) => evento.stopPropagation()}
-              >
+              <TableCell className="pl-4" onClick={(evento) => evento.stopPropagation()}>
                 <Checkbox
                   checked={selecionados.includes(usuario.id)}
-                  onCheckedChange={(valor) =>
-                    aoSelecionar(usuario.id, Boolean(valor))
-                  }
+                  onCheckedChange={(valor) => aoSelecionar(usuario.id, Boolean(valor))}
                   aria-label={`Selecionar ${usuario.nome}`}
                 />
               </TableCell>
@@ -95,9 +74,7 @@ export default function TabelaUsuarios({
                 </div>
               </TableCell>
 
-              <TableCell className="text-[12px] text-[#7183A6]">
-                {usuario.email}
-              </TableCell>
+              <TableCell className="text-[12px] text-[#7183A6]">{usuario.email}</TableCell>
 
               <TableCell>
                 <Badge
@@ -121,9 +98,7 @@ export default function TabelaUsuarios({
                 >
                   <span
                     className={`h-2 w-2 rounded-full ${
-                      usuario.status === "Ativo"
-                        ? "bg-[#35AE75]"
-                        : "bg-[#E24A55]"
+                      usuario.status === "Ativo" ? "bg-[#35AE75]" : "bg-[#E24A55]"
                     }`}
                   />
                   {usuario.status}
@@ -155,9 +130,7 @@ export default function TabelaUsuarios({
       </Table>
 
       {usuarios.length === 0 && (
-        <p className="py-12 text-center text-sm text-[#8192B2]">
-          Nenhum usuário encontrado.
-        </p>
+        <p className="py-12 text-center text-sm text-[#8192B2]">Nenhum usuário encontrado.</p>
       )}
     </div>
   );

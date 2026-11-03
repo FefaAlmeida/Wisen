@@ -1,4 +1,3 @@
-
 import GestaoFontes from "@/components/gestaoFontesAdm/gestaoFontes";
 
 export default function PaginaFontes() {
@@ -11,8 +10,7 @@ export default function PaginaFontes() {
           </p>
 
           <h1 className="text-[38px] font-semibold tracking-tight text-[#101A40] md:text-[44px]">
-            Gestão de fontes{" "}
-            <span className="text-[#E0B522]">(RSS)</span>
+            Gestão de fontes <span className="text-[#E0B522]">(RSS)</span>
           </h1>
 
           <p className="mt-1 text-[16px] text-[#526584]">

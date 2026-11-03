@@ -6,6 +6,7 @@ import CardInteresse from "@/components/homeCliente/cardInteresse";
 import CardNoticia from "@/components/homeCliente/cardNoticia";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
 import HeroHome from "@/components/homeCliente/heroHome";
+import { InitialInterestDialog } from "@/components/homeCliente/initialInterestDialog";
 import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import PainelRevisoes from "@/components/homeCliente/painelRevisoes";
 import Sidebar from "@/components/sidebar";
@@ -14,6 +15,7 @@ import { Input } from "@/components/ui/input";
 export default function Home() {
   return (
     <div className="min-h-screen">
+      <InitialInterestDialog />
       <Sidebar activeItem="Início" />
       <main className="relative isolate min-h-screen min-w-0 bg-[radial-gradient(ellipse_at_70%_0%,#E3EAF4_0%,#F0F4F9_55%,#F0F4F9_100%)] font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
         <ConnectionsBackground />

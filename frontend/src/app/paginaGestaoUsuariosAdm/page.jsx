@@ -1,10 +1,12 @@
 
 import GestaoUsuarios from "@/components/gestaoUsuariosAdm/gestaoUsuarios";
+import { AdminLayout } from "@/components/admin/adminLayout";
 
 export default function PaginaGestaoUsuarios() {
   return (
-    <main className="min-h-screen w-full min-w-0 bg-[#F1F3F6] font-[family-name:var(--font-geist-sans)]">
-      <div className="w-full px-5 pt-8 pb-12 md:px-8">
+    <AdminLayout activeItem="Gestão de usuários">
+      <main className="min-h-screen w-full min-w-0 bg-[#F1F3F6] font-[family-name:var(--font-geist-sans)]">
+        <div className="w-full px-5 pt-8 pb-12 md:px-8">
         <header className="mb-6">
           <p className="mb-1 text-[13px] text-[#7183A6]">
             Administrador
@@ -21,7 +23,8 @@ export default function PaginaGestaoUsuarios() {
         </header>
 
         <GestaoUsuarios />
-      </div>
-    </main>
+        </div>
+      </main>
+    </AdminLayout>
   );
 }

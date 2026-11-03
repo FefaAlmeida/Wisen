@@ -41,6 +41,7 @@ const profileSchema = z.object({
     .nullable(),
   preferences: z.object({
     interests: z.array(z.string()),
+    onboardingCompleted: z.boolean(),
     notifications: z.object({
       reviewReminders: z.boolean(),
       weeklySummary: z.boolean(),

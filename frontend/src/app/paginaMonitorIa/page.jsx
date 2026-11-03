@@ -1,13 +1,13 @@
-import React from 'react';
 import { TopoMonitorIa } from '@/components/monitorIa/topoMonitorIa';
 import { CartoesMetricasIa } from '@/components/monitorIa/cartoesMetricasIa';
 import { GraficosConsumoIa } from '@/components/monitorIa/graficosConsumoIa';
 import { TabelaLogsIa } from '@/components/monitorIa/tabelaLogsIa';
-import { Footer } from "@/components/footer";
+import { AdminLayout } from '@/components/admin/adminLayout';
 
 export default function PaginaMonitorIa() {
   return (
-    <div className="min-h-screen bg-slate-50/60 font-sans text-[#2B333F] selection:bg-[#E8E191] p-6 md:p-10 space-y-8">
+    <AdminLayout activeItem="Monitor de IA">
+      <div className="min-h-screen bg-slate-50/60 font-sans text-[#2B333F] selection:bg-[#E8E191] p-6 md:p-10 space-y-8">
       
       {/* Etapa 1: Topo do Monitor */}
       <TopoMonitorIa />
@@ -20,8 +20,8 @@ export default function PaginaMonitorIa() {
 
       {/* Etapa 4: Tabela de Logs de Chamadas de IA */}
       <TabelaLogsIa />
-      <Footer />
-    </div>
+      </div>
+    </AdminLayout>
 
   );
 }

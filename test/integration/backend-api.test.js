@@ -144,8 +144,28 @@ test("perfil lê e salva dados pessoais, interesses e notificações", async () 
   assert.equal(initialProfile.statusCode, 200, initialProfile.body);
   assert.deepEqual(initialProfile.json().preferences, {
     interests: [],
+    onboardingCompleted: false,
     notifications: { reviewReminders: true, weeklySummary: false },
   });
+
+  const skipOnboarding = await app.inject({
+    method: "PUT",
+    url: "/api/auth/profile",
+    headers,
+    payload: {
+      name: body.user.name,
+      email: body.user.email,
+      interests: [],
+      notifications: { reviewReminders: true, weeklySummary: false },
+    },
+  });
+  assert.equal(skipOnboarding.statusCode, 200, skipOnboarding.body);
+  const skippedProfile = await app.inject({
+    method: "GET",
+    url: "/api/auth/profile",
+    headers,
+  });
+  assert.equal(skippedProfile.json().preferences.onboardingCompleted, true);
 
   const update = await app.inject({
     method: "PUT",
@@ -172,6 +192,7 @@ test("perfil lê e salva dados pessoais, interesses e notificações", async () 
     avatarDataUrl: null,
     preferences: {
       interests: ["Tecnologia", "Saúde"],
+      onboardingCompleted: true,
       notifications: { reviewReminders: false, weeklySummary: true },
     },
   });

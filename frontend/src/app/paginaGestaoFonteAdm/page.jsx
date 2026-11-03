@@ -1,10 +1,12 @@
 
 import GestaoFontes from "@/components/gestaoFontesAdm/gestaoFontes";
+import { AdminLayout } from "@/components/admin/adminLayout";
 
 export default function PaginaFontes() {
   return (
-    <main className="min-h-screen w-full min-w-0 bg-[#F1F3F6] font-[family-name:var(--font-geist-sans)]">
-      <div className="w-full px-5 pt-9 pb-12 md:px-8">
+    <AdminLayout activeItem="Gestão de fontes">
+      <main className="min-h-screen w-full min-w-0 bg-[#F1F3F6] font-[family-name:var(--font-geist-sans)]">
+        <div className="w-full px-5 pt-9 pb-12 md:px-8">
         <header className="mb-6">
           <p className="mb-3 text-[11px] font-medium tracking-[0.12em] text-[#7183A6]">
             PAINEL ADMINISTRATIVO
@@ -21,7 +23,8 @@ export default function PaginaFontes() {
         </header>
 
         <GestaoFontes />
-      </div>
-    </main>
+        </div>
+      </main>
+    </AdminLayout>
   );
 }

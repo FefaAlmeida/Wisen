@@ -17,6 +17,7 @@ export default function PerfilPage() {
   const [profile, setProfile] = useState({
     name: "",
     email: "",
+    avatarDataUrl: null,
     interests: [],
     notifications: { reviewReminders: true, weeklySummary: false },
   });
@@ -42,6 +43,7 @@ export default function PerfilPage() {
         setProfile({
           name: data.user.name,
           email: data.user.email,
+          avatarDataUrl: data.avatarDataUrl,
           interests: data.preferences.interests,
           notifications: data.preferences.notifications,
         });
@@ -84,6 +86,26 @@ export default function PerfilPage() {
       setFeedback({ type: "success", text: "Perfil atualizado com sucesso!" });
     } catch (error) {
       setFeedback({ type: "error", text: error.message || "Erro ao atualizar o perfil." });
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function saveAvatar(avatarDataUrl) {
+    setSaving(true);
+    setFeedback(null);
+    try {
+      const response = await fetch("/api/auth/avatar", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ avatarDataUrl }),
+      });
+      const data = await parseResponse(response);
+      if (!response.ok) {
+        throw new Error(data.message || data.error || `Erro HTTP ${response.status}`);
+      }
+      setProfile((current) => ({ ...current, avatarDataUrl: data.avatarDataUrl }));
+      setFeedback({ type: "success", text: "Foto de perfil atualizada." });
     } finally {
       setSaving(false);
     }
@@ -138,6 +160,8 @@ export default function PerfilPage() {
               <PersonalDataCard
                 name={profile.name}
                 email={profile.email}
+                avatarDataUrl={profile.avatarDataUrl}
+                onAvatarUpload={saveAvatar}
                 onNameChange={(name) => setProfile((current) => ({ ...current, name }))}
                 onEmailChange={(email) => setProfile((current) => ({ ...current, email }))}
                 onSubmit={saveProfile}

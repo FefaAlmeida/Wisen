@@ -10,6 +10,7 @@ const allowedAuthActions = new Set([
   "register",
   "session",
   "profile",
+  "avatar",
   "password",
 ]);
 
@@ -32,6 +33,7 @@ async function forward(request, context) {
     (root === "auth" && action === "session" && request.method === "GET") ||
     (root === "auth" && action === "profile" && request.method === "GET") ||
     (root === "auth" && action === "profile" && request.method === "PUT") ||
+    (root === "auth" && action === "avatar" && request.method === "PUT") ||
     (root === "auth" && action === "password" && request.method === "PUT") ||
     (root === "auth" && ["login", "logout", "register"].includes(action) && request.method === "POST") ||
     ((root === "articles" || root === "health") && request.method === "GET") ||

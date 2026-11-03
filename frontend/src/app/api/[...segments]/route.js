@@ -1,10 +1,22 @@
-const apiUrl = process.env.BACKEND_INTERNAL_URL || "http://wisen-backend-1:8080/api";
+import { NextResponse } from "next/server";
+
+const apiUrl = process.env.BACKEND_INTERNAL_URL || "http://localhost:8080/api";
 const allowedRoots = new Set(["articles", "auth", "health", "search"]);
-const allowedAuthActions = new Set(["login", "logout", "register", "session"]);
+
+// 1. Incluído "profile" nas ações permitidas de auth
+const allowedAuthActions = new Set([
+  "login",
+  "logout",
+  "register",
+  "session",
+  "profile",
+  "password",
+]);
 
 async function forward(request, context) {
   const { segments } = await context.params;
   const [root, action] = segments ?? [];
+
   if (
     !allowedRoots.has(root) ||
     (root === "auth" && (segments.length !== 2 || !allowedAuthActions.has(action))) ||
@@ -14,17 +26,25 @@ async function forward(request, context) {
   ) {
     return Response.json({ message: "Rota não encontrada" }, { status: 404 });
   }
-  if (
-    (root === "auth" && action === "session" && request.method !== "GET") ||
-    (root === "auth" && action !== "session" && request.method !== "POST") ||
-    ((root === "articles" || root === "health") && request.method !== "GET")
-  ) {
+
+  // 2. Restringe os métodos aceitos por recurso.
+  const isMethodAllowed =
+    (root === "auth" && action === "session" && request.method === "GET") ||
+    (root === "auth" && action === "profile" && request.method === "GET") ||
+    (root === "auth" && action === "profile" && request.method === "PUT") ||
+    (root === "auth" && action === "password" && request.method === "PUT") ||
+    (root === "auth" && ["login", "logout", "register"].includes(action) && request.method === "POST") ||
+    ((root === "articles" || root === "health") && request.method === "GET") ||
+    (root === "search" && request.method === "GET");
+
+  if (!isMethodAllowed) {
     return Response.json({ message: "Método não permitido" }, { status: 405 });
   }
 
   const path = segments.map(encodeURIComponent).join("/");
   const query = new URL(request.url).search;
   let upstream;
+
   try {
     upstream = await fetch(`${apiUrl}/${path}${query}`, {
       method: request.method,
@@ -40,7 +60,7 @@ async function forward(request, context) {
           : {}),
         cookie: request.headers.get("cookie") ?? "",
       },
-      body: request.method === "GET" ? undefined : await request.arrayBuffer(),
+      body: ["GET", "HEAD"].includes(request.method) ? undefined : await request.arrayBuffer(),
       cache: "no-store",
       signal: AbortSignal.timeout(10000),
     });
@@ -56,8 +76,11 @@ async function forward(request, context) {
   for (const cookie of cookies.filter(Boolean)) {
     headers.append("set-cookie", cookie);
   }
+
   return new Response(upstream.body, { status: upstream.status, headers });
 }
 
+// 3. Exportado explicitamente o verbo PUT para o Next.js aceitar a requisição
 export const GET = forward;
 export const POST = forward;
+export const PUT = forward;

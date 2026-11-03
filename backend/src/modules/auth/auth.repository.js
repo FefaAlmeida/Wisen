@@ -12,6 +12,19 @@ export function authRepository(pool) {
       );
       return rows[0] ?? null;
     },
+
+    async findPasswordHashById(userId) {
+      const { rows } = await pool.query("SELECT password_hash FROM users WHERE id = $1", [userId]);
+      return rows[0]?.password_hash ?? null;
+    },
+
+    async updatePasswordHash(userId, passwordHash) {
+      await pool.query(
+        "UPDATE users SET password_hash = $1, updated_at = now() WHERE id = $2",
+        [passwordHash, userId],
+      );
+    },
+
     async createAccount({ name, email, passwordHash, tokenHash, expiresAt }) {
       return transaction(pool, async (client) => {
         const {
@@ -28,12 +41,14 @@ export function authRepository(pool) {
         return user;
       });
     },
+
     async createSession(userId, tokenHash, expiresAt) {
       await pool.query(
         "INSERT INTO auth_sessions(token_hash, user_id, expires_at) VALUES($1, $2, $3)",
         [tokenHash, userId, expiresAt],
       );
     },
+
     async findSession(tokenHash) {
       const { rows } = await pool.query(
         `SELECT ${sessionUserColumns}
@@ -46,8 +61,63 @@ export function authRepository(pool) {
       );
       return rows[0] ?? null;
     },
+
     async deleteSession(tokenHash) {
       await pool.query("DELETE FROM auth_sessions WHERE token_hash = $1", [tokenHash]);
+    },
+
+    async findProfile(userId) {
+      const { rows } = await pool.query(
+        `SELECT ${sessionUserColumns}, user_preferences.interests,
+                user_preferences.review_reminders, user_preferences.weekly_summary
+           FROM users
+           JOIN user_preferences ON user_preferences.user_id = users.id
+          WHERE users.id = $1`,
+        [userId],
+      );
+      const profile = rows[0];
+      if (!profile) return null;
+
+      const { id, email, name, role, interests, review_reminders, weekly_summary } = profile;
+      return {
+        user: { id, email, name, role },
+        preferences: {
+          interests,
+          notifications: { reviewReminders: review_reminders, weeklySummary: weekly_summary },
+        },
+      };
+    },
+
+    async updateProfile(userId, { name, email, interests = [], notifications = {} }) {
+      return transaction(pool, async (client) => {
+        const {
+          rows: [user],
+        } = await client.query(
+          `UPDATE users 
+              SET name = $1, email = $2, updated_at = now() 
+            WHERE id = $3 
+        RETURNING ${userColumns}`,
+          [name, email, userId],
+        );
+
+        await client.query(
+          `INSERT INTO user_preferences (user_id, interests, review_reminders, weekly_summary)
+           VALUES ($1, $2, $3, $4)
+           ON CONFLICT (user_id) DO UPDATE 
+           SET interests = EXCLUDED.interests,
+               review_reminders = EXCLUDED.review_reminders,
+               weekly_summary = EXCLUDED.weekly_summary,
+               updated_at = now()`,
+          [
+            userId,
+            interests,
+            notifications.reviewReminders ?? true,
+            notifications.weeklySummary ?? false,
+          ],
+        );
+
+        return user;
+      });
     },
   };
 }

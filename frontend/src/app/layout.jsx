@@ -1,5 +1,4 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import PrivateNavigation from "@/components/privateNavigation";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -21,7 +20,6 @@ export default function RootLayout({ children }) {
   return (
     <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
-        <PrivateNavigation />
         {children}
       </body>
     </html>

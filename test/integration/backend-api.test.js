@@ -132,6 +132,50 @@ test("cadastro cria usuário, preferência, hash e sessão httpOnly no PostgreSQ
   assert.equal(expiredSession.statusCode, 401);
 });
 
+test("perfil lê e salva dados pessoais, interesses e notificações", async () => {
+  const { body, cookie } = await register({ name: "Perfil Original" });
+  const headers = headersFor(14, { cookie });
+  const initialProfile = await app.inject({
+    method: "GET",
+    url: "/api/auth/profile",
+    headers,
+  });
+
+  assert.equal(initialProfile.statusCode, 200, initialProfile.body);
+  assert.deepEqual(initialProfile.json().preferences, {
+    interests: [],
+    notifications: { reviewReminders: true, weeklySummary: false },
+  });
+
+  const update = await app.inject({
+    method: "PUT",
+    url: "/api/auth/profile",
+    headers,
+    payload: {
+      name: "Perfil Atualizado",
+      email: body.user.email,
+      interests: ["Tecnologia", "Saúde"],
+      notifications: { reviewReminders: false, weeklySummary: true },
+    },
+  });
+  assert.equal(update.statusCode, 200, update.body);
+  assert.equal(update.json().user.name, "Perfil Atualizado");
+
+  const savedProfile = await app.inject({
+    method: "GET",
+    url: "/api/auth/profile",
+    headers,
+  });
+  assert.equal(savedProfile.statusCode, 200, savedProfile.body);
+  assert.deepEqual(savedProfile.json(), {
+    user: { ...body.user, name: "Perfil Atualizado" },
+    preferences: {
+      interests: ["Tecnologia", "Saúde"],
+      notifications: { reviewReminders: false, weeklySummary: true },
+    },
+  });
+});
+
 test("login valida credenciais e persiste a duração de lembrar-me", async () => {
   const email = `login-${randomUUID()}@example.test`;
   await register({ email });

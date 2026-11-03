@@ -1,14 +1,23 @@
 "use client";
 
-import { useState } from "react";
 import {
-  ArrowLeft, Bookmark, Check, ChevronDown, CircleHelp,
-  Lightbulb, Search, Share2, Sparkles, X,
+  ArrowLeft,
+  Bookmark,
+  Check,
+  ChevronDown,
+  CircleHelp,
+  Lightbulb,
+  Search,
+  Share2,
+  Sparkles,
+  X,
 } from "lucide-react";
 import Link from "next/link";
-import Sidebar from "@/components/sidebar";
-import MenuPerfil from "@/components/homeCliente/menuPerfil";
+import { useState } from "react";
 import { Footer } from "@/components/footer";
+import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
+import MenuPerfil from "@/components/homeCliente/menuPerfil";
+import Sidebar from "@/components/sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -60,10 +69,11 @@ export default function PaginaEvento() {
   }
 
   return (
-    <main className="min-h-screen bg-[#F1F3F6] font-[family-name:var(--font-geist-sans)] text-[#101A40]">
+    <main className="relative isolate min-h-screen bg-[#F1F3F6] font-[family-name:var(--font-geist-sans)] text-[#101A40]">
+      <ConnectionsBackground />
       <Sidebar activeItem="Notícias" />
 
-      <div className="min-h-screen sm:ml-[128px] lg:ml-[220px]">
+      <div className="relative z-10 min-h-screen sm:ml-[128px] lg:ml-[220px]">
         {/* Barra global: mantém busca e perfil fora da matéria */}
         <header className="relative z-20 mx-auto flex w-full max-w-[1600px] items-center justify-end gap-3 px-4 pt-4 sm:px-5 lg:px-7">
           <div className="relative min-w-0 flex-1 sm:w-[360px] sm:flex-none">
@@ -272,7 +282,7 @@ export default function PaginaEvento() {
             </button>
           </div>
         )}
-        
+
       </div>
       <Footer />
     </main>

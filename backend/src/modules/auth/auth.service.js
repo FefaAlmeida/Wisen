@@ -56,6 +56,7 @@ export function authService(repository) {
         throw error;
       }
     },
+
     async login({ email, password, remember = false }) {
       const user = await repository.findByEmail(email);
       if (!user?.active || !(await verifyPassword(password, user.password_hash))) {
@@ -70,12 +71,29 @@ export function authService(repository) {
         maxAge: maxAge / 1000,
       };
     },
+
     async findSession(token) {
       if (!token) return null;
       return repository.findSession(hashToken(token));
     },
+
     async logout(token) {
       if (token) await repository.deleteSession(hashToken(token));
+    },
+
+    async updateProfile(userId, data) {
+      const { email } = data;
+
+      if (email) {
+        const existingUser = await repository.findByEmail(email);
+        if (existingUser && existingUser.id !== userId) {
+          throw Object.assign(new Error("Este e-mail já está em uso por outra conta"), {
+            statusCode: 409,
+          });
+        }
+      }
+
+      return repository.updateProfile(userId, data);
     },
   };
 }

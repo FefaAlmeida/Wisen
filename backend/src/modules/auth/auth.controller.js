@@ -14,11 +14,24 @@ const userSchema = z.object({
   name: z.string(),
   role: z.enum(["user", "admin"]),
 });
+
 const credentialsSchema = z.object({
   email: z.email().trim().toLowerCase(),
   password: z.string().min(8).max(128),
 });
+
 const loginSchema = credentialsSchema.extend({ remember: z.boolean().optional().default(false) });
+
+// 1. Schema para validação dos dados enviados na atualização do perfil
+const updateProfileSchema = z.object({
+  name: z.string().trim().min(2).max(120),
+  email: z.email().trim().toLowerCase(),
+  topics: z.array(z.string()).default([]),
+  notifications: z.object({
+    reviewReminders: z.boolean(),
+    weeklySummary: z.boolean(),
+  }),
+});
 
 export function authController(app, service, config) {
   app.decorateRequest("user", null);
@@ -50,6 +63,7 @@ export function authController(app, service, config) {
       return reply.code(201).send({ user });
     },
   );
+
   app.post(
     "/api/auth/login",
     {
@@ -69,6 +83,7 @@ export function authController(app, service, config) {
       return { user };
     },
   );
+
   app.get(
     "/api/auth/session",
     {
@@ -77,6 +92,7 @@ export function authController(app, service, config) {
     },
     (request) => ({ user: request.user }),
   );
+
   app.post(
     "/api/auth/logout",
     { schema: { tags: ["Autenticação"], response: { 204: z.null() } } },
@@ -84,6 +100,23 @@ export function authController(app, service, config) {
       await service.logout(request.cookies[sessionCookie]);
       reply.clearCookie(sessionCookie, cookieOptions(config));
       return reply.code(204).send();
+    },
+  );
+
+  // 2. Rota de atualização de perfil (Nome, E-mail, Tópicos e Notificações)
+  app.put(
+    "/api/auth/profile",
+    {
+      preHandler: app.authenticate,
+      schema: {
+        tags: ["Autenticação"],
+        body: updateProfileSchema,
+        response: { 200: z.object({ user: userSchema }) },
+      },
+    },
+    async (request, reply) => {
+      const user = await service.updateProfile(request.user.id, request.body);
+      return reply.code(200).send({ user });
     },
   );
 }

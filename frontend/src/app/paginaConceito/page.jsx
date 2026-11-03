@@ -10,6 +10,8 @@ import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import Sidebar from "@/components/sidebar";
 import { Input } from "@/components/ui/input";
 
+import { Footer } from "@/components/footer";
+
 export default function PaginaConceito() {
   return (
     <div className="min-h-screen">
@@ -58,6 +60,8 @@ export default function PaginaConceito() {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
+
   );
 }

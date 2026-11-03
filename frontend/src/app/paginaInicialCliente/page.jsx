@@ -1,5 +1,6 @@
 import { Search } from "lucide-react";
 import Image from "next/image";
+import { Footer } from "@/components/footer";
 import CardInteresse from "@/components/homeCliente/cardInteresse";
 import CardNoticia from "@/components/homeCliente/cardNoticia";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
@@ -192,6 +193,7 @@ export default function Home() {
           </div>
         </div>
       </main>
+       <Footer />
     </div>
   );
 }

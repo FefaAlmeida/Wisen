@@ -3,6 +3,7 @@ import { TopoMonitorIa } from '@/components/monitorIa/topoMonitorIa';
 import { CartoesMetricasIa } from '@/components/monitorIa/cartoesMetricasIa';
 import { GraficosConsumoIa } from '@/components/monitorIa/graficosConsumoIa';
 import { TabelaLogsIa } from '@/components/monitorIa/tabelaLogsIa';
+import { Footer } from "@/components/footer";
 
 export default function PaginaMonitorIa() {
   return (
@@ -19,7 +20,8 @@ export default function PaginaMonitorIa() {
 
       {/* Etapa 4: Tabela de Logs de Chamadas de IA */}
       <TabelaLogsIa />
-
+      <Footer />
     </div>
+
   );
 }

@@ -12,6 +12,11 @@ import { Input } from "@/components/ui/input";
 
 import { conceitos } from "@/data/conceitos";
 
+import { Footer } from "@/components/footer";
+
+
+
+
 export default function Home() {
   return (
     <div className="min-h-screen">
@@ -101,6 +106,8 @@ export default function Home() {
           </div>
         </div>
       </main>
+
+        <Footer />
     </div>
   );
 }

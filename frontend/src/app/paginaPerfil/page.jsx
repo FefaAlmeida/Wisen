@@ -12,6 +12,7 @@ import { SecurityCard } from "@/components/perfil/securityCard";
 import Sidebar from "@/components/sidebar";
 import { Input } from "@/components/ui/input";
 
+import { Footer } from "@/components/footer";
 export default function PerfilPage() {
   const [profile, setProfile] = useState({
     name: "",
@@ -179,6 +180,7 @@ export default function PerfilPage() {
           </div>
         </div>
       </main>
+       <Footer />
     </div>
   );
 }

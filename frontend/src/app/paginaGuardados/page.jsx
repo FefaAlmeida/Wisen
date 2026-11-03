@@ -5,6 +5,7 @@ import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackg
 import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import Sidebar from "@/components/sidebar";
 import { Input } from "@/components/ui/input";
+import { Footer } from "@/components/footer";
 
 export default function PaginaGuardados() {
   return (
@@ -80,6 +81,7 @@ export default function PaginaGuardados() {
           </div>
         </div>
       </main>
+       <Footer />
     </div>
   );
 }

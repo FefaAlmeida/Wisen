@@ -11,6 +11,8 @@ import { GraficoEvolucao } from "@/components/meuConhecimento/graficoEvolucao";
 import { HistoricoAtividades } from "@/components/meuConhecimento/historicoAtividades";
 import Sidebar from "@/components/sidebar";
 import { Input } from "@/components/ui/input";
+import { Footer } from "@/components/footer";
+
 
 export default function PaginaConhecimento() {
   return (
@@ -79,6 +81,7 @@ export default function PaginaConhecimento() {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

@@ -21,7 +21,7 @@ export default function FormularioLogin({ glass = false }) {
     setEnviando(true);
     const form = new FormData(event.currentTarget);
     try {
-      await requisitar("/auth/login", {
+      const { user } = await requisitar("/auth/login", {
         method: "POST",
         body: {
           email: form.get("email"),
@@ -34,7 +34,9 @@ export default function FormularioLogin({ glass = false }) {
       window.location.assign(
         destination?.origin === window.location.origin
           ? `${destination.pathname}${destination.search}${destination.hash}`
-          : "/paginaInicialCliente",
+          : user.role === "admin"
+            ? "/paginaInicioAdm"
+            : "/paginaInicialCliente",
       );
     } catch (error) {
       setErro(error.message || "Não foi possível entrar. Tente novamente.");

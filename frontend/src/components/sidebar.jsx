@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import {
+  LayoutDashboard,
   Clock3,
   Compass,
   GraduationCap,
@@ -111,6 +113,48 @@ function SettingsLink({ activeItem, mobile = false }) {
   return mobile ? <SheetClose nativeButton={false} render={link} /> : link;
 }
 
+function AdminDashboardLink({ mobile = false }) {
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+
+    async function checkAdminRole() {
+      try {
+        const response = await fetch("/api/auth/session", { cache: "no-store" });
+        if (!response.ok) {
+          throw new Error(`Não foi possível verificar a sessão (HTTP ${response.status}).`);
+        }
+        const { user } = await response.json();
+        if (active) setIsAdmin(user?.role === "admin");
+      } catch (error) {
+        console.error("Não foi possível verificar o acesso administrativo.", error);
+      }
+    }
+
+    checkAdminRole();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  if (!isAdmin) return null;
+
+  const link = (
+    <Link
+      href="/paginaInicioAdm"
+      className={`flex h-10 items-center gap-2 rounded-md px-2 text-[10px] text-[#c5ced8] transition-colors hover:bg-white/10 hover:text-white ${
+        mobile ? "h-11 gap-3 px-3 text-sm" : "lg:gap-3 lg:px-2.5 lg:text-[12px]"
+      }`}
+    >
+      <LayoutDashboard size={mobile ? 19 : 17} strokeWidth={1.8} />
+      <span>Painel administrativo</span>
+    </Link>
+  );
+
+  return mobile ? <SheetClose nativeButton={false} render={link} /> : link;
+}
+
 export default function Sidebar({ activeItem }) {
   return (
     <>
@@ -147,6 +191,9 @@ export default function Sidebar({ activeItem }) {
           </Link>
 
           <NavigationItems activeItem={activeItem} mobile />
+          <div className="mt-2 border-t border-white/10 pt-2">
+            <AdminDashboardLink mobile />
+          </div>
 
           <div className="mt-auto border-t border-white/10 pt-4">
             <SettingsLink activeItem={activeItem} mobile />
@@ -166,6 +213,9 @@ export default function Sidebar({ activeItem }) {
         </Link>
 
         <NavigationItems activeItem={activeItem} />
+        <div className="mt-2 border-t border-white/10 pt-2">
+          <AdminDashboardLink />
+        </div>
         <SettingsLink activeItem={activeItem} />
       </aside>
     </>

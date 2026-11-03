@@ -1,8 +1,19 @@
 import { NextResponse } from "next/server";
 
 const apiUrl = process.env.BACKEND_INTERNAL_URL || "http://localhost:8080/api";
+const adminRoutes = [
+  "/paginaInicioAdm",
+  "/paginaCuidadoriaEventosAdm",
+  "/paginaGestaoUsuariosAdm",
+  "/paginaGestaoFonteAdm",
+  "/paginaMonitorIa",
+];
 
 export async function proxy(request) {
+  const isAdminRoute = adminRoutes.some(
+    (route) =>
+      request.nextUrl.pathname === route || request.nextUrl.pathname.startsWith(`${route}/`),
+  );
   let response;
   try {
     const forwardedIp = request.headers.get("x-real-ip");
@@ -21,7 +32,25 @@ export async function proxy(request) {
     );
   }
 
-  if (response.ok) return NextResponse.next();
+  if (response.ok) {
+    if (isAdminRoute) {
+      let session;
+      try {
+        session = await response.json();
+      } catch {
+        return NextResponse.json(
+          { message: "Não foi possível verificar as permissões da conta." },
+          { status: 503 },
+        );
+      }
+
+      if (session.user?.role !== "admin") {
+        return NextResponse.redirect(new URL("/paginaInicialCliente", request.url));
+      }
+    }
+
+    return NextResponse.next();
+  }
   if (response.status !== 401 && response.status !== 403) {
     return NextResponse.json(
       { message: "Não foi possível verificar sua sessão." },
@@ -44,5 +73,10 @@ export const config = {
     "/paginaGuardados/:path*",
     "/paginaRevisoes/:path*",
     "/paginaPerfil/:path*",
+    "/paginaInicioAdm/:path*",
+    "/paginaCuidadoriaEventosAdm/:path*",
+    "/paginaGestaoUsuariosAdm/:path*",
+    "/paginaGestaoFonteAdm/:path*",
+    "/paginaMonitorIa/:path*",
   ],
 };

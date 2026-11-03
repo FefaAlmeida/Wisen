@@ -1,3 +1,6 @@
+
+import { Search } from "lucide-react";
+
 import { CabecalhoConhecimento } from "@/components/meuConhecimento/cabecalhoConhecimento";
 import { CartaoFocoAtual } from "@/components/meuConhecimento/cartaoFocoAtual";
 import { CartoesEstatisticas } from "@/components/meuConhecimento/cartoesEstatisticas";
@@ -5,35 +8,76 @@ import { DistribuicaoCategorias } from "@/components/meuConhecimento/distribuica
 import { GraficoEvolucao } from "@/components/meuConhecimento/graficoEvolucao";
 import { HistoricoAtividades } from "@/components/meuConhecimento/historicoAtividades";
 
+import Sidebar from "@/components/sidebar";
+import MenuPerfil from "@/components/homeCliente/menuPerfil";
+import { Input } from "@/components/ui/input";
+
 export default function PaginaConhecimento() {
   return (
-    <div className="w-full max-w-6xl mx-auto p-6 md:p-10 space-y-8 bg-slate-50/60 min-h-screen">
-      {/* Cabeçalho */}
-      <CabecalhoConhecimento />
+    <div className="min-h-screen">
+      <Sidebar activeItem="Meu conhecimento" />
 
-      {/* Linha 1: 3 Cartões de Estatísticas Superiores */}
-      <CartoesEstatisticas />
+      <main className="min-h-screen min-w-0 bg-[radial-gradient(ellipse_at_60%_0%,#E4EDF5_0%,#F0F4F9_60%,#F0F4F9_100%)] font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
+        <div className="mx-auto w-full max-w-[1600px]">
 
-      {/* Linha 2: Área Principal de Conteúdo (2 Colunas: 2/3 e 1/3) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Coluna Principal (2/3) */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Gráfico de Evolução */}
-          <GraficoEvolucao />
+          {/* Barra de pesquisa e perfil */}
+          <div className="relative z-50 flex items-center justify-end gap-3 px-5 pt-3 md:px-8">
+            <search className="relative min-w-0 flex-1 sm:w-[360px] sm:flex-none">
+              <Search
+                aria-hidden="true"
+                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#7182A1]"
+                size={16}
+              />
 
-          {/* Histórico Recente de Atividades */}
-          <HistoricoAtividades />
+              <Input
+                type="search"
+                aria-label="Buscar notícias, conceitos ou temas"
+                placeholder="Pesquise por notícias, conceitos ou temas..."
+                className="h-9 rounded-full border-wisen-borda bg-white/90 pl-9 text-[11px] shadow-sm placeholder:text-[#8794AA] focus-visible:ring-[#DCE5F2]"
+              />
+            </search>
+
+            <MenuPerfil />
+          </div>
+
+          {/* Conteúdo principal */}
+          <div className="space-y-8 px-5 pt-8 pb-12 md:px-8">
+
+            {/* Cabeçalho */}
+            <CabecalhoConhecimento />
+
+            {/* Cartões de estatísticas */}
+            <CartoesEstatisticas />
+
+            {/* Área principal: gráfico, histórico e categorias */}
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+
+              {/* Coluna principal - 2/3 */}
+              <div className="space-y-6 lg:col-span-2">
+
+                {/* Gráfico de evolução */}
+                <GraficoEvolucao />
+
+                {/* Histórico recente de atividades */}
+                <HistoricoAtividades />
+
+              </div>
+
+              {/* Coluna lateral - 1/3 */}
+              <div className="space-y-6">
+
+                {/* Distribuição por categoria */}
+                <DistribuicaoCategorias />
+
+                {/* Foco atual */}
+                <CartaoFocoAtual />
+
+              </div>
+            </div>
+
+          </div>
         </div>
-
-        {/* Coluna Lateral (1/3) */}
-        <div className="space-y-6">
-          {/* Distribuição por Categoria */}
-          <DistribuicaoCategorias />
-
-          {/* Seu Foco Atual e Incentive Box */}
-          <CartaoFocoAtual />
-        </div>
-      </div>
+      </main>
     </div>
   );
 }

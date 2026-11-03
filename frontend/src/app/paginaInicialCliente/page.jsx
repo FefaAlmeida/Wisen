@@ -8,6 +8,7 @@ import PainelRevisoes from "@/components/homeCliente/painelRevisoes";
 import Sidebar from "@/components/sidebar";
 import { Input } from "@/components/ui/input";
 import MenuPerfil from "@/components/homeCliente/menuPerfil";
+import { Footer } from "@/components/footer";
 
 export default function Home() {
   return (
@@ -191,6 +192,7 @@ export default function Home() {
           </div>
         </div>
       </main>
+       <Footer />
     </div>
   );
 }

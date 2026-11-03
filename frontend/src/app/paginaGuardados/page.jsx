@@ -5,6 +5,7 @@ import PainelGuardados from "@/components/guardados/painelGuardados";
 import Sidebar from "@/components/sidebar";
 import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import { Input } from "@/components/ui/input";
+import { Footer } from "@/components/footer";
 
 export default function PaginaGuardados() {
   return (
@@ -79,6 +80,7 @@ export default function PaginaGuardados() {
           </div>
         </div>
       </main>
+       <Footer />
     </div>
   );
 }

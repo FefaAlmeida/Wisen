@@ -7,6 +7,7 @@ import HeroHome from "@/components/homeCliente/heroHome";
 import PainelRevisoes from "@/components/homeCliente/painelRevisoes";
 import Sidebar from "@/components/sidebar";
 import { Input } from "@/components/ui/input";
+import MenuPerfil from "@/components/homeCliente/menuPerfil";
 
 export default function Home() {
   return (
@@ -30,13 +31,7 @@ export default function Home() {
                   className="h-9 rounded-full border-wisen-borda bg-white/90 pl-9 text-[11px] shadow-sm placeholder:text-[#8794AA] focus-visible:ring-[#DCE5F2]"
                 />
               </search>
-              <Link
-                href="/paginaPerfil"
-                aria-label="Abrir perfil"
-                className="grid size-9 shrink-0 place-items-center rounded-full bg-[#F3E69A] text-[11px] font-semibold text-[#263551] shadow-sm transition-colors hover:bg-[#EBDD80]"
-              >
-                NB
-              </Link>
+             <MenuPerfil/>
             </div>
 
             <div className="relative z-10 w-full md:w-[60%]">

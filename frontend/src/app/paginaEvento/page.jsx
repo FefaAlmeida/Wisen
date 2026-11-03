@@ -2,7 +2,6 @@
 
 import {
   ArrowLeft,
-  Bell,
   Bookmark,
   Check,
   ChevronDown,
@@ -19,7 +18,7 @@ import Sidebar from "@/components/sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { BarraBusca } from "@/components/barraBusca";
+import MenuPerfil from "@/components/homeCliente/menuPerfil";
 
 const concepts = [
   { title: "Mudanças climáticas", detail: "Em revisão", color: "bg-amber-400" },
@@ -74,30 +73,25 @@ export default function PaginaEvento() {
       <Sidebar activeItem="Notícias" />
 
       <div className="min-h-screen sm:ml-[128px] lg:ml-[220px]">
-        <header className="sticky top-[52px] z-10 flex h-[60px] items-center justify-between border-b border-[#e5e8ed] bg-[#f5f6f8]/95 px-4 backdrop-blur sm:px-5 lg:px-7">
-          <div className="flex w-full max-w-[420px] items-center gap-2.5">
-            <Search className="absolute ml-3 text-[#9099a6]" size={17} />
-            <BarraBusca/>
-          </div>
-          <div className="ml-4 flex shrink-0 items-center gap-3">
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label="Notificações"
-              className="relative text-[#536071]"
-            >
-              <Bell size={19} />
-              <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-[#e5c844]" />
-            </Button>
-            <button
-              type="button"
-              aria-label="Perfil de NB"
-              className="grid size-9 place-items-center rounded-full bg-[#f1e7b9] text-[12px] font-semibold text-[#576071]"
-            >
-              NB
-            </button>
-          </div>
-        </header>
+        {/* Pesquisa e perfil - padrão visual da página inicial */}
+        <div className="relative z-50 mx-auto flex w-full max-w-[1600px] items-center justify-end gap-3 px-4 pt-3 sm:px-5 lg:px-7">
+          <search className="relative min-w-0 flex-1 sm:w-[360px] sm:flex-none">
+            <Search
+              aria-hidden="true"
+              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#7182A1]"
+              size={16}
+            />
+            <Input
+              type="search"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              aria-label="Buscar notícias, conceitos ou temas"
+              placeholder="Pesquise por notícias, conceitos ou temas..."
+              className="h-9 rounded-full border-wisen-borda bg-white/90 pl-9 text-[11px] shadow-sm placeholder:text-[#8794AA] focus-visible:ring-[#DCE5F2]"
+            />
+          </search>
+          <MenuPerfil />
+        </div>
 
         <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-5 px-4 py-5 sm:px-5 md:grid-cols-[minmax(0,1.85fr)_minmax(210px,0.95fr)] md:gap-4 lg:px-7 lg:py-6">
           <section className="min-w-0">
@@ -323,7 +317,7 @@ export default function PaginaEvento() {
         </div>
 
         {search && (
-          <div className="fixed inset-x-4 top-[68px] z-30 mx-auto flex max-w-[420px] items-center justify-between rounded-md border border-[#e2e5e9] bg-white px-4 py-3 text-[13px] text-[#687382] shadow-md sm:left-[calc(50%+64px)] sm:right-auto sm:-translate-x-1/2 lg:left-[calc(50%+110px)]">
+          <div className="fixed inset-x-4 top-[70px] z-30 mx-auto flex max-w-[420px] items-center justify-between rounded-md border border-[#e2e5e9] bg-white px-4 py-3 text-[13px] text-[#687382] shadow-md sm:left-[calc(50%+64px)] sm:right-auto sm:-translate-x-1/2 lg:left-[calc(50%+110px)]">
             <span>
               Buscando por <strong className="text-[#303b4c]">{search}</strong>
             </span>

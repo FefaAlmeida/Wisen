@@ -1,18 +1,19 @@
 import { Search } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import { Footer } from "@/components/footer";
 import CardInteresse from "@/components/homeCliente/cardInteresse";
 import CardNoticia from "@/components/homeCliente/cardNoticia";
 import HeroHome from "@/components/homeCliente/heroHome";
+import { InitialInterestDialog } from "@/components/homeCliente/initialInterestDialog";
+import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import PainelRevisoes from "@/components/homeCliente/painelRevisoes";
 import Sidebar from "@/components/sidebar";
 import { Input } from "@/components/ui/input";
-import MenuPerfil from "@/components/homeCliente/menuPerfil";
-import { Footer } from "@/components/footer";
 
 export default function Home() {
   return (
     <div className="min-h-screen">
+      <InitialInterestDialog />
       <Sidebar activeItem="Início" />
       <main className="min-h-screen min-w-0 bg-[radial-gradient(ellipse_at_70%_0%,#E3EAF4_0%,#F0F4F9_55%,#F0F4F9_100%)] font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
         <div className="mx-auto w-full max-w-[1600px]">

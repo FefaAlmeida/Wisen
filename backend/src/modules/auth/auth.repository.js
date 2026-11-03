@@ -33,7 +33,10 @@ export function authRepository(pool) {
           `INSERT INTO users(name, email, password_hash) VALUES($1, $2, $3) RETURNING ${userColumns}`,
           [name, email, passwordHash],
         );
-        await client.query("INSERT INTO user_preferences(user_id) VALUES($1)", [user.id]);
+        await client.query(
+          "INSERT INTO user_preferences(user_id, interest_onboarding_completed) VALUES($1, false)",
+          [user.id],
+        );
         await client.query(
           "INSERT INTO auth_sessions(token_hash, user_id, expires_at) VALUES($1, $2, $3)",
           [tokenHash, user.id, expiresAt],
@@ -69,6 +72,7 @@ export function authRepository(pool) {
     async findProfile(userId) {
       const { rows } = await pool.query(
         `SELECT ${sessionUserColumns}, users.avatar_data_url, user_preferences.interests,
+                user_preferences.interest_onboarding_completed,
                 user_preferences.review_reminders, user_preferences.weekly_summary
            FROM users
            JOIN user_preferences ON user_preferences.user_id = users.id
@@ -85,6 +89,7 @@ export function authRepository(pool) {
         role,
         avatar_data_url,
         interests,
+        interest_onboarding_completed,
         review_reminders,
         weekly_summary,
       } = profile;
@@ -93,6 +98,7 @@ export function authRepository(pool) {
         avatarDataUrl: avatar_data_url,
         preferences: {
           interests,
+          onboardingCompleted: interest_onboarding_completed,
           notifications: { reviewReminders: review_reminders, weeklySummary: weekly_summary },
         },
       };
@@ -111,12 +117,15 @@ export function authRepository(pool) {
         );
 
         await client.query(
-          `INSERT INTO user_preferences (user_id, interests, review_reminders, weekly_summary)
-           VALUES ($1, $2, $3, $4)
+          `INSERT INTO user_preferences (
+             user_id, interests, review_reminders, weekly_summary, interest_onboarding_completed
+           )
+           VALUES ($1, $2, $3, $4, true)
            ON CONFLICT (user_id) DO UPDATE 
            SET interests = EXCLUDED.interests,
                review_reminders = EXCLUDED.review_reminders,
                weekly_summary = EXCLUDED.weekly_summary,
+               interest_onboarding_completed = true,
                updated_at = now()`,
           [
             userId,

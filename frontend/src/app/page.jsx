@@ -1,3 +1,4 @@
+
 import { ApresentacaoLanding } from "@/components/landingPage/apresentacaoLanding";
 import { BannerImpacto } from "@/components/landingPage/bannerImpacto";
 import { DepoimentosLanding } from "@/components/landingPage/depoimentosLanding";
@@ -8,8 +9,8 @@ import { Footer } from "@/components/footer";
 
 export default function PaginaLanding() {
   return (
-    <div className="min-h-screen bg-[#F1F3F6] text-[#2B333F] selection:bg-[#E8E191] selection:text-[#2B333F]">
-      <main className="max-w-6xl mx-auto px-6 py-8 space-y-20">
+    <div className="min-h-screen overflow-x-clip bg-[#F1F3F6] text-[#2B333F] selection:bg-[#E8E191] selection:text-[#101A40]">
+      <main className="mx-auto flex w-full max-w-[1360px] flex-col gap-20 px-4 pb-24 pt-5 sm:px-6 sm:pt-8 md:gap-28 lg:gap-32 lg:px-10 xl:px-12">
         <HeroLanding />
         <ApresentacaoLanding />
         <RecursosLanding />

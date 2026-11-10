@@ -125,6 +125,7 @@ export default function PaginaEvento() {
                 >
                   <Share2 size={15} /> Compartilhar
                 </Button>
+                
               </div>
             </div>
 

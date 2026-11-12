@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -6,46 +8,47 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { conceitos } from "@/data/conceitos";
 
-export function FiltrosBiblioteca() {
+const filtros = [
+  { id: "todos", rotulo: "Todas", status: null, cor: null },
+  { id: "lacunas", rotulo: "Minhas lacunas", status: "Lacuna", cor: "bg-[#FF6469]" },
+  { id: "revisao", rotulo: "Em revisão", status: "Em revisão", cor: "bg-[#FFD33D]" },
+  { id: "dominados", rotulo: "Dominados", status: "Dominado", cor: "bg-[#33B27C]" },
+];
+
+export function FiltrosBiblioteca({ filtroAtivo, onFiltroChange }) {
   return (
     <div className="flex w-full flex-wrap items-center justify-between gap-4">
       {/* Filtros */}
-      <div className="flex flex-wrap items-center gap-2.5">
-        <Button
-          size="sm"
-          className="h-9 rounded-full border-0 bg-wisen-destaque-suave px-5 text-[13px] font-medium text-wisen-texto shadow-none hover:bg-[#F1E18A]"
-        >
-          Todas (124)
-        </Button>
+      <fieldset className="flex flex-wrap items-center gap-2.5 border-0 p-0">
+        <legend className="sr-only">Filtrar conceitos por status</legend>
+        {filtros.map((filtro) => {
+          const quantidade = filtro.status
+            ? conceitos.filter((conceito) => conceito.status === filtro.status).length
+            : conceitos.length;
+          const ativo = filtro.id === filtroAtivo;
 
-        <Button
-          variant="outline"
-          size="sm"
-          className="h-9 rounded-full border-wisen-borda bg-white/80 px-4 text-[13px] font-normal text-[#607092] shadow-none hover:bg-white hover:text-wisen-texto"
-        >
-          <span className="mr-2 h-2 w-2 rounded-full bg-[#FF6469]" />
-          Minhas lacunas (28)
-        </Button>
-
-        <Button
-          variant="outline"
-          size="sm"
-          className="h-9 rounded-full border-wisen-borda bg-white/80 px-4 text-[13px] font-normal text-[#607092] shadow-none hover:bg-white hover:text-wisen-texto"
-        >
-          <span className="mr-2 h-2 w-2 rounded-full bg-[#FFD33D]" />
-          Em revisão (36)
-        </Button>
-
-        <Button
-          variant="outline"
-          size="sm"
-          className="h-9 rounded-full border-wisen-borda bg-white/80 px-4 text-[13px] font-normal text-[#607092] shadow-none hover:bg-white hover:text-wisen-texto"
-        >
-          <span className="mr-2 h-2 w-2 rounded-full bg-[#33B27C]" />
-          Dominados (60)
-        </Button>
-      </div>
+          return (
+            <Button
+              key={filtro.id}
+              type="button"
+              size="sm"
+              variant={ativo ? "default" : "outline"}
+              aria-pressed={ativo}
+              onClick={() => onFiltroChange(filtro.id)}
+              className={
+                ativo
+                  ? "h-9 rounded-full border-0 bg-wisen-destaque-suave px-5 text-[13px] font-medium text-wisen-texto shadow-none hover:bg-[#F1E18A]"
+                  : "h-9 rounded-full border-wisen-borda bg-white/80 px-4 text-[13px] font-normal text-[#607092] shadow-none hover:bg-white hover:text-wisen-texto"
+              }
+            >
+              {filtro.cor && <span className={`mr-2 h-2 w-2 rounded-full ${filtro.cor}`} />}
+              {filtro.rotulo} ({quantidade})
+            </Button>
+          );
+        })}
+      </fieldset>
 
       <Select defaultValue="relevantes">
         <SelectTrigger className="h-9 w-[165px] rounded-full border border-[#E1E7F0] bg-[#F8FAFD] px-3 text-xs font-medium text-[#344469] shadow-none focus:ring-0 [&>svg:last-child]:h-3.5 [&>svg:last-child]:w-3.5">

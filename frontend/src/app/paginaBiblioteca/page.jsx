@@ -1,14 +1,12 @@
 import { Search } from "lucide-react";
 import Image from "next/image";
 
-import { CardConceito } from "@/components/biblioteca/cardConceito";
-import { FiltrosBiblioteca } from "@/components/biblioteca/filtrosBiblioteca";
+import { CatalogoConceitos } from "@/components/biblioteca/catalogoConceitos";
 import { Footer } from "@/components/footer";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
 import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import Sidebar from "@/components/sidebar";
 import { Input } from "@/components/ui/input";
-import { conceitos } from "@/data/conceitos";
 
 export default function Home() {
   return (
@@ -66,24 +64,8 @@ export default function Home() {
               />
             </section>
 
-            {/* Filtros e ordenação */}
-            <section className="mb-5 w-full">
-              <FiltrosBiblioteca />
-            </section>
-
-            {/* Catálogo de conceitos */}
-            <section className="grid grid-cols-1 items-stretch gap-4 sm:grid-cols-2 xl:grid-cols-4">
-              {conceitos.map((conceito) => (
-                <CardConceito
-                  key={conceito.titulo}
-                  titulo={conceito.titulo}
-                  categoria={conceito.categoria}
-                  descricao={conceito.descricao}
-                  status={conceito.status}
-                  progresso={conceito.progresso}
-                />
-              ))}
-            </section>
+            {/* Filtros e catálogo de conceitos */}
+            <CatalogoConceitos />
           </div>
         </div>
       </main>

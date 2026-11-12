@@ -2,8 +2,8 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export default function DicaEstudo() {
   return (
-    <Card className="gap-0 rounded-xl border-0 bg-white p-2 shadow-none">
-      <CardContent className="flex items-start gap-4 rounded-xl bg-[#FFFAE9] px-4 py-5">
+    <Card className="gap-0 rounded-xl border-0 bg-[#FFFAE9] p-0 shadow-none">
+      <CardContent className="flex items-start gap-4 rounded-xl px-4 py-5">
         <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#FFF0AF] text-2xl">
           💡
         </span>

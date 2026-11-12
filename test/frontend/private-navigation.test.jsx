@@ -26,6 +26,10 @@ describe("navegação privada", () => {
       "href",
       "/paginaExplorar",
     );
+    expect(screen.getByRole("link", { name: "Revisões" })).toHaveAttribute(
+      "href",
+      "/paginaRevisoes",
+    );
     await vi.waitFor(() => expect(fetch).toHaveBeenCalled());
     expect(screen.queryByRole("link", { name: "Painel administrativo" })).not.toBeInTheDocument();
   });

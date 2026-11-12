@@ -199,10 +199,9 @@ export default function QuizRevisao() {
 
               <div className="flex flex-wrap gap-2">
                 {[
-                  { nome: "Errei", cor: "bg-[#FDE7E9]" },
-                  { nome: "Difícil", cor: "bg-[#FFF0E3]" },
-                  { nome: "Médio", cor: "bg-[#FFF8D9]" },
-                  { nome: "Fácil", cor: "bg-[#E3F5E9]" },
+                  { nome: "Difícil", cor: "bg-[#FFF0E3] hover:bg-[#F7DEC9]" },
+                  { nome: "Médio", cor: "bg-[#FFF8D9] hover:bg-[#F5E9B8]" },
+                  { nome: "Fácil", cor: "bg-[#E3F5E9] hover:bg-[#D0EBDD]" },
                 ].map((item) => (
                   <Button
                     key={item.nome}
@@ -214,7 +213,7 @@ export default function QuizRevisao() {
                         [indice]: item.nome,
                       }))
                     }
-                    className={`flex h-11 min-w-[100px] items-center justify-center rounded-xl px-4 text-center text-[12px] font-medium text-wisen-titulo hover:opacity-80 ${item.cor} ${
+                    className={`flex h-11 min-w-[100px] items-center justify-center rounded-xl px-4 text-center text-[12px] font-medium text-wisen-titulo ${item.cor} ${
                       avaliacoes[indice] === item.nome ? "ring-2 ring-wisen-titulo" : ""
                     }`}
                   >

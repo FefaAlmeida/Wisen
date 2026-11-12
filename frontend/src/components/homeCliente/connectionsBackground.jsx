@@ -2,8 +2,11 @@
 
 import { useEffect, useRef } from "react";
 
-export function ConnectionsBackground() {
+export function ConnectionsBackground({ fadeTop = true } = {}) {
   const canvasRef = useRef(null);
+  const maskImage = fadeTop
+    ? "linear-gradient(to bottom, transparent 0, transparent 370px, black 560px)"
+    : "none";
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -142,9 +145,8 @@ export function ConnectionsBackground() {
       aria-hidden="true"
       className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
       style={{
-        maskImage: "linear-gradient(to bottom, transparent 0, transparent 370px, black 560px)",
-        WebkitMaskImage:
-          "linear-gradient(to bottom, transparent 0, transparent 370px, black 560px)",
+        maskImage,
+        WebkitMaskImage: maskImage,
       }}
     >
       <canvas ref={canvasRef} className="h-full w-full" />

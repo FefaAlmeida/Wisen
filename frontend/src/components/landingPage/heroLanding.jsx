@@ -3,73 +3,92 @@ import Link from "next/link";
 
 export function HeroLanding() {
   return (
-    <section
-      id="inicio"
-      className="relative isolate overflow-hidden rounded-[28px] border border-[#DCE4EC] bg-[#E9EEF4] shadow-[0_24px_65px_-42px_rgba(16,26,64,0.32)] sm:rounded-[32px]"
-    >
-      {/* Vídeo original */}
+    <section id="inicio" className="relative isolate w-screen overflow-hidden bg-[#101A40]">
       <video
-        className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover object-[65%_center] opacity-60 sm:opacity-80 lg:opacity-100"
+        className="pointer-events-none absolute inset-0 z-0 h-full w-full scale-[1.05] object-cover object-center brightness-105 contrast-105"
         autoPlay
         loop
         muted
         playsInline
+        preload="auto"
         tabIndex={-1}
         aria-hidden="true"
       >
-        <source src="/download.mp4" type="video/mp4" />
+        <source src="/globo_video.mp4" type="video/mp4" />
       </video>
 
-      {/* Gradientes para integrar vídeo e conteúdo */}
-      <div className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-r from-[#F1F3F6] via-[#F1F3F6]/95 to-[#F1F3F6]/55 lg:from-[#F1F3F6] lg:via-[#F1F3F6]/85 lg:to-transparent" />
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_top_left,_rgba(232,225,145,0.16),transparent_22%),radial-gradient(circle_at_center,_rgba(16,26,64,0.12),transparent_45%),linear-gradient(180deg,rgba(7,13,31,0.38)_0%,rgba(7,13,31,0.24)_25%,rgba(7,13,31,0.48)_55%,rgba(7,13,31,0.74)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-r from-[#101A40]/35 via-[#101A40]/10 to-[#101A40]/5" />
 
-      <div className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-t from-[#E9EEF4]/65 via-transparent to-white/10" />
-
-      <div className="relative z-10 grid min-h-[590px] grid-cols-1 items-center gap-10 px-6 py-12 sm:px-10 sm:py-14 lg:grid-cols-12 lg:gap-4 lg:px-14 lg:py-16">
-        {/* Conteúdo */}
-        <div className="relative z-20 space-y-7 lg:col-span-7">
-          <span className="inline-flex max-w-full items-center rounded-full border border-[#CFD9E5] bg-white/65 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.13em] text-[#526783] backdrop-blur-sm sm:text-[11px]">
-            A inteligência para um Brasil e o mundo
-          </span>
-
-          <h1 className="max-w-[670px] text-[clamp(2.8rem,5.3vw,4.9rem)] font-bold leading-[1.08] tracking-[-0.06em] text-[#101A40]">
-            Entenda o mundo.
-            <br />
-            Construa o{" "}
-            <span className="relative inline-flex items-baseline">
-              <span className="relative z-10">seu</span>
-
-              <span className="absolute -bottom-1 left-0 right-5 h-[11px] -rotate-2 rounded-full bg-[#E8E191]/90 sm:h-[15px]" />
-
-              <span className="relative z-10 ml-1.5 inline-block h-3 w-3 shrink-0 rounded-full bg-[#D9C54E] sm:h-4 sm:w-4" />
+      <header className="absolute inset-x-0 top-0 z-20 px-4 pt-4 sm:px-6 lg:px-8 xl:px-12">
+        <div className="mx-auto flex max-w-[1320px] items-center justify-between gap-4 rounded-full border border-[#E8E191]/80 bg-[#E8E191] px-4 py-3 shadow-[0_12px_28px_-18px_rgba(232,225,145,0.9)] sm:px-5 lg:px-6">
+          <Link href="/" className="flex items-center gap-2 transition-opacity duration-200 hover:opacity-90">
+            <span className="text-[1.7rem] font-black leading-none tracking-[-0.08em] text-[#101A40] sm:text-[1.9rem]">
+              Wisen
             </span>
-          </h1>
+            <span className="text-[1.4rem] font-black leading-none tracking-[-0.08em] text-[#101A40] sm:text-[1.6rem]">
+              •
+            </span>
+          </Link>
 
-          <p className="max-w-[465px] text-[15px] leading-[1.9] text-[#566579] sm:text-base">
-            O Wisen transforma complexidade em aprendizado, com explicações claras, conexões
-            personalizadas e o seu mundo completo ao seu alcance.
-          </p>
-
-          {/* Botões */}
-          <div className="flex flex-wrap items-center gap-3 pt-2">
-            <Link
-              href="/paginaCadastro"
-              className="group inline-flex items-center justify-center h-12 cursor-pointer gap-3 rounded-xl bg-[#101A40] px-6 text-[13px] font-semibold text-white shadow-[0_10px_24px_-12px_rgba(16,26,64,0.65)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#30466E] hover:shadow-[0_16px_28px_-12px_rgba(16,26,64,0.45)]"
-            >
-              <span>Começar agora</span>
-              <ArrowRight className="h-4 w-4 text-[#E8E191] transition-transform duration-300 group-hover:translate-x-1" />
+          <nav aria-label="Navegação da plataforma" className="hidden items-center gap-2 md:flex">
+            <Link href="/paginaLogin" className="rounded-full px-3 py-2 text-sm font-medium text-[#101A40]/80 transition-all duration-200 hover:bg-[#101A40]/5 hover:text-[#101A40]">
+              Entrar
             </Link>
+            <Link href="/paginaCadastro" className="rounded-full px-3 py-2 text-sm font-medium text-[#101A40]/80 transition-all duration-200 hover:bg-[#101A40]/5 hover:text-[#101A40]">
+              Criar conta
+            </Link>
+            <Link href="/paginaInicialCliente" className="rounded-full bg-[#101A40] px-4 py-2 text-sm font-semibold text-[#E8E191] shadow-[0_12px_20px_-12px_rgba(16,26,64,0.9)] transition-all duration-200 hover:bg-[#182A5D]">
+              Acessar plataforma
+            </Link>
+          </nav>
+        </div>
+      </header>
 
-            <a
-              href="#sobre"
-              className="group inline-flex items-center justify-center h-12 cursor-pointer gap-3 rounded-xl border-[#D7DFE9] bg-white/80 px-5 text-[13px] font-semibold text-[#101A40] shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-white"
-            >
-              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#E8E191]">
-                <Play className="ml-0.5 h-3 w-3 fill-[#101A40] text-[#101A40]" />
-              </div>
+      <div className="relative z-10 flex min-h-screen items-end px-4 pb-10 pt-28 sm:px-6 sm:pb-14 lg:px-8 xl:px-12">
+        <div className="mx-auto grid w-full max-w-[1320px] items-end gap-10 lg:grid-cols-[1.3fr_0.7fr] lg:gap-14">
+          <div className="max-w-[780px] space-y-7">
+            <span className="inline-flex max-w-full items-center rounded-full border border-[#E8E191]/50 bg-[#101A40]/35 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.13em] text-[#F4F6FA] backdrop-blur-sm sm:text-[11px]">
+              A inteligência para um Brasil e o mundo
+            </span>
 
-              <span>Ver como funciona</span>
-            </a>
+            <h1 className="max-w-[760px] text-[clamp(3rem,6vw,7rem)] font-bold leading-[0.92] tracking-[-0.07em] text-white">
+              Entenda o mundo.
+              <br />
+              Construa o{" "}
+              <span className="relative inline-flex items-baseline">
+                <span className="relative z-10 text-[#F5F1B1]">seu</span>
+                <span className="absolute -bottom-1 left-0 right-5 h-[12px] -rotate-2 rounded-full bg-[#E8E191]/85 sm:h-[16px]" />
+                <span className="relative z-10 ml-1.5 inline-block h-3 w-3 shrink-0 rounded-full bg-[#D9C54E] shadow-[0_0_18px_rgba(217,197,78,0.8)] sm:h-4 sm:w-4" />
+              </span>
+            </h1>
+          </div>
+
+          <div className="flex max-w-[470px] flex-col items-start justify-end gap-6 pb-2 lg:ml-auto lg:items-end lg:text-left">
+            <p className="text-[15px] leading-[1.9] text-[#E9EEF7] sm:text-base lg:max-w-[420px] lg:text-[1.05rem]">
+              O Wisen transforma complexidade em aprendizado, com explicações claras, conexões
+              personalizadas e o seu mundo completo ao seu alcance.
+            </p>
+
+            <div className="flex flex-wrap items-center gap-3">
+              <Link
+                href="/paginaCadastro"
+                className="group inline-flex h-12 items-center justify-center gap-3 rounded-xl bg-[#E8E191] px-6 text-[13px] font-semibold text-[#101A40] shadow-[0_12px_26px_-12px_rgba(232,225,145,0.9)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#F3EB9B]"
+              >
+                <span>Começar agora</span>
+                <ArrowRight className="h-4 w-4 text-[#101A40] transition-transform duration-300 group-hover:translate-x-1" />
+              </Link>
+
+              <a
+                href="#sobre"
+                className="group inline-flex h-12 items-center justify-center gap-3 rounded-xl border border-white/20 bg-white/10 px-5 text-[13px] font-semibold text-white backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/15"
+              >
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#E8E191]">
+                  <Play className="ml-0.5 h-3 w-3 fill-[#101A40] text-[#101A40]" />
+                </div>
+                <span>Ver como funciona</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>

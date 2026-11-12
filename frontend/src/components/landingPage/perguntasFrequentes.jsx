@@ -34,12 +34,12 @@ export function PerguntasFrequentes() {
   };
 
   return (
-    <section id="faq" className="scroll-mt-24">
-      <div className="relative isolate overflow-hidden rounded-[28px] border border-[#293B5C] bg-[#172542] px-6 py-11 text-white shadow-[0_24px_65px_-42px_rgba(16,26,64,0.45)] sm:px-10 md:px-14 md:py-16">
+    <section id="faq" className="relative w-screen -mx-[calc(50vw-50%)]">
+      <div className="relative isolate overflow-hidden border-y border-[#293B5C] bg-[#172542] px-6 py-11 text-white shadow-[0_24px_65px_-42px_rgba(16,26,64,0.45)] sm:px-10 md:px-14 md:py-16">
         {/* Iluminação suave */}
         <div className="pointer-events-none absolute -bottom-32 -left-24 z-0 h-80 w-80 rounded-full bg-[#30466E]/30 blur-3xl" />
 
-        <div className="relative z-10 grid grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-14">
+        <div className="relative z-10 mx-auto grid max-w-[1360px] grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-14">
           {/* Introdução */}
           <div className="space-y-5 lg:col-span-5">
             <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#E8E191]">

@@ -30,6 +30,19 @@ describe("navegação privada", () => {
     expect(screen.queryByRole("link", { name: "Painel administrativo" })).not.toBeInTheDocument();
   });
 
+  it("usa texto branco, realce amarelo, logo ao lado do nome e ícones reforçados", () => {
+    render(<Sidebar activeItem="Início" />);
+
+    const activeLink = screen.getByRole("link", { name: "Início" });
+    const inactiveLink = screen.getByRole("link", { name: "Explorar" });
+    expect(activeLink).toHaveClass("bg-[#EBDD80]", "text-[#202D3A]");
+    expect(inactiveLink).toHaveClass("text-white", "hover:bg-[#EBDD80]", "hover:text-[#202D3A]");
+    expect(inactiveLink.querySelector("svg")).toHaveAttribute("stroke-width", "2.2");
+
+    const logo = screen.getAllByAltText("Logo Wisen")[0];
+    expect(logo.parentElement).toHaveTextContent("Wisen");
+  });
+
   it("oferece acesso ao painel para administrador", async () => {
     fetch.mockResolvedValue({ ok: true, json: async () => ({ user: { role: "admin" } }) });
     render(<Sidebar activeItem="Início" />);

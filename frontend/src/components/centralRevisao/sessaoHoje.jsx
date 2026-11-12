@@ -47,7 +47,7 @@ export default function SessaoHoje() {
             {conceitos.map((conceito, index) => (
               <div
                 key={conceito.nome}
-                className={`flex items-center gap-3 py-3 ${
+                className={`group flex items-center gap-3 py-3 ${
                   index !== conceitos.length - 1 ? "border-b border-[#E6ECF4]" : ""
                 }`}
               >
@@ -60,7 +60,7 @@ export default function SessaoHoje() {
                   <p className="text-[12px] text-[#91A0BA]">{conceito.questoes} questões</p>
                 </div>
 
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#FFF7D8] text-wisen-titulo">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F3E69A] text-wisen-titulo transition-all group-hover:translate-x-1 group-hover:bg-[#EBDD80]">
                   →
                 </span>
               </div>

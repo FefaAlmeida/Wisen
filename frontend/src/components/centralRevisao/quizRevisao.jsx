@@ -99,9 +99,9 @@ export default function QuizRevisao() {
               aria-label="Questão anterior"
               disabled={indice === 0}
               onClick={() => mudarQuestao(-1)}
-              className="h-10 w-10 border-[#DCE5F3] text-wisen-titulo"
+              className="group h-10 w-10 rounded-full border-0 bg-[#F3E69A] p-0 text-[#263551] transition-all hover:bg-[#EBDD80] hover:text-[#263551]"
             >
-              <span className="text-xl">‹</span>
+              <span className="text-xl transition-transform group-hover:-translate-x-1">‹</span>
             </Button>
             <Button
               variant="outline"
@@ -109,9 +109,9 @@ export default function QuizRevisao() {
               aria-label="Próxima questão"
               disabled={indice === questoes.length - 1}
               onClick={() => mudarQuestao(1)}
-              className="h-10 w-10 border-[#DCE5F3] text-wisen-titulo"
+              className="group h-10 w-10 rounded-full border-0 bg-[#F3E69A] p-0 text-[#263551] transition-all hover:bg-[#EBDD80] hover:text-[#263551]"
             >
-              <span className="text-xl">›</span>
+              <span className="text-xl transition-transform group-hover:translate-x-1">›</span>
             </Button>
           </div>
         </div>
@@ -190,7 +190,7 @@ export default function QuizRevisao() {
             <div className="mt-7 flex flex-wrap items-center justify-between gap-4 border-t border-[#E1E8F2] pt-5">
               <div>
                 <h3 className="text-[15px] font-semibold text-wisen-titulo">
-                  Como você foi nesta questão?
+                  O que você achou dessa pergunta?
                 </h3>
                 <p className="text-[12px] text-[#8192B2]">
                   Sua resposta ajuda a personalizar as próximas revisões.

@@ -17,22 +17,31 @@ const profile = {
   avatarDataUrl: null,
   preferences: { interests: [], notifications: { reviewReminders: true, weeklySummary: false } },
 };
+const availableCategories = {
+  categories: [{ name: "Tecnologia" }, { name: "Saúde" }],
+};
 beforeEach(() => {
   mocks.requisitar.mockReset();
 });
 
 it("salva cada cartão sem enviar ou substituir rascunhos dos outros", async () => {
-  mocks.requisitar.mockResolvedValueOnce(profile).mockResolvedValue({ user: profile.user });
+  mocks.requisitar.mockImplementation(async (path, options) => {
+    if (path === "/auth/profile" && options?.method === "PUT") return { user: profile.user };
+    if (path === "/auth/profile") return profile;
+    if (path === "/categories") return availableCategories;
+    return { user: profile.user };
+  });
   const user = userEvent.setup();
   render(<PerfilPage />);
   await screen.findByDisplayValue("Ana Original");
   fireEvent.change(screen.getByLabelText("Nome"), { target: { value: "Nome pendente" } });
   await user.click(screen.getByRole("button", { name: "Tecnologia" }));
+  await user.click(screen.getByRole("button", { name: "Saúde" }));
   await user.click(screen.getByRole("button", { name: "Salvar interesses" }));
   await screen.findByText("Assuntos de interesse salvos.");
   expect(mocks.requisitar).toHaveBeenLastCalledWith("/auth/profile", {
     method: "PUT",
-    body: { interests: ["Tecnologia"] },
+    body: { interests: ["Tecnologia", "Saúde"] },
   });
   expect(screen.getByLabelText("Nome")).toHaveValue("Nome pendente");
   await user.click(screen.getByRole("switch", { name: "Resumo semanal" }));
@@ -52,9 +61,15 @@ it("salva cada cartão sem enviar ou substituir rascunhos dos outros", async () 
 });
 
 it("não permite salvar valores vazios após falha ao carregar e oferece retentativa", async () => {
-  mocks.requisitar
-    .mockRejectedValueOnce(new Error("Servidor indisponível"))
-    .mockResolvedValueOnce(profile);
+  let profileLoadCount = 0;
+  mocks.requisitar.mockImplementation(async (path) => {
+    if (path === "/auth/profile" && profileLoadCount++ === 0) {
+      throw new Error("Servidor indisponível");
+    }
+    if (path === "/auth/profile") return profile;
+    if (path === "/categories") return availableCategories;
+    return { user: profile.user };
+  });
   const user = userEvent.setup();
   render(<PerfilPage />);
   await screen.findByText("Servidor indisponível");

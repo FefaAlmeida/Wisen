@@ -11,6 +11,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { requisitar } from "@/services/api";
+
+const MINIMUM_INTERESTS = 2;
 
 async function readResponse(response) {
   const text = await response.text();
@@ -24,6 +27,7 @@ async function readResponse(response) {
 export function InitialInterestDialog() {
   const [profile, setProfile] = useState(null);
   const [interests, setInterests] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -36,26 +40,37 @@ export function InitialInterestDialog() {
       setLoading(true);
       setError("");
       try {
-        const response = await fetch("/api/auth/profile", {
-          credentials: "same-origin",
-          cache: "no-store",
-        });
+        const [response, categoryData] = await Promise.all([
+          fetch("/api/auth/profile", {
+            credentials: "same-origin",
+            cache: "no-store",
+          }),
+          requisitar("/categories"),
+        ]);
         const data = await readResponse(response);
         if (!response.ok) {
           throw new Error(data.message || data.error || `Erro HTTP ${response.status}`);
+        }
+        const availableCategories = categoryData.categories?.map((category) => category.name);
+        if (!Array.isArray(availableCategories)) {
+          throw new Error("A resposta de categorias não contém uma lista válida.");
         }
         const savedInterests = data.preferences?.interests;
         if (!Array.isArray(savedInterests)) {
           throw new Error("A resposta do perfil não contém uma lista de interesses válida.");
         }
+        const selectedInterests = savedInterests.filter((interest) =>
+          availableCategories.includes(interest),
+        );
         const onboardingCompleted =
           typeof data.preferences.onboardingCompleted === "boolean"
             ? data.preferences.onboardingCompleted
-            : savedInterests.length > 0;
+            : selectedInterests.length >= MINIMUM_INTERESTS;
         if (active) {
           setProfile(data);
-          setInterests(savedInterests);
-          setOpen(!onboardingCompleted);
+          setCategories(availableCategories);
+          setInterests(selectedInterests);
+          setOpen(!onboardingCompleted || selectedInterests.length < MINIMUM_INTERESTS);
         }
       } catch (loadError) {
         if (active) setError(loadError.message || "Não foi possível carregar seu perfil.");
@@ -81,6 +96,13 @@ export function InitialInterestDialog() {
 
   async function completeOnboarding(selectedInterests) {
     if (!profile || saving) return;
+    if (
+      new Set(selectedInterests).size < MINIMUM_INTERESTS ||
+      selectedInterests.some((interest) => !categories.includes(interest))
+    ) {
+      setError("Escolha pelo menos 2 áreas de interesse para continuar.");
+      return;
+    }
 
     setSaving(true);
     setError("");
@@ -132,18 +154,25 @@ export function InitialInterestDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
+      <DialogContent className="max-h-[90vh] overflow-y-auto border border-wisen-borda bg-white sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-[#2B333F]">
+          <DialogTitle className="text-xl font-bold text-wisen-titulo">
             Quais assuntos interessam a você?
           </DialogTitle>
-          <DialogDescription>
-            Escolha suas áreas de interesse para personalizar os conteúdos do Wisen. Você pode
-            alterar suas escolhas depois no perfil.
+          <DialogDescription className="text-wisen-texto-suave">
+            Escolha pelo menos 2 áreas de interesse para personalizar os conteúdos do Wisen. Você
+            pode alterar suas escolhas depois no perfil.
           </DialogDescription>
         </DialogHeader>
 
-        <InterestsCard interests={interests} onToggle={toggleInterest} />
+        <InterestsCard
+          categories={categories}
+          interests={interests}
+          onToggle={toggleInterest}
+          minimumSelections={MINIMUM_INTERESTS}
+          showSaveControls={false}
+          systemColors
+        />
 
         {error && (
           <p role="alert" className="text-sm text-red-600">
@@ -154,17 +183,13 @@ export function InitialInterestDialog() {
         <DialogFooter className="flex-col-reverse sm:flex-row">
           <Button
             type="button"
-            variant="outline"
-            disabled={saving}
-            onClick={() => completeOnboarding(profile.preferences.interests)}
-          >
-            Agora não
-          </Button>
-          <Button
-            type="button"
-            disabled={saving || interests.length === 0}
+            disabled={
+              saving ||
+              new Set(interests).size < MINIMUM_INTERESTS ||
+              interests.some((interest) => !categories.includes(interest))
+            }
             onClick={() => completeOnboarding(interests)}
-            className="bg-[#2B333F] text-white hover:bg-[#1f252e]"
+            className="bg-[#F3E69A] text-wisen-titulo hover:bg-[#EBDD80]"
           >
             {saving ? "Salvando..." : "Salvar interesses"}
           </Button>

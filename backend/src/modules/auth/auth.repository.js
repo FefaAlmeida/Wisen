@@ -106,6 +106,18 @@ export function authRepository(pool) {
 
     async updateProfile(userId, { name, email, interests, notifications }) {
       return transaction(pool, async (client) => {
+        if (interests !== undefined) {
+          const { rows } = await client.query(
+            "SELECT name FROM categories WHERE available = true AND name = ANY($1::text[])",
+            [interests],
+          );
+          if (rows.length !== interests.length) {
+            throw Object.assign(new Error("Um ou mais assuntos não estão disponíveis"), {
+              statusCode: 400,
+            });
+          }
+        }
+
         const {
           rows: [user],
         } = await client.query(

@@ -164,13 +164,13 @@ test("perfil lê e salva dados pessoais, interesses e notificações", async () 
       notifications: { reviewReminders: true, weeklySummary: false },
     },
   });
-  assert.equal(skipOnboarding.statusCode, 200, skipOnboarding.body);
+  assert.equal(skipOnboarding.statusCode, 400, skipOnboarding.body);
   const skippedProfile = await app.inject({
     method: "GET",
     url: "/api/auth/profile",
     headers,
   });
-  assert.equal(skippedProfile.json().preferences.onboardingCompleted, true);
+  assert.equal(skippedProfile.json().preferences.onboardingCompleted, false);
 
   const update = await app.inject({
     method: "PUT",
@@ -218,6 +218,76 @@ test("perfil lê e salva dados pessoais, interesses e notificações", async () 
     headers,
   });
   assert.equal(profileWithAvatar.json().avatarDataUrl, avatarDataUrl);
+});
+
+test("categorias disponíveis vêm da lista administrada e só admin pode alterá-la", async () => {
+  const { body, cookie } = await register();
+  const anonymous = await app.inject({ method: "GET", url: "/api/categories" });
+  assert.equal(anonymous.statusCode, 401);
+
+  const available = await app.inject({
+    method: "GET",
+    url: "/api/categories",
+    headers: { cookie },
+  });
+  assert.equal(available.statusCode, 200, available.body);
+  assert.ok(available.json().categories.some((category) => category.name === "Tecnologia"));
+
+  const forbidden = await app.inject({
+    method: "GET",
+    url: "/api/admin/categories",
+    headers: { cookie },
+  });
+  assert.equal(forbidden.statusCode, 403);
+
+  await pool.query("UPDATE users SET role = 'admin' WHERE id = $1", [body.user.id]);
+  const adminCategories = await app.inject({
+    method: "GET",
+    url: "/api/admin/categories",
+    headers: { cookie },
+  });
+  assert.equal(adminCategories.statusCode, 200, adminCategories.body);
+  const allCategories = adminCategories.json().categories;
+  const technology = allCategories.find((category) => category.name === "Tecnologia");
+  assert.ok(technology);
+
+  const disableTechnology = await app.inject({
+    method: "PUT",
+    url: "/api/admin/categories",
+    headers: { cookie },
+    payload: { categories: [{ id: technology.id, available: false }] },
+  });
+  assert.equal(disableTechnology.statusCode, 200, disableTechnology.body);
+  assert.equal(
+    disableTechnology.json().categories.find((category) => category.id === technology.id).available,
+    false,
+  );
+
+  const availableAfterUpdate = await app.inject({
+    method: "GET",
+    url: "/api/categories",
+    headers: { cookie },
+  });
+  assert.equal(
+    availableAfterUpdate.json().categories.some((category) => category.id === technology.id),
+    false,
+  );
+
+  const disableAll = await app.inject({
+    method: "PUT",
+    url: "/api/admin/categories",
+    headers: { cookie },
+    payload: { categories: allCategories.map(({ id }) => ({ id, available: false })) },
+  });
+  assert.equal(disableAll.statusCode, 400);
+
+  const restoreTechnology = await app.inject({
+    method: "PUT",
+    url: "/api/admin/categories",
+    headers: { cookie },
+    payload: { categories: [{ id: technology.id, available: true }] },
+  });
+  assert.equal(restoreTechnology.statusCode, 200, restoreTechnology.body);
 });
 
 test("login valida credenciais e persiste a duração de lembrar-me", async () => {
@@ -357,12 +427,15 @@ test("perfil salva blocos independentes, valida entradas e não conclui onboardi
     200,
   );
   assert.equal((await read()).preferences.onboardingCompleted, false);
-  assert.equal((await request({ interests: ["Tecnologia"] })).statusCode, 200);
+  assert.equal((await request({ interests: ["Tecnologia"] })).statusCode, 400);
+  assert.equal((await request({ interests: ["Tecnologia", "Tema inexistente"] })).statusCode, 400);
+  assert.equal((await request({ interests: ["Tecnologia", "Tecnologia"] })).statusCode, 400);
+  assert.equal((await request({ interests: ["Tecnologia", "Economia"] })).statusCode, 200);
   const profile = await read();
   assert.equal(profile.user.name, "Novo Nome");
   assert.equal(profile.user.email, body.user.email);
   assert.deepEqual(profile.preferences, {
-    interests: ["Tecnologia"],
+    interests: ["Tecnologia", "Economia"],
     onboardingCompleted: true,
     notifications: { reviewReminders: false, weeklySummary: true },
   });
@@ -372,6 +445,8 @@ test("perfil salva blocos independentes, valida entradas e não conclui onboardi
     { email: body.user.email },
     { interests: null },
     { interests: [""] },
+    { interests: ["Tecnologia"] },
+    { interests: ["Tecnologia", "Tecnologia"] },
     { interests: Array(51).fill("Tema") },
     { notifications: { weeklySummary: true } },
     { role: "admin" },
@@ -379,13 +454,13 @@ test("perfil salva blocos independentes, valida entradas e não conclui onboardi
     assert.equal((await request(payload)).statusCode, 400, JSON.stringify(payload));
   }
   const [first, second] = await Promise.all([
-    request({ interests: ["Ciência"] }),
+    request({ interests: ["Ciência", "Economia"] }),
     request({ notifications: { reviewReminders: true, weeklySummary: false } }),
   ]);
   assert.equal(first.statusCode, 200);
   assert.equal(second.statusCode, 200);
   assert.deepEqual((await read()).preferences, {
-    interests: ["Ciência"],
+    interests: ["Ciência", "Economia"],
     onboardingCompleted: true,
     notifications: { reviewReminders: true, weeklySummary: false },
   });

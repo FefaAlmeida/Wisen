@@ -18,6 +18,9 @@ import { articlesService } from "./modules/articles/articles.service.js";
 import { authController } from "./modules/auth/auth.controller.js";
 import { authRepository } from "./modules/auth/auth.repository.js";
 import { authService } from "./modules/auth/auth.service.js";
+import { categoriesController } from "./modules/categories/categories.controller.js";
+import { categoriesRepository } from "./modules/categories/categories.repository.js";
+import { categoriesService } from "./modules/categories/categories.service.js";
 import { searchController } from "./modules/search/search.controller.js";
 import { searchRepository } from "./modules/search/search.repository.js";
 import { searchService } from "./modules/search/search.service.js";
@@ -47,6 +50,7 @@ export async function buildApp({ pool, boss, config, logger = true }) {
   if (config.NODE_ENV !== "production") await app.register(swaggerUi, { routePrefix: "/docs" });
   const auth = authService(authRepository(pool));
   authController(app, auth, config);
+  categoriesController(app, categoriesService(categoriesRepository(pool)));
   app.decorateRequest("isOperations", false);
   app.decorate("authenticateSearch", async (request, reply) => {
     const user = await app.loadUser(request);

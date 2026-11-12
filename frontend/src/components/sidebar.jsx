@@ -11,6 +11,7 @@ import {
   Settings,
   X,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -28,25 +29,45 @@ const navigation = [
   { label: "Aprendizado", icon: GraduationCap },
 ];
 
+function WisenBrand({ className = "", large = false }) {
+  return (
+    <Link
+      href="/paginaInicialCliente"
+      className={`inline-flex flex-col items-center gap-1.5 text-white ${className}`}
+    >
+      <Image
+        src="/logoWisen-simbolo.png"
+        alt="Logo Wisen"
+        width={44}
+        height={44}
+        className="size-10 shrink-0 rounded-full border border-white/15 bg-[#f3f0e8] object-contain shadow-sm lg:size-11"
+      />
+      <span className={`text-xl font-bold tracking-tight ${large ? "lg:text-2xl" : ""}`}>
+        Wisen
+      </span>
+    </Link>
+  );
+}
+
 function NavigationItems({ activeItem, mobile = false }) {
   return (
     <nav
       aria-label="Navegação principal"
-      className={`flex flex-col ${mobile ? "gap-2" : "gap-1.5"}`}
+      className="flex flex-col gap-2.5"
     >
       {navigation.map(({ label, href, icon: Icon }) => {
         const isActive =
           label === activeItem || (activeItem === "Conceitos" && label === "Meu conhecimento");
         const className = mobile
-          ? `flex h-11 items-center gap-3 rounded-md px-3 text-sm transition-colors ${
+          ? `flex h-11 items-center gap-3 rounded-xl px-3 text-sm transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EBDD80] ${
               isActive
-                ? "bg-wisen-selecao font-semibold text-wisen-texto-selecao"
-                : "text-[#c5ced8] hover:bg-white/10 hover:text-white"
+                ? "bg-[#EBDD80] font-semibold text-[#202D3A] shadow-sm"
+                : "text-white hover:bg-white/10"
             }`
-          : `flex h-10 items-center gap-2 rounded-md px-2 text-[10px] transition-colors lg:gap-3 lg:px-2.5 lg:text-[12px] ${
+          : `flex h-11 items-center gap-2.5 rounded-xl px-2.5 text-[10px] transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EBDD80] lg:gap-3 lg:px-2.5 lg:text-[12px] ${
               isActive
-                ? "bg-wisen-selecao font-semibold text-wisen-texto-selecao"
-                : "text-[#c5ced8] hover:bg-white/10 hover:text-white"
+                ? "bg-[#EBDD80] font-semibold text-[#202D3A] shadow-sm"
+                : "text-white hover:bg-white/10"
             }`;
 
         if (!href) {
@@ -54,10 +75,10 @@ function NavigationItems({ activeItem, mobile = false }) {
             <span
               key={label}
               aria-disabled="true"
-              className={`${className} cursor-not-allowed text-[#c5ced8]/60`}
+              className={`${className} cursor-not-allowed text-white`}
               title="Página ainda não disponível"
             >
-              <Icon size={mobile ? 19 : 17} strokeWidth={1.8} />
+              <Icon size={mobile ? 19 : 17} strokeWidth={2.2} />
               <span>{label}</span>
             </span>
           );
@@ -70,7 +91,7 @@ function NavigationItems({ activeItem, mobile = false }) {
             aria-current={isActive ? "page" : undefined}
             className={className}
           >
-            <Icon size={mobile ? 19 : 17} strokeWidth={1.8} />
+            <Icon size={mobile ? 19 : 17} strokeWidth={2.2} />
             <span>{label}</span>
           </Link>
         );
@@ -87,15 +108,15 @@ function NavigationItems({ activeItem, mobile = false }) {
 
 function SettingsLink({ activeItem, mobile = false }) {
   const className = mobile
-    ? `flex h-11 items-center gap-3 rounded-md px-3 text-sm transition-colors ${
+    ? `flex h-11 items-center gap-3 rounded-xl px-3 text-sm transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EBDD80] ${
         activeItem === "Configurações"
-          ? "bg-wisen-selecao font-semibold text-wisen-texto-selecao"
-          : "text-[#c5ced8] hover:bg-white/10 hover:text-white"
+          ? "bg-[#EBDD80] font-semibold text-[#202D3A] shadow-sm"
+          : "text-white hover:bg-white/10"
       }`
-    : `mt-auto flex h-10 items-center gap-2 rounded-md px-2 text-[10px] transition-colors lg:gap-3 lg:px-2.5 lg:text-[12px] ${
+    : `mt-auto flex h-11 items-center gap-2.5 rounded-xl px-2.5 text-[10px] transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EBDD80] lg:gap-3 lg:px-2.5 lg:text-[12px] ${
         activeItem === "Configurações"
-          ? "bg-wisen-selecao font-semibold text-wisen-texto-selecao"
-          : "text-[#c5ced8] hover:bg-white/10 hover:text-white"
+          ? "bg-[#EBDD80] font-semibold text-[#202D3A] shadow-sm"
+          : "text-white hover:bg-white/10"
       }`;
   const link = (
     <Link
@@ -103,7 +124,7 @@ function SettingsLink({ activeItem, mobile = false }) {
       aria-current={activeItem === "Configurações" ? "page" : undefined}
       className={className}
     >
-      <Settings size={mobile ? 19 : 17} strokeWidth={1.8} />
+      <Settings size={mobile ? 19 : 17} strokeWidth={2.2} />
       <span>Configurações</span>
     </Link>
   );
@@ -141,11 +162,11 @@ function AdminDashboardLink({ mobile = false }) {
   const link = (
     <Link
       href="/paginaInicioAdm"
-      className={`flex h-10 items-center gap-2 rounded-md px-2 text-[10px] text-[#c5ced8] transition-colors hover:bg-white/10 hover:text-white ${
+      className={`flex h-11 items-center gap-2.5 rounded-xl px-2.5 text-[10px] text-white transition-colors duration-150 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EBDD80] ${
         mobile ? "h-11 gap-3 px-3 text-sm" : "lg:gap-3 lg:px-2.5 lg:text-[12px]"
       }`}
     >
-      <LayoutDashboard size={mobile ? 19 : 17} strokeWidth={1.8} />
+      <LayoutDashboard size={mobile ? 19 : 17} strokeWidth={2.2} />
       <span>Painel administrativo</span>
     </Link>
   );
@@ -157,15 +178,13 @@ export default function Sidebar({ activeItem }) {
   return (
     <>
       <Sheet>
-        <header className="sticky top-0 z-40 flex h-14 items-center justify-between bg-[#202d3a] px-4 text-white sm:hidden">
-          <Link href="/paginaInicialCliente" className="text-xl font-bold tracking-tight">
-            Wisen<span className="align-top text-[9px] text-[#f3d96b]">•</span>
-          </Link>
+        <header className="sticky top-0 z-40 flex h-20 items-center justify-between bg-[#202d3a] px-4 text-white sm:hidden">
+          <WisenBrand className="absolute left-1/2 -translate-x-1/2" />
           <SheetTrigger
             aria-label="Abrir menu de navegação"
             className="flex size-10 items-center justify-center rounded-md text-white transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           >
-            <Menu size={23} />
+            <Menu size={23} strokeWidth={2.2} />
           </SheetTrigger>
         </header>
 
@@ -180,13 +199,13 @@ export default function Sidebar({ activeItem }) {
               aria-label="Fechar menu de navegação"
               className="flex size-10 items-center justify-center rounded-md text-white transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             >
-              <X size={21} />
+              <X size={21} strokeWidth={2.2} />
             </SheetClose>
           </div>
 
-          <Link href="/paginaInicialCliente" className="mb-6 px-3 text-lg font-bold tracking-tight">
-            Wisen<span className="align-top text-[9px] text-[#f3d96b]">•</span>
-          </Link>
+          <div className="mb-6 flex justify-center border-b border-white/15 pb-4">
+            <WisenBrand className="px-3" />
+          </div>
 
           <NavigationItems activeItem={activeItem} mobile />
           <div className="mt-2 border-t border-white/10 pt-2">
@@ -200,15 +219,12 @@ export default function Sidebar({ activeItem }) {
       </Sheet>
 
       <aside
-        className="fixed top-0 bottom-0 left-0 z-20 hidden w-[128px] flex-col bg-[#202d3a] px-2.5 py-5 text-white sm:flex lg:w-[220px] lg:px-4"
+        className="fixed top-0 bottom-0 left-0 z-20 hidden w-[128px] flex-col bg-[#202d3a] px-2.5 py-6 text-white sm:flex lg:w-[220px] lg:px-4"
         style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
       >
-        <Link
-          href="/paginaInicialCliente"
-          className="mb-8 px-1 text-[20px] font-bold tracking-tight lg:text-[24px]"
-        >
-          Wisen<span className="align-top text-[9px] text-[#f3d96b]">•</span>
-        </Link>
+        <div className="mb-6 flex justify-center border-b border-white/15 pb-4">
+          <WisenBrand className="px-1" large />
+        </div>
 
         <NavigationItems activeItem={activeItem} />
         <div className="mt-2 border-t border-white/10 pt-2">

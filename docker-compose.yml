@@ -5,27 +5,29 @@ x-app: &app
   init: true
   working_dir: /app
   environment: &environment
-    NODE_ENV: development
-    DATABASE_URL: postgres://wisen:wisen_local@database:5432/wisen
-    FRONTEND_URL: http://localhost:${FRONTEND_HOST_PORT:-3000}
-    PORT: 8080
-    MODEL_CACHE_DIR: /models
-    NEXT_TELEMETRY_DISABLED: "1"
+    NODE_ENV: ${NODE_ENV:-development}
+    DATABASE_URL: ${DATABASE_URL:?Defina DATABASE_URL no .env}
+    FRONTEND_URL: ${FRONTEND_URL:?Defina FRONTEND_URL no .env}
+    PORT: ${PORT:-8080}
+    OPERATIONS_TOKEN: ${OPERATIONS_TOKEN:?Defina OPERATIONS_TOKEN no .env}
+    TRUST_PROXY: ${TRUST_PROXY:-}
+    MODEL_CACHE_DIR: ${MODEL_CACHE_DIR:-/models}
+    NEXT_TELEMETRY_DISABLED: ${NEXT_TELEMETRY_DISABLED:-1}
   volumes:
     - .:/app
     - node-modules:/app/node_modules
-    - model-cache:/models
+    - model-cache:${MODEL_CACHE_DIR:-/models}
 services:
   database:
     image: pgvector/pgvector:pg17
     environment:
-      POSTGRES_USER: wisen
-      POSTGRES_PASSWORD: wisen_local
-      POSTGRES_DB: wisen
+      POSTGRES_USER: ${POSTGRES_USER:?Defina POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:?Defina POSTGRES_DB}
     volumes: ["postgres-data:/var/lib/postgresql/data"]
     ports: ["127.0.0.1:${DATABASE_HOST_PORT:-5432}:5432"]
     healthcheck:
-      test: [CMD-SHELL, "pg_isready -U wisen -d wisen"]
+      test: [CMD-SHELL, 'pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"']
       interval: 3s
       timeout: 3s
       retries: 20
@@ -42,7 +44,7 @@ services:
   backend:
     <<: *app
     command: npm run dev -w @wisen/backend
-    ports: ["127.0.0.1:${BACKEND_HOST_PORT:-8080}:8080"]
+    ports: ["127.0.0.1:${BACKEND_HOST_PORT:-8080}:${PORT:-8080}"]
     depends_on:
       database: { condition: service_healthy }
     healthcheck:
@@ -51,7 +53,7 @@ services:
           CMD,
           node,
           -e,
-          "fetch('http://127.0.0.1:8080/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
+          "fetch('http://127.0.0.1:' + process.env.PORT + '/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
         ]
       interval: 5s
       timeout: 3s
@@ -61,28 +63,28 @@ services:
     command: npm run dev -w @wisen/frontend
     environment:
       <<: *environment
-      WATCHPACK_POLLING: "true"
-      BACKEND_INTERNAL_URL: http://backend:8080/api
-      PORT: 3000
+      WATCHPACK_POLLING: ${WATCHPACK_POLLING:-true}
+      BACKEND_INTERNAL_URL: ${BACKEND_INTERNAL_URL:?Defina BACKEND_INTERNAL_URL}
+      PORT: ${FRONTEND_PORT:-3000}
     volumes:
       - .:/app
       - node-modules:/app/node_modules
       - next-cache:/app/frontend/.next
-    ports: ["127.0.0.1:${FRONTEND_HOST_PORT:-3000}:3000"]
+    ports: ["127.0.0.1:${FRONTEND_HOST_PORT:-3000}:${FRONTEND_PORT:-3000}"]
     healthcheck:
       test:
         [
           CMD,
           node,
           -e,
-          "fetch('http://127.0.0.1:3000').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
+          "fetch('http://127.0.0.1:' + process.env.PORT).then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
         ]
       interval: 10s
       timeout: 15s
       retries: 15
   ai:
     mem_limit: ${AI_MEMORY_LIMIT:-1536m}
-    cpus: 2
+    cpus: ${AI_CPU_LIMIT:-2}
     <<: *app
     command: npm run dev -w @wisen/ai
     stop_grace_period: 45s

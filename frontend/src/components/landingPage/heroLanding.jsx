@@ -52,13 +52,17 @@ export function HeroLanding() {
 
           {/* Botões */}
           <div className="flex flex-wrap items-center gap-3 pt-2">
-            <Link href="/paginaCadastro" className="group inline-flex items-center justify-center h-12 cursor-pointer gap-3 rounded-xl bg-[#101A40] px-6 text-[13px] font-semibold text-white shadow-[0_10px_24px_-12px_rgba(16,26,64,0.65)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#30466E] hover:shadow-[0_16px_28px_-12px_rgba(16,26,64,0.45)]"
+            <Link
+              href="/paginaCadastro"
+              className="group inline-flex items-center justify-center h-12 cursor-pointer gap-3 rounded-xl bg-[#101A40] px-6 text-[13px] font-semibold text-white shadow-[0_10px_24px_-12px_rgba(16,26,64,0.65)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#30466E] hover:shadow-[0_16px_28px_-12px_rgba(16,26,64,0.45)]"
             >
               <span>Começar agora</span>
               <ArrowRight className="h-4 w-4 text-[#E8E191] transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
 
-            <a href="#sobre" className="group inline-flex items-center justify-center h-12 cursor-pointer gap-3 rounded-xl border-[#D7DFE9] bg-white/80 px-5 text-[13px] font-semibold text-[#101A40] shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-white"
+            <a
+              href="#sobre"
+              className="group inline-flex items-center justify-center h-12 cursor-pointer gap-3 rounded-xl border-[#D7DFE9] bg-white/80 px-5 text-[13px] font-semibold text-[#101A40] shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-white"
             >
               <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#E8E191]">
                 <Play className="ml-0.5 h-3 w-3 fill-[#101A40] text-[#101A40]" />

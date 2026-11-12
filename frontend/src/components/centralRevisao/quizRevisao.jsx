@@ -90,10 +90,13 @@ export default function QuizRevisao() {
           </Tabs>
 
           <div className="flex items-center gap-2">
-            <span className="mr-2 text-[12px] text-[#7183A6]">Questão {indice + 5} de 12</span>
+            <span className="mr-2 text-[12px] text-[#7183A6]">
+              Questão {indice + 1} de {questoes.length}
+            </span>
             <Button
               variant="outline"
               size="icon"
+              aria-label="Questão anterior"
               disabled={indice === 0}
               onClick={() => mudarQuestao(-1)}
               className="h-10 w-10 border-[#DCE5F3] text-wisen-titulo"
@@ -103,6 +106,7 @@ export default function QuizRevisao() {
             <Button
               variant="outline"
               size="icon"
+              aria-label="Próxima questão"
               disabled={indice === questoes.length - 1}
               onClick={() => mudarQuestao(1)}
               className="h-10 w-10 border-[#DCE5F3] text-wisen-titulo"

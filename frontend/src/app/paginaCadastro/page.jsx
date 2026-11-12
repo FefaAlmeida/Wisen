@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { Footer } from "@/components/footer";
 import FormularioCadastro from "@/components/formularioCadastro";
 
 function BrandMark({ size }) {

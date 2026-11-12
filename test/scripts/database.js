@@ -1,9 +1,12 @@
 import { spawnSync } from "node:child_process";
+import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { createPool } from "../../backend/src/database/index.js";
 import { migrate } from "../../backend/src/database/migrate.js";
 
 export const root = fileURLToPath(new URL("../../", import.meta.url));
+if (existsSync(new URL("../../.env", import.meta.url)))
+  process.loadEnvFile(new URL("../../.env", import.meta.url));
 export const databasePort = process.env.TEST_DATABASE_HOST_PORT || "55439";
 export const databaseUrl = `postgres://wisen_test:wisen_test@127.0.0.1:${databasePort}/wisen_test`;
 const project = `wisen-tests-${process.pid}`;

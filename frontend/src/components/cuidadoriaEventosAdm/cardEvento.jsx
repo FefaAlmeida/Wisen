@@ -81,7 +81,7 @@ export default function CardEvento({
               <rect x="4" y="4" width="16" height="16" rx="2" />
             </svg>
 
-            <span>{evento.quantidadeArtigos} artigos</span>
+            <span>{evento.artigos.length} artigos</span>
           </div>
 
           <Badge

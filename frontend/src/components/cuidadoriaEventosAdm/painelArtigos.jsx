@@ -37,7 +37,7 @@ export default function PainelArtigos({
               </Badge>
 
               <span>·</span>
-              <span>{evento.quantidadeArtigos} artigos</span>
+              <span>{evento.artigos.length} artigos</span>
               <span>·</span>
               <span>{evento.data}</span>
             </div>
@@ -95,7 +95,7 @@ export default function PainelArtigos({
           type="button"
           className="border-b-2 border-[#E3C84E] pb-3 text-[15px] font-semibold text-[#101A40]"
         >
-          Artigos ({evento.quantidadeArtigos})
+          Artigos ({evento.artigos.length})
         </button>
 
         <button type="button" className="pb-3 text-[15px] font-medium text-[#6C7F9F]">

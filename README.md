@@ -9,6 +9,7 @@ Requisitos: Node **24**, npm **11** e Docker com Compose v2. Use `nvm use` se ti
 Na raiz:
 
 ```sh
+cp -n .env.example .env
 npm install
 npm run setup:model
 npm run dev
@@ -25,7 +26,13 @@ npm run dev
 | Saúde da API     | http://localhost:8080/api/health |
 | PostgreSQL local | localhost:5432                   |
 
-Se uma porta já estiver ocupada, copie `.env.example` para `.env` e ajuste `FRONTEND_HOST_PORT`, `BACKEND_HOST_PORT` ou `DATABASE_HOST_PORT`. O banco usa sempre 5432 dentro da rede Docker. As portas de desenvolvimento são publicadas somente no localhost.
+O `.env` da raiz centraliza a configuração de desenvolvimento: portas, URLs, credenciais do PostgreSQL, token operacional, proxies confiáveis, cache, recursos do worker e opções de testes. O Compose injeta essas variáveis nos serviços; não há um `.env` separado por aplicação. O `.env` não é versionado e `.env.example` documenta todas as chaves.
+
+Se uma porta estiver ocupada, ajuste `FRONTEND_HOST_PORT`, `BACKEND_HOST_PORT` ou `DATABASE_HOST_PORT`. O banco usa sempre 5432 dentro da rede Docker; `DATABASE_URL` aponta para `database:5432`, mesmo quando a porta do host é 5438. `PORT` e `FRONTEND_PORT` são as portas internas da API e do frontend; mantenha `BACKEND_INTERNAL_URL` e `FRONTEND_URL` coerentes com as portas que escolher. As portas de desenvolvimento são publicadas somente no localhost.
+
+`POSTGRES_USER`, `POSTGRES_PASSWORD` e `POSTGRES_DB` inicializam o banco; `DATABASE_URL` deve usar essas mesmas credenciais. Alterar uma senha no arquivo não modifica um banco já inicializado. O token `OPERATIONS_TOKEN` deve ter ao menos 32 caracteres; substitua o valor de exemplo por um valor aleatório antes de compartilhar o ambiente. `TRUST_PROXY` fica vazio por padrão e só deve conter proxies controlados por você.
+
+Os executores de integração e E2E também leem o `.env` central, usando as portas `TEST_DATABASE_HOST_PORT`, `E2E_BACKEND_PORT` e `E2E_FRONTEND_PORT`. URLs e credenciais temporárias dos testes são geradas pelo executor e não usam o banco de desenvolvimento.
 
 ## Coletar e buscar
 
@@ -110,7 +117,7 @@ A sessão usa cookie `httpOnly` e as páginas da área do usuário redirecionam 
 
 A configuração está preparada, mas nenhum deploy é realizado pelos comandos de desenvolvimento. Use `compose.production.yml`, com volumes separados e um proxy HTTPS à frente das portas locais. Configure o proxy de borda para sobrescrever `X-Forwarded-For` com o IP de origem, sem aceitar o valor enviado pelo cliente. Defina `TRUST_PROXY` com os IPs/CIDRs dos proxies confiáveis entre o cliente e a API (incluindo o servidor Next). A API ignora cabeçalhos de origem de conexões não confiáveis por padrão; sem essa configuração, o limite de requisições é compartilhado pelo IP do servidor Next. Não use uma faixa que inclua clientes não confiáveis. PostgreSQL não tem porta publicada nessa configuração.
 
-Crie `.env.production` fora do Git com `POSTGRES_PASSWORD`, `FRONTEND_URL` e `OPERATIONS_TOKEN`. Gere senha e token com valores aleatórios; uma senha hexadecimal evita caracteres reservados na URL de conexão. O token deve ter pelo menos 32 caracteres.
+Crie `.env.production` a partir de `.env.example`, fora do Git, e ajuste `NODE_ENV=production`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `DATABASE_URL`, `FRONTEND_URL`, `BACKEND_INTERNAL_URL`, `OPERATIONS_TOKEN` e `TRUST_PROXY` para o servidor. O Compose de produção força `NODE_ENV=production`. Gere senha e token com valores aleatórios; uma senha hexadecimal evita caracteres reservados na URL de conexão. O token deve ter pelo menos 32 caracteres. O arquivo local de desenvolvimento não substitui a configuração de produção.
 
 ```sh
 docker compose --env-file .env.production -f compose.production.yml build

@@ -17,7 +17,9 @@ const profile = {
   avatarDataUrl: null,
   preferences: { interests: [], notifications: { reviewReminders: true, weeklySummary: false } },
 };
-beforeEach(() => { mocks.requisitar.mockReset(); });
+beforeEach(() => {
+  mocks.requisitar.mockReset();
+});
 
 it("salva cada cartão sem enviar ou substituir rascunhos dos outros", async () => {
   mocks.requisitar.mockResolvedValueOnce(profile).mockResolvedValue({ user: profile.user });

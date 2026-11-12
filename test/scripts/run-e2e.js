@@ -1,4 +1,4 @@
-import { spawn, spawnSync } from "node:child_process";
+import { spawn } from "node:child_process";
 import { resolve } from "node:path";
 import { root, withTestDatabase } from "./database.js";
 
@@ -96,12 +96,15 @@ await withTestDatabase(async (databaseUrl) => {
     await waitFor(`http://127.0.0.1:${backendPort}/api/health`, backend, "backend de teste");
     await waitFor(`${baseUrl}/paginaLogin`, frontend, "frontend de teste");
 
-    const result = spawnSync(
-      process.execPath,
-      [playwrightCli, "test", "--config=test/playwright.config.js"],
-      { cwd: root, env, stdio: "inherit" },
-    );
-    if (result.error) throw result.error;
+    const result = await new Promise((resolveRun, rejectRun) => {
+      const runner = spawn(
+        process.execPath,
+        [playwrightCli, "test", "--config=test/playwright.config.js"],
+        { cwd: root, env, stdio: "inherit" },
+      );
+      runner.once("error", rejectRun);
+      runner.once("exit", (status) => resolveRun({ status }));
+    });
     exitCode = result.status ?? 1;
     if (exitCode !== 0) {
       console.error("\nLogs do backend de teste:\n", backend.output);

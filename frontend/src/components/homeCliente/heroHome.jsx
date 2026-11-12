@@ -38,7 +38,9 @@ export default function HeroHome() {
           <br className="hidden sm:block" />e evolua seu conhecimento de forma personalizada.
         </p>
 
-        <Link href="/paginaExplorar" className="group inline-flex items-center justify-center mt-5 h-10 rounded-lg bg-[#F3E69A] px-6 font-semibold text-wisen-texto shadow-none transition-all hover:-translate-y-0.5 hover:bg-[#EBDD80] hover:shadow-md active:translate-y-0"
+        <Link
+          href="/paginaExplorar"
+          className="group inline-flex items-center justify-center mt-5 h-10 rounded-lg bg-[#F3E69A] px-6 font-semibold text-wisen-texto shadow-none transition-all hover:-translate-y-0.5 hover:bg-[#EBDD80] hover:shadow-md active:translate-y-0"
         >
           Explorar notícias
           <span

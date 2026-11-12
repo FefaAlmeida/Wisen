@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -21,6 +20,8 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+import { mergeEvents, transferArticle } from "@/lib/event-curation";
+
 import CardEvento from "./cardEvento";
 import PainelArtigos from "./painelArtigos";
 
@@ -36,7 +37,6 @@ const eventosIniciais = [
     data: "23/10/2026",
     identificacao: "hoje",
     status: "Pendente",
-    quantidadeArtigos: 12,
     imagem: "/eventos/copom.jpg",
     artigos: [
       {
@@ -93,7 +93,6 @@ const eventosIniciais = [
     data: "23/10/2026",
     identificacao: "hoje",
     status: "Pendente",
-    quantidadeArtigos: 8,
     imagem: "/eventos/inteligenciaArtificial.jpg",
     artigos: [
       {
@@ -123,7 +122,6 @@ const eventosIniciais = [
     data: "22/10/2026",
     identificacao: "ontem",
     status: "Revisado",
-    quantidadeArtigos: 10,
     imagem: "/eventos/medicamento.jpg",
     artigos: [
       {
@@ -145,7 +143,6 @@ const eventosIniciais = [
     data: "22/10/2026",
     identificacao: "ontem",
     status: "Ajustado",
-    quantidadeArtigos: 7,
     imagem: "/eventos/amazonia.jpg",
     artigos: [
       {
@@ -168,7 +165,6 @@ const eventosIniciais = [
     data: "21/10/2026",
     identificacao: "em 21/10/2026",
     status: "Pendente",
-    quantidadeArtigos: 9,
     imagem: "/eventos/mercado.jpg",
     artigos: [
       {
@@ -190,7 +186,6 @@ const eventosIniciais = [
     data: "21/10/2026",
     identificacao: "em 21/10/2026",
     status: "Revisado",
-    quantidadeArtigos: 6,
     imagem: "/eventos/vacina.jpg",
     artigos: [
       {
@@ -356,37 +351,14 @@ export default function CuradoriaEventos() {
   function moverArtigo() {
     if (!artigoMovendo || !destinoId) return;
 
-    const destinoNumerico = Number(destinoId);
-
-    if (eventoOrigemId !== null) {
-      setEventos((anterior) =>
-        anterior.map((evento) =>
-          evento.id === eventoOrigemId
-            ? {
-                ...evento,
-                artigos: evento.artigos.filter((artigo) => artigo.id !== artigoMovendo.id),
-              }
-            : evento,
-        ),
-      );
-    } else {
+    const nextEvents = transferArticle(eventos, artigoMovendo, eventoOrigemId, Number(destinoId));
+    if (nextEvents === eventos) return;
+    setEventos(nextEvents);
+    if (eventoOrigemId === null) {
       setArtigosNaoAssociados((anterior) =>
         anterior.filter((artigo) => artigo.id !== artigoMovendo.id),
       );
     }
-
-    setEventos((anterior) =>
-      anterior.map((evento) =>
-        evento.id === destinoNumerico
-          ? {
-              ...evento,
-              artigos: [...evento.artigos, artigoMovendo],
-              quantidadeArtigos: evento.quantidadeArtigos + 1,
-              status: "Ajustado",
-            }
-          : evento,
-      ),
-    );
 
     setModal(null);
     setArtigoMovendo(null);
@@ -396,25 +368,9 @@ export default function CuradoriaEventos() {
     if (selecionados.length !== 2) return;
 
     const [primeiroId, segundoId] = selecionados;
-    const primeiro = eventos.find((evento) => evento.id === primeiroId);
-    const segundo = eventos.find((evento) => evento.id === segundoId);
-
-    if (!primeiro || !segundo) return;
-
-    setEventos((anterior) =>
-      anterior
-        .filter((evento) => evento.id !== segundoId)
-        .map((evento) =>
-          evento.id === primeiroId
-            ? {
-                ...evento,
-                artigos: [...evento.artigos, ...segundo.artigos],
-                quantidadeArtigos: evento.quantidadeArtigos + segundo.quantidadeArtigos,
-                status: "Ajustado",
-              }
-            : evento,
-        ),
-    );
+    const nextEvents = mergeEvents(eventos, primeiroId, segundoId);
+    if (nextEvents === eventos) return;
+    setEventos(nextEvents);
 
     setEventoAbertoId(primeiroId);
     setSelecionados([]);
@@ -448,7 +404,7 @@ export default function CuradoriaEventos() {
           >
             Duplicados sugeridos
             <span className="ml-2 rounded-full bg-[#F1DF8B] px-2 py-0.5 text-[11px] font-semibold text-[#5A4A14]">
-              {idsSugeridos.length}
+              {eventos.filter((evento) => idsSugeridos.includes(evento.id)).length}
             </span>
           </TabsTrigger>
         </TabsList>

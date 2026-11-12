@@ -7,7 +7,6 @@ import {
   MoreVertical,
   Search,
 } from "lucide-react";
-import React from "react";
 
 export function TabelaLogsIa() {
   const logs = [

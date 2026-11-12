@@ -1,5 +1,3 @@
-import React from "react";
-
 export function GraficosConsumoIa() {
   const modelos = [
     { nome: "GPT-4o", valor: "R$ 32,10", pct: "46,9%", cor: "bg-[#2B333F]" },

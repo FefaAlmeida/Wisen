@@ -1,5 +1,4 @@
 import { Cloud, FileText, Laptop, Wallet } from "lucide-react";
-import React from "react";
 
 export function CartoesMetricasIa() {
   return (

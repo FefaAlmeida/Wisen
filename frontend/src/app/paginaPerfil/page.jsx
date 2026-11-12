@@ -1,7 +1,7 @@
 "use client";
 
 import { Search } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Footer } from "@/components/footer";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
 import MenuPerfil from "@/components/homeCliente/menuPerfil";
@@ -11,16 +11,9 @@ import { PersonalDataCard } from "@/components/perfil/personalDataCard";
 import { ProfileHeader } from "@/components/perfil/profileHeader";
 import { SecurityCard } from "@/components/perfil/securityCard";
 import Sidebar from "@/components/sidebar";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
-async function parseResponse(response) {
-  const text = await response.text();
-  try {
-    return text ? JSON.parse(text) : {};
-  } catch {
-    return { message: text };
-  }
-}
+import { requisitar } from "@/services/api";
 
 export default function PerfilPage() {
   const [profile, setProfile] = useState({
@@ -31,17 +24,24 @@ export default function PerfilPage() {
     notifications: { reviewReminders: true, weeklySummary: false },
   });
   const [savedInterests, setSavedInterests] = useState([]);
+  const [savedNotifications, setSavedNotifications] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+  const [loadError, setLoadError] = useState("");
+  const [reload, setReload] = useState(0);
+  const [saving, setSaving] = useState({});
+  const inFlight = useRef(new Set());
   const [feedback, setFeedback] = useState(null);
   const [interestsFeedback, setInterestsFeedback] = useState(null);
+  const [notificationsFeedback, setNotificationsFeedback] = useState(null);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: reload é o gatilho explícito de retentativa do carregamento.
   useEffect(() => {
-    async function loadProfile() {
-      try {
-        const response = await fetch("/api/auth/profile");
-        const data = await parseResponse(response);
-        if (!response.ok) throw new Error(data.message || "Não foi possível carregar o perfil.");
+    const controller = new AbortController();
+    setLoading(true);
+    setLoadError("");
+    requisitar("/auth/profile", { signal: controller.signal })
+      .then((data) => {
+        if (controller.signal.aborted) return;
         setProfile({
           name: data.user.name,
           email: data.user.email,
@@ -50,76 +50,79 @@ export default function PerfilPage() {
           notifications: data.preferences.notifications,
         });
         setSavedInterests(data.preferences.interests);
-      } catch (error) {
-        setFeedback({ type: "error", text: error.message });
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadProfile();
-  }, []);
+        setSavedNotifications(data.preferences.notifications);
+      })
+      .catch((error) => {
+        if (!controller.signal.aborted)
+          setLoadError(error.message || "Não foi possível carregar o perfil.");
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false);
+      });
+    return () => controller.abort();
+  }, [reload]);
 
-  async function persistProfile(nextProfile, successMessage, setResult) {
-    setSaving(true);
+  async function persistProfile(block, body, successMessage, setResult) {
+    if (loading || loadError || inFlight.current.has(block)) return;
+    inFlight.current.add(block);
+    setSaving((current) => ({ ...current, [block]: true }));
     setResult(null);
     try {
-      const response = await fetch("/api/auth/profile", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: nextProfile.name,
-          email: nextProfile.email,
-          interests: nextProfile.interests,
-          notifications: nextProfile.notifications,
-        }),
-      });
-      const data = await parseResponse(response);
-      if (!response.ok) {
-        const message = Array.isArray(data.message)
-          ? data.message.map((item) => item.message || item).join(", ")
-          : data.message || data.error || `Erro HTTP ${response.status}`;
-        throw new Error(message);
+      const data = await requisitar("/auth/profile", { method: "PUT", body });
+      if (block === "personal") {
+        setProfile((current) => ({ ...current, name: data.user.name, email: data.user.email }));
       }
-      setProfile((current) => ({
-        ...current,
-        name: data.user.name,
-        email: data.user.email,
-      }));
-      setSavedInterests(nextProfile.interests);
+      if (block === "interests") setSavedInterests(body.interests);
+      if (block === "notifications") setSavedNotifications(body.notifications);
       setResult({ type: "success", text: successMessage });
     } catch (error) {
       setResult({ type: "error", text: error.message || "Erro ao atualizar o perfil." });
     } finally {
-      setSaving(false);
+      inFlight.current.delete(block);
+      setSaving((current) => ({ ...current, [block]: false }));
     }
   }
 
   function saveProfile(event) {
     event.preventDefault();
-    return persistProfile(profile, "Perfil atualizado com sucesso!", setFeedback);
+    return persistProfile(
+      "personal",
+      { name: profile.name, email: profile.email },
+      "Perfil atualizado com sucesso!",
+      setFeedback,
+    );
   }
 
   function saveInterests() {
-    return persistProfile(profile, "Assuntos de interesse salvos.", setInterestsFeedback);
+    return persistProfile(
+      "interests",
+      { interests: profile.interests },
+      "Assuntos de interesse salvos.",
+      setInterestsFeedback,
+    );
+  }
+
+  function saveNotifications() {
+    return persistProfile(
+      "notifications",
+      { notifications: profile.notifications },
+      "Notificações salvas.",
+      setNotificationsFeedback,
+    );
   }
 
   async function saveAvatar(avatarDataUrl) {
-    setSaving(true);
+    if (loading || loadError || inFlight.current.has("avatar")) return;
+    inFlight.current.add("avatar");
+    setSaving((current) => ({ ...current, avatar: true }));
     setFeedback(null);
     try {
-      const response = await fetch("/api/auth/avatar", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ avatarDataUrl }),
-      });
-      const data = await parseResponse(response);
-      if (!response.ok) {
-        throw new Error(data.message || data.error || `Erro HTTP ${response.status}`);
-      }
+      const data = await requisitar("/auth/avatar", { method: "PUT", body: { avatarDataUrl } });
       setProfile((current) => ({ ...current, avatarDataUrl: data.avatarDataUrl }));
       setFeedback({ type: "success", text: "Foto de perfil atualizada." });
     } finally {
-      setSaving(false);
+      inFlight.current.delete("avatar");
+      setSaving((current) => ({ ...current, avatar: false }));
     }
   }
 
@@ -130,19 +133,22 @@ export default function PerfilPage() {
         ? current.interests.filter((item) => item !== interest)
         : [...current.interests, interest],
     }));
-    setFeedback(null);
     setInterestsFeedback(null);
   }
 
   const interestsChanged =
     JSON.stringify([...profile.interests].sort()) !== JSON.stringify([...savedInterests].sort());
+  const notificationsChanged =
+    savedNotifications !== null &&
+    (profile.notifications.reviewReminders !== savedNotifications.reviewReminders ||
+      profile.notifications.weeklySummary !== savedNotifications.weeklySummary);
 
   function updateNotification(name, checked) {
     setProfile((current) => ({
       ...current,
       notifications: { ...current.notifications, [name]: checked },
     }));
-    setFeedback(null);
+    setNotificationsFeedback(null);
   }
 
   return (
@@ -172,6 +178,19 @@ export default function PerfilPage() {
 
           <div className="space-y-8 px-4 pb-12 pt-8 sm:px-5 lg:px-7">
             <ProfileHeader />
+            {loadError && (
+              <div role="alert" className="rounded-lg bg-red-50 p-4 text-sm text-red-700">
+                <p>{loadError}</p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setReload((value) => value + 1)}
+                  className="mt-2"
+                >
+                  Tentar novamente
+                </Button>
+              </div>
+            )}
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <PersonalDataCard
@@ -182,21 +201,25 @@ export default function PerfilPage() {
                 onNameChange={(name) => setProfile((current) => ({ ...current, name }))}
                 onEmailChange={(email) => setProfile((current) => ({ ...current, email }))}
                 onSubmit={saveProfile}
-                loading={loading}
-                saving={saving}
+                loading={loading || Boolean(loadError)}
+                saving={Boolean(saving.personal || saving.avatar)}
                 feedback={feedback}
               />
               <InterestsCard
                 interests={profile.interests}
                 onToggle={toggleInterest}
                 onSave={saveInterests}
-                saving={saving || loading}
+                saving={Boolean(saving.interests || loading || loadError)}
                 hasChanges={interestsChanged}
                 feedback={interestsFeedback}
               />
               <NotificationsCard
                 notifications={profile.notifications}
                 onChange={updateNotification}
+                onSave={saveNotifications}
+                saving={Boolean(saving.notifications || loading || loadError)}
+                hasChanges={notificationsChanged}
+                feedback={notificationsFeedback}
               />
               <SecurityCard />
             </div>

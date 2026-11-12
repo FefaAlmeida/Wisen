@@ -16,7 +16,7 @@ vi.mock("next/link", async () => {
 });
 
 describe("formulários de autenticação", () => {
-  beforeEach(() => mocks.requisitar.mockReset());
+  beforeEach(() => { mocks.requisitar.mockReset(); });
 
   it("envia cadastro e mostra conflitos de e-mail", async () => {
     const user = userEvent.setup();

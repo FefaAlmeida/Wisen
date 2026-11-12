@@ -90,10 +90,7 @@ export function InitialInterestDialog() {
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: profile.user.name,
-          email: profile.user.email,
           interests: selectedInterests,
-          notifications: profile.preferences.notifications,
         }),
       });
       const data = await readResponse(response);
@@ -126,11 +123,7 @@ export function InitialInterestDialog() {
         className="fixed top-4 right-4 left-4 z-50 mx-auto flex max-w-lg items-center justify-between gap-4 rounded-xl border border-red-200 bg-white p-4 text-sm text-red-700 shadow-lg"
       >
         <span>{error}</span>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => window.location.reload()}
-        >
+        <Button variant="outline" size="sm" onClick={() => window.location.reload()}>
           Tentar novamente
         </Button>
       </div>

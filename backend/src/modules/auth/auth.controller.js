@@ -15,23 +15,33 @@ const userSchema = z.object({
   role: z.enum(["user", "admin"]),
 });
 
+const emailSchema = z.string().trim().toLowerCase().pipe(z.email());
 const credentialsSchema = z.object({
-  email: z.email().trim().toLowerCase(),
+  email: emailSchema,
   password: z.string().min(8).max(128),
 });
 
 const loginSchema = credentialsSchema.extend({ remember: z.boolean().optional().default(false) });
 
 // 1. Schema para validação dos dados enviados na atualização do perfil
-const updateProfileSchema = z.object({
-  name: z.string().trim().min(2).max(120),
-  email: z.email().trim().toLowerCase(),
-  interests: z.array(z.string()).default([]),
-  notifications: z.object({
-    reviewReminders: z.boolean(),
-    weeklySummary: z.boolean(),
-  }),
-});
+const updateProfileSchema = z
+  .object({
+    name: z.string().trim().min(2).max(120).optional(),
+    email: emailSchema.optional(),
+    interests: z.array(z.string().trim().min(1).max(120)).max(50).optional(),
+    notifications: z
+      .object({
+        reviewReminders: z.boolean(),
+        weeklySummary: z.boolean(),
+      })
+      .optional(),
+  })
+  .strict()
+  .refine((data) => Object.keys(data).length > 0, "Envie ao menos um bloco")
+  .refine(
+    (data) => (data.name === undefined) === (data.email === undefined),
+    "Envie nome e e-mail juntos",
+  );
 const profileSchema = z.object({
   user: userSchema,
   avatarDataUrl: z
@@ -147,6 +157,7 @@ export function authController(app, service, config) {
   app.put(
     "/api/auth/avatar",
     {
+      bodyLimit: 1024 * 1024,
       preHandler: app.authenticate,
       config: { rateLimit: { max: 10, timeWindow: "1 minute" } },
       schema: {

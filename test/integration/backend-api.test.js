@@ -22,8 +22,8 @@ function remoteIp(id) {
   return `10.20.0.${id}`;
 }
 
-function headersFor(id, extra = {}) {
-  return { "x-real-ip": remoteIp(id), ...extra };
+function headersFor(_id, extra = {}) {
+  return { ...extra };
 }
 
 function cookieFrom(response) {
@@ -37,7 +37,7 @@ async function register({ email = `user-${randomUUID()}@example.test`, name = "P
   const response = await app.inject({
     method: "POST",
     url: "/api/auth/register",
-    headers: headersFor(nextRegistrationIp++),
+    remoteAddress: remoteIp(nextRegistrationIp++),
     payload: { name, email, password: "senha-de-teste-segura" },
   });
   assert.equal(response.statusCode, 201, response.body);
@@ -64,6 +64,7 @@ test("health, validação e proteção da sessão respondem corretamente", async
   const invalid = await app.inject({
     method: "POST",
     url: "/api/auth/register",
+    remoteAddress: remoteIp(2),
     headers: headersFor(2),
     payload: { name: "A", email: "not-an-email", password: "short" },
   });
@@ -105,6 +106,7 @@ test("cadastro cria usuário, preferência, hash e sessão httpOnly no PostgreSQ
   const currentSession = await app.inject({
     method: "GET",
     url: "/api/auth/session",
+    remoteAddress: remoteIp(3),
     headers: headersFor(3, { cookie }),
   });
   assert.equal(currentSession.statusCode, 200);
@@ -113,6 +115,7 @@ test("cadastro cria usuário, preferência, hash e sessão httpOnly no PostgreSQ
   const duplicate = await app.inject({
     method: "POST",
     url: "/api/auth/register",
+    remoteAddress: remoteIp(4),
     headers: headersFor(4),
     payload: { name: "Outra pessoa", email, password: "senha-de-teste-segura" },
   });
@@ -121,12 +124,14 @@ test("cadastro cria usuário, preferência, hash e sessão httpOnly no PostgreSQ
   const logout = await app.inject({
     method: "POST",
     url: "/api/auth/logout",
+    remoteAddress: remoteIp(5),
     headers: headersFor(5, { cookie }),
   });
   assert.equal(logout.statusCode, 204);
   const expiredSession = await app.inject({
     method: "GET",
     url: "/api/auth/session",
+    remoteAddress: remoteIp(6),
     headers: headersFor(6, { cookie }),
   });
   assert.equal(expiredSession.statusCode, 401);
@@ -222,6 +227,7 @@ test("login valida credenciais e persiste a duração de lembrar-me", async () =
   const invalid = await app.inject({
     method: "POST",
     url: "/api/auth/login",
+    remoteAddress: remoteIp(7),
     headers: headersFor(7),
     payload: { email, password: "senha-incorreta" },
   });
@@ -231,6 +237,7 @@ test("login valida credenciais e persiste a duração de lembrar-me", async () =
   const login = await app.inject({
     method: "POST",
     url: "/api/auth/login",
+    remoteAddress: remoteIp(8),
     headers: headersFor(8),
     payload: { email, password: "senha-de-teste-segura", remember: true },
   });
@@ -253,6 +260,7 @@ test("busca é privada e cada pessoa só consulta os próprios pedidos", async (
   const anonymous = await app.inject({
     method: "POST",
     url: "/api/search",
+    remoteAddress: remoteIp(9),
     headers: headersFor(9),
     payload: { query: "inflação e taxa de juros" },
   });
@@ -261,6 +269,7 @@ test("busca é privada e cada pessoa só consulta os próprios pedidos", async (
   const created = await app.inject({
     method: "POST",
     url: "/api/search",
+    remoteAddress: remoteIp(10),
     headers: headersFor(10, { cookie: first.cookie }),
     payload: { query: "inflação e taxa de juros" },
   });
@@ -275,6 +284,7 @@ test("busca é privada e cada pessoa só consulta os próprios pedidos", async (
   const ownSearch = await app.inject({
     method: "GET",
     url: `/api/search/${searchId}`,
+    remoteAddress: remoteIp(11),
     headers: headersFor(11, { cookie: first.cookie }),
   });
   assert.equal(ownSearch.statusCode, 200);
@@ -283,6 +293,7 @@ test("busca é privada e cada pessoa só consulta os próprios pedidos", async (
   const otherSearch = await app.inject({
     method: "GET",
     url: `/api/search/${searchId}`,
+    remoteAddress: remoteIp(12),
     headers: headersFor(12, { cookie: second.cookie }),
   });
   assert.equal(otherSearch.statusCode, 404);
@@ -290,6 +301,7 @@ test("busca é privada e cada pessoa só consulta os próprios pedidos", async (
   const operationsSearch = await app.inject({
     method: "GET",
     url: `/api/search/${searchId}`,
+    remoteAddress: remoteIp(13),
     headers: headersFor(13, { authorization: `Bearer ${operationsToken}` }),
   });
   assert.equal(operationsSearch.statusCode, 200);
@@ -302,6 +314,7 @@ test("login limita tentativas por endereço de origem", async () => {
       await app.inject({
         method: "POST",
         url: "/api/auth/login",
+        remoteAddress: remoteIp(99),
         headers: headersFor(99),
         payload: { email: "limite@example.test", password: "senha-incorreta" },
       }),
@@ -312,4 +325,118 @@ test("login limita tentativas por endereço de origem", async () => {
     [401, 401, 401, 401, 401],
   );
   assert.equal(results[5].statusCode, 429);
+});
+
+test("perfil salva blocos independentes, valida entradas e não conclui onboarding por outros campos", async () => {
+  const { body, cookie } = await register();
+  const request = (payload) =>
+    app.inject({
+      method: "PUT",
+      url: "/api/auth/profile",
+      remoteAddress: remoteIp(110),
+      headers: { cookie },
+      payload,
+    });
+  const read = async () =>
+    (
+      await app.inject({
+        method: "GET",
+        url: "/api/auth/profile",
+        remoteAddress: remoteIp(110),
+        headers: { cookie },
+      })
+    ).json();
+  assert.equal(
+    (await request({ name: "Novo Nome", email: `  ${body.user.email.toUpperCase()}  ` }))
+      .statusCode,
+    200,
+  );
+  assert.equal((await read()).preferences.onboardingCompleted, false);
+  assert.equal(
+    (await request({ notifications: { reviewReminders: false, weeklySummary: true } })).statusCode,
+    200,
+  );
+  assert.equal((await read()).preferences.onboardingCompleted, false);
+  assert.equal((await request({ interests: ["Tecnologia"] })).statusCode, 200);
+  const profile = await read();
+  assert.equal(profile.user.name, "Novo Nome");
+  assert.equal(profile.user.email, body.user.email);
+  assert.deepEqual(profile.preferences, {
+    interests: ["Tecnologia"],
+    onboardingCompleted: true,
+    notifications: { reviewReminders: false, weeklySummary: true },
+  });
+  for (const payload of [
+    {},
+    { name: "Só nome" },
+    { email: body.user.email },
+    { interests: null },
+    { interests: [""] },
+    { interests: Array(51).fill("Tema") },
+    { notifications: { weeklySummary: true } },
+    { role: "admin" },
+  ]) {
+    assert.equal((await request(payload)).statusCode, 400, JSON.stringify(payload));
+  }
+  const [first, second] = await Promise.all([
+    request({ interests: ["Ciência"] }),
+    request({ notifications: { reviewReminders: true, weeklySummary: false } }),
+  ]);
+  assert.equal(first.statusCode, 200);
+  assert.equal(second.statusCode, 200);
+  assert.deepEqual((await read()).preferences, {
+    interests: ["Ciência"],
+    onboardingCompleted: true,
+    notifications: { reviewReminders: true, weeklySummary: false },
+  });
+});
+
+test("avatar aceita imagem acima de 16 KiB e mantém limites por rota", async () => {
+  const { cookie } = await register();
+  const request = (payload, url = "/api/auth/avatar") =>
+    app.inject({ method: "PUT", url, remoteAddress: remoteIp(111), headers: { cookie }, payload });
+  const avatarDataUrl = `data:image/webp;base64,${Buffer.alloc(40000).toString("base64")}`;
+  const response = await request({ avatarDataUrl });
+  assert.equal(response.statusCode, 200, response.body);
+  assert.equal(response.json().avatarDataUrl, avatarDataUrl);
+  const profile = await app.inject({
+    method: "GET",
+    url: "/api/auth/profile",
+    remoteAddress: remoteIp(111),
+    headers: { cookie },
+  });
+  assert.equal(profile.json().avatarDataUrl, avatarDataUrl);
+  assert.equal(
+    (await request({ avatarDataUrl: `data:image/png;base64,${"a".repeat(800000)}` })).statusCode,
+    400,
+  );
+  assert.equal((await request({ avatarDataUrl: "a".repeat(1100000) })).statusCode, 413);
+  assert.equal(
+    (await request({ interests: ["a".repeat(20000)] }, "/api/auth/profile")).statusCode,
+    413,
+  );
+  assert.equal(
+    (await request({ avatarDataUrl: "data:text/html;base64,aGVsbG8=" })).statusCode,
+    400,
+  );
+  assert.equal((await request({ avatarDataUrl: null })).statusCode, 200);
+});
+
+test("disputa concorrente pelo mesmo e-mail retorna sucesso e conflito", async () => {
+  const accounts = await Promise.all([register(), register()]);
+  const email = `race-${randomUUID()}@example.test`;
+  const results = await Promise.all(
+    accounts.map(({ cookie }, index) =>
+      app.inject({
+        method: "PUT",
+        url: "/api/auth/profile",
+        remoteAddress: remoteIp(112 + index),
+        headers: { cookie },
+        payload: { name: "Mesmo destino", email },
+      }),
+    ),
+  );
+  assert.deepEqual(results.map((response) => response.statusCode).sort(), [200, 409]);
+  const { rows } = await pool.query("SELECT id FROM users WHERE email=$1", [email]);
+  assert.equal(rows.length, 1);
 });

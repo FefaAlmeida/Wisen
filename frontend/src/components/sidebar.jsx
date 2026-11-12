@@ -1,18 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import {
-  LayoutDashboard,
   Clock3,
   Compass,
   GraduationCap,
   Home,
+  LayoutDashboard,
   Menu,
   Newspaper,
   Settings,
   X,
 } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 const navigation = [

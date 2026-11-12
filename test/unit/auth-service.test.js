@@ -129,10 +129,9 @@ test("troca senha somente com a senha atual correta", async () => {
     currentPassword: "senha-original-123",
     newPassword: "senha-nova-segura-123",
   });
-  await assert.rejects(
-    service.login({ email: user.email, password: "senha-original-123" }),
-    { statusCode: 401 },
-  );
+  await assert.rejects(service.login({ email: user.email, password: "senha-original-123" }), {
+    statusCode: 401,
+  });
   assert.equal(
     (await service.login({ email: user.email, password: "senha-nova-segura-123" })).user.id,
     user.id,
@@ -152,4 +151,23 @@ test("cadastro transforma violação de e-mail único em conflito legível", asy
     statusCode: 409,
     message: "Este e-mail já está cadastrado",
   });
+});
+
+test("atualização de perfil trata disputa pelo índice único como conflito", async () => {
+  const service = authService({
+    findByEmail: async () => null,
+    updateProfile: async () => {
+      throw Object.assign(new Error("duplicate"), {
+        code: "23505",
+        constraint: "users_email_unique",
+      });
+    },
+  });
+  await assert.rejects(
+    service.updateProfile(randomUUID(), { name: "Ana", email: "ana@example.test" }),
+    {
+      statusCode: 409,
+      message: "Este e-mail já está em uso por outra conta",
+    },
+  );
 });

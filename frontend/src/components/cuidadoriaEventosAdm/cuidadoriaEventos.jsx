@@ -1,9 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
@@ -12,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -19,11 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import CardEvento from "./cardEvento";
 import PainelArtigos from "./painelArtigos";
@@ -90,8 +86,7 @@ const eventosIniciais = [
   {
     id: 2,
     titulo: "Novas regras para inteligência artificial no Brasil",
-    descricao:
-      "Governo apresenta diretrizes para o uso responsável da IA em setores estratégicos.",
+    descricao: "Governo apresenta diretrizes para o uso responsável da IA em setores estratégicos.",
     resumo:
       "O governo apresentou novas diretrizes para ampliar a segurança, a transparência e o uso responsável da inteligência artificial no país.",
     categoria: "Tecnologia",
@@ -143,8 +138,7 @@ const eventosIniciais = [
   {
     id: 4,
     titulo: "Discussões sobre o desmatamento na Amazônia",
-    descricao:
-      "Relatório aponta aumento das áreas de desmatamento na região amazônica em 2026.",
+    descricao: "Relatório aponta aumento das áreas de desmatamento na região amazônica em 2026.",
     resumo:
       "Relatórios recentes voltaram a chamar atenção para o avanço do desmatamento na Amazônia e para os impactos ambientais associados.",
     categoria: "Meio ambiente",
@@ -189,8 +183,7 @@ const eventosIniciais = [
   {
     id: 6,
     titulo: "Nova campanha de vacinação contra a gripe",
-    descricao:
-      "Ministério da Saúde anuncia ampliação da campanha de vacinação para 2026.",
+    descricao: "Ministério da Saúde anuncia ampliação da campanha de vacinação para 2026.",
     resumo:
       "O Ministério da Saúde anunciou novas etapas da campanha de vacinação contra a gripe, com expansão do público-alvo e reforço logístico.",
     categoria: "Saúde",
@@ -256,11 +249,11 @@ const artigosNaoAssociadosIniciais = [
   },
 ];
 
+const idsSugeridos = [1, 2, 5];
+
 export default function CuradoriaEventos() {
   const [eventos, setEventos] = useState(eventosIniciais);
-  const [artigosNaoAssociados, setArtigosNaoAssociados] = useState(
-    artigosNaoAssociadosIniciais
-  );
+  const [artigosNaoAssociados, setArtigosNaoAssociados] = useState(artigosNaoAssociadosIniciais);
   const [aba, setAba] = useState("eventos");
   const [busca, setBusca] = useState("");
   const [categoria, setCategoria] = useState("todas");
@@ -279,8 +272,6 @@ export default function CuradoriaEventos() {
   const [destinoId, setDestinoId] = useState("");
 
   const [buscaArtigo, setBuscaArtigo] = useState("");
-
-  const idsSugeridos = [1, 2, 5];
 
   const eventoAberto = eventos.find((evento) => evento.id === eventoAbertoId);
 
@@ -348,8 +339,8 @@ export default function CuradoriaEventos() {
               ...evento,
               ...dadosEdicao,
             }
-          : evento
-      )
+          : evento,
+      ),
     );
 
     setModal(null);
@@ -373,16 +364,14 @@ export default function CuradoriaEventos() {
           evento.id === eventoOrigemId
             ? {
                 ...evento,
-                artigos: evento.artigos.filter(
-                  (artigo) => artigo.id !== artigoMovendo.id
-                ),
+                artigos: evento.artigos.filter((artigo) => artigo.id !== artigoMovendo.id),
               }
-            : evento
-        )
+            : evento,
+        ),
       );
     } else {
       setArtigosNaoAssociados((anterior) =>
-        anterior.filter((artigo) => artigo.id !== artigoMovendo.id)
+        anterior.filter((artigo) => artigo.id !== artigoMovendo.id),
       );
     }
 
@@ -395,8 +384,8 @@ export default function CuradoriaEventos() {
               quantidadeArtigos: evento.quantidadeArtigos + 1,
               status: "Ajustado",
             }
-          : evento
-      )
+          : evento,
+      ),
     );
 
     setModal(null);
@@ -420,12 +409,11 @@ export default function CuradoriaEventos() {
             ? {
                 ...evento,
                 artigos: [...evento.artigos, ...segundo.artigos],
-                quantidadeArtigos:
-                  evento.quantidadeArtigos + segundo.quantidadeArtigos,
+                quantidadeArtigos: evento.quantidadeArtigos + segundo.quantidadeArtigos,
                 status: "Ajustado",
               }
-            : evento
-        )
+            : evento,
+        ),
     );
 
     setEventoAbertoId(primeiroId);
@@ -470,9 +458,7 @@ export default function CuradoriaEventos() {
         <Card className="rounded-[22px] border border-[#E4EAF3] bg-white p-5 shadow-none">
           <div className="mb-4 flex items-center justify-between gap-3">
             <div>
-              <h2 className="text-[22px] font-semibold text-[#101A40]">
-                Artigos não associados
-              </h2>
+              <h2 className="text-[22px] font-semibold text-[#101A40]">Artigos não associados</h2>
               <p className="mt-1 text-[13px] text-[#7B8BA8]">
                 Associe manualmente artigos a um evento existente.
               </p>
@@ -497,9 +483,7 @@ export default function CuradoriaEventos() {
                   </div>
 
                   <div className="min-w-0">
-                    <h3 className="text-[14px] font-semibold text-[#101A40]">
-                      {artigo.titulo}
-                    </h3>
+                    <h3 className="text-[14px] font-semibold text-[#101A40]">{artigo.titulo}</h3>
                     <p className="mt-1 text-[12px] text-[#8A9AB5]">
                       {artigo.fonte} · {artigo.data}
                     </p>
@@ -725,10 +709,7 @@ export default function CuradoriaEventos() {
         </div>
       )}
 
-      <Dialog
-        open={modal === "unificar"}
-        onOpenChange={(aberto) => !aberto && setModal(null)}
-      >
+      <Dialog open={modal === "unificar"} onOpenChange={(aberto) => !aberto && setModal(null)}>
         <DialogContent className="rounded-[22px] border-[#E4EAF3] bg-white sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle className="text-[24px] font-semibold text-[#101A40]">
@@ -743,10 +724,7 @@ export default function CuradoriaEventos() {
             {selecionados.map((id) => {
               const evento = eventos.find((item) => item.id === id);
               return (
-                <p
-                  key={id}
-                  className="py-1 text-[14px] font-medium text-[#30466E]"
-                >
+                <p key={id} className="py-1 text-[14px] font-medium text-[#30466E]">
                   {evento?.titulo}
                 </p>
               );
@@ -774,10 +752,7 @@ export default function CuradoriaEventos() {
         </DialogContent>
       </Dialog>
 
-      <Dialog
-        open={modal === "editar"}
-        onOpenChange={(aberto) => !aberto && setModal(null)}
-      >
+      <Dialog open={modal === "editar"} onOpenChange={(aberto) => !aberto && setModal(null)}>
         <DialogContent className="rounded-[22px] border-[#E4EAF3] bg-white sm:max-w-[560px]">
           <DialogHeader>
             <DialogTitle className="text-[24px] font-semibold text-[#101A40]">
@@ -791,58 +766,68 @@ export default function CuradoriaEventos() {
           {dadosEdicao && (
             <form onSubmit={salvarEdicao} className="space-y-4">
               <div className="space-y-2">
-                <label className="text-[12px] font-medium text-[#30466E]">
+                <label
+                  htmlFor="editar-evento-titulo"
+                  className="text-[12px] font-medium text-[#30466E]"
+                >
                   Título
                 </label>
                 <Input
+                  id="editar-evento-titulo"
                   value={dadosEdicao.titulo}
-                  onChange={(e) =>
-                    setDadosEdicao({ ...dadosEdicao, titulo: e.target.value })
-                  }
+                  onChange={(e) => setDadosEdicao({ ...dadosEdicao, titulo: e.target.value })}
                   className="h-11 rounded-[14px] border-[#DCE4F0]"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-[12px] font-medium text-[#30466E]">
+                <label
+                  htmlFor="editar-evento-descricao"
+                  className="text-[12px] font-medium text-[#30466E]"
+                >
                   Descrição
                 </label>
                 <textarea
                   rows={3}
+                  id="editar-evento-descricao"
                   value={dadosEdicao.descricao}
-                  onChange={(e) =>
-                    setDadosEdicao({ ...dadosEdicao, descricao: e.target.value })
-                  }
+                  onChange={(e) => setDadosEdicao({ ...dadosEdicao, descricao: e.target.value })}
                   className="w-full rounded-[14px] border border-[#DCE4F0] bg-white px-4 py-3 text-[13px] text-[#30466E] outline-none focus:border-[#E0C43F]"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-[12px] font-medium text-[#30466E]">
+                <label
+                  htmlFor="editar-evento-resumo"
+                  className="text-[12px] font-medium text-[#30466E]"
+                >
                   Resumo do evento
                 </label>
                 <textarea
                   rows={4}
+                  id="editar-evento-resumo"
                   value={dadosEdicao.resumo}
-                  onChange={(e) =>
-                    setDadosEdicao({ ...dadosEdicao, resumo: e.target.value })
-                  }
+                  onChange={(e) => setDadosEdicao({ ...dadosEdicao, resumo: e.target.value })}
                   className="w-full rounded-[14px] border border-[#DCE4F0] bg-white px-4 py-3 text-[13px] text-[#30466E] outline-none focus:border-[#E0C43F]"
                 />
               </div>
 
               <div className="grid gap-3 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <label className="text-[12px] font-medium text-[#30466E]">
+                  <label
+                    htmlFor="editar-evento-categoria"
+                    className="text-[12px] font-medium text-[#30466E]"
+                  >
                     Categoria
                   </label>
                   <Select
                     value={dadosEdicao.categoria}
-                    onValueChange={(valor) =>
-                      setDadosEdicao({ ...dadosEdicao, categoria: valor })
-                    }
+                    onValueChange={(valor) => setDadosEdicao({ ...dadosEdicao, categoria: valor })}
                   >
-                    <SelectTrigger className="h-11 rounded-[14px] border-[#DCE4F0]">
+                    <SelectTrigger
+                      id="editar-evento-categoria"
+                      className="h-11 rounded-[14px] border-[#DCE4F0]"
+                    >
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -855,16 +840,20 @@ export default function CuradoriaEventos() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[12px] font-medium text-[#30466E]">
+                  <label
+                    htmlFor="editar-evento-status"
+                    className="text-[12px] font-medium text-[#30466E]"
+                  >
                     Status
                   </label>
                   <Select
                     value={dadosEdicao.status}
-                    onValueChange={(valor) =>
-                      setDadosEdicao({ ...dadosEdicao, status: valor })
-                    }
+                    onValueChange={(valor) => setDadosEdicao({ ...dadosEdicao, status: valor })}
                   >
-                    <SelectTrigger className="h-11 rounded-[14px] border-[#DCE4F0]">
+                    <SelectTrigger
+                      id="editar-evento-status"
+                      className="h-11 rounded-[14px] border-[#DCE4F0]"
+                    >
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -898,10 +887,7 @@ export default function CuradoriaEventos() {
         </DialogContent>
       </Dialog>
 
-      <Dialog
-        open={modal === "mover"}
-        onOpenChange={(aberto) => !aberto && setModal(null)}
-      >
+      <Dialog open={modal === "mover"} onOpenChange={(aberto) => !aberto && setModal(null)}>
         <DialogContent className="rounded-[22px] border-[#E4EAF3] bg-white sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle className="text-[24px] font-semibold text-[#101A40]">

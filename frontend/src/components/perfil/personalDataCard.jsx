@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef, useState } from "react";
 import { Camera, Loader2 } from "lucide-react";
+import { useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -84,7 +84,7 @@ export function PersonalDataCard({
       </CardHeader>
 
       <CardContent>
-        <form onSubmit={onSubmit} className="space-y-4">
+        <form onSubmit={onSubmit} aria-label="Dados pessoais" className="space-y-4">
           <div className="flex items-center gap-4">
             <div className="relative shrink-0">
               <Avatar className="w-20 h-20 border border-slate-100">

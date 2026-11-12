@@ -195,7 +195,9 @@ export default function PaginaSessaoRevisao() {
                           </span>
                           <span className="flex-1 text-sm leading-5 text-[#52658C]">{option}</span>
                           {showCorrect && <Check size={17} className="shrink-0 text-emerald-600" />}
-                          {showIncorrect && <CircleX size={17} className="shrink-0 text-rose-500" />}
+                          {showIncorrect && (
+                            <CircleX size={17} className="shrink-0 text-rose-500" />
+                          )}
                         </button>
                       );
                     })}
@@ -211,7 +213,9 @@ export default function PaginaSessaoRevisao() {
                       }`}
                     >
                       <p className="font-semibold">
-                        {selectedAnswer === question.answer ? "Resposta correta" : "Não foi dessa vez"}
+                        {selectedAnswer === question.answer
+                          ? "Resposta correta"
+                          : "Não foi dessa vez"}
                       </p>
                       <p className="mt-1">{question.explanation}</p>
                     </div>

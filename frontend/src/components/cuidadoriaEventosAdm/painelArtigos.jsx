@@ -1,7 +1,7 @@
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 
 export default function PainelArtigos({
   evento,
@@ -24,18 +24,12 @@ export default function PainelArtigos({
         <div className="flex min-w-0 items-start gap-4">
           <div className="h-[96px] w-[92px] shrink-0 overflow-hidden rounded-[14px] bg-[#EEF3FA]">
             {evento.imagem && (
-              <img
-                src={evento.imagem}
-                alt={evento.titulo}
-                className="h-full w-full object-cover"
-              />
+              <img src={evento.imagem} alt={evento.titulo} className="h-full w-full object-cover" />
             )}
           </div>
 
           <div className="min-w-0 pt-1">
-            <h2 className="text-[18px] font-semibold leading-8 text-[#101A40]">
-              {evento.titulo}
-            </h2>
+            <h2 className="text-[18px] font-semibold leading-8 text-[#101A40]">{evento.titulo}</h2>
 
             <div className="mt-2 flex flex-wrap items-center gap-2 text-[12px] text-[#8192B2]">
               <Badge className="rounded-full border-0 bg-[#EEF3FB] px-3 py-1 text-[11px] font-medium text-[#4A628E] shadow-none">
@@ -104,17 +98,12 @@ export default function PainelArtigos({
           Artigos ({evento.quantidadeArtigos})
         </button>
 
-        <button
-          type="button"
-          className="pb-3 text-[15px] font-medium text-[#6C7F9F]"
-        >
+        <button type="button" className="pb-3 text-[15px] font-medium text-[#6C7F9F]">
           Resumo do evento
         </button>
       </div>
 
-      <p className="mb-5 text-[13px] leading-7 text-[#6E809F]">
-        {evento.resumo}
-      </p>
+      <p className="mb-5 text-[13px] leading-7 text-[#6E809F]">{evento.resumo}</p>
 
       <div className="relative mb-5">
         <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-[#7D8FAE]">

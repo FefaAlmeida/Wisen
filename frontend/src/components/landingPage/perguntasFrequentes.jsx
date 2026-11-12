@@ -1,4 +1,3 @@
-
 "use client";
 
 import { ChevronDown } from "lucide-react";
@@ -31,26 +30,18 @@ export function PerguntasFrequentes() {
   ];
 
   const toggleFaq = (index) => {
-    setAbertoIndex((anterior) =>
-      anterior === index ? null : index
-    );
+    setAbertoIndex((anterior) => (anterior === index ? null : index));
   };
 
   return (
-    <section
-      id="faq"
-      className="scroll-mt-24"
-    >
+    <section id="faq" className="scroll-mt-24">
       <div className="relative isolate overflow-hidden rounded-[28px] border border-[#293B5C] bg-[#172542] px-6 py-11 text-white shadow-[0_24px_65px_-42px_rgba(16,26,64,0.45)] sm:px-10 md:px-14 md:py-16">
-
         {/* Iluminação suave */}
         <div className="pointer-events-none absolute -bottom-32 -left-24 z-0 h-80 w-80 rounded-full bg-[#30466E]/30 blur-3xl" />
 
         <div className="relative z-10 grid grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-14">
-
           {/* Introdução */}
           <div className="space-y-5 lg:col-span-5">
-
             <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#E8E191]">
               DÚVIDAS FREQUENTES
             </span>
@@ -64,21 +55,15 @@ export function PerguntasFrequentes() {
             <p className="max-w-[340px] text-[14px] leading-[1.9] text-[#BDCADB]">
               Reunimos aqui as principais dúvidas sobre o funcionamento do Wisen.
             </p>
-
           </div>
 
           {/* Perguntas */}
           <div className="space-y-1 lg:col-span-7">
-
             {faqs.map((item, index) => {
               const estaAberto = abertoIndex === index;
 
               return (
-                <div
-                  key={item.pergunta}
-                  className="border-b border-white/15 last:border-b-0"
-                >
-
+                <div key={item.pergunta} className="border-b border-white/15 last:border-b-0">
                   <button
                     type="button"
                     onClick={() => toggleFaq(index)}
@@ -86,12 +71,9 @@ export function PerguntasFrequentes() {
                     aria-controls={`faq-resposta-${index}`}
                     className="group flex w-full cursor-pointer items-center justify-between gap-5 py-5 text-left"
                   >
-
                     <span
                       className={`text-[14px] font-semibold leading-relaxed transition-colors duration-300 sm:text-[15px] ${
-                        estaAberto
-                          ? "text-[#E8E191]"
-                          : "text-white group-hover:text-[#E8E191]"
+                        estaAberto ? "text-[#E8E191]" : "text-white group-hover:text-[#E8E191]"
                       }`}
                     >
                       {item.pergunta}
@@ -104,15 +86,12 @@ export function PerguntasFrequentes() {
                           : "border-white/15 bg-white/5 group-hover:border-[#E8E191]/40"
                       }`}
                     >
-
                       <ChevronDown
                         className={`h-4 w-4 text-[#E8E191] transition-transform duration-300 ${
                           estaAberto ? "rotate-180" : ""
                         }`}
                       />
-
                     </div>
-
                   </button>
 
                   {/* Resposta com abertura suave */}
@@ -120,26 +99,19 @@ export function PerguntasFrequentes() {
                     id={`faq-resposta-${index}`}
                     aria-hidden={!estaAberto}
                     className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out motion-reduce:transition-none ${
-                      estaAberto
-                        ? "grid-rows-[1fr] opacity-100"
-                        : "grid-rows-[0fr] opacity-0"
+                      estaAberto ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
                     }`}
                   >
                     <div className="min-h-0 overflow-hidden">
-
                       <p className="max-w-[540px] pb-6 pr-8 text-[13px] leading-[1.9] text-[#BDCADB] sm:text-[14px]">
                         {item.resposta}
                       </p>
-
                     </div>
                   </div>
-
                 </div>
               );
             })}
-
           </div>
-
         </div>
       </div>
     </section>

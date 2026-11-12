@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { ChevronRight, Lock, LogOut } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -13,14 +13,30 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { requisitar } from "@/services/api";
 
 export function SecurityCard() {
+  const [signingOut, setSigningOut] = useState(false);
+  const [logoutError, setLogoutError] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [saving, setSaving] = useState(false);
   const [feedback, setFeedback] = useState(null);
+
+  async function signOut() {
+    if (signingOut) return;
+    setSigningOut(true);
+    setLogoutError("");
+    try {
+      await requisitar("/auth/logout", { method: "POST" });
+      window.location.assign("/paginaLogin");
+    } catch {
+      setLogoutError("Não foi possível encerrar a sessão. Tente novamente.");
+      setSigningOut(false);
+    }
+  }
 
   function handleDialogChange(open) {
     setDialogOpen(open);
@@ -115,6 +131,8 @@ export function SecurityCard() {
         {/* Opção 2 */}
         <button
           type="button"
+          onClick={signOut}
+          disabled={signingOut}
           className="w-full flex items-center justify-between p-2 -mx-2 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer text-left group"
         >
           <div className="flex items-center gap-3">
@@ -123,7 +141,7 @@ export function SecurityCard() {
             </div>
             <div className="space-y-0.5">
               <h4 className="text-xs font-semibold text-[#2B333F] group-hover:opacity-80 transition-opacity">
-                Encerrar sessão
+                {signingOut ? "Encerrando…" : "Encerrar sessão"}
               </h4>
               <p className="text-[11px] text-slate-500 leading-tight">
                 Desconecte sua conta deste dispositivo.
@@ -132,6 +150,11 @@ export function SecurityCard() {
           </div>
           <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#2B333F] transition-colors" />
         </button>
+        {logoutError && (
+          <p role="alert" className="text-xs text-red-600">
+            {logoutError}
+          </p>
+        )}
       </CardContent>
 
       <Dialog open={dialogOpen} onOpenChange={handleDialogChange}>

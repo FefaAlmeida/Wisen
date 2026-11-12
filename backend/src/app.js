@@ -24,6 +24,7 @@ import { searchService } from "./modules/search/search.service.js";
 
 export async function buildApp({ pool, boss, config, logger = true }) {
   const app = Fastify({
+    trustProxy: config.TRUST_PROXY?.length ? config.TRUST_PROXY : false,
     logger: logger
       ? { redact: ["req.headers.authorization", "req.headers.cookie"], level: "info" }
       : false,
@@ -37,7 +38,7 @@ export async function buildApp({ pool, boss, config, logger = true }) {
   await app.register(rateLimit, {
     max: 60,
     timeWindow: "1 minute",
-    keyGenerator: (request) => request.headers["x-real-ip"] ?? request.ip,
+    keyGenerator: (request) => request.ip,
   });
   await app.register(swagger, {
     openapi: { info: { title: "Wisen API", version: "0.1.0" } },

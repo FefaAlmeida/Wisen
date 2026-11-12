@@ -1,5 +1,10 @@
 import { expect, test } from "@playwright/test";
 
+let clientNumber = 1;
+test.beforeEach(async ({ page }) => {
+  await page.setExtraHTTPHeaders({ "x-forwarded-for": `10.50.0.${clientNumber++}` });
+});
+
 test("cadastro, rota privada, busca, logout e login funcionam no navegador", async ({ page }) => {
   const email = `playwright-${Date.now()}@example.test`;
   const password = "senha-de-playwright-123";
@@ -85,5 +90,69 @@ test("rotas de administração exigem sessão e papel de administrador", async (
 
   await page.context().clearCookies();
   await page.goto("/paginaGestaoUsuariosAdm");
+  await expect(page).toHaveURL(/\/paginaLogin\?next=/);
+});
+
+test("landing oferece acesso e navegação funcional em desktop e celular", async ({ page }) => {
+  for (const width of [1280, 390]) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto("/");
+    const navigation = page.getByRole("navigation", { name: "Navegação da plataforma" });
+    await expect(navigation.getByRole("link", { name: "Entrar", exact: true })).toBeVisible();
+    await expect(navigation.getByRole("link", { name: "Criar conta", exact: true })).toBeVisible();
+    await expect(navigation.getByRole("link", { name: "Acessar plataforma" })).toBeVisible();
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+    ).toBe(true);
+    await page.getByRole("link", { name: "Ver como funciona" }).click();
+    await expect(page).toHaveURL(/\/#sobre$/);
+    await navigation.getByRole("link", { name: "Entrar", exact: true }).click();
+    await expect(page).toHaveURL(/\/paginaLogin$/);
+    await page.goto("/");
+    await page.getByRole("link", { name: "Começar agora" }).click();
+    await expect(page).toHaveURL(/\/paginaCadastro$/);
+  }
+  await page.goto("/");
+  await page
+    .getByRole("navigation", { name: "Navegação da plataforma" })
+    .getByRole("link", { name: "Acessar plataforma" })
+    .click();
+  await expect(page).toHaveURL(/\/paginaLogin\?next=%2FpaginaInicialCliente$/);
+  await page.goto("/");
+  await expect(page.locator('a[href="/paginaLanding"]')).toHaveCount(0);
+});
+
+test("perfil salva cartões independentemente, mantém alterações e encerra sessão", async ({
+  page,
+}) => {
+  const email = `profile-${Date.now()}@example.test`;
+  await page.goto("/paginaCadastro");
+  await page.getByLabel("Nome completo").fill("Pessoa Perfil");
+  await page.getByLabel("E-mail").fill(email);
+  await page.getByLabel("Senha", { exact: true }).fill("senha-de-perfil-123");
+  await page.getByRole("button", { name: /criar conta/i }).click();
+  await expect(page).toHaveURL(/\/paginaInicialCliente$/);
+  await page.goto("/paginaPerfil");
+  await expect(page.getByLabel("Nome", { exact: true })).toHaveValue("Pessoa Perfil");
+  await page.getByLabel("Nome", { exact: true }).fill("Nome ainda não salvo");
+  await page.getByRole("button", { name: "Tecnologia", exact: true }).click();
+  await page.getByRole("button", { name: "Salvar interesses" }).click();
+  await expect(page.getByText("Assuntos de interesse salvos.")).toBeVisible();
+  await expect(page.getByLabel("Nome", { exact: true })).toHaveValue("Nome ainda não salvo");
+  let response = await page.request.get("/api/auth/profile");
+  expect((await response.json()).user.name).toBe("Pessoa Perfil");
+  await page.getByRole("switch", { name: "Resumo semanal" }).click();
+  await page.getByRole("button", { name: "Salvar notificações" }).click();
+  await expect(page.getByText("Notificações salvas.")).toBeVisible();
+  await page.getByRole("button", { name: "Salvar alterações" }).click();
+  await expect(page.getByText("Perfil atualizado com sucesso!")).toBeVisible();
+  await page.reload();
+  await expect(page.getByLabel("Nome", { exact: true })).toHaveValue("Nome ainda não salvo");
+  await expect(page.getByRole("switch", { name: "Resumo semanal" })).toBeChecked();
+  response = await page.request.get("/api/auth/profile");
+  expect((await response.json()).preferences.interests).toEqual(["Tecnologia"]);
+  await page.getByRole("button", { name: /Encerrar sessão/ }).click();
+  await expect(page).toHaveURL(/\/paginaLogin$/);
+  await page.goto("/paginaPerfil");
   await expect(page).toHaveURL(/\/paginaLogin\?next=/);
 });

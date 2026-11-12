@@ -6,6 +6,7 @@ x-environment: &environment
   OPERATIONS_TOKEN: ${OPERATIONS_TOKEN:?Defina OPERATIONS_TOKEN}
   MODEL_CACHE_DIR: /models
   PORT: 8080
+  TRUST_PROXY: ${TRUST_PROXY:-}
 services:
   database:
     image: pgvector/pgvector:pg17

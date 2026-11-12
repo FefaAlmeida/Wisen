@@ -36,7 +36,7 @@ export default function Home() {
                   className="h-9 rounded-full border-wisen-borda bg-white/90 pl-9 text-[11px] shadow-sm placeholder:text-[#8794AA] focus-visible:ring-[#DCE5F2]"
                 />
               </search>
-             <MenuPerfil/>
+              <MenuPerfil />
             </div>
 
             <div className="relative z-10 w-full md:w-[60%]">
@@ -67,12 +67,15 @@ export default function Home() {
                   </h2>
                 </div>
 
-                <span className="group inline-flex cursor-pointer items-center text-xs font-medium text-[#30466E] transition-colors hover:text-[#172338]">
+                <Link
+                  href="/paginaExplorar"
+                  className="group inline-flex cursor-pointer items-center text-xs font-medium text-[#30466E] transition-colors hover:text-[#172338]"
+                >
                   Ver todas
                   <span className="ml-2 text-[#D6B92F] transition-transform group-hover:translate-x-1">
                     →
                   </span>
-                </span>
+                </Link>
               </div>
 
               <div className="grid grid-cols-1 gap-4 md:grid-cols-3">

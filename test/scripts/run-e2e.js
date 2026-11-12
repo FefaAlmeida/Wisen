@@ -79,6 +79,7 @@ await withTestDatabase(async (databaseUrl) => {
     FRONTEND_URL: baseUrl,
     BACKEND_INTERNAL_URL: `http://127.0.0.1:${backendPort}/api`,
     OPERATIONS_TOKEN: token,
+    TRUST_PROXY: "loopback",
     NEXT_TELEMETRY_DISABLED: "1",
     E2E_BASE_URL: baseUrl,
   };

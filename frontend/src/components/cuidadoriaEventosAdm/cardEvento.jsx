@@ -1,6 +1,6 @@
-import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 
 const estilosStatus = {
@@ -31,9 +31,7 @@ export default function CardEvento({
         <div className="pt-0.5">
           <Checkbox
             checked={selecionado}
-            onCheckedChange={(valor) =>
-              aoSelecionar(evento.id, valor === true)
-            }
+            onCheckedChange={(valor) => aoSelecionar(evento.id, valor === true)}
             aria-label={`Selecionar ${evento.titulo}`}
             className="border-[#C7D3E5] data-[state=checked]:border-[#E0C43F] data-[state=checked]:bg-[#E0C43F] data-[state=checked]:text-[#101A40]"
           />
@@ -41,18 +39,12 @@ export default function CardEvento({
 
         <div className="h-[76px] w-[76px] shrink-0 overflow-hidden rounded-[14px] bg-[#EDF2F8]">
           {evento.imagem && (
-            <img
-              src={evento.imagem}
-              alt={evento.titulo}
-              className="h-full w-full object-cover"
-            />
+            <img src={evento.imagem} alt={evento.titulo} className="h-full w-full object-cover" />
           )}
         </div>
 
         <div className="min-w-0 flex-1">
-          <h3 className="text-[15px] font-semibold leading-5 text-[#101A40]">
-            {evento.titulo}
-          </h3>
+          <h3 className="text-[15px] font-semibold leading-5 text-[#101A40]">{evento.titulo}</h3>
 
           <p className="mt-1 max-h-[40px] overflow-hidden text-[12px] leading-5 text-[#6E809F]">
             {evento.descricao}
@@ -67,9 +59,7 @@ export default function CardEvento({
               · Identificado {evento.identificacao}
             </span>
 
-            <span className="text-[11px] text-[#90A0BA]">
-              · {evento.data}
-            </span>
+            <span className="text-[11px] text-[#90A0BA]">· {evento.data}</span>
           </div>
         </div>
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { ChevronRight, Equal, Phone, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import Logo from "@/assets/logo/logo";
 import { Button } from "@/components/ui/button";
@@ -13,12 +14,11 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import { ChevronRight, Equal, Phone, X } from "lucide-react";
 
 const navLinks = [
-  { title: "Receitas", href: "#", isActive: true },
-  { title: "Mais Bem Avaliadas:", href: "#" },
-  { title: "Categorias:", href: "#" },
+  { title: "Início", href: "/", isActive: true },
+  { title: "Como funciona", href: "/#sobre" },
+  { title: "Funcionalidades", href: "/#funcionalidades" },
 ];
 
 const Navbar = () => {
@@ -34,14 +34,12 @@ const Navbar = () => {
     <nav
       className={cn(
         "dark absolute inset-x-0 top-0 z-50 w-full transition-all duration-300",
-        isSticky
-          ? "bg-background shadow-lg shadow-black/5 backdrop-blur-lg"
-          : "bg-transparent",
+        isSticky ? "bg-background shadow-lg shadow-black/5 backdrop-blur-lg" : "bg-transparent",
       )}
     >
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-4 lg:px-8 xl:px-16">
         <div className="flex items-center gap-4 lg:gap-6">
-          <a href="#" className="shrink-0">
+          <a href="/" className="shrink-0">
             <Logo />
           </a>
           <Separator
@@ -97,7 +95,7 @@ const Navbar = () => {
               <SheetClose
                 nativeButton={false}
                 render={
-                  <a href="#">
+                  <a href="/">
                     <Logo />
                   </a>
                 }
@@ -117,9 +115,7 @@ const Navbar = () => {
                       href={link.href}
                       className={cn(
                         "rounded-lg px-3 py-2 text-base font-normal hover:bg-primary/10 hover:text-foreground",
-                        link.isActive
-                          ? "bg-primary/20 text-foreground"
-                          : "text-muted-foreground",
+                        link.isActive ? "bg-primary/20 text-foreground" : "text-muted-foreground",
                       )}
                     >
                       {link.title}

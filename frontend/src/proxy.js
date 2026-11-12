@@ -16,11 +16,11 @@ export async function proxy(request) {
   );
   let response;
   try {
-    const forwardedIp = request.headers.get("x-real-ip");
+    const forwardedIp = request.headers.get("x-forwarded-for");
     response = await fetch(`${apiUrl}/auth/session`, {
       headers: {
         cookie: request.headers.get("cookie") ?? "",
-        ...(forwardedIp ? { "x-real-ip": forwardedIp } : {}),
+        ...(forwardedIp ? { "x-forwarded-for": forwardedIp } : {}),
       },
       cache: "no-store",
       signal: AbortSignal.timeout(5000),

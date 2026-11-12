@@ -1,22 +1,8 @@
 "use client";
 
-import {
-  Activity,
-  LayoutDashboard,
-  Menu,
-  Newspaper,
-  Rss,
-  Users,
-  X,
-} from "lucide-react";
+import { Activity, LayoutDashboard, Menu, Newspaper, Rss, Users, X } from "lucide-react";
 import Link from "next/link";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 const navigation = [
   { label: "Visão geral", href: "/paginaInicioAdm", icon: LayoutDashboard },

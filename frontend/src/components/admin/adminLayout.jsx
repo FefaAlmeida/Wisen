@@ -1,5 +1,5 @@
-import { Footer } from "@/components/footer";
 import { AdminSidebar } from "@/components/admin/adminSidebar";
+import { Footer } from "@/components/footer";
 
 export function AdminLayout({ activeItem, children }) {
   return (

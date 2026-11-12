@@ -19,10 +19,10 @@ export function authRepository(pool) {
     },
 
     async updatePasswordHash(userId, passwordHash) {
-      await pool.query(
-        "UPDATE users SET password_hash = $1, updated_at = now() WHERE id = $2",
-        [passwordHash, userId],
-      );
+      await pool.query("UPDATE users SET password_hash = $1, updated_at = now() WHERE id = $2", [
+        passwordHash,
+        userId,
+      ]);
     },
 
     async createAccount({ name, email, passwordHash, tokenHash, expiresAt }) {
@@ -104,13 +104,13 @@ export function authRepository(pool) {
       };
     },
 
-    async updateProfile(userId, { name, email, interests = [], notifications = {} }) {
+    async updateProfile(userId, { name, email, interests, notifications }) {
       return transaction(pool, async (client) => {
         const {
           rows: [user],
         } = await client.query(
           `UPDATE users 
-              SET name = $1, email = $2, updated_at = now() 
+              SET name = COALESCE($1, name), email = COALESCE($2, email), updated_at = now() 
             WHERE id = $3 
         RETURNING ${userColumns}`,
           [name, email, userId],
@@ -120,18 +120,19 @@ export function authRepository(pool) {
           `INSERT INTO user_preferences (
              user_id, interests, review_reminders, weekly_summary, interest_onboarding_completed
            )
-           VALUES ($1, $2, $3, $4, true)
+           VALUES ($1, COALESCE($2::text[], '{}'), COALESCE($3::boolean, true), COALESCE($4::boolean, false), $5)
            ON CONFLICT (user_id) DO UPDATE 
-           SET interests = EXCLUDED.interests,
-               review_reminders = EXCLUDED.review_reminders,
-               weekly_summary = EXCLUDED.weekly_summary,
-               interest_onboarding_completed = true,
+           SET interests = COALESCE($2::text[], user_preferences.interests),
+               review_reminders = COALESCE($3::boolean, user_preferences.review_reminders),
+               weekly_summary = COALESCE($4::boolean, user_preferences.weekly_summary),
+               interest_onboarding_completed = user_preferences.interest_onboarding_completed OR $5,
                updated_at = now()`,
           [
             userId,
             interests,
-            notifications.reviewReminders ?? true,
-            notifications.weeklySummary ?? false,
+            notifications?.reviewReminders,
+            notifications?.weeklySummary,
+            interests !== undefined,
           ],
         );
 

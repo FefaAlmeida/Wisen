@@ -1,4 +1,3 @@
-
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -37,15 +36,10 @@ export function DepoimentosLanding() {
   ];
 
   return (
-    <section
-      id="depoimentos"
-      className="scroll-mt-24"
-    >
+    <section id="depoimentos" className="scroll-mt-24">
       <div className="grid grid-cols-1 items-start gap-11 lg:grid-cols-12 lg:gap-12">
-
         {/* Título */}
         <div className="space-y-5 lg:sticky lg:top-28 lg:col-span-4">
-
           <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#8491A3]">
             DEPOIMENTOS
           </span>
@@ -53,25 +47,20 @@ export function DepoimentosLanding() {
           <h2 className="text-[clamp(2rem,3.4vw,3rem)] font-bold leading-[1.19] tracking-[-0.045em] text-[#101A40]">
             Quem usa,
             <br />
-
             <span className="decoration-[#E8E191] decoration-[6px] underline underline-offset-[7px]">
               recomenda.
             </span>
           </h2>
-
         </div>
 
         {/* Cards de depoimentos */}
         <div className="grid grid-cols-1 items-stretch gap-4 sm:grid-cols-2 lg:col-span-8 lg:grid-cols-3 lg:gap-4">
-
           {depoimentos.map((item) => (
             <Card
               key={item.id}
               className={`group flex h-full min-h-[280px] flex-col gap-0 overflow-hidden rounded-[20px] border p-0 shadow-[0_8px_28px_-20px_rgba(16,26,64,0.2)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_-24px_rgba(16,26,64,0.25)] ${item.corCartao}`}
             >
-
               <CardContent className="flex flex-1 flex-col justify-between gap-8 p-6">
-
                 {/* Depoimento */}
                 <p className="text-[13px] font-normal italic leading-[1.95] text-[#586679]">
                   "{item.texto}"
@@ -79,7 +68,6 @@ export function DepoimentosLanding() {
 
                 {/* Pessoa */}
                 <div className="flex items-center gap-3 border-t border-[#DDE4EC] pt-5">
-
                   <Image
                     src={item.avatar}
                     width={40}
@@ -90,25 +78,15 @@ export function DepoimentosLanding() {
                   />
 
                   <div className="min-w-0 space-y-1">
+                    <h4 className="text-[12px] font-bold text-[#101A40]">{item.nome}</h4>
 
-                    <h4 className="text-[12px] font-bold text-[#101A40]">
-                      {item.nome}
-                    </h4>
-
-                    <p className="text-[11px] text-[#8996A8]">
-                      {item.cargo}
-                    </p>
-
+                    <p className="text-[11px] text-[#8996A8]">{item.cargo}</p>
                   </div>
-
                 </div>
-
               </CardContent>
             </Card>
           ))}
-
         </div>
-
       </div>
     </section>
   );

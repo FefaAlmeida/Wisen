@@ -1,12 +1,30 @@
-
 "use client";
 
-import { useState } from "react";
+import { LogOut, UserRound } from "lucide-react";
 import Link from "next/link";
-import { LogOut, Settings, UserRound } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { requisitar } from "@/services/api";
 
 export default function MenuPerfil() {
+  const [profile, setProfile] = useState(null);
+  useEffect(() => {
+    const controller = new AbortController();
+    requisitar("/auth/profile", { signal: controller.signal })
+      .then((data) => {
+        if (!controller.signal.aborted) setProfile(data);
+      })
+      .catch(() => {});
+    return () => controller.abort();
+  }, []);
+  const initials =
+    profile?.user.name
+      .trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((part) => part[0])
+      .join("")
+      .toLocaleUpperCase("pt-BR") || "?";
   const [aberto, setAberto] = useState(false);
   const [saindo, setSaindo] = useState(false);
   const [erro, setErro] = useState("");
@@ -39,18 +57,17 @@ export default function MenuPerfil() {
         aria-expanded={aberto}
         className="flex size-9 cursor-pointer items-center justify-center rounded-full bg-[#F3E69A] text-[11px] font-semibold text-[#263551] shadow-sm hover:bg-[#EBDD80]"
       >
-        NB
+        <Avatar className="size-9">
+          <AvatarImage src={profile?.avatarDataUrl || undefined} alt="" />
+          <AvatarFallback className="bg-[#F3E69A] text-[#263551]">{initials}</AvatarFallback>
+        </Avatar>
       </button>
 
       {aberto && (
         <div className="absolute right-0 top-12 z-[100] w-56 rounded-lg border border-[#E1E6EE] bg-white p-2 shadow-xl">
           <div className="px-3 py-2">
-            <p className="text-sm font-semibold text-[#101A40]">
-              Minha conta
-            </p>
-            <p className="text-xs text-[#71809C]">
-              Gerencie seu perfil
-            </p>
+            <p className="text-sm font-semibold text-[#101A40]">Minha conta</p>
+            <p className="text-xs text-[#71809C]">Gerencie seu perfil</p>
           </div>
 
           <div className="my-2 h-px bg-[#EEF0F4]" />
@@ -62,8 +79,6 @@ export default function MenuPerfil() {
             <UserRound size={16} />
             Meu perfil
           </Link>
-
-          
 
           <div className="my-2 h-px bg-[#EEF0F4]" />
 

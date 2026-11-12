@@ -1,13 +1,13 @@
-import React from 'react';
-import { 
-  Search, 
-  Filter, 
-  Cloud, 
-  Laptop, 
-  MoreVertical, 
-  ChevronLeft, 
-  ChevronRight 
+import {
+  ChevronLeft,
+  ChevronRight,
+  Cloud,
+  Filter,
+  Laptop,
+  MoreVertical,
+  Search,
 } from "lucide-react";
+import React from "react";
 
 export function TabelaLogsIa() {
   const logs = [
@@ -20,7 +20,7 @@ export function TabelaLogsIa() {
       tokens: "1.240 / 390",
       latencia: "3,2 s",
       custo: "0,042",
-      status: "Sucesso"
+      status: "Sucesso",
     },
     {
       dataHora: "23/10/2026 14:18",
@@ -31,7 +31,7 @@ export function TabelaLogsIa() {
       tokens: "950 / 210",
       latencia: "1,1 s",
       custo: "0,000",
-      status: "Sucesso"
+      status: "Sucesso",
     },
     {
       dataHora: "23/10/2026 13:55",
@@ -42,7 +42,7 @@ export function TabelaLogsIa() {
       tokens: "1.560 / 420",
       latencia: "4,8 s",
       custo: "0,065",
-      status: "Sucesso"
+      status: "Sucesso",
     },
     {
       dataHora: "23/10/2026 12:41",
@@ -53,7 +53,7 @@ export function TabelaLogsIa() {
       tokens: "620 / 180",
       latencia: "0,9 s",
       custo: "0,000",
-      status: "Sucesso"
+      status: "Sucesso",
     },
     {
       dataHora: "23/10/2026 11:07",
@@ -64,13 +64,12 @@ export function TabelaLogsIa() {
       tokens: "1.800 / 560",
       latencia: "5,1 s",
       custo: "0,071",
-      status: "Sucesso"
+      status: "Sucesso",
     },
   ];
 
   return (
     <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-2xs space-y-5">
-      
       {/* Cabeçalho da Tabela com Busca e Filtros */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -83,14 +82,17 @@ export function TabelaLogsIa() {
         <div className="flex items-center gap-3">
           <div className="relative w-full sm:w-64">
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input 
-              type="text" 
-              placeholder="Buscar por modelo, operação ou ID..." 
+            <input
+              type="text"
+              placeholder="Buscar por modelo, operação ou ID..."
               className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#2B333F]/20"
             />
           </div>
 
-          <button className="flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer shrink-0">
+          <button
+            type="button"
+            className="flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer shrink-0"
+          >
             <Filter className="w-3.5 h-3.5 text-slate-500" />
             <span>Filtros</span>
           </button>
@@ -114,8 +116,11 @@ export function TabelaLogsIa() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {logs.map((item, idx) => (
-              <tr key={idx} className="hover:bg-slate-50/60 transition-colors">
+            {logs.map((item) => (
+              <tr
+                key={`${item.dataHora}-${item.modelo}`}
+                className="hover:bg-slate-50/60 transition-colors"
+              >
                 <td className="py-3.5 px-2 text-slate-500 font-medium whitespace-nowrap">
                   {item.dataHora}
                 </td>
@@ -139,9 +144,7 @@ export function TabelaLogsIa() {
                   {item.operacao}
                 </td>
 
-                <td className="py-3.5 px-2 text-slate-500 whitespace-nowrap">
-                  {item.tokens}
-                </td>
+                <td className="py-3.5 px-2 text-slate-500 whitespace-nowrap">{item.tokens}</td>
 
                 <td className="py-3.5 px-2 text-slate-500 font-medium whitespace-nowrap">
                   {item.latencia}
@@ -159,7 +162,10 @@ export function TabelaLogsIa() {
                 </td>
 
                 <td className="py-3.5 px-2 text-right whitespace-nowrap">
-                  <button className="p-1 rounded-lg text-slate-400 hover:text-[#2B333F] hover:bg-slate-100 transition-colors cursor-pointer">
+                  <button
+                    type="button"
+                    className="p-1 rounded-lg text-slate-400 hover:text-[#2B333F] hover:bg-slate-100 transition-colors cursor-pointer"
+                  >
                     <MoreVertical className="w-4 h-4" />
                   </button>
                 </td>
@@ -174,38 +180,61 @@ export function TabelaLogsIa() {
         <span>Mostrando 1-5 de 1.248 requisições</span>
 
         <div className="flex items-center gap-1">
-          <button className="p-1.5 rounded-lg border border-slate-200 text-slate-400 hover:bg-slate-50 cursor-pointer">
+          <button
+            type="button"
+            className="p-1.5 rounded-lg border border-slate-200 text-slate-400 hover:bg-slate-50 cursor-pointer"
+          >
             <ChevronLeft className="w-4 h-4" />
           </button>
-          
-          <button className="w-8 h-8 rounded-lg bg-[#2B333F] text-white font-bold text-xs flex items-center justify-center">
+
+          <button
+            type="button"
+            className="w-8 h-8 rounded-lg bg-[#2B333F] text-white font-bold text-xs flex items-center justify-center"
+          >
             1
           </button>
-          <button className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-600 font-medium text-xs flex items-center justify-center cursor-pointer">
+          <button
+            type="button"
+            className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-600 font-medium text-xs flex items-center justify-center cursor-pointer"
+          >
             2
           </button>
-          <button className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-600 font-medium text-xs flex items-center justify-center cursor-pointer">
+          <button
+            type="button"
+            className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-600 font-medium text-xs flex items-center justify-center cursor-pointer"
+          >
             3
           </button>
-          <button className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-600 font-medium text-xs flex items-center justify-center cursor-pointer">
+          <button
+            type="button"
+            className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-600 font-medium text-xs flex items-center justify-center cursor-pointer"
+          >
             4
           </button>
-          <button className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-600 font-medium text-xs flex items-center justify-center cursor-pointer">
+          <button
+            type="button"
+            className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-600 font-medium text-xs flex items-center justify-center cursor-pointer"
+          >
             5
           </button>
-          
+
           <span className="px-1 text-slate-400">...</span>
-          
-          <button className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-600 font-medium text-xs flex items-center justify-center cursor-pointer">
+
+          <button
+            type="button"
+            className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-600 font-medium text-xs flex items-center justify-center cursor-pointer"
+          >
             250
           </button>
 
-          <button className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 cursor-pointer">
+          <button
+            type="button"
+            className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 cursor-pointer"
+          >
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
       </div>
-
     </div>
   );
 }

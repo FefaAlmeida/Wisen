@@ -27,7 +27,8 @@ const stories = [
     minutes: 120,
     title: "Copom mantém taxa Selic em 10,50% ao ano",
     summary: "Decisão impacta crédito, inflação e crescimento econômico no país.",
-    image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1000&q=85",
+    image:
+      "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1000&q=85",
     concepts: ["Selic", "Inflação", "Política monetária"],
   },
   {
@@ -38,7 +39,8 @@ const stories = [
     minutes: 300,
     title: "Estudo aponta aceleração do derretimento das geleiras",
     summary: "Pesquisadores alertam para impactos globais nas próximas décadas.",
-    image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1000&q=85",
+    image:
+      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1000&q=85",
     concepts: ["Clima", "Geleiras", "Aquecimento global"],
   },
   {
@@ -49,7 +51,8 @@ const stories = [
     minutes: 480,
     title: "Inteligência artificial ganha espaço na educação",
     summary: "Ferramentas de IA estão transformando a forma de ensinar e aprender.",
-    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1000&q=85",
+    image:
+      "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1000&q=85",
     concepts: ["Inteligência artificial", "Educação", "Tecnologia"],
   },
   {
@@ -60,7 +63,8 @@ const stories = [
     minutes: 1440,
     title: "Novas tecnologias ampliam o acesso à informação",
     summary: "Ferramentas digitais transformam a maneira como as pessoas consomem notícias.",
-    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1000&q=85",
+    image:
+      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1000&q=85",
     concepts: ["Tecnologia", "Informação", "Inclusão digital"],
   },
   {
@@ -71,7 +75,8 @@ const stories = [
     minutes: 1500,
     title: "Pesquisadores analisam mudanças no clima global",
     summary: "Estudos reforçam a importância de compreender os impactos ambientais.",
-    image: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=1000&q=85",
+    image:
+      "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=1000&q=85",
     concepts: ["Clima", "Sustentabilidade", "Aquecimento global"],
   },
   {
@@ -82,7 +87,8 @@ const stories = [
     minutes: 2880,
     title: "Cenário econômico influencia decisões do mercado",
     summary: "Indicadores ajudam a compreender tendências e movimentos da economia.",
-    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1000&q=85",
+    image:
+      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1000&q=85",
     concepts: ["Mercado", "Economia", "Indicadores"],
   },
 ];
@@ -136,7 +142,9 @@ export default function PaginaExplorar() {
   const sourceStories = view === "Para você" ? personalizedStories : stories;
   const filteredStories = sourceStories.filter((story) => {
     const matchesTopic = topic === "Todos os assuntos" || story.category === topic;
-    const searchText = normalize(`${story.title} ${story.summary} ${story.category} ${story.concepts.join(" ")}`);
+    const searchText = normalize(
+      `${story.title} ${story.summary} ${story.category} ${story.concepts.join(" ")}`,
+    );
     return matchesTopic && searchText.includes(normalize(search));
   });
   const visibleStories = [...filteredStories].sort((first, second) =>
@@ -218,7 +226,10 @@ export default function PaginaExplorar() {
                   </span>
                 ))}
                 {!interests.length && !loadingInterests && (
-                  <Link href="/paginaPerfil" className="text-[11px] font-medium text-[#30466E] underline underline-offset-2">
+                  <Link
+                    href="/paginaPerfil"
+                    className="text-[11px] font-medium text-[#30466E] underline underline-offset-2"
+                  >
                     Ajustar perfil
                   </Link>
                 )}
@@ -239,9 +250,11 @@ export default function PaginaExplorar() {
                       size="sm"
                       variant={view === option.value ? "default" : "outline"}
                       onClick={() => setView(option.value)}
-                      className={view === option.value
-                        ? "h-9 rounded-full border-0 bg-wisen-destaque-suave px-4 text-xs text-wisen-texto shadow-none hover:bg-[#F1E18A]"
-                        : "h-9 rounded-full border-wisen-borda bg-white/85 px-4 text-xs text-[#607092] shadow-none"}
+                      className={
+                        view === option.value
+                          ? "h-9 rounded-full border-0 bg-wisen-destaque-suave px-4 text-xs text-wisen-texto shadow-none hover:bg-[#F1E18A]"
+                          : "h-9 rounded-full border-wisen-borda bg-white/85 px-4 text-xs text-[#607092] shadow-none"
+                      }
                     >
                       {option.label}
                     </Button>
@@ -253,22 +266,37 @@ export default function PaginaExplorar() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="Todos os assuntos">Todos os assuntos</SelectItem>
-                    {topics.map((item) => <SelectItem key={item} value={item}>{item}</SelectItem>)}
+                    {topics.map((item) => (
+                      <SelectItem key={item} value={item}>
+                        {item}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="mb-3 flex items-center justify-between text-xs text-[#8290A8]">
                 <span>{visibleStories.length} notícias</span>
-                {view === "Para você" && interests.length > 0 && <span>Relacionadas aos seus interesses</span>}
+                {view === "Para você" && interests.length > 0 && (
+                  <span>Relacionadas aos seus interesses</span>
+                )}
               </div>
 
               {visibleStories.length ? (
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                   {visibleStories.map((story) => (
-                    <article key={story.id} className="flex h-full flex-col overflow-hidden rounded-lg border border-[#E1E7F0] bg-white/95 shadow-sm">
+                    <article
+                      key={story.id}
+                      className="flex h-full flex-col overflow-hidden rounded-lg border border-[#E1E7F0] bg-white/95 shadow-sm"
+                    >
                       <div className="relative h-40 shrink-0 overflow-hidden">
-                        <Image src={story.image} alt={story.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw" className="object-cover" />
+                        <Image
+                          src={story.image}
+                          alt={story.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                          className="object-cover"
+                        />
                         <span className="absolute left-3 top-3 rounded-full bg-white/95 px-3 py-1 text-[10px] font-semibold text-[#30466E]">
                           {story.category}
                         </span>
@@ -278,14 +306,26 @@ export default function PaginaExplorar() {
                           <span>{story.source}</span>
                           <span>{story.age}</span>
                         </div>
-                        <h2 className="text-base font-semibold leading-5 text-wisen-titulo">{story.title}</h2>
-                        <p className="mt-2 line-clamp-3 text-[13px] leading-[18px] text-wisen-texto-suave">{story.summary}</p>
+                        <h2 className="text-base font-semibold leading-5 text-wisen-titulo">
+                          {story.title}
+                        </h2>
+                        <p className="mt-2 line-clamp-3 text-[13px] leading-[18px] text-wisen-texto-suave">
+                          {story.summary}
+                        </p>
                         <div className="mt-auto flex flex-wrap gap-1.5 pt-4">
                           {story.concepts.map((concept) => (
-                            <span key={concept} className="rounded-full bg-[#FBF7E5] px-2.5 py-1 text-[10px] text-[#52617E]">{concept}</span>
+                            <span
+                              key={concept}
+                              className="rounded-full bg-[#FBF7E5] px-2.5 py-1 text-[10px] text-[#52617E]"
+                            >
+                              {concept}
+                            </span>
                           ))}
                         </div>
-                        <Link href="/paginaEvento" className="mt-4 inline-flex items-center gap-1.5 border-t border-[#E8ECF2] pt-3 text-xs font-semibold text-[#30466E] hover:text-[#172338]">
+                        <Link
+                          href="/paginaEvento"
+                          className="mt-4 inline-flex items-center gap-1.5 border-t border-[#E8ECF2] pt-3 text-xs font-semibold text-[#30466E] hover:text-[#172338]"
+                        >
                           Ler notícia <ArrowUpRight size={14} />
                         </Link>
                       </div>
@@ -294,9 +334,22 @@ export default function PaginaExplorar() {
                 </div>
               ) : (
                 <div className="rounded-lg border border-dashed border-[#CFD8E5] bg-white/75 px-5 py-12 text-center">
-                  <p className="text-sm font-semibold text-wisen-titulo">Nenhuma notícia encontrada</p>
-                  <p className="mt-1 text-xs text-[#7182A1]">Tente outro termo ou escolha um assunto diferente.</p>
-                  <Button type="button" variant="outline" size="sm" onClick={() => { setSearch(""); setTopic("Todos os assuntos"); }} className="mt-4 rounded-full">
+                  <p className="text-sm font-semibold text-wisen-titulo">
+                    Nenhuma notícia encontrada
+                  </p>
+                  <p className="mt-1 text-xs text-[#7182A1]">
+                    Tente outro termo ou escolha um assunto diferente.
+                  </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setSearch("");
+                      setTopic("Todos os assuntos");
+                    }}
+                    className="mt-4 rounded-full"
+                  >
                     Limpar filtros
                   </Button>
                 </div>

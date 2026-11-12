@@ -1,10 +1,9 @@
-import React from 'react';
-import { Wallet, FileText, Laptop, Cloud } from "lucide-react";
+import { Cloud, FileText, Laptop, Wallet } from "lucide-react";
+import React from "react";
 
 export function CartoesMetricasIa() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-      
       {/* Cartão 1: Orçamento Mensal */}
       <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-2xs flex flex-col justify-between space-y-4">
         <div className="flex items-center gap-2.5">
@@ -25,9 +24,9 @@ export function CartoesMetricasIa() {
 
           {/* Barra de Progresso */}
           <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-            <div 
+            <div
               className="bg-[#E8E191] h-full rounded-full transition-all duration-300"
-              style={{ width: '68%' }}
+              style={{ width: "68%" }}
             />
           </div>
         </div>
@@ -58,13 +57,13 @@ export function CartoesMetricasIa() {
 
         {/* Sparkline SVG */}
         <div className="h-6 w-full pt-1">
-          <svg className="w-full h-full" viewBox="0 0 100 20" preserveAspectRatio="none">
-            <path 
-              d="M 0 15 Q 25 18, 50 10 T 100 5" 
-              fill="none" 
-              stroke="#94A3B8" 
-              strokeWidth="2" 
-            />
+          <svg
+            aria-hidden="true"
+            className="w-full h-full"
+            viewBox="0 0 100 20"
+            preserveAspectRatio="none"
+          >
+            <path d="M 0 15 Q 25 18, 50 10 T 100 5" fill="none" stroke="#94A3B8" strokeWidth="2" />
           </svg>
         </div>
       </div>
@@ -80,17 +79,24 @@ export function CartoesMetricasIa() {
 
         <div className="space-y-1">
           <span className="text-2xl font-black text-[#2B333F]">892</span>
-          <p className="text-[10px] text-slate-400"><strong className="text-slate-600">72%</strong> do total</p>
+          <p className="text-[10px] text-slate-400">
+            <strong className="text-slate-600">72%</strong> do total
+          </p>
         </div>
 
         {/* Sparkline SVG Azul */}
         <div className="h-6 w-full pt-1">
-          <svg className="w-full h-full" viewBox="0 0 100 20" preserveAspectRatio="none">
-            <path 
-              d="M 0 16 Q 20 12, 40 14 T 80 6 T 100 8" 
-              fill="none" 
-              stroke="#2B333F" 
-              strokeWidth="2" 
+          <svg
+            aria-hidden="true"
+            className="w-full h-full"
+            viewBox="0 0 100 20"
+            preserveAspectRatio="none"
+          >
+            <path
+              d="M 0 16 Q 20 12, 40 14 T 80 6 T 100 8"
+              fill="none"
+              stroke="#2B333F"
+              strokeWidth="2"
             />
           </svg>
         </div>
@@ -107,22 +113,23 @@ export function CartoesMetricasIa() {
 
         <div className="space-y-1">
           <span className="text-2xl font-black text-[#2B333F]">356</span>
-          <p className="text-[10px] text-slate-400"><strong className="text-slate-600">28%</strong> do total</p>
+          <p className="text-[10px] text-slate-400">
+            <strong className="text-slate-600">28%</strong> do total
+          </p>
         </div>
 
         {/* Sparkline SVG Amarelo */}
         <div className="h-6 w-full pt-1">
-          <svg className="w-full h-full" viewBox="0 0 100 20" preserveAspectRatio="none">
-            <path 
-              d="M 0 18 Q 30 15, 60 8 T 100 3" 
-              fill="none" 
-              stroke="#E8E191" 
-              strokeWidth="2.5" 
-            />
+          <svg
+            aria-hidden="true"
+            className="w-full h-full"
+            viewBox="0 0 100 20"
+            preserveAspectRatio="none"
+          >
+            <path d="M 0 18 Q 30 15, 60 8 T 100 3" fill="none" stroke="#E8E191" strokeWidth="2.5" />
           </svg>
         </div>
       </div>
-
     </div>
   );
 }

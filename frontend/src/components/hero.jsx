@@ -1,9 +1,9 @@
 "use client";
 
+import { ArrowUpRight } from "lucide-react";
+import { motion } from "motion/react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { motion } from "motion/react";
-import { ArrowUpRight } from "lucide-react";
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
@@ -22,10 +22,7 @@ const Hero33 = () => {
         playsInline
         className="absolute inset-0 z-0 h-full w-full object-cover"
       >
-        <source
-          src="/videoFundo.mp4"
-          type="video/mp4"
-        />
+        <source src="/videoFundo.mp4" type="video/mp4" />
       </video>
       <div className="absolute inset-0 z-1 bg-linear-to-t from-black/80 via-black/30 to-black/50" />
 
@@ -48,11 +45,12 @@ const Hero33 = () => {
 
           <div className="flex flex-col gap-3 sm:gap-4 lg:gap-8 max-w-122.5 lg:shrink-0">
             <p className="text-base sm:text-lg text-foreground">
-              Encontra inspiração para o teu dia a dia, aprende truques de preparação e consulta as avaliações da nossa comunidade antes de colocar as mãos na massa.
+              Encontra inspiração para o teu dia a dia, aprende truques de preparação e consulta as
+              avaliações da nossa comunidade antes de colocar as mãos na massa.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <Button className="group h-10 w-full rounded-full px-5 font-medium text-foreground bg-background hover:bg-background/80 sm:w-fit">
-                Explorar Receitas 
+                Explorar Receitas
                 <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </Button>
               <Button className="group h-10 w-full rounded-full px-5 font-medium hover:bg-primary/90 sm:w-fit">

@@ -1,4 +1,3 @@
-
 import { Search } from "lucide-react";
 import AcoesConceito from "@/components/conceito/acoesConceito";
 import CabecalhoConceito from "@/components/conceito/cabecalhoConceito";
@@ -19,9 +18,7 @@ export default function PaginaConceito() {
       <main className="relative isolate min-h-screen min-w-0 bg-[radial-gradient(ellipse_at_60%_0%,#E4EDF5_0%,#F0F4F9_60%,#F0F4F9_100%)] font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
         <ConnectionsBackground />
         <div className="relative z-10 mx-auto w-full max-w-[1600px]">
-
           <div className="relative z-50 flex items-center justify-end gap-3 px-5 pt-3 md:px-8">
-
             <search className="relative min-w-0 flex-1 sm:w-[360px] sm:flex-none">
               <Search
                 aria-hidden="true"
@@ -41,7 +38,6 @@ export default function PaginaConceito() {
           </div>
 
           <div className="px-5 pt-8 pb-12 md:px-8">
-
             <div className="grid items-stretch gap-4 xl:grid-cols-[1.8fr_1fr]">
               <CabecalhoConceito />
               <PainelAprendizado />
@@ -55,12 +51,10 @@ export default function PaginaConceito() {
             <section className="mt-5">
               <NoticiasRelacionadas />
             </section>
-
           </div>
         </div>
       </main>
       <Footer variant="cliente" />
     </div>
-
   );
 }

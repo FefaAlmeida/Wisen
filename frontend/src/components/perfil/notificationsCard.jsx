@@ -1,8 +1,16 @@
 import { Bell, Calendar } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 
-export function NotificationsCard({ notifications, onChange }) {
+export function NotificationsCard({
+  notifications,
+  onChange,
+  onSave,
+  saving,
+  hasChanges,
+  feedback,
+}) {
   return (
     <Card className="border border-slate-200/80 shadow-xs bg-white rounded-2xl">
       <CardHeader className="pb-4">
@@ -27,7 +35,9 @@ export function NotificationsCard({ notifications, onChange }) {
             </div>
           </div>
           <Switch
+            disabled={saving}
             checked={notifications.reviewReminders}
+            aria-label="Lembretes de revisão"
             onCheckedChange={(checked) => onChange("reviewReminders", checked)}
             className="data-[state=checked]:bg-[#E8E191]"
           />
@@ -47,9 +57,33 @@ export function NotificationsCard({ notifications, onChange }) {
             </div>
           </div>
           <Switch
+            disabled={saving}
             checked={notifications.weeklySummary}
+            aria-label="Resumo semanal"
             onCheckedChange={(checked) => onChange("weeklySummary", checked)}
           />
+        </div>
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
+          {feedback ? (
+            <p
+              role={feedback.type === "error" ? "alert" : "status"}
+              className={`text-xs ${feedback.type === "error" ? "text-red-600" : "text-green-700"}`}
+            >
+              {feedback.text}
+            </p>
+          ) : (
+            <p className="text-xs text-slate-500">
+              {hasChanges ? "Você tem alterações pendentes." : "Suas preferências estão salvas."}
+            </p>
+          )}
+          <Button
+            type="button"
+            onClick={onSave}
+            disabled={!hasChanges || saving}
+            className="h-8 rounded-lg bg-[#E8E191] px-4 text-xs font-semibold text-[#2B333F] hover:bg-[#d8d181]"
+          >
+            {saving ? "Salvando..." : "Salvar notificações"}
+          </Button>
         </div>
       </CardContent>
     </Card>

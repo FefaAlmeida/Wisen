@@ -108,7 +108,7 @@ A sessão usa cookie `httpOnly` e as páginas da área do usuário redirecionam 
 
 ## Produção
 
-A configuração está preparada, mas nenhum deploy é realizado pelos comandos de desenvolvimento. Use `compose.production.yml`, com volumes separados e um proxy HTTPS à frente das portas locais. Configure o proxy para definir `X-Real-IP` com o IP de origem. PostgreSQL não tem porta publicada nessa configuração.
+A configuração está preparada, mas nenhum deploy é realizado pelos comandos de desenvolvimento. Use `compose.production.yml`, com volumes separados e um proxy HTTPS à frente das portas locais. Configure o proxy de borda para sobrescrever `X-Forwarded-For` com o IP de origem, sem aceitar o valor enviado pelo cliente. Defina `TRUST_PROXY` com os IPs/CIDRs dos proxies confiáveis entre o cliente e a API (incluindo o servidor Next). A API ignora cabeçalhos de origem de conexões não confiáveis por padrão; sem essa configuração, o limite de requisições é compartilhado pelo IP do servidor Next. Não use uma faixa que inclua clientes não confiáveis. PostgreSQL não tem porta publicada nessa configuração.
 
 Crie `.env.production` fora do Git com `POSTGRES_PASSWORD`, `FRONTEND_URL` e `OPERATIONS_TOKEN`. Gere senha e token com valores aleatórios; uma senha hexadecimal evita caracteres reservados na URL de conexão. O token deve ter pelo menos 32 caracteres.
 

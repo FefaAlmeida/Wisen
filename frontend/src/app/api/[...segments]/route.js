@@ -58,8 +58,8 @@ async function forward(request, context) {
         ...(request.headers.get("authorization")
           ? { authorization: request.headers.get("authorization") }
           : {}),
-        ...(request.headers.get("x-real-ip")
-          ? { "x-real-ip": request.headers.get("x-real-ip") }
+        ...(request.headers.get("x-forwarded-for")
+          ? { "x-forwarded-for": request.headers.get("x-forwarded-for") }
           : {}),
         cookie: request.headers.get("cookie") ?? "",
       },
@@ -75,6 +75,10 @@ async function forward(request, context) {
   headers.set("cache-control", "no-store");
   const contentType = upstream.headers.get("content-type");
   if (contentType) headers.set("content-type", contentType);
+  for (const name of ["retry-after", "allow"]) {
+    const value = upstream.headers.get(name);
+    if (value) headers.set(name, value);
+  }
   const cookies = upstream.headers.getSetCookie?.() ?? [upstream.headers.get("set-cookie")];
   for (const cookie of cookies.filter(Boolean)) {
     headers.append("set-cookie", cookie);

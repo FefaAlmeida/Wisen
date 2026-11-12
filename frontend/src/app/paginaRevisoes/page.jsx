@@ -1,4 +1,3 @@
-
 import { Search } from "lucide-react";
 import DicaEstudo from "@/components/centralRevisao/dicaEstudo";
 import QuizRevisao from "@/components/centralRevisao/quizRevisao";
@@ -18,7 +17,6 @@ export default function PaginaRevisoes() {
       <main className="relative isolate min-h-screen min-w-0 bg-[radial-gradient(ellipse_at_60%_0%,#E4EDF5_0%,#F0F4F9_60%,#F0F4F9_100%)] font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
         <ConnectionsBackground />
         <div className="relative z-10 mx-auto w-full max-w-[1600px]">
-
           {/* Barra de pesquisa e perfil */}
           <div className="relative z-50 flex items-center justify-end gap-3 px-5 pt-3 md:px-8">
             <search className="relative min-w-0 flex-1 sm:w-[360px] sm:flex-none">
@@ -41,7 +39,6 @@ export default function PaginaRevisoes() {
 
           {/* Conteúdo principal */}
           <div className="px-5 pt-10 pb-12 md:px-8">
-
             {/* Apresentação */}
             <header className="mb-6">
               <p className="mb-5 text-[11px] font-semibold tracking-[0.25em] text-[#93A3BE]">
@@ -64,13 +61,11 @@ export default function PaginaRevisoes() {
 
             {/* Área de atividades e sessão */}
             <div className="mt-4 grid items-stretch gap-4 xl:grid-cols-[minmax(0,2.2fr)_minmax(300px,0.9fr)]">
-
               {/* Quiz de revisão */}
               <QuizRevisao />
 
               {/* Painel lateral */}
               <aside className="flex flex-col gap-4">
-
                 {/* Sessão de hoje */}
                 <SessaoHoje />
 
@@ -78,10 +73,8 @@ export default function PaginaRevisoes() {
                 <div className="mt-auto">
                   <DicaEstudo />
                 </div>
-
               </aside>
             </div>
-
           </div>
         </div>
         <Footer variant="cliente" />

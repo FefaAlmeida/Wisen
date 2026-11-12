@@ -116,7 +116,16 @@ export function authService(repository) {
         }
       }
 
-      return repository.updateProfile(userId, data);
+      try {
+        return await repository.updateProfile(userId, data);
+      } catch (error) {
+        if (error.code === "23505" && error.constraint === "users_email_unique") {
+          throw Object.assign(new Error("Este e-mail já está em uso por outra conta"), {
+            statusCode: 409,
+          });
+        }
+        throw error;
+      }
     },
   };
 }

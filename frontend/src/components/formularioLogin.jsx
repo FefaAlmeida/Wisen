@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { loginDestination } from "@/lib/auth";
 import { requisitar } from "@/services/api";
 
 export default function FormularioLogin({ glass = false }) {
@@ -30,14 +31,7 @@ export default function FormularioLogin({ glass = false }) {
         },
       });
       const requestedPath = new URLSearchParams(window.location.search).get("next");
-      const destination = requestedPath ? new URL(requestedPath, window.location.origin) : null;
-      window.location.assign(
-        destination?.origin === window.location.origin
-          ? `${destination.pathname}${destination.search}${destination.hash}`
-          : user.role === "admin"
-            ? "/paginaInicioAdm"
-            : "/paginaInicialCliente",
-      );
+      window.location.assign(loginDestination(requestedPath, window.location.origin, user.role));
     } catch (error) {
       setErro(error.message || "Não foi possível entrar. Tente novamente.");
       setEnviando(false);

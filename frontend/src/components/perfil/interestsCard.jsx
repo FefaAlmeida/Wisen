@@ -45,32 +45,36 @@ export function InterestsCard({ interests, onToggle, onSave, saving, hasChanges,
         {/* Lista de Tags */}
         <div className="flex flex-wrap gap-2 pt-1">
           {/* Tags Selecionadas */}
-          {selectedTags.filter((tag) => tag.toLowerCase().includes(search.toLowerCase())).map((tag) => (
-            <button
-              type="button"
-              key={tag}
-              onClick={() => onToggle(tag)}
-              disabled={saving}
-              className="inline-flex items-center bg-[#E8E191] hover:bg-[#d8d181] text-[#2B333F] text-xs font-semibold px-3 py-1.5 rounded-xl gap-1.5 border-none transition-colors cursor-pointer"
-            >
-              {tag}
-              <X className="w-3 h-3 text-[#2B333F]" />
-            </button>
-          ))}
+          {selectedTags
+            .filter((tag) => tag.toLowerCase().includes(search.toLowerCase()))
+            .map((tag) => (
+              <button
+                type="button"
+                key={tag}
+                onClick={() => onToggle(tag)}
+                disabled={saving}
+                className="inline-flex items-center bg-[#E8E191] hover:bg-[#d8d181] text-[#2B333F] text-xs font-semibold px-3 py-1.5 rounded-xl gap-1.5 border-none transition-colors cursor-pointer"
+              >
+                {tag}
+                <X className="w-3 h-3 text-[#2B333F]" />
+              </button>
+            ))}
 
           {/* Tags Disponíveis */}
-          {visibleTags.filter((tag) => !interests.includes(tag)).map((tag) => (
-            <button
-              type="button"
-              key={tag}
-              onClick={() => onToggle(tag)}
-              disabled={saving}
-              className="inline-flex items-center bg-slate-50/80 hover:bg-slate-100 text-[#2B333F]/80 border-slate-200 text-xs font-normal px-3 py-1.5 rounded-xl gap-1.5 transition-colors cursor-pointer"
-            >
-              {tag}
-              <Plus className="w-3 h-3 text-slate-400" />
-            </button>
-          ))}
+          {visibleTags
+            .filter((tag) => !interests.includes(tag))
+            .map((tag) => (
+              <button
+                type="button"
+                key={tag}
+                onClick={() => onToggle(tag)}
+                disabled={saving}
+                className="inline-flex items-center bg-slate-50/80 hover:bg-slate-100 text-[#2B333F]/80 border-slate-200 text-xs font-normal px-3 py-1.5 rounded-xl gap-1.5 transition-colors cursor-pointer"
+              >
+                {tag}
+                <Plus className="w-3 h-3 text-slate-400" />
+              </button>
+            ))}
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">

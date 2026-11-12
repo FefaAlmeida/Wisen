@@ -40,6 +40,15 @@ export function configuration(env = process.env) {
       FRONTEND_URL: z.url().default("http://localhost:3000"),
       MODEL_CACHE_DIR: z.string().default("/models"),
       OPERATIONS_TOKEN: z.string().min(32).optional(),
+      TRUST_PROXY: z
+        .string()
+        .default("")
+        .transform((value) =>
+          value
+            .split(",")
+            .map((entry) => entry.trim())
+            .filter(Boolean),
+        ),
     })
     .superRefine((config, ctx) => {
       if (config.NODE_ENV === "production" && !config.OPERATIONS_TOKEN) {

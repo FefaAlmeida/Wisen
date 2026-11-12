@@ -1,7 +1,6 @@
 import Image from "next/image";
-import FormularioCadastro from "@/components/formularioCadastro";
-
 import { Footer } from "@/components/footer";
+import FormularioCadastro from "@/components/formularioCadastro";
 
 function BrandMark({ size }) {
   return (
@@ -67,6 +66,5 @@ export default function CadastroPage() {
         </div>
       </section>
     </main>
-
   );
 }

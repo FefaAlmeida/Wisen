@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 
 export function BannerImpacto() {
@@ -9,9 +10,11 @@ export function BannerImpacto() {
   ];
 
   return (
-    <section className="py-6">
-      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-[#1E2530] via-[#2B333F] to-[#1E2530] text-white p-8 md:p-12 shadow-2xl border border-slate-800">
-        <div className="absolute inset-0 opacity-30 pointer-events-none">
+    <section className="relative">
+      <div className="relative isolate overflow-hidden rounded-[28px] border border-[#293B5C] bg-[#172542] px-6 py-11 text-white shadow-[0_24px_65px_-40px_rgba(16,26,64,0.5)] sm:px-10 md:px-14 md:py-16">
+
+        {/* Imagem original */}
+        <div className="pointer-events-none absolute inset-0 z-0 opacity-30">
           <Image
             src="/meuBanner.png"
             alt=""
@@ -21,29 +24,50 @@ export function BannerImpacto() {
           />
         </div>
 
-        <div className="absolute -top-20 -left-20 w-60 h-60 bg-[#E8E191]/10 rounded-full blur-3xl pointer-events-none" />
+        {/* Integração do fundo */}
+        <div className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-r from-[#172542]/95 via-[#172542]/75 to-[#30466E]/30" />
 
-        <div className="relative z-10 space-y-10">
-          <div className="space-y-3 max-w-2xl">
-            <span className="text-[11px] font-bold tracking-wider text-[#E8E191] uppercase">
+        <div className="pointer-events-none absolute -right-24 -top-28 z-0 h-80 w-80 rounded-full bg-[#E8E191]/10 blur-3xl" />
+
+        <div className="relative z-10 space-y-12">
+
+          {/* Título */}
+          <div className="max-w-[700px] space-y-5">
+
+            <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#E8E191]">
               CONHECIMENTO QUE GERA IMPACTO
             </span>
-            <h2 className="text-3xl md:text-4xl font-black tracking-tight leading-tight">
+
+            <h2 className="text-[clamp(2.1rem,3.6vw,3.3rem)] font-bold leading-[1.16] tracking-[-0.045em] text-white">
               Mais clareza hoje,
-              <br /> mais entendo amanhã.
+              <br />
+              mais entendo amanhã.
             </h2>
+
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-6 border-t border-slate-700/60">
+          {/* Métricas */}
+          <div className="grid grid-cols-2 gap-x-6 gap-y-10 border-t border-white/15 pt-10 md:grid-cols-4 md:gap-5">
+
             {metricas.map((item) => (
-              <div key={item.legenda} className="space-y-1">
-                <span className="text-3xl md:text-4xl font-black text-white block">
+              <div
+                key={item.legenda}
+                className="group space-y-3 md:border-l md:border-white/15 md:pl-6 md:first:border-l-0 md:first:pl-0"
+              >
+
+                <span className="block text-[clamp(2rem,3.4vw,3.1rem)] font-bold leading-none tracking-[-0.055em] text-white transition-colors duration-300 group-hover:text-[#E8E191]">
                   {item.valor}
                 </span>
-                <span className="text-xs text-slate-300 font-medium block">{item.legenda}</span>
+
+                <span className="block max-w-[180px] text-[12px] font-medium leading-[1.7] text-[#BDCADB]">
+                  {item.legenda}
+                </span>
+
               </div>
             ))}
+
           </div>
+
         </div>
       </div>
     </section>

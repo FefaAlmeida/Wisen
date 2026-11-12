@@ -144,8 +144,28 @@ test("perfil lê e salva dados pessoais, interesses e notificações", async () 
   assert.equal(initialProfile.statusCode, 200, initialProfile.body);
   assert.deepEqual(initialProfile.json().preferences, {
     interests: [],
+    onboardingCompleted: false,
     notifications: { reviewReminders: true, weeklySummary: false },
   });
+
+  const skipOnboarding = await app.inject({
+    method: "PUT",
+    url: "/api/auth/profile",
+    headers,
+    payload: {
+      name: body.user.name,
+      email: body.user.email,
+      interests: [],
+      notifications: { reviewReminders: true, weeklySummary: false },
+    },
+  });
+  assert.equal(skipOnboarding.statusCode, 200, skipOnboarding.body);
+  const skippedProfile = await app.inject({
+    method: "GET",
+    url: "/api/auth/profile",
+    headers,
+  });
+  assert.equal(skippedProfile.json().preferences.onboardingCompleted, true);
 
   const update = await app.inject({
     method: "PUT",
@@ -169,11 +189,30 @@ test("perfil lê e salva dados pessoais, interesses e notificações", async () 
   assert.equal(savedProfile.statusCode, 200, savedProfile.body);
   assert.deepEqual(savedProfile.json(), {
     user: { ...body.user, name: "Perfil Atualizado" },
+    avatarDataUrl: null,
     preferences: {
       interests: ["Tecnologia", "Saúde"],
+      onboardingCompleted: true,
       notifications: { reviewReminders: false, weeklySummary: true },
     },
   });
+
+  const avatarDataUrl = "data:image/webp;base64,aGVsbG8=";
+  const avatarUpdate = await app.inject({
+    method: "PUT",
+    url: "/api/auth/avatar",
+    headers,
+    payload: { avatarDataUrl },
+  });
+  assert.equal(avatarUpdate.statusCode, 200, avatarUpdate.body);
+  assert.equal(avatarUpdate.json().avatarDataUrl, avatarDataUrl);
+
+  const profileWithAvatar = await app.inject({
+    method: "GET",
+    url: "/api/auth/profile",
+    headers,
+  });
+  assert.equal(profileWithAvatar.json().avatarDataUrl, avatarDataUrl);
 });
 
 test("login valida credenciais e persiste a duração de lembrar-me", async () => {

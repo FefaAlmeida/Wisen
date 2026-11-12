@@ -1,9 +1,10 @@
 
 import { Search } from "lucide-react";
-
+import { Footer } from "@/components/footer";
 import PainelGuardados from "@/components/guardados/painelGuardados";
-import Sidebar from "@/components/sidebar";
+import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
 import MenuPerfil from "@/components/homeCliente/menuPerfil";
+import Sidebar from "@/components/sidebar";
 import { Input } from "@/components/ui/input";
 
 export default function PaginaGuardados() {
@@ -11,8 +12,9 @@ export default function PaginaGuardados() {
     <div className="min-h-screen">
       <Sidebar activeItem="Guardados" />
 
-      <main className="min-h-screen min-w-0 bg-[radial-gradient(ellipse_at_55%_0%,#E6EEF6_0%,#F1F3F6_60%,#F1F3F6_100%)] font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
-        <div className="mx-auto w-full max-w-[1600px]">
+      <main className="relative isolate min-h-screen min-w-0 bg-[radial-gradient(ellipse_at_55%_0%,#E6EEF6_0%,#F1F3F6_60%,#F1F3F6_100%)] font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
+        <ConnectionsBackground />
+        <div className="relative z-10 mx-auto w-full max-w-[1600px]">
 
           {/* Barra de pesquisa e perfil */}
           <div className="relative z-50 flex items-center justify-end gap-3 px-5 pt-3 md:px-8">
@@ -79,6 +81,7 @@ export default function PaginaGuardados() {
           </div>
         </div>
       </main>
+      <Footer variant="cliente" />
     </div>
   );
 }

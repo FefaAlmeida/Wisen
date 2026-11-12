@@ -11,7 +11,15 @@ test("cadastro, rota privada, busca, logout e login funcionam no navegador", asy
   await page.getByRole("button", { name: /criar conta/i }).click();
   await expect(page).toHaveURL(/\/paginaInicialCliente$/);
   await expect(page.getByText("Pessoa Playwright")).toBeVisible();
-  await expect(page.getByRole("link", { name: "Biblioteca" })).toBeVisible();
+  const onboarding = page.getByRole("dialog", { name: "Quais assuntos interessam a você?" });
+  await expect(onboarding).toBeVisible();
+  await onboarding.getByRole("button", { name: "Agora não" }).click();
+  await expect(onboarding).not.toBeVisible();
+  await expect(
+    page
+      .getByRole("navigation", { name: "Navegação principal" })
+      .getByRole("link", { name: "Meu conhecimento" }),
+  ).toBeVisible();
 
   const sessionCookie = (await page.context().cookies()).find(
     (cookie) => cookie.name === "wisen_session",
@@ -30,11 +38,13 @@ test("cadastro, rota privada, busca, logout e login funcionam no navegador", asy
   expect(createdSearch.body.status).toBe("pending");
 
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.getByRole("link", { name: "Biblioteca" }).click();
+  await page.getByRole("button", { name: "Abrir menu de navegação" }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Meu conhecimento" }).click();
   await expect(page).toHaveURL(/\/paginaBiblioteca$/);
-  await expect(page.getByRole("heading", { name: "Biblioteca de conceitos" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Explore conceitos/ })).toBeVisible();
 
-  await page.getByRole("button", { name: "Sair" }).click();
+  await page.getByRole("button", { name: "Abrir menu do perfil" }).click();
+  await page.getByRole("button", { name: "Sair da conta" }).click();
   await expect(page).toHaveURL(/\/paginaLogin$/);
   expect((await page.context().cookies()).some((cookie) => cookie.name === "wisen_session")).toBe(
     false,
@@ -46,7 +56,10 @@ test("cadastro, rota privada, busca, logout e login funcionam no navegador", asy
   await page.getByLabel("Senha", { exact: true }).fill(password);
   await page.getByRole("button", { name: /^entrar/i }).click();
   await expect(page).toHaveURL(/\/paginaGuardados$/);
-  await expect(page.getByRole("button", { name: "Sair" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Meus guardados", exact: true })).toBeVisible();
+  const session = await page.request.get("/api/auth/session");
+  expect(session.ok()).toBe(true);
+  expect((await session.json()).user.email).toBe(email);
 });
 
 test("formulário impede senha curta no navegador", async ({ page }) => {

@@ -2,6 +2,7 @@ import React from 'react';
 import { Footer } from '@/components/footer';
 import { Eye, Layout } from 'lucide-react';
 
+
 export default function PaginaDemonstracao() {
   return (
     <div className="min-h-screen flex flex-col justify-between bg-slate-50 font-sans text-[#2B333F] selection:bg-[#E8E191]">
@@ -58,7 +59,7 @@ export default function PaginaDemonstracao() {
       </main>
 
       {/* Componente Rodapé em Teste */}
-      <Footer />
+
 
     </div>
   );

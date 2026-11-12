@@ -33,7 +33,10 @@ export function authRepository(pool) {
           `INSERT INTO users(name, email, password_hash) VALUES($1, $2, $3) RETURNING ${userColumns}`,
           [name, email, passwordHash],
         );
-        await client.query("INSERT INTO user_preferences(user_id) VALUES($1)", [user.id]);
+        await client.query(
+          "INSERT INTO user_preferences(user_id, interest_onboarding_completed) VALUES($1, false)",
+          [user.id],
+        );
         await client.query(
           "INSERT INTO auth_sessions(token_hash, user_id, expires_at) VALUES($1, $2, $3)",
           [tokenHash, user.id, expiresAt],
@@ -68,7 +71,8 @@ export function authRepository(pool) {
 
     async findProfile(userId) {
       const { rows } = await pool.query(
-        `SELECT ${sessionUserColumns}, user_preferences.interests,
+        `SELECT ${sessionUserColumns}, users.avatar_data_url, user_preferences.interests,
+                user_preferences.interest_onboarding_completed,
                 user_preferences.review_reminders, user_preferences.weekly_summary
            FROM users
            JOIN user_preferences ON user_preferences.user_id = users.id
@@ -78,11 +82,23 @@ export function authRepository(pool) {
       const profile = rows[0];
       if (!profile) return null;
 
-      const { id, email, name, role, interests, review_reminders, weekly_summary } = profile;
+      const {
+        id,
+        email,
+        name,
+        role,
+        avatar_data_url,
+        interests,
+        interest_onboarding_completed,
+        review_reminders,
+        weekly_summary,
+      } = profile;
       return {
         user: { id, email, name, role },
+        avatarDataUrl: avatar_data_url,
         preferences: {
           interests,
+          onboardingCompleted: interest_onboarding_completed,
           notifications: { reviewReminders: review_reminders, weeklySummary: weekly_summary },
         },
       };
@@ -101,12 +117,15 @@ export function authRepository(pool) {
         );
 
         await client.query(
-          `INSERT INTO user_preferences (user_id, interests, review_reminders, weekly_summary)
-           VALUES ($1, $2, $3, $4)
+          `INSERT INTO user_preferences (
+             user_id, interests, review_reminders, weekly_summary, interest_onboarding_completed
+           )
+           VALUES ($1, $2, $3, $4, true)
            ON CONFLICT (user_id) DO UPDATE 
            SET interests = EXCLUDED.interests,
                review_reminders = EXCLUDED.review_reminders,
                weekly_summary = EXCLUDED.weekly_summary,
+               interest_onboarding_completed = true,
                updated_at = now()`,
           [
             userId,
@@ -118,6 +137,14 @@ export function authRepository(pool) {
 
         return user;
       });
+    },
+
+    async updateAvatar(userId, avatarDataUrl) {
+      await pool.query("UPDATE users SET avatar_data_url = $1, updated_at = now() WHERE id = $2", [
+        avatarDataUrl,
+        userId,
+      ]);
+      return avatarDataUrl;
     },
   };
 }

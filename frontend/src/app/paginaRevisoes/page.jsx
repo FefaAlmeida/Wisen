@@ -1,13 +1,13 @@
 
 import { Search } from "lucide-react";
-
 import DicaEstudo from "@/components/centralRevisao/dicaEstudo";
 import QuizRevisao from "@/components/centralRevisao/quizRevisao";
 import ResumoRevisoes from "@/components/centralRevisao/resumoRevisoes";
 import SessaoHoje from "@/components/centralRevisao/sessaoHoje";
-
-import Sidebar from "@/components/sidebar";
+import { Footer } from "@/components/footer";
+import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
 import MenuPerfil from "@/components/homeCliente/menuPerfil";
+import Sidebar from "@/components/sidebar";
 import { Input } from "@/components/ui/input";
 
 export default function PaginaRevisoes() {
@@ -15,8 +15,9 @@ export default function PaginaRevisoes() {
     <div className="min-h-screen">
       <Sidebar activeItem="Revisões" />
 
-      <main className="min-h-screen min-w-0 bg-[radial-gradient(ellipse_at_60%_0%,#E4EDF5_0%,#F0F4F9_60%,#F0F4F9_100%)] font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
-        <div className="mx-auto w-full max-w-[1600px]">
+      <main className="relative isolate min-h-screen min-w-0 bg-[radial-gradient(ellipse_at_60%_0%,#E4EDF5_0%,#F0F4F9_60%,#F0F4F9_100%)] font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
+        <ConnectionsBackground />
+        <div className="relative z-10 mx-auto w-full max-w-[1600px]">
 
           {/* Barra de pesquisa e perfil */}
           <div className="relative z-50 flex items-center justify-end gap-3 px-5 pt-3 md:px-8">
@@ -44,7 +45,7 @@ export default function PaginaRevisoes() {
             {/* Apresentação */}
             <header className="mb-6">
               <p className="mb-5 text-[11px] font-semibold tracking-[0.25em] text-[#93A3BE]">
-                BOM DIA, NATALIA ☀️
+                BOM DIA, NATALIA
               </p>
 
               <h1 className="text-[38px] font-semibold leading-tight tracking-[-1.5px] text-wisen-titulo md:text-[46px]">
@@ -83,6 +84,7 @@ export default function PaginaRevisoes() {
 
           </div>
         </div>
+        <Footer variant="cliente" />
       </main>
     </div>
   );

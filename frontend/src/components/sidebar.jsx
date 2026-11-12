@@ -19,7 +19,7 @@ import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/com
 const navigation = [
   { label: "Início", href: "/paginaInicialCliente", icon: Home },
   { label: "Explorar", href: "/paginaExplorar", icon: Compass },
-  { label: "Revisões", href: "/paginaSessaoRevisao", icon: Clock3 },
+  { label: "Revisões", href: "/paginaRevisoes", icon: Clock3 },
   {
     label: "Meu conhecimento",
     href: "/paginaBiblioteca",

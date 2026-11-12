@@ -9,7 +9,7 @@ const clienteExploreLinks = [
 ];
 
 const clienteLearningLinks = [
-  { label: "Revisões", href: "/paginaSessaoRevisao" },
+  { label: "Revisões", href: "/paginaRevisoes" },
   { label: "Meu conhecimento", href: "/paginaConhecimento" },
   { label: "Meu perfil", href: "/paginaPerfil" },
 ];

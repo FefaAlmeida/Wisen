@@ -7,19 +7,17 @@ import {
   ChevronDown,
   CircleHelp,
   Lightbulb,
-  Search,
   Share2,
   Sparkles,
-  X,
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { Footer } from "@/components/footer";
+import { BarraBusca } from "@/components/barraBusca";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
 import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import Sidebar from "@/components/sidebar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 
 const concepts = [
@@ -63,7 +61,6 @@ const sources = [
 export default function PaginaEvento() {
   const [saved, setSaved] = useState(false);
   const [savedConcepts, setSavedConcepts] = useState([]);
-  const [search, setSearch] = useState("");
   const [showSources, setShowSources] = useState(false);
   const [showTimeline, setShowTimeline] = useState(true);
   const [shareFeedback, setShareFeedback] = useState("");
@@ -92,19 +89,7 @@ export default function PaginaEvento() {
         {/* Barra global: mantém busca e perfil fora da matéria */}
         <header className="relative z-20 mx-auto flex w-full max-w-[1600px] items-center justify-end gap-3 px-4 pt-4 sm:px-5 lg:px-7">
           <div className="relative min-w-0 flex-1 sm:w-[360px] sm:flex-none">
-            <Search
-              aria-hidden="true"
-              size={16}
-              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#7182A1]"
-            />
-            <Input
-              type="search"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              aria-label="Buscar notícias, conceitos ou temas"
-              placeholder="Pesquise por notícias, conceitos ou temas..."
-              className="h-9 rounded-full border-[#E2E7EE] bg-white pl-9 text-xs shadow-sm placeholder:text-[#8794AA]"
-            />
+            <BarraBusca />
           </div>
           <MenuPerfil />
         </header>
@@ -362,21 +347,6 @@ export default function PaginaEvento() {
           </div>
         </div>
 
-        {search && (
-          <div className="fixed inset-x-4 top-[70px] z-30 mx-auto flex max-w-[420px] items-center justify-between rounded-md border border-[#E2E5E9] bg-white px-4 py-3 text-[13px] text-[#687382] shadow-md">
-            <span>
-              Buscando por <strong className="text-[#303B4C]">{search}</strong>
-            </span>
-            <button
-              type="button"
-              onClick={() => setSearch("")}
-              aria-label="Limpar busca"
-              className="ml-3 text-[#9099A3] hover:text-[#303B4C]"
-            >
-              <X size={16} />
-            </button>
-          </div>
-        )}
       </div>
       <Footer variant="cliente" />
     </main>

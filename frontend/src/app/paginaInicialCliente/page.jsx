@@ -1,6 +1,6 @@
-import { Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { BarraBusca } from "@/components/barraBusca";
 import { Footer } from "@/components/footer";
 import CardInteresse from "@/components/homeCliente/cardInteresse";
 import CardNoticia from "@/components/homeCliente/cardNoticia";
@@ -10,7 +10,6 @@ import { InitialInterestDialog } from "@/components/homeCliente/initialInterestD
 import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import PainelRevisoes from "@/components/homeCliente/painelRevisoes";
 import Sidebar from "@/components/sidebar";
-import { Input } from "@/components/ui/input";
 
 export default function Home() {
   return (
@@ -23,19 +22,9 @@ export default function Home() {
           {/* Hero */}
           <div className="relative flex min-h-[410px] items-center overflow-hidden pt-14 md:min-h-[350px] md:pt-0">
             <div className="absolute inset-x-4 top-3 z-20 flex items-center justify-end gap-3 sm:left-auto sm:right-6 md:right-10">
-              <search className="relative min-w-0 flex-1 sm:w-[360px] sm:flex-none">
-                <Search
-                  aria-hidden="true"
-                  className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#7182A1]"
-                  size={16}
-                />
-                <Input
-                  type="search"
-                  aria-label="Buscar notícias, conceitos ou temas"
-                  placeholder="Pesquise por notícias, conceitos ou temas..."
-                  className="h-9 rounded-full border-wisen-borda bg-white/90 pl-9 text-[11px] shadow-sm placeholder:text-[#8794AA] focus-visible:ring-[#DCE5F2]"
-                />
-              </search>
+              <div className="relative min-w-0 flex-1 sm:w-[360px] sm:flex-none">
+                <BarraBusca />
+              </div>
               <MenuPerfil />
             </div>
 

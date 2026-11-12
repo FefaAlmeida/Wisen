@@ -8,7 +8,7 @@ export function TabelasDesempenhoAdm() {
       leituras: 56,
       tempo: "12h 20min",
       nivel: "Avançado",
-      corNivel: "bg-[#E8E191]/50 text-[#2B333F]",
+      corNivel: "bg-[#EBDD80]/50 text-[#2B333F]",
     },
     {
       nome: "Lucas Almeida",
@@ -61,23 +61,23 @@ export function TabelasDesempenhoAdm() {
   ];
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
       {/* 1. Utilizadores Mais Ativos */}
-      <div className="lg:col-span-5 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-2xs space-y-4">
+      <div className="space-y-4 rounded-lg border border-slate-200/80 bg-white p-5 shadow-2xs lg:col-span-5">
         <div className="flex items-center justify-between">
-          <h3 className="text-xs font-bold text-[#2B333F]">Usuários mais ativos</h3>
+          <h3 className="text-base font-semibold text-[#2B333F]">Usuários mais ativos</h3>
           <Link
             href="/paginaGestaoUsuariosAdm"
-            className="text-[10px] font-bold text-[#2B333F] hover:underline"
+            className="text-sm font-semibold text-[#30466E] transition-colors hover:text-[#D6B92F]"
           >
             Ver todos →
           </Link>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase">
+              <tr className="border-b border-slate-100 text-xs font-semibold text-slate-500 uppercase">
                 <th className="pb-2">Usuário</th>
                 <th className="pb-2">Revisões</th>
                 <th className="pb-2">Leituras</th>
@@ -87,14 +87,14 @@ export function TabelasDesempenhoAdm() {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {usuarios.map((item) => (
-                <tr key={item.nome} className="hover:bg-slate-50/50">
+                <tr key={item.nome} className="transition-colors hover:bg-[#FBF7E5]">
                   <td className="py-2.5 font-bold text-[#2B333F]">{item.nome}</td>
                   <td className="py-2.5 text-slate-500">{item.revisoes}</td>
                   <td className="py-2.5 text-slate-500">{item.leituras}</td>
                   <td className="py-2.5 text-slate-500">{item.tempo}</td>
                   <td className="py-2.5">
                     <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${item.corNivel}`}
+                      className={`rounded-full px-2 py-0.5 text-xs font-semibold ${item.corNivel}`}
                     >
                       {item.nivel}
                     </span>
@@ -107,12 +107,12 @@ export function TabelasDesempenhoAdm() {
       </div>
 
       {/* 2. Conteúdos Mais Acessados */}
-      <div className="lg:col-span-4 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-2xs space-y-4">
+      <div className="space-y-4 rounded-lg border border-slate-200/80 bg-white p-5 shadow-2xs lg:col-span-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-xs font-bold text-[#2B333F]">Conteúdos mais acessados</h3>
+          <h3 className="text-base font-semibold text-[#2B333F]">Conteúdos mais acessados</h3>
         </div>
 
-        <div className="space-y-3 text-xs">
+        <div className="space-y-3 text-sm">
           {conteudos.map((item) => (
             <div
               key={item.titulo}
@@ -120,9 +120,9 @@ export function TabelasDesempenhoAdm() {
             >
               <div>
                 <h4 className="font-bold text-[#2B333F] truncate">{item.titulo}</h4>
-                <span className="text-[10px] text-slate-400">{item.categoria}</span>
+                <span className="text-xs text-slate-500">{item.categoria}</span>
               </div>
-              <span className="font-extrabold text-[#2B333F] bg-slate-100 px-2 py-1 rounded-lg text-[11px]">
+              <span className="rounded-lg bg-slate-100 px-2 py-1 text-xs font-bold text-[#2B333F]">
                 {item.views}
               </span>
             </div>
@@ -131,20 +131,20 @@ export function TabelasDesempenhoAdm() {
       </div>
 
       {/* 3. Conceitos Com Mais Lacunas */}
-      <div className="lg:col-span-3 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-2xs space-y-4">
+      <div className="space-y-4 rounded-lg border border-slate-200/80 bg-white p-5 shadow-2xs lg:col-span-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-xs font-bold text-[#2B333F]">Conceitos com mais lacunas</h3>
+          <h3 className="text-base font-semibold text-[#2B333F]">Conceitos com mais lacunas</h3>
         </div>
 
-        <div className="space-y-3 text-xs">
+        <div className="space-y-3 text-sm">
           {lacunas.map((item) => (
             <div key={item.conceito} className="space-y-1">
               <div className="flex items-center justify-between">
                 <span className="font-medium text-[#2B333F]">{item.conceito}</span>
-                <span className="text-[10px] font-bold text-slate-400">{item.pct}</span>
+                <span className="text-xs font-semibold text-slate-500">{item.pct}</span>
               </div>
               <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                <div className="bg-[#E8E191] h-1.5 rounded-full" style={{ width: item.pct }} />
+                <div className="h-1.5 rounded-full bg-[#EBDD80]" style={{ width: item.pct }} />
               </div>
             </div>
           ))}

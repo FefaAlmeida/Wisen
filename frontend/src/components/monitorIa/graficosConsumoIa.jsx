@@ -1,7 +1,7 @@
 export function GraficosConsumoIa() {
   const modelos = [
     { nome: "GPT-4o", valor: "R$ 32,10", pct: "46,9%", cor: "bg-[#2B333F]" },
-    { nome: "Claude 3.5", valor: "R$ 18,75", pct: "27,4%", cor: "bg-[#E8E191]" },
+    { nome: "Claude 3.5", valor: "R$ 18,75", pct: "27,4%", cor: "bg-[#EBDD80]" },
     { nome: "Gemini 1.5", valor: "R$ 11,30", pct: "16,5%", cor: "bg-slate-500" },
     { nome: "Outros", valor: "R$ 6,25", pct: "9,1%", cor: "bg-slate-300" },
   ];
@@ -42,24 +42,24 @@ export function GraficosConsumoIa() {
   ].map((bar, index) => ({ ...bar, date: `2026-10-${index + 1}` }));
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
       {/* 1. Gráfico de Barras: Requisições por tipo de processamento */}
-      <div className="lg:col-span-7 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-2xs space-y-5">
+      <div className="space-y-5 rounded-lg border border-slate-200/80 bg-white p-5 shadow-2xs lg:col-span-7">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h3 className="text-xs font-bold text-[#2B333F]">
+            <h3 className="text-base font-semibold text-[#2B333F]">
               Requisições por tipo de processamento
             </h3>
-            <p className="text-[10px] text-slate-400">
+            <p className="text-xs text-slate-500">
               Comparativo entre processamentos locais e chamadas externas.
             </p>
           </div>
-          <div className="flex items-center gap-4 text-[10px] font-semibold">
+          <div className="flex items-center gap-4 text-xs font-semibold">
             <span className="flex items-center gap-1.5 text-slate-600">
               <span className="w-2.5 h-2.5 rounded-full bg-[#2B333F]" /> Processamentos locais
             </span>
             <span className="flex items-center gap-1.5 text-slate-600">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#E8E191]" /> APIs externas
+              <span className="h-2.5 w-2.5 rounded-full bg-[#EBDD80]" /> APIs externas
             </span>
           </div>
         </div>
@@ -76,13 +76,13 @@ export function GraficosConsumoIa() {
                   className="flex-1 flex flex-col items-center justify-end h-full group relative"
                 >
                   {/* Tooltip ao passar o rato */}
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-8 bg-[#2B333F] text-white text-[9px] px-1.5 py-0.5 rounded shadow pointer-events-none whitespace-nowrap z-20">
+                  <div className="pointer-events-none absolute -top-8 z-20 whitespace-nowrap rounded-lg bg-[#2B333F] px-2 py-1 text-[11px] text-white opacity-0 shadow transition-opacity group-hover:opacity-100">
                     {b.local + b.externa} reqs
                   </div>
 
                   {/* Barra Amarela (APIs externas - Topo) */}
                   <div
-                    className="w-full bg-[#E8E191] rounded-t-xs transition-all"
+                    className="w-full rounded-t-xs bg-[#EBDD80] transition-all"
                     style={{ height: `${alturaExterna}%` }}
                   />
                   {/* Barra Azul (Locais - Base) */}
@@ -96,7 +96,7 @@ export function GraficosConsumoIa() {
           </div>
 
           {/* Eixo X - Datas */}
-          <div className="flex justify-between text-[10px] text-slate-400 pt-2 px-1">
+          <div className="flex justify-between px-1 pt-2 text-xs text-slate-500">
             <span>1 out</span>
             <span>5 out</span>
             <span>10 out</span>
@@ -109,10 +109,10 @@ export function GraficosConsumoIa() {
       </div>
 
       {/* 2. Gráfico Donut: Distribuição de custos por modelo */}
-      <div className="lg:col-span-5 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-2xs space-y-5">
+      <div className="space-y-5 rounded-lg border border-slate-200/80 bg-white p-5 shadow-2xs lg:col-span-5">
         <div>
-          <h3 className="text-xs font-bold text-[#2B333F]">Distribuição de custos por modelo</h3>
-          <p className="text-[10px] text-slate-400">
+          <h3 className="text-base font-semibold text-[#2B333F]">Distribuição de custos por modelo</h3>
+          <p className="text-xs text-slate-500">
             Custo total por modelo de IA (APIs externas).
           </p>
         </div>
@@ -140,7 +140,7 @@ export function GraficosConsumoIa() {
 
               {/* Claude 3.5 (27.4%) */}
               <path
-                stroke="#E8E191"
+                stroke="#EBDD80"
                 strokeWidth="4.5"
                 strokeDasharray="27, 100"
                 strokeDashoffset="-47"
@@ -170,15 +170,15 @@ export function GraficosConsumoIa() {
             </svg>
 
             <div className="absolute text-center">
-              <span className="text-xs font-black text-[#2B333F] block leading-tight">
+              <span className="block text-sm font-bold leading-tight text-[#2B333F]">
                 R$ 68,40
               </span>
-              <span className="text-[9px] text-slate-400 font-medium">gasto no mês</span>
+              <span className="text-xs font-medium text-slate-500">gasto no mês</span>
             </div>
           </div>
 
           {/* Legenda e Lista de Modelos */}
-          <div className="space-y-2.5 w-full text-xs">
+          <div className="w-full space-y-2.5 text-sm">
             {modelos.map((m) => (
               <div key={m.nome} className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -187,7 +187,7 @@ export function GraficosConsumoIa() {
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="font-bold text-[#2B333F]">{m.valor}</span>
-                  <span className="text-[10px] text-slate-400 font-medium w-9 text-right">
+                  <span className="w-9 text-right text-xs font-medium text-slate-500">
                     {m.pct}
                   </span>
                 </div>

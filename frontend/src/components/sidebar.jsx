@@ -8,7 +8,6 @@ import {
   LayoutDashboard,
   Menu,
   Newspaper,
-  Settings,
   X,
 } from "lucide-react";
 import Image from "next/image";
@@ -106,32 +105,6 @@ function NavigationItems({ activeItem, mobile = false }) {
   );
 }
 
-function SettingsLink({ activeItem, mobile = false }) {
-  const className = mobile
-    ? `flex h-11 items-center gap-3 rounded-xl px-3 text-sm transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EBDD80] ${
-        activeItem === "Configurações"
-          ? "bg-[#EBDD80] font-semibold text-[#202D3A] shadow-sm"
-          : "text-white hover:bg-white/10"
-      }`
-    : `mt-auto flex h-11 items-center gap-2.5 rounded-xl px-2.5 text-[10px] transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EBDD80] lg:gap-3 lg:px-2.5 lg:text-[12px] ${
-        activeItem === "Configurações"
-          ? "bg-[#EBDD80] font-semibold text-[#202D3A] shadow-sm"
-          : "text-white hover:bg-white/10"
-      }`;
-  const link = (
-    <Link
-      href="/paginaPerfil"
-      aria-current={activeItem === "Configurações" ? "page" : undefined}
-      className={className}
-    >
-      <Settings size={mobile ? 19 : 17} strokeWidth={2.2} />
-      <span>Configurações</span>
-    </Link>
-  );
-
-  return mobile ? <SheetClose nativeButton={false} render={link} /> : link;
-}
-
 function AdminDashboardLink({ mobile = false }) {
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -212,9 +185,6 @@ export default function Sidebar({ activeItem }) {
             <AdminDashboardLink mobile />
           </div>
 
-          <div className="mt-auto border-t border-white/10 pt-4">
-            <SettingsLink activeItem={activeItem} mobile />
-          </div>
         </SheetContent>
       </Sheet>
 
@@ -230,7 +200,6 @@ export default function Sidebar({ activeItem }) {
         <div className="mt-2 border-t border-white/10 pt-2">
           <AdminDashboardLink />
         </div>
-        <SettingsLink activeItem={activeItem} />
       </aside>
     </>
   );

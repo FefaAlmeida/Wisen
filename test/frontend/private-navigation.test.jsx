@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { AdminSidebar } from "../../frontend/src/components/admin/adminSidebar.jsx";
 import Sidebar from "../../frontend/src/components/sidebar.jsx";
 
 vi.mock("next/link", async () => {
@@ -32,18 +33,21 @@ describe("navegação privada", () => {
     );
     await vi.waitFor(() => expect(fetch).toHaveBeenCalled());
     expect(screen.queryByRole("link", { name: "Painel administrativo" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Configurações" })).not.toBeInTheDocument();
   });
 
-  it("usa texto branco, realce amarelo, logo ao lado do nome e ícones reforçados", () => {
+  it("usa texto branco, realce amarelo, logo acima do nome e ícones reforçados", () => {
     render(<Sidebar activeItem="Início" />);
 
     const activeLink = screen.getByRole("link", { name: "Início" });
     const inactiveLink = screen.getByRole("link", { name: "Explorar" });
     expect(activeLink).toHaveClass("bg-[#EBDD80]", "text-[#202D3A]");
-    expect(inactiveLink).toHaveClass("text-white", "hover:bg-[#EBDD80]", "hover:text-[#202D3A]");
+    expect(inactiveLink).toHaveClass("text-white", "hover:bg-white/10");
     expect(inactiveLink.querySelector("svg")).toHaveAttribute("stroke-width", "2.2");
 
     const logo = screen.getAllByAltText("Logo Wisen")[0];
+    expect(logo).toHaveClass("size-10", "rounded-full", "lg:size-11");
+    expect(logo.parentElement).toHaveClass("flex-col");
     expect(logo.parentElement).toHaveTextContent("Wisen");
   });
 
@@ -53,6 +57,19 @@ describe("navegação privada", () => {
     expect(await screen.findByRole("link", { name: "Painel administrativo" })).toHaveAttribute(
       "href",
       "/paginaInicioAdm",
+    );
+  });
+
+  it("mantém os destinos de administração com o estilo da sidebar do cliente", () => {
+    render(<AdminSidebar activeItem="Visão geral" />);
+
+    expect(screen.getAllByRole("link", { name: "Visão geral" })[0]).toHaveClass(
+      "bg-[#EBDD80]",
+      "text-[#202D3A]",
+    );
+    expect(screen.getAllByRole("link", { name: "Curadoria de eventos" })[0]).toHaveAttribute(
+      "href",
+      "/paginaCuidadoriaEventosAdm",
     );
   });
 });

@@ -51,29 +51,29 @@ export function CartoesMetricasAdm() {
         return (
           <div
             key={item.titulo}
-            className={`p-4 rounded-2xl border transition-all ${
+            className={`rounded-lg border p-4 transition-all hover:shadow-md ${
               item.destaque
-                ? "bg-[#E8E191]/30 border-[#E8E191] shadow-xs"
+                ? "border-[#EBDD80] bg-[#EBDD80]/30 shadow-xs"
                 : "bg-white border-slate-200/80 shadow-2xs"
             }`}
           >
             <div className="flex items-center justify-between pb-3">
-              <span className="text-xs font-semibold text-slate-500">{item.titulo}</span>
+              <span className="text-sm font-semibold text-slate-600">{item.titulo}</span>
               <div
-                className={`p-2 rounded-xl ${item.destaque ? "bg-[#2B333F] text-[#E8E191]" : "bg-slate-100 text-[#2B333F]"}`}
+                className={`rounded-lg p-2 ${item.destaque ? "bg-[#2B333F] text-[#EBDD80]" : "bg-slate-100 text-[#2B333F]"}`}
               >
-                <Icone className="w-4 h-4" />
+                <Icone className="h-5 w-5" />
               </div>
             </div>
 
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-black text-[#2B333F]">{item.valor}</span>
-              <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-md">
+              <span className="text-3xl font-bold text-[#2B333F]">{item.valor}</span>
+              <span className="rounded-full bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-600">
                 {item.variacao}
               </span>
             </div>
 
-            <p className="text-[10px] text-slate-400 mt-1">{item.periodo}</p>
+            <p className="mt-1 text-xs text-slate-500">{item.periodo}</p>
           </div>
         );
       })}

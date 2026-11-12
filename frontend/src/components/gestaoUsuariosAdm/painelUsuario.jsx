@@ -48,7 +48,7 @@ export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
         if (!valor) aoFechar();
       }}
     >
-      <DialogContent className="max-h-[90vh] w-[calc(100%-2rem)] max-w-[600px] gap-0 overflow-y-auto rounded-[18px] border border-[#EAE7D6] bg-white p-0 shadow-[0_20px_50px_rgba(16,26,64,0.12)] sm:max-w-[600px]">
+      <DialogContent className="max-h-[90vh] w-[calc(100%-2rem)] max-w-[600px] gap-0 overflow-y-auto rounded-xl border border-[#EAE7D6] bg-white p-0 shadow-[0_20px_50px_rgba(16,26,64,0.12)] sm:max-w-[600px]">
         {usuario && (
           <>
             <DialogHeader className="bg-[#F7F3CD] px-4 pb-3 pt-4 sm:px-5">
@@ -59,12 +59,12 @@ export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
 
                 <div className="min-w-0 flex-1 text-left">
                   <div className="flex flex-wrap items-center gap-2">
-                    <DialogTitle className="text-[20px] font-semibold tracking-[-0.02em] text-[#101A40]">
+                    <DialogTitle className="text-[22px] font-semibold tracking-[-0.02em] text-[#101A40]">
                       {usuario.nome}
                     </DialogTitle>
 
                     <Badge
-                      className={`gap-1.5 rounded-full border-0 px-2.5 py-1 text-[10px] font-medium shadow-none ${
+                      className={`gap-1.5 rounded-full border-0 px-2.5 py-1 text-xs font-medium shadow-none ${
                         status === "Ativo"
                           ? "bg-[#E3F7EA] text-[#1F7A4C]"
                           : "bg-[#FCEAEA] text-[#B54046]"
@@ -79,11 +79,11 @@ export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
                     </Badge>
                   </div>
 
-                  <DialogDescription className="mt-1 text-[12.5px] text-[#30466E]">
+                  <DialogDescription className="mt-1 text-sm text-[#30466E]">
                     {usuario.email}
                   </DialogDescription>
 
-                  <p className="mt-1 text-[11.5px] text-[#465C7C]">
+                  <p className="mt-1 text-xs text-[#465C7C]">
                     Usuário desde {usuario.dataCadastro}
                   </p>
                 </div>
@@ -97,14 +97,14 @@ export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
               >
                 <TabsTrigger
                   value="informacoes"
-                  className="h-full rounded-none border-b-[2px] border-transparent px-4 text-[13px] text-[#30466E]/75 shadow-none transition-colors duration-200 data-[state=active]:border-[#E0C43F] data-[state=active]:bg-white data-[state=active]:text-[#101A40] data-[state=active]:font-semibold"
+                  className="h-full rounded-none border-b-[2px] border-transparent px-4 text-sm text-[#30466E]/75 shadow-none transition-colors duration-200 hover:text-[#D6B92F] data-[state=active]:border-[#EBDD80] data-[state=active]:bg-white data-[state=active]:text-[#101A40] data-[state=active]:font-semibold"
                 >
                   Informações
                 </TabsTrigger>
 
                 <TabsTrigger
                   value="historico"
-                  className="h-full rounded-none border-b-[2px] border-transparent px-4 text-[13px] text-[#30466E]/75 shadow-none transition-colors duration-200 data-[state=active]:border-[#E0C43F] data-[state=active]:bg-white data-[state=active]:text-[#101A40] data-[state=active]:font-semibold"
+                  className="h-full rounded-none border-b-[2px] border-transparent px-4 text-sm text-[#30466E]/75 shadow-none transition-colors duration-200 hover:text-[#D6B92F] data-[state=active]:border-[#EBDD80] data-[state=active]:bg-white data-[state=active]:text-[#101A40] data-[state=active]:font-semibold"
                 >
                   Histórico de ações
                 </TabsTrigger>
@@ -116,8 +116,8 @@ export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
               >
                 <section className="space-y-3">
                   <div className="flex items-center gap-2.5">
-                    <span className="h-4 w-[3px] rounded-full bg-[#E8E191]" />
-                    <h3 className="text-[15px] font-semibold tracking-[-0.01em] text-[#101A40]">
+                    <span className="h-4 w-[3px] rounded-full bg-[#EBDD80]" />
+                    <h3 className="text-base font-semibold tracking-[-0.01em] text-[#101A40]">
                       Informações pessoais
                     </h3>
                   </div>
@@ -125,27 +125,27 @@ export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
                   <div className="space-y-3">
                     <div className="grid gap-3 sm:grid-cols-2">
                       <div className="flex flex-col gap-1 border-b border-[#EAEFF5] pb-2.5">
-                        <p className="text-[10.5px] font-medium uppercase tracking-[0.05em] text-[#6A7A96]">
+                        <p className="text-xs font-medium uppercase tracking-[0.05em] text-[#6A7A96]">
                           Nome completo
                         </p>
-                        <p className="text-[13px] font-medium text-[#101A40]">{usuario.nome}</p>
+                        <p className="text-sm font-medium text-[#101A40]">{usuario.nome}</p>
                       </div>
 
                       <div className="flex flex-col gap-1 border-b border-[#EAEFF5] pb-2.5">
-                        <p className="text-[10.5px] font-medium uppercase tracking-[0.05em] text-[#6A7A96]">
+                        <p className="text-xs font-medium uppercase tracking-[0.05em] text-[#6A7A96]">
                           Data de cadastro
                         </p>
-                        <p className="text-[13px] font-medium text-[#101A40]">
+                        <p className="text-sm font-medium text-[#101A40]">
                           {usuario.dataCadastro}
                         </p>
                       </div>
                     </div>
 
                     <div className="flex flex-col gap-1 border-b border-[#EAEFF5] pb-2.5">
-                      <p className="text-[10.5px] font-medium uppercase tracking-[0.05em] text-[#6A7A96]">
+                      <p className="text-xs font-medium uppercase tracking-[0.05em] text-[#6A7A96]">
                         E-mail
                       </p>
-                      <p className="break-all text-[13px] font-medium text-[#101A40]">
+                      <p className="break-all text-sm font-medium text-[#101A40]">
                         {usuario.email}
                       </p>
                     </div>
@@ -154,8 +154,8 @@ export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
 
                 <section className="space-y-4">
                   <div className="flex items-center gap-2.5">
-                    <span className="h-4 w-[3px] rounded-full bg-[#E8E191]" />
-                    <h3 className="text-[15px] font-semibold tracking-[-0.01em] text-[#101A40]">
+                    <span className="h-4 w-[3px] rounded-full bg-[#EBDD80]" />
+                    <h3 className="text-base font-semibold tracking-[-0.01em] text-[#101A40]">
                       Configurações da conta
                     </h3>
                   </div>
@@ -164,7 +164,7 @@ export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
                     <div className="space-y-2">
                       <label
                         htmlFor="admin-user-role"
-                        className="text-[12px] font-medium text-[#30466E]"
+                        className="text-sm font-medium text-[#30466E]"
                       >
                         Permissões
                       </label>
@@ -172,7 +172,7 @@ export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
                       <Select value={permissao} onValueChange={setPermissao}>
                         <SelectTrigger
                           id="admin-user-role"
-                          className="h-10 w-full rounded-[8px] border border-[#DCE3EA] bg-white text-[13px] text-[#101A40] shadow-none transition-colors focus:border-[#E8E191] focus:ring-3 focus:ring-[#E8E191]/25"
+                          className="h-10 w-full rounded-lg border border-[#DCE3EA] bg-white text-sm text-[#101A40] shadow-none transition-colors focus:border-[#EBDD80] focus:ring-3 focus:ring-[#EBDD80]/25"
                         >
                           <SelectValue />
                         </SelectTrigger>
@@ -187,7 +187,7 @@ export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
                     <div className="space-y-2">
                       <label
                         htmlFor="admin-user-status"
-                        className="text-[12px] font-medium text-[#30466E]"
+                        className="text-sm font-medium text-[#30466E]"
                       >
                         Status da conta
                       </label>
@@ -195,7 +195,7 @@ export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
                       <Select value={status} onValueChange={setStatus}>
                         <SelectTrigger
                           id="admin-user-status"
-                          className="h-10 w-full rounded-[8px] border border-[#DCE3EA] bg-white text-[13px] text-[#101A40] shadow-none transition-colors focus:border-[#E8E191] focus:ring-3 focus:ring-[#E8E191]/25"
+                          className="h-10 w-full rounded-lg border border-[#DCE3EA] bg-white text-sm text-[#101A40] shadow-none transition-colors focus:border-[#EBDD80] focus:ring-3 focus:ring-[#EBDD80]/25"
                         >
                           <SelectValue />
                         </SelectTrigger>
@@ -210,7 +210,7 @@ export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
                   </div>
 
                   {mostrarAvisoBloqueio && (
-                    <div className="rounded-[8px] border border-[#F1EFC9] bg-[#FAF9F1] px-3 py-2 text-[11.5px] leading-5 text-[#4E5E7D]">
+                    <div className="rounded-lg border border-[#F1EFC9] bg-[#FAF9F1] px-3 py-2 text-sm leading-5 text-[#4E5E7D]">
                       Usuários bloqueados não podem acessar o sistema.
                     </div>
                   )}
@@ -219,13 +219,13 @@ export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
 
               <TabsContent value="historico" className="bg-white px-5 py-5 sm:px-6 sm:py-5">
                 <div className="mb-4 flex items-center gap-2.5">
-                  <span className="h-4 w-[3px] rounded-full bg-[#E8E191]" />
-                  <h3 className="text-[15px] font-semibold tracking-[-0.01em] text-[#101A40]">
+                  <span className="h-4 w-[3px] rounded-full bg-[#EBDD80]" />
+                  <h3 className="text-base font-semibold tracking-[-0.01em] text-[#101A40]">
                     Histórico de ações
                   </h3>
                 </div>
 
-                <p className="text-[13px] leading-5 text-[#8192B2]">
+                <p className="text-sm leading-6 text-[#8192B2]">
                   Os registros das ações deste usuário aparecerão aqui quando o sistema de auditoria
                   estiver integrado.
                 </p>
@@ -238,7 +238,7 @@ export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
                   type="button"
                   variant="outline"
                   onClick={aoFechar}
-                  className="h-9 rounded-lg border-[#E2E8F0] bg-white text-[12.5px] font-medium text-[#30466E] shadow-none transition-colors hover:bg-[#F8FAFC]"
+                  className="h-10 rounded-lg border-[#E2E8F0] bg-white text-sm font-medium text-[#30466E] shadow-none transition-colors hover:bg-[#FBF7E5]"
                 >
                   Cancelar
                 </Button>
@@ -246,7 +246,7 @@ export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
                 <Button
                   type="button"
                   onClick={salvarAlteracoes}
-                  className="h-9 rounded-lg bg-[#101A40] text-[12.5px] font-medium text-white shadow-none transition-colors hover:bg-[#30466E]"
+                  className="h-10 rounded-lg bg-[#F3E69A] text-sm font-semibold text-[#202D3A] shadow-none transition-colors hover:bg-[#EBDD80]"
                 >
                   Salvar alterações
                 </Button>

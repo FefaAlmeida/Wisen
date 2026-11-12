@@ -19,20 +19,20 @@ export default function PainelArtigos({
   });
 
   return (
-    <Card className="gap-0 rounded-[22px] border border-[#E4EAF3] bg-white p-5 shadow-none">
+    <Card className="gap-0 rounded-lg border border-[#E4EAF3] bg-white p-5 shadow-none">
       <div className="mb-5 flex items-start justify-between gap-4">
         <div className="flex min-w-0 items-start gap-4">
-          <div className="h-[96px] w-[92px] shrink-0 overflow-hidden rounded-[14px] bg-[#EEF3FA]">
+          <div className="h-[96px] w-[92px] shrink-0 overflow-hidden rounded-lg bg-[#EEF3FA]">
             {evento.imagem && (
               <img src={evento.imagem} alt={evento.titulo} className="h-full w-full object-cover" />
             )}
           </div>
 
           <div className="min-w-0 pt-1">
-            <h2 className="text-[18px] font-semibold leading-8 text-[#101A40]">{evento.titulo}</h2>
+            <h2 className="text-xl font-semibold leading-7 text-[#101A40]">{evento.titulo}</h2>
 
-            <div className="mt-2 flex flex-wrap items-center gap-2 text-[12px] text-[#8192B2]">
-              <Badge className="rounded-full border-0 bg-[#EEF3FB] px-3 py-1 text-[11px] font-medium text-[#4A628E] shadow-none">
+            <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-[#8192B2]">
+              <Badge className="rounded-full border-0 bg-[#EEF3FB] px-3 py-1 text-xs font-medium text-[#4A628E] shadow-none">
                 {evento.categoria}
               </Badge>
 
@@ -47,7 +47,7 @@ export default function PainelArtigos({
         <button
           type="button"
           onClick={aoFechar}
-          className="flex h-10 w-10 items-center justify-center rounded-full text-[#60789F] transition-colors hover:bg-[#F5F8FC]"
+          className="flex h-10 w-10 items-center justify-center rounded-full text-[#60789F] transition-colors hover:bg-[#EBDD80]"
           aria-label="Fechar painel"
         >
           <svg
@@ -71,7 +71,7 @@ export default function PainelArtigos({
           type="button"
           variant="outline"
           onClick={() => aoEditar(evento)}
-          className="h-10 rounded-[12px] border-[#E1E7F0] bg-[#F3F6FB] px-4 text-[13px] font-medium text-[#30466E] shadow-none hover:bg-[#EAF0F8]"
+          className="h-10 rounded-lg border-[#E1E7F0] bg-[#F3F6FB] px-4 text-sm font-medium text-[#30466E] shadow-none transition-colors hover:bg-[#FBF7E5]"
         >
           <svg
             viewBox="0 0 24 24"
@@ -103,7 +103,7 @@ export default function PainelArtigos({
         </button>
       </div>
 
-      <p className="mb-5 text-[13px] leading-7 text-[#6E809F]">{evento.resumo}</p>
+      <p className="mb-5 text-sm leading-6 text-[#6E809F]">{evento.resumo}</p>
 
       <div className="relative mb-5">
         <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-[#7D8FAE]">
@@ -126,7 +126,7 @@ export default function PainelArtigos({
           value={buscaArtigo}
           onChange={(e) => setBuscaArtigo(e.target.value)}
           placeholder="Buscar artigo..."
-          className="h-11 rounded-[12px] border-[#DCE4F0] bg-white pl-10 text-[13px] text-[#30466E] placeholder:text-[#90A0BA]"
+          className="h-11 rounded-lg border-[#DCE4F0] bg-white pl-10 text-sm text-[#30466E] placeholder:text-[#90A0BA]"
         />
       </div>
 
@@ -134,9 +134,9 @@ export default function PainelArtigos({
         {artigosFiltrados.map((artigo) => (
           <div
             key={artigo.id}
-            className="flex items-center gap-3 rounded-[14px] px-1 py-2 transition-colors hover:bg-[#FAFCFF]"
+            className="flex items-center gap-3 rounded-lg px-1 py-2 transition-colors hover:bg-[#FBF7E5]"
           >
-            <div className="h-[58px] w-[58px] shrink-0 overflow-hidden rounded-[12px] bg-[#EEF3FA]">
+            <div className="h-[58px] w-[58px] shrink-0 overflow-hidden rounded-lg bg-[#EEF3FA]">
               {artigo.imagem && (
                 <img
                   src={artigo.imagem}
@@ -147,11 +147,11 @@ export default function PainelArtigos({
             </div>
 
             <div className="min-w-0 flex-1">
-              <h4 className="text-[12px] font-semibold leading-5 text-[#101A40]">
+              <h4 className="text-sm font-semibold leading-5 text-[#101A40]">
                 {artigo.titulo}
               </h4>
 
-              <p className="mt-1 text-[12px] text-[#8394B0]">
+              <p className="mt-1 text-xs text-[#8394B0]">
                 {artigo.fonte} · {artigo.data}
               </p>
             </div>
@@ -160,7 +160,7 @@ export default function PainelArtigos({
               type="button"
               variant="outline"
               onClick={() => aoMover(artigo)}
-              className="h-9 rounded-[12px] border-[#E3E9F3] bg-[#F4F7FC] px-3 text-[12px] font-medium text-[#30466E] shadow-none hover:bg-[#EAF0F8]"
+              className="h-9 rounded-lg border-[#E3E9F3] bg-[#F4F7FC] px-3 text-sm font-medium text-[#30466E] shadow-none transition-colors hover:bg-[#FBF7E5]"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -184,7 +184,7 @@ export default function PainelArtigos({
       <Button
         type="button"
         variant="outline"
-        className="mt-5 h-12 w-full rounded-[14px] border-[#E2E8F2] bg-[#F4F7FC] text-[14px] font-medium text-[#30466E] shadow-none hover:bg-[#EAF0F8]"
+        className="mt-5 h-12 w-full rounded-lg border-[#E2E8F2] bg-[#F4F7FC] text-sm font-medium text-[#30466E] shadow-none transition-colors hover:bg-[#FBF7E5]"
       >
         <span className="mr-2 text-[18px]">＋</span>
         Adicionar artigo manualmente

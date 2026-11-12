@@ -43,9 +43,9 @@ const logs = [
 
 export default function LogsColeta() {
   return (
-    <Card className="gap-0 rounded-xl border border-[#E3E9F1] bg-white p-0 shadow-none">
+    <Card className="gap-0 rounded-lg border border-[#E3E9F1] bg-white p-0 shadow-none">
       <CardContent className="p-5">
-        <h2 className="mb-4 text-[20px] font-semibold text-[#101A40]">Logs de erro de coleta</h2>
+        <h2 className="mb-4 text-[22px] font-semibold text-[#101A40]">Logs de erro de coleta</h2>
 
         <div className="overflow-x-auto">
           <Table className="min-w-[700px]">
@@ -61,11 +61,11 @@ export default function LogsColeta() {
             <TableBody>
               {logs.map((log) => (
                 <TableRow key={log.id}>
-                  <TableCell className="text-[13px] text-[#617398]">{log.data}</TableCell>
+                  <TableCell className="text-sm text-[#617398]">{log.data}</TableCell>
 
-                  <TableCell className="text-[13px] text-[#617398]">{log.fonte}</TableCell>
+                  <TableCell className="text-sm text-[#617398]">{log.fonte}</TableCell>
 
-                  <TableCell className="text-[13px] text-[#617398]">{log.erro}</TableCell>
+                  <TableCell className="text-sm text-[#617398]">{log.erro}</TableCell>
 
                   <TableCell>
                     <Badge

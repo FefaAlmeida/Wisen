@@ -91,11 +91,11 @@ export default function FormularioFonte({ aberto, aoFechar, fonte, aoSalvar }) {
             </div>
 
             <div className="space-y-1 text-left">
-              <DialogTitle className="text-[22px] font-semibold tracking-tight text-[#101A40]">
+              <DialogTitle className="text-2xl font-semibold tracking-tight text-[#101A40]">
                 {fonte ? "Editar fonte RSS" : "Adicionar nova fonte"}
               </DialogTitle>
 
-              <DialogDescription className="text-[13px] leading-5 text-[#7889A7]">
+              <DialogDescription className="text-sm leading-5 text-[#7889A7]">
                 {fonte
                   ? "Atualize as informações e configurações da fonte."
                   : "Configure um veículo para integrar notícias à plataforma."}
@@ -107,7 +107,7 @@ export default function FormularioFonte({ aberto, aoFechar, fonte, aoSalvar }) {
         <form onSubmit={salvar} className="space-y-5 px-7 py-6">
           {/* Nome do veículo */}
           <div className="space-y-2">
-            <Label htmlFor="nomeFonte" className="text-[13px] font-medium text-[#101A40]">
+            <Label htmlFor="nomeFonte" className="text-sm font-medium text-[#101A40]">
               Nome do veículo
               <span className="ml-1 text-[#D6AD30]">*</span>
             </Label>
@@ -118,13 +118,13 @@ export default function FormularioFonte({ aberto, aoFechar, fonte, aoSalvar }) {
               onChange={(event) => atualizar("nome", event.target.value)}
               placeholder="Ex.: G1, BBC Brasil, Agência Brasil"
               required
-              className="h-11 rounded-lg border-[#DCE4EF] bg-white px-3 text-[13px] text-[#101A40] shadow-none placeholder:text-[#A0ACC0] focus-visible:border-[#D6C36D] focus-visible:ring-[#F4E9AD]"
+              className="h-11 rounded-lg border-[#DCE4EF] bg-white px-3 text-sm text-[#101A40] shadow-none placeholder:text-[#A0ACC0] focus-visible:border-[#EBDD80] focus-visible:ring-[#EBDD80]"
             />
           </div>
 
           {/* URL RSS */}
           <div className="space-y-2">
-            <Label htmlFor="urlFonte" className="text-[13px] font-medium text-[#101A40]">
+            <Label htmlFor="urlFonte" className="text-sm font-medium text-[#101A40]">
               URL do feed RSS
               <span className="ml-1 text-[#D6AD30]">*</span>
             </Label>
@@ -136,17 +136,17 @@ export default function FormularioFonte({ aberto, aoFechar, fonte, aoSalvar }) {
               onChange={(event) => atualizar("url", event.target.value)}
               placeholder="https://exemplo.com/feed.xml"
               required
-              className="h-11 rounded-lg border-[#DCE4EF] bg-white px-3 text-[13px] text-[#101A40] shadow-none placeholder:text-[#A0ACC0] focus-visible:border-[#D6C36D] focus-visible:ring-[#F4E9AD]"
+              className="h-11 rounded-lg border-[#DCE4EF] bg-white px-3 text-sm text-[#101A40] shadow-none placeholder:text-[#A0ACC0] focus-visible:border-[#EBDD80] focus-visible:ring-[#EBDD80]"
             />
 
-            <p className="text-[11px] leading-4 text-[#8B99B1]">
+            <p className="text-xs leading-5 text-[#8B99B1]">
               Insira o endereço que disponibiliza as notícias em formato RSS ou Atom.
             </p>
           </div>
 
           {/* Categoria */}
           <div className="space-y-2">
-            <Label htmlFor="categoriaFonte" className="text-[13px] font-medium text-[#101A40]">
+            <Label htmlFor="categoriaFonte" className="text-sm font-medium text-[#101A40]">
               Categoria principal
             </Label>
 
@@ -156,7 +156,7 @@ export default function FormularioFonte({ aberto, aoFechar, fonte, aoSalvar }) {
             >
               <SelectTrigger
                 id="categoriaFonte"
-                className="h-11 w-full rounded-lg border-[#DCE4EF] bg-white px-3 text-[13px] text-[#344469] shadow-none"
+                className="h-11 w-full rounded-lg border-[#DCE4EF] bg-white px-3 text-sm text-[#344469] shadow-none"
               >
                 <SelectValue placeholder="Selecione uma categoria" />
               </SelectTrigger>
@@ -174,7 +174,7 @@ export default function FormularioFonte({ aberto, aoFechar, fonte, aoSalvar }) {
 
           {/* Frequência */}
           <div className="space-y-2">
-            <Label htmlFor="frequenciaFonte" className="text-[13px] font-medium text-[#101A40]">
+            <Label htmlFor="frequenciaFonte" className="text-sm font-medium text-[#101A40]">
               Frequência de coleta
             </Label>
 
@@ -184,7 +184,7 @@ export default function FormularioFonte({ aberto, aoFechar, fonte, aoSalvar }) {
             >
               <SelectTrigger
                 id="frequenciaFonte"
-                className="h-11 w-full rounded-lg border-[#DCE4EF] bg-white px-3 text-[13px] text-[#344469] shadow-none"
+                className="h-11 w-full rounded-lg border-[#DCE4EF] bg-white px-3 text-sm text-[#344469] shadow-none"
               >
                 <SelectValue placeholder="Selecione a frequência" />
               </SelectTrigger>
@@ -203,11 +203,11 @@ export default function FormularioFonte({ aberto, aoFechar, fonte, aoSalvar }) {
           {/* Status */}
           <div className="flex items-center justify-between gap-4 rounded-lg border border-[#E5EAF2] bg-[#F8FAFD] p-4">
             <div className="space-y-1">
-              <Label htmlFor="statusFonte" className="text-[13px] font-semibold text-[#101A40]">
+              <Label htmlFor="statusFonte" className="text-sm font-semibold text-[#101A40]">
                 Fonte ativa
               </Label>
 
-              <p className="text-[11px] leading-4 text-[#8291AA]">
+              <p className="text-xs leading-5 text-[#8291AA]">
                 {dados.ativo
                   ? "Fonte habilitada para futuras coletas."
                   : "Fonte pausada até ser ativada novamente."}
@@ -218,7 +218,7 @@ export default function FormularioFonte({ aberto, aoFechar, fonte, aoSalvar }) {
               id="statusFonte"
               checked={dados.ativo ?? true}
               onCheckedChange={(valor) => atualizar("ativo", valor)}
-              className="data-[state=checked]:bg-[#E8D65E]"
+              className="data-[state=checked]:bg-[#EBDD80]"
             />
           </div>
 
@@ -238,7 +238,7 @@ export default function FormularioFonte({ aberto, aoFechar, fonte, aoSalvar }) {
               <path d="M12 11v6M12 7h.01" />
             </svg>
 
-            <p className="text-[11px] leading-[17px] text-[#7183A6]">
+            <p className="text-xs leading-5 text-[#7183A6]">
               O cadastro registra as configurações da fonte nesta demonstração. A coleta automática
               será realizada quando o backend estiver integrado.
             </p>
@@ -248,7 +248,7 @@ export default function FormularioFonte({ aberto, aoFechar, fonte, aoSalvar }) {
           <div className="flex flex-col gap-2 pt-1">
             <Button
               type="submit"
-              className="h-11 w-full rounded-lg bg-[#F3E69A] text-[13px] font-semibold text-[#101A40] shadow-none hover:bg-[#E9DA80]"
+              className="h-11 w-full rounded-lg bg-[#F3E69A] text-sm font-semibold text-[#101A40] shadow-none transition-colors hover:bg-[#EBDD80]"
             >
               {fonte ? "Salvar alterações" : "Adicionar fonte"}
             </Button>
@@ -257,7 +257,7 @@ export default function FormularioFonte({ aberto, aoFechar, fonte, aoSalvar }) {
               type="button"
               variant="outline"
               onClick={aoFechar}
-              className="h-10 w-full rounded-lg border-[#DFE6F0] bg-white text-[13px] text-[#344469] shadow-none hover:bg-[#F7F9FC]"
+              className="h-10 w-full rounded-lg border-[#DFE6F0] bg-white text-sm text-[#344469] shadow-none transition-colors hover:bg-[#FBF7E5]"
             >
               Cancelar
             </Button>

@@ -383,27 +383,27 @@ export default function CuradoriaEventos() {
         <TabsList className="mb-4 h-auto w-full justify-start gap-7 rounded-none border-b border-[#DEE6F1] bg-transparent p-0">
           <TabsTrigger
             value="eventos"
-            className="relative h-12 rounded-none border-b-2 border-transparent px-2 text-[13px] font-medium text-[#63789B] shadow-none data-[state=active]:border-[#E0C43F] data-[state=active]:bg-transparent data-[state=active]:text-[#101A40] data-[state=active]:shadow-none"
+            className="relative h-12 rounded-none border-b-2 border-transparent px-2 text-sm font-medium text-[#63789B] shadow-none transition-colors hover:text-[#D6B92F] data-[state=active]:border-[#EBDD80] data-[state=active]:bg-transparent data-[state=active]:text-[#101A40] data-[state=active]:shadow-none"
           >
             Eventos recentes
           </TabsTrigger>
 
           <TabsTrigger
             value="naoAssociados"
-            className="relative h-12 rounded-none border-b-2 border-transparent px-2 text-[13px] font-medium text-[#63789B] shadow-none data-[state=active]:border-[#E0C43F] data-[state=active]:bg-transparent data-[state=active]:text-[#101A40] data-[state=active]:shadow-none"
+            className="relative h-12 rounded-none border-b-2 border-transparent px-2 text-sm font-medium text-[#63789B] shadow-none transition-colors hover:text-[#D6B92F] data-[state=active]:border-[#EBDD80] data-[state=active]:bg-transparent data-[state=active]:text-[#101A40] data-[state=active]:shadow-none"
           >
             Artigos não associados
-            <span className="ml-2 rounded-full bg-[#F1DF8B] px-2 py-0.5 text-[11px] font-semibold text-[#5A4A14]">
+            <span className="ml-2 rounded-full bg-[#EBDD80] px-2 py-0.5 text-xs font-semibold text-[#5A4A14]">
               {artigosNaoAssociados.length}
             </span>
           </TabsTrigger>
 
           <TabsTrigger
             value="sugeridos"
-            className="relative h-12 rounded-none border-b-2 border-transparent px-2 text-[13px] font-medium text-[#63789B] shadow-none data-[state=active]:border-[#E0C43F] data-[state=active]:bg-transparent data-[state=active]:text-[#101A40] data-[state=active]:shadow-none"
+            className="relative h-12 rounded-none border-b-2 border-transparent px-2 text-sm font-medium text-[#63789B] shadow-none transition-colors hover:text-[#D6B92F] data-[state=active]:border-[#EBDD80] data-[state=active]:bg-transparent data-[state=active]:text-[#101A40] data-[state=active]:shadow-none"
           >
             Duplicados sugeridos
-            <span className="ml-2 rounded-full bg-[#F1DF8B] px-2 py-0.5 text-[11px] font-semibold text-[#5A4A14]">
+            <span className="ml-2 rounded-full bg-[#EBDD80] px-2 py-0.5 text-xs font-semibold text-[#5A4A14]">
               {eventos.filter((evento) => idsSugeridos.includes(evento.id)).length}
             </span>
           </TabsTrigger>
@@ -411,11 +411,11 @@ export default function CuradoriaEventos() {
       </Tabs>
 
       {aba === "naoAssociados" ? (
-        <Card className="rounded-[22px] border border-[#E4EAF3] bg-white p-5 shadow-none">
+        <Card className="rounded-lg border border-[#E4EAF3] bg-white p-5 shadow-none">
           <div className="mb-4 flex items-center justify-between gap-3">
             <div>
-              <h2 className="text-[22px] font-semibold text-[#101A40]">Artigos não associados</h2>
-              <p className="mt-1 text-[13px] text-[#7B8BA8]">
+              <h2 className="text-2xl font-semibold text-[#101A40]">Artigos não associados</h2>
+              <p className="mt-1 text-sm text-[#7B8BA8]">
                 Associe manualmente artigos a um evento existente.
               </p>
             </div>
@@ -425,10 +425,10 @@ export default function CuradoriaEventos() {
             {artigosNaoAssociados.map((artigo) => (
               <div
                 key={artigo.id}
-                className="flex items-center justify-between gap-3 rounded-[16px] border border-[#E6EBF3] bg-[#FCFDFF] p-4"
+                className="flex items-center justify-between gap-3 rounded-lg border border-[#E6EBF3] bg-[#FCFDFF] p-4 transition-colors hover:bg-[#FBF7E5]"
               >
                 <div className="flex min-w-0 items-center gap-3">
-                  <div className="h-[62px] w-[62px] shrink-0 overflow-hidden rounded-[12px] bg-[#EEF3FA]">
+                  <div className="h-[62px] w-[62px] shrink-0 overflow-hidden rounded-lg bg-[#EEF3FA]">
                     {artigo.imagem && (
                       <img
                         src={artigo.imagem}
@@ -439,8 +439,8 @@ export default function CuradoriaEventos() {
                   </div>
 
                   <div className="min-w-0">
-                    <h3 className="text-[14px] font-semibold text-[#101A40]">{artigo.titulo}</h3>
-                    <p className="mt-1 text-[12px] text-[#8A9AB5]">
+                    <h3 className="text-base font-semibold text-[#101A40]">{artigo.titulo}</h3>
+                    <p className="mt-1 text-sm text-[#8A9AB5]">
                       {artigo.fonte} · {artigo.data}
                     </p>
                   </div>
@@ -454,7 +454,7 @@ export default function CuradoriaEventos() {
                     setDestinoId("");
                     setModal("mover");
                   }}
-                  className="h-10 rounded-[12px] border-[#E3E9F3] bg-[#F4F7FC] px-4 text-[#30466E] shadow-none hover:bg-[#EAF0F8]"
+                  className="h-10 rounded-lg border-[#E3E9F3] bg-[#F4F7FC] px-4 text-sm text-[#30466E] shadow-none transition-colors hover:bg-[#FBF7E5]"
                 >
                   Associar
                 </Button>
@@ -468,7 +468,7 @@ export default function CuradoriaEventos() {
             eventoAberto ? "xl:grid-cols-[minmax(0,1fr)_420px]" : "grid-cols-1"
           }`}
         >
-          <Card className="rounded-[22px] border border-[#E4EAF3] bg-white p-4 shadow-none">
+          <Card className="rounded-lg border border-[#E4EAF3] bg-white p-4 shadow-none">
             <div className="mb-4 grid grid-cols-1 gap-3 xl:grid-cols-[minmax(0,1fr)_170px_170px_145px_46px]">
               <div className="relative">
                 <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-[#7C8EAE]">
@@ -491,12 +491,12 @@ export default function CuradoriaEventos() {
                   value={busca}
                   onChange={(e) => setBusca(e.target.value)}
                   placeholder="Buscar eventos..."
-                  className="h-11 rounded-[14px] border-[#DCE4F0] bg-white pl-10 text-[13px] text-[#30466E] placeholder:text-[#90A0BA]"
+                  className="h-11 rounded-lg border-[#DCE4F0] bg-white pl-10 text-sm text-[#30466E] placeholder:text-[#90A0BA]"
                 />
               </div>
 
               <Select value={categoria} onValueChange={setCategoria}>
-                <SelectTrigger className="h-11 rounded-[14px] border-[#DCE4F0] bg-white text-[13px] text-[#30466E] shadow-none">
+                <SelectTrigger className="h-11 rounded-lg border-[#DCE4F0] bg-white text-sm text-[#30466E] shadow-none">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -509,7 +509,7 @@ export default function CuradoriaEventos() {
               </Select>
 
               <Select value={status} onValueChange={setStatus}>
-                <SelectTrigger className="h-11 rounded-[14px] border-[#DCE4F0] bg-white text-[13px] text-[#30466E] shadow-none">
+                <SelectTrigger className="h-11 rounded-lg border-[#DCE4F0] bg-white text-sm text-[#30466E] shadow-none">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -521,7 +521,7 @@ export default function CuradoriaEventos() {
               </Select>
 
               <Select value={ordem} onValueChange={setOrdem}>
-                <SelectTrigger className="h-11 rounded-[14px] border-[#DCE4F0] bg-white text-[13px] text-[#30466E] shadow-none">
+                <SelectTrigger className="h-11 rounded-lg border-[#DCE4F0] bg-white text-sm text-[#30466E] shadow-none">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -533,7 +533,7 @@ export default function CuradoriaEventos() {
               <Button
                 type="button"
                 variant="outline"
-                className="h-11 rounded-[14px] border-[#DCE4F0] bg-white p-0 text-[#5D7398] shadow-none hover:bg-[#F5F8FC]"
+                className="h-11 rounded-lg border-[#DCE4F0] bg-white p-0 text-[#5D7398] shadow-none transition-colors hover:bg-[#EBDD80]"
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -559,7 +559,7 @@ export default function CuradoriaEventos() {
             </div>
 
             {selecionados.length > 0 && (
-              <div className="mb-4 flex items-center justify-between gap-4 rounded-[16px] bg-[#F3F6FB] px-5 py-4">
+              <div className="mb-4 flex items-center justify-between gap-4 rounded-lg bg-[#F3F6FB] px-5 py-4">
                 <div className="flex items-center gap-4">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#30466E] text-white">
                     <svg
@@ -577,10 +577,10 @@ export default function CuradoriaEventos() {
                   </div>
 
                   <div>
-                    <p className="text-[14px] font-semibold text-[#101A40]">
+                    <p className="text-base font-semibold text-[#101A40]">
                       {selecionados.length} eventos selecionados
                     </p>
-                    <p className="text-[12px] text-[#7A8BA8]">
+                    <p className="text-sm text-[#7A8BA8]">
                       Você pode unificar dois eventos que representam o mesmo acontecimento.
                     </p>
                   </div>
@@ -591,7 +591,7 @@ export default function CuradoriaEventos() {
                     type="button"
                     onClick={() => setModal("unificar")}
                     disabled={selecionados.length !== 2}
-                    className="h-11 rounded-[14px] bg-[#F1DD7F] px-5 text-[14px] font-semibold text-[#101A40] shadow-none hover:bg-[#E9D36C] disabled:opacity-50"
+                    className="h-11 rounded-lg bg-[#F3E69A] px-5 text-sm font-semibold text-[#101A40] shadow-none transition-colors hover:bg-[#EBDD80] disabled:opacity-50"
                   >
                     <svg
                       viewBox="0 0 24 24"
@@ -613,7 +613,7 @@ export default function CuradoriaEventos() {
                   <button
                     type="button"
                     onClick={limparSelecionados}
-                    className="flex h-10 w-10 items-center justify-center rounded-full text-[#60789F] hover:bg-[#EAF0F7]"
+                    className="flex h-10 w-10 items-center justify-center rounded-full text-[#60789F] transition-colors hover:bg-[#EBDD80]"
                     aria-label="Limpar seleção"
                   >
                     <svg
@@ -666,17 +666,17 @@ export default function CuradoriaEventos() {
       )}
 
       <Dialog open={modal === "unificar"} onOpenChange={(aberto) => !aberto && setModal(null)}>
-        <DialogContent className="rounded-[22px] border-[#E4EAF3] bg-white sm:max-w-[500px]">
+        <DialogContent className="rounded-xl border-[#E4EAF3] bg-white sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle className="text-[24px] font-semibold text-[#101A40]">
               Unificar eventos
             </DialogTitle>
-            <DialogDescription className="text-[13px] text-[#7C8EAE]">
+            <DialogDescription className="text-sm text-[#7C8EAE]">
               Os dois eventos selecionados serão consolidados em um único registro.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="rounded-[16px] bg-[#F5F8FC] p-4">
+          <div className="rounded-lg bg-[#F5F8FC] p-4">
             {selecionados.map((id) => {
               const evento = eventos.find((item) => item.id === id);
               return (
@@ -692,7 +692,7 @@ export default function CuradoriaEventos() {
               type="button"
               variant="outline"
               onClick={() => setModal(null)}
-              className="rounded-[12px] border-[#DCE4F0] text-[#30466E]"
+              className="rounded-lg border-[#DCE4F0] text-sm text-[#30466E] transition-colors hover:bg-[#FBF7E5]"
             >
               Cancelar
             </Button>
@@ -700,7 +700,7 @@ export default function CuradoriaEventos() {
             <Button
               type="button"
               onClick={unificarEventos}
-              className="rounded-[12px] bg-[#E8E191] text-[#101A40] hover:bg-[#DDD581]"
+              className="rounded-lg bg-[#F3E69A] text-sm text-[#101A40] transition-colors hover:bg-[#EBDD80]"
             >
               Confirmar unificação
             </Button>
@@ -709,12 +709,12 @@ export default function CuradoriaEventos() {
       </Dialog>
 
       <Dialog open={modal === "editar"} onOpenChange={(aberto) => !aberto && setModal(null)}>
-        <DialogContent className="rounded-[22px] border-[#E4EAF3] bg-white sm:max-w-[560px]">
+        <DialogContent className="rounded-xl border-[#E4EAF3] bg-white sm:max-w-[560px]">
           <DialogHeader>
             <DialogTitle className="text-[24px] font-semibold text-[#101A40]">
               Editar evento
             </DialogTitle>
-            <DialogDescription className="text-[13px] text-[#7C8EAE]">
+            <DialogDescription className="text-sm text-[#7C8EAE]">
               Atualize as informações do evento e mantenha a curadoria organizada.
             </DialogDescription>
           </DialogHeader>
@@ -724,7 +724,7 @@ export default function CuradoriaEventos() {
               <div className="space-y-2">
                 <label
                   htmlFor="editar-evento-titulo"
-                  className="text-[12px] font-medium text-[#30466E]"
+                  className="text-sm font-medium text-[#30466E]"
                 >
                   Título
                 </label>
@@ -732,14 +732,14 @@ export default function CuradoriaEventos() {
                   id="editar-evento-titulo"
                   value={dadosEdicao.titulo}
                   onChange={(e) => setDadosEdicao({ ...dadosEdicao, titulo: e.target.value })}
-                  className="h-11 rounded-[14px] border-[#DCE4F0]"
+                  className="h-11 rounded-lg border-[#DCE4F0] text-sm"
                 />
               </div>
 
               <div className="space-y-2">
                 <label
                   htmlFor="editar-evento-descricao"
-                  className="text-[12px] font-medium text-[#30466E]"
+                  className="text-sm font-medium text-[#30466E]"
                 >
                   Descrição
                 </label>
@@ -748,14 +748,14 @@ export default function CuradoriaEventos() {
                   id="editar-evento-descricao"
                   value={dadosEdicao.descricao}
                   onChange={(e) => setDadosEdicao({ ...dadosEdicao, descricao: e.target.value })}
-                  className="w-full rounded-[14px] border border-[#DCE4F0] bg-white px-4 py-3 text-[13px] text-[#30466E] outline-none focus:border-[#E0C43F]"
+                  className="w-full rounded-lg border border-[#DCE4F0] bg-white px-4 py-3 text-sm text-[#30466E] outline-none transition-colors focus:border-[#EBDD80]"
                 />
               </div>
 
               <div className="space-y-2">
                 <label
                   htmlFor="editar-evento-resumo"
-                  className="text-[12px] font-medium text-[#30466E]"
+                  className="text-sm font-medium text-[#30466E]"
                 >
                   Resumo do evento
                 </label>
@@ -764,7 +764,7 @@ export default function CuradoriaEventos() {
                   id="editar-evento-resumo"
                   value={dadosEdicao.resumo}
                   onChange={(e) => setDadosEdicao({ ...dadosEdicao, resumo: e.target.value })}
-                  className="w-full rounded-[14px] border border-[#DCE4F0] bg-white px-4 py-3 text-[13px] text-[#30466E] outline-none focus:border-[#E0C43F]"
+                  className="w-full rounded-lg border border-[#DCE4F0] bg-white px-4 py-3 text-sm text-[#30466E] outline-none transition-colors focus:border-[#EBDD80]"
                 />
               </div>
 
@@ -772,7 +772,7 @@ export default function CuradoriaEventos() {
                 <div className="space-y-2">
                   <label
                     htmlFor="editar-evento-categoria"
-                    className="text-[12px] font-medium text-[#30466E]"
+                    className="text-sm font-medium text-[#30466E]"
                   >
                     Categoria
                   </label>
@@ -782,7 +782,7 @@ export default function CuradoriaEventos() {
                   >
                     <SelectTrigger
                       id="editar-evento-categoria"
-                      className="h-11 rounded-[14px] border-[#DCE4F0]"
+                      className="h-11 rounded-lg border-[#DCE4F0] text-sm"
                     >
                       <SelectValue />
                     </SelectTrigger>
@@ -798,7 +798,7 @@ export default function CuradoriaEventos() {
                 <div className="space-y-2">
                   <label
                     htmlFor="editar-evento-status"
-                    className="text-[12px] font-medium text-[#30466E]"
+                    className="text-sm font-medium text-[#30466E]"
                   >
                     Status
                   </label>
@@ -808,7 +808,7 @@ export default function CuradoriaEventos() {
                   >
                     <SelectTrigger
                       id="editar-evento-status"
-                      className="h-11 rounded-[14px] border-[#DCE4F0]"
+                      className="h-11 rounded-lg border-[#DCE4F0] text-sm"
                     >
                       <SelectValue />
                     </SelectTrigger>
@@ -826,14 +826,14 @@ export default function CuradoriaEventos() {
                   type="button"
                   variant="outline"
                   onClick={() => setModal(null)}
-                  className="rounded-[12px] border-[#DCE4F0] text-[#30466E]"
+                  className="rounded-lg border-[#DCE4F0] text-sm text-[#30466E] transition-colors hover:bg-[#FBF7E5]"
                 >
                   Cancelar
                 </Button>
 
                 <Button
                   type="submit"
-                  className="rounded-[12px] bg-[#E8E191] text-[#101A40] hover:bg-[#DDD581]"
+                  className="rounded-lg bg-[#F3E69A] text-sm text-[#101A40] transition-colors hover:bg-[#EBDD80]"
                 >
                   Salvar alterações
                 </Button>
@@ -844,22 +844,22 @@ export default function CuradoriaEventos() {
       </Dialog>
 
       <Dialog open={modal === "mover"} onOpenChange={(aberto) => !aberto && setModal(null)}>
-        <DialogContent className="rounded-[22px] border-[#E4EAF3] bg-white sm:max-w-[500px]">
+        <DialogContent className="rounded-xl border-[#E4EAF3] bg-white sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle className="text-[24px] font-semibold text-[#101A40]">
               Mover artigo
             </DialogTitle>
-            <DialogDescription className="text-[13px] text-[#7C8EAE]">
+            <DialogDescription className="text-sm text-[#7C8EAE]">
               Selecione o evento de destino para este artigo.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="rounded-[16px] bg-[#F5F8FC] p-4 text-[13px] text-[#30466E]">
+          <div className="rounded-lg bg-[#F5F8FC] p-4 text-sm text-[#30466E]">
             {artigoMovendo?.titulo}
           </div>
 
           <Select value={destinoId} onValueChange={setDestinoId}>
-            <SelectTrigger className="h-11 rounded-[14px] border-[#DCE4F0]">
+            <SelectTrigger className="h-11 rounded-lg border-[#DCE4F0] text-sm">
               <SelectValue placeholder="Selecionar evento" />
             </SelectTrigger>
 
@@ -879,7 +879,7 @@ export default function CuradoriaEventos() {
               type="button"
               variant="outline"
               onClick={() => setModal(null)}
-              className="rounded-[12px] border-[#DCE4F0] text-[#30466E]"
+              className="rounded-lg border-[#DCE4F0] text-sm text-[#30466E] transition-colors hover:bg-[#FBF7E5]"
             >
               Cancelar
             </Button>
@@ -888,7 +888,7 @@ export default function CuradoriaEventos() {
               type="button"
               disabled={!destinoId}
               onClick={moverArtigo}
-              className="rounded-[12px] bg-[#E8E191] text-[#101A40] hover:bg-[#DDD581]"
+              className="rounded-lg bg-[#F3E69A] text-sm text-[#101A40] transition-colors hover:bg-[#EBDD80]"
             >
               Confirmar transferência
             </Button>

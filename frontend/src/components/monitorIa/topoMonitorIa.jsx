@@ -2,25 +2,25 @@ import { Calendar } from "lucide-react";
 
 export function TopoMonitorIa() {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/80">
+    <div className="flex flex-col justify-between gap-4 border-b border-slate-200/80 pb-2 sm:flex-row sm:items-center">
       <div className="space-y-1">
-        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+        <span className="text-xs font-semibold tracking-wider text-slate-500 uppercase">
           ADMINISTRADOR
         </span>
-        <h1 className="text-2xl md:text-3xl font-black text-[#2B333F] tracking-tight">
+        <h1 className="text-[32px] leading-tight font-medium tracking-tight text-[#2B333F] md:text-[40px]">
           Monitor de Custos e Consumo de IA
         </h1>
-        <p className="text-xs text-slate-500 font-normal">
+        <p className="text-[15px] leading-6 text-slate-500">
           Acompanhe o uso dos modelos de IA, os custos gerados e o desempenho das requisições.
         </p>
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-600 shadow-2xs cursor-pointer hover:bg-slate-50 transition-colors">
-          <Calendar className="w-4 h-4 text-slate-400" />
+        <div className="flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600 shadow-2xs transition-colors hover:bg-[#FBF7E5]">
+          <Calendar className="h-4 w-4 text-slate-400" />
           <span className="font-medium">Outubro de 2026</span>
         </div>
-        <div className="w-8 h-8 rounded-full bg-[#2B333F] text-[#E8E191] font-bold text-xs flex items-center justify-center border border-slate-700 shadow-2xs">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-700 bg-[#2B333F] text-sm font-bold text-[#EBDD80] shadow-2xs">
           A
         </div>
       </div>

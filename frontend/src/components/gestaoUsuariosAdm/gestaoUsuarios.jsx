@@ -207,21 +207,21 @@ export default function GestaoUsuarios() {
         <TabsList className="mb-4 h-12 w-full justify-start gap-2 rounded-none border-b border-[#DCE4EF] bg-transparent p-0">
           <TabsTrigger
             value="usuarios"
-            className="h-full rounded-none border-b-2 border-transparent px-6 text-[14px] text-[#7183A6] shadow-none data-[state=active]:border-[#E0C43F] data-[state=active]:bg-transparent data-[state=active]:font-semibold data-[state=active]:text-[#101A40] data-[state=active]:shadow-none"
+            className="h-full rounded-none border-b-2 border-transparent px-6 text-[15px] text-[#7183A6] shadow-none transition-colors hover:text-[#D6B92F] data-[state=active]:border-[#EBDD80] data-[state=active]:bg-transparent data-[state=active]:font-semibold data-[state=active]:text-[#101A40] data-[state=active]:shadow-none"
           >
             Usuários
           </TabsTrigger>
 
           <TabsTrigger
             value="historico"
-            className="h-full rounded-none border-b-2 border-transparent px-6 text-[14px] text-[#7183A6] shadow-none data-[state=active]:border-[#E0C43F] data-[state=active]:bg-transparent data-[state=active]:font-semibold data-[state=active]:text-[#101A40] data-[state=active]:shadow-none"
+            className="h-full rounded-none border-b-2 border-transparent px-6 text-[15px] text-[#7183A6] shadow-none transition-colors hover:text-[#D6B92F] data-[state=active]:border-[#EBDD80] data-[state=active]:bg-transparent data-[state=active]:font-semibold data-[state=active]:text-[#101A40] data-[state=active]:shadow-none"
           >
             Histórico de ações
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="usuarios" className="mt-0">
-          <Card className="gap-0 rounded-xl border border-[#E3E9F1] bg-white p-0 shadow-none">
+          <Card className="gap-0 rounded-lg border border-[#E3E9F1] bg-white p-0 shadow-none">
             <CardContent className="p-4 md:p-5">
               {/* Filtros */}
               <div className="mb-5 flex flex-wrap items-center gap-3">
@@ -247,7 +247,7 @@ export default function GestaoUsuarios() {
                       setBusca(evento.target.value);
                       setPagina(1);
                     }}
-                    className="h-10 rounded-lg border-[#DFE6F0] bg-white pl-10 text-[13px] shadow-none"
+                    className="h-10 rounded-lg border-[#DFE6F0] bg-white pl-10 text-sm shadow-none"
                   />
                 </div>
 
@@ -258,7 +258,7 @@ export default function GestaoUsuarios() {
                     setPagina(1);
                   }}
                 >
-                  <SelectTrigger className="h-10 w-full rounded-lg border-[#DFE6F0] bg-white text-[12px] text-[#344469] shadow-none sm:w-[185px]">
+                  <SelectTrigger className="h-10 w-full rounded-lg border-[#DFE6F0] bg-white text-sm text-[#344469] shadow-none sm:w-[185px]">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -275,7 +275,7 @@ export default function GestaoUsuarios() {
                     setPagina(1);
                   }}
                 >
-                  <SelectTrigger className="h-10 w-full rounded-lg border-[#DFE6F0] bg-white text-[12px] text-[#344469] shadow-none sm:w-[165px]">
+                  <SelectTrigger className="h-10 w-full rounded-lg border-[#DFE6F0] bg-white text-sm text-[#344469] shadow-none sm:w-[165px]">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -293,7 +293,7 @@ export default function GestaoUsuarios() {
                     setDataFiltro(evento.target.value);
                     setPagina(1);
                   }}
-                  className="h-10 w-full rounded-lg border-[#DFE6F0] bg-white text-[12px] text-[#344469] shadow-none sm:w-[170px]"
+                  className="h-10 w-full rounded-lg border-[#DFE6F0] bg-white text-sm text-[#344469] shadow-none sm:w-[170px]"
                 />
               </div>
 
@@ -308,7 +308,7 @@ export default function GestaoUsuarios() {
 
               {/* Paginação */}
               <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-[#E8EDF4] pt-4">
-                <p className="text-[12px] text-[#7183A6]">
+                <p className="text-sm text-[#7183A6]">
                   {usuariosFiltrados.length === 0
                     ? "Nenhum usuário encontrado"
                     : `Mostrando ${inicio + 1}–${Math.min(
@@ -323,7 +323,7 @@ export default function GestaoUsuarios() {
                     size="icon"
                     disabled={paginaAtual === 1}
                     onClick={() => setPagina(paginaAtual - 1)}
-                    className="h-8 w-8 border-[#DFE6F0]"
+                    className="h-9 w-9 rounded-full border-[#DFE6F0] transition-colors hover:bg-[#FBF7E5]"
                     aria-label="Página anterior"
                   >
                     ‹
@@ -334,10 +334,10 @@ export default function GestaoUsuarios() {
                       key={numero}
                       variant={paginaAtual === numero ? "default" : "outline"}
                       onClick={() => setPagina(numero)}
-                      className={`h-8 w-8 rounded-md p-0 text-xs ${
+                      className={`h-9 w-9 rounded-full p-0 text-sm transition-colors ${
                         paginaAtual === numero
-                          ? "bg-[#30466E] text-white hover:bg-[#253653]"
-                          : "border-[#DFE6F0] bg-white text-[#7183A6]"
+                          ? "bg-[#EBDD80] text-[#202D3A] hover:bg-[#EBDD80]"
+                          : "border-[#DFE6F0] bg-white text-[#7183A6] hover:bg-[#FBF7E5]"
                       }`}
                     >
                       {numero}
@@ -349,7 +349,7 @@ export default function GestaoUsuarios() {
                     size="icon"
                     disabled={paginaAtual === totalPaginas}
                     onClick={() => setPagina(paginaAtual + 1)}
-                    className="h-8 w-8 border-[#DFE6F0]"
+                    className="h-9 w-9 rounded-full border-[#DFE6F0] transition-colors hover:bg-[#FBF7E5]"
                     aria-label="Próxima página"
                   >
                     ›
@@ -361,26 +361,26 @@ export default function GestaoUsuarios() {
         </TabsContent>
 
         <TabsContent value="historico" className="mt-0">
-          <Card className="gap-0 rounded-xl border border-[#E3E9F1] bg-white p-5 shadow-none">
-            <h2 className="text-[19px] font-semibold text-[#101A40]">Histórico de ações</h2>
+          <Card className="gap-0 rounded-lg border border-[#E3E9F1] bg-white p-5 shadow-none">
+            <h2 className="text-[22px] font-semibold text-[#101A40]">Histórico de ações</h2>
 
-            <p className="mt-1 text-[12px] text-[#8192B2]">
+            <p className="mt-1 text-sm text-[#8192B2]">
               Alterações realizadas nesta sessão de demonstração.
             </p>
 
             <div className="mt-5 divide-y divide-[#E8EDF4]">
               {historico.length === 0 ? (
-                <p className="py-8 text-center text-[13px] text-[#8192B2]">
+                <p className="py-8 text-center text-sm text-[#8192B2]">
                   Nenhuma alteração registrada nesta sessão.
                 </p>
               ) : (
                 historico.map((registro) => (
                   <div key={registro.id} className="flex flex-wrap justify-between gap-3 py-4">
                     <div>
-                      <p className="text-[13px] font-semibold text-[#101A40]">{registro.usuario}</p>
-                      <p className="mt-1 text-[12px] text-[#7183A6]">{registro.descricao}</p>
+                      <p className="text-sm font-semibold text-[#101A40]">{registro.usuario}</p>
+                      <p className="mt-1 text-sm text-[#7183A6]">{registro.descricao}</p>
                     </div>
-                    <span className="text-[11px] text-[#8192B2]">{registro.data}</span>
+                    <span className="text-xs text-[#8192B2]">{registro.data}</span>
                   </div>
                 ))
               )}

@@ -113,10 +113,10 @@ export default function GestaoFontes() {
 
   return (
     <div className="space-y-4">
-      <Card className="gap-0 rounded-xl border border-[#E3E9F1] bg-white p-0 shadow-none">
+      <Card className="gap-0 rounded-lg border border-[#E3E9F1] bg-white p-0 shadow-none">
         <CardContent className="p-5">
           <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
-            <h2 className="text-[20px] font-semibold text-[#101A40]">Fontes cadastradas</h2>
+            <h2 className="text-[22px] font-semibold text-[#101A40]">Fontes cadastradas</h2>
 
             <div className="flex flex-wrap items-center gap-3">
               <div className="relative w-full sm:w-[250px]">
@@ -139,7 +139,7 @@ export default function GestaoFontes() {
                   placeholder="Buscar fonte ou URL..."
                   value={busca}
                   onChange={(event) => setBusca(event.target.value)}
-                  className="h-10 rounded-lg border-[#DFE6F0] bg-white pl-10 text-[13px]"
+                  className="h-10 rounded-lg border-[#DFE6F0] bg-white pl-10 text-sm"
                 />
               </div>
 
@@ -151,7 +151,7 @@ export default function GestaoFontes() {
                     atual === "todos" ? "ativos" : atual === "ativos" ? "inativos" : "todos",
                   )
                 }
-                className="h-10 rounded-lg border-[#DFE6F0] bg-white px-4 text-[#101A40]"
+                className="h-10 rounded-lg border-[#DFE6F0] bg-white px-4 text-sm text-[#101A40] transition-colors hover:bg-[#FBF7E5]"
               >
                 {filtro === "todos" ? "Filtros" : filtro === "ativos" ? "Ativas" : "Inativas"}
               </Button>
@@ -159,7 +159,7 @@ export default function GestaoFontes() {
               <Button
                 type="button"
                 onClick={adicionarFonte}
-                className="h-10 rounded-lg bg-[#F3E69A] px-5 font-semibold text-[#101A40] hover:bg-[#E8D879]"
+                className="h-10 rounded-lg bg-[#F3E69A] px-5 text-sm font-semibold text-[#101A40] transition-colors hover:bg-[#EBDD80]"
               >
                 + Adicionar fonte
               </Button>

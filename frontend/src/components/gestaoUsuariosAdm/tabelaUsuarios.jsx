@@ -22,7 +22,7 @@ export default function TabelaUsuarios({
 
   return (
     <div className="w-full overflow-x-auto">
-      <Table className="w-full min-w-[800px]">
+      <Table className="w-full min-w-[800px] text-sm">
         <TableHeader>
           <TableRow className="bg-[#F1F5FA] hover:bg-[#F1F5FA]">
             <TableHead className="w-12 pl-4">
@@ -33,17 +33,17 @@ export default function TabelaUsuarios({
               />
             </TableHead>
 
-            <TableHead className="text-[12px] text-[#344469]">Usuário</TableHead>
+            <TableHead className="text-sm text-[#344469]">Usuário</TableHead>
 
-            <TableHead className="text-[12px] text-[#344469]">E-mail</TableHead>
+            <TableHead className="text-sm text-[#344469]">E-mail</TableHead>
 
-            <TableHead className="text-[12px] text-[#344469]">Tipo de permissão</TableHead>
+            <TableHead className="text-sm text-[#344469]">Tipo de permissão</TableHead>
 
-            <TableHead className="text-[12px] text-[#344469]">Status</TableHead>
+            <TableHead className="text-sm text-[#344469]">Status</TableHead>
 
-            <TableHead className="text-[12px] text-[#344469]">Data de cadastro</TableHead>
+            <TableHead className="text-sm text-[#344469]">Data de cadastro</TableHead>
 
-            <TableHead className="text-right text-[12px] text-[#344469]">Ações</TableHead>
+            <TableHead className="text-right text-sm text-[#344469]">Ações</TableHead>
           </TableRow>
         </TableHeader>
 
@@ -51,7 +51,7 @@ export default function TabelaUsuarios({
           {usuarios.map((usuario) => (
             <TableRow
               key={usuario.id}
-              className="cursor-pointer border-[#E8EDF4] hover:bg-[#F7F9FD]"
+              className="cursor-pointer border-[#E8EDF4] transition-colors hover:bg-[#FBF7E5]"
               onClick={() => aoAbrirUsuario(usuario)}
             >
               <TableCell className="pl-4" onClick={(evento) => evento.stopPropagation()}>
@@ -64,21 +64,21 @@ export default function TabelaUsuarios({
 
               <TableCell>
                 <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#E7EEFB] text-[12px] font-semibold text-[#253B71]">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#E7EEFB] text-sm font-semibold text-[#253B71]">
                     {usuario.iniciais}
                   </div>
 
-                  <span className="whitespace-nowrap text-[13px] font-semibold text-[#101A40]">
+                  <span className="whitespace-nowrap text-[15px] font-semibold text-[#101A40]">
                     {usuario.nome}
                   </span>
                 </div>
               </TableCell>
 
-              <TableCell className="text-[12px] text-[#7183A6]">{usuario.email}</TableCell>
+              <TableCell className="text-sm text-[#7183A6]">{usuario.email}</TableCell>
 
               <TableCell>
                 <Badge
-                  className={`rounded-full border-0 px-3 py-1 text-[11px] font-medium shadow-none ${
+                  className={`rounded-full border-0 px-3 py-1 text-xs font-medium shadow-none ${
                     usuario.permissao === "Admin"
                       ? "bg-[#E7EEFC] text-[#30466E]"
                       : "bg-[#FFF7DE] text-[#8B741D]"
@@ -90,7 +90,7 @@ export default function TabelaUsuarios({
 
               <TableCell>
                 <Badge
-                  className={`gap-2 rounded-full border-0 px-3 py-1 text-[11px] font-medium shadow-none ${
+                  className={`gap-2 rounded-full border-0 px-3 py-1 text-xs font-medium shadow-none ${
                     usuario.status === "Ativo"
                       ? "bg-[#E6F6ED] text-[#248554]"
                       : "bg-[#FDEBED] text-[#C34048]"
@@ -105,7 +105,7 @@ export default function TabelaUsuarios({
                 </Badge>
               </TableCell>
 
-              <TableCell className="whitespace-nowrap text-[12px] text-[#7183A6]">
+              <TableCell className="whitespace-nowrap text-sm text-[#7183A6]">
                 {usuario.dataCadastro}
               </TableCell>
 
@@ -119,7 +119,7 @@ export default function TabelaUsuarios({
                     aoAbrirUsuario(usuario);
                   }}
                   aria-label={`Ver informações de ${usuario.nome}`}
-                  className="text-[#344469]"
+                  className="rounded-lg text-[#344469] transition-colors hover:bg-[#EBDD80]"
                 >
                   <span className="text-xl">⋮</span>
                 </Button>

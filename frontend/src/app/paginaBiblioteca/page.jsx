@@ -1,12 +1,11 @@
-import { Search } from "lucide-react";
 import Image from "next/image";
 
+import { BarraBusca } from "@/components/barraBusca";
 import { CatalogoConceitos } from "@/components/biblioteca/catalogoConceitos";
 import { Footer } from "@/components/footer";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
 import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import Sidebar from "@/components/sidebar";
-import { Input } from "@/components/ui/input";
 
 export default function Home() {
   return (
@@ -19,20 +18,9 @@ export default function Home() {
         <div className="relative z-10 mx-auto w-full max-w-[1600px]">
           {/* Barra de pesquisa e perfil */}
           <div className="relative z-50 flex items-center justify-end gap-3 px-4 pt-3 sm:px-5 lg:px-7">
-            <search className="relative min-w-0 flex-1 sm:w-[360px] sm:flex-none">
-              <Search
-                aria-hidden="true"
-                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#7182A1]"
-                size={16}
-              />
-
-              <Input
-                type="search"
-                aria-label="Buscar notícias, conceitos ou temas"
-                placeholder="Pesquise por notícias, conceitos ou temas..."
-                className="h-9 rounded-full border-wisen-borda bg-white/90 pl-9 text-[11px] shadow-sm placeholder:text-[#8794AA] focus-visible:ring-[#DCE5F2]"
-              />
-            </search>
+            <div className="relative min-w-0 flex-1 sm:w-[360px] sm:flex-none">
+              <BarraBusca />
+            </div>
 
             <MenuPerfil />
           </div>

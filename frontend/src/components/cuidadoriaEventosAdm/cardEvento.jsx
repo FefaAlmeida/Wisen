@@ -19,7 +19,7 @@ export default function CardEvento({
 }) {
   return (
     <Card
-      className={`rounded-[18px] border px-4 py-3 shadow-none transition-all ${
+      className={`rounded-lg border px-4 py-3 shadow-none transition-all ${
         selecionado
           ? "border-[#E4C95D] bg-[#FFFDF5]"
           : ativo
@@ -37,34 +37,34 @@ export default function CardEvento({
           />
         </div>
 
-        <div className="h-[76px] w-[76px] shrink-0 overflow-hidden rounded-[14px] bg-[#EDF2F8]">
+        <div className="h-[76px] w-[76px] shrink-0 overflow-hidden rounded-lg bg-[#EDF2F8]">
           {evento.imagem && (
             <img src={evento.imagem} alt={evento.titulo} className="h-full w-full object-cover" />
           )}
         </div>
 
         <div className="min-w-0 flex-1">
-          <h3 className="text-[15px] font-semibold leading-5 text-[#101A40]">{evento.titulo}</h3>
+          <h3 className="text-base font-semibold leading-6 text-[#101A40]">{evento.titulo}</h3>
 
-          <p className="mt-1 max-h-[40px] overflow-hidden text-[12px] leading-5 text-[#6E809F]">
+          <p className="mt-1 max-h-[44px] overflow-hidden text-sm leading-5 text-[#6E809F]">
             {evento.descricao}
           </p>
 
           <div className="mt-2.5 flex flex-wrap items-center gap-2">
-            <Badge className="rounded-full border-0 bg-[#EEF3FB] px-3 py-1 text-[11px] font-medium text-[#5B6F93] shadow-none">
+            <Badge className="rounded-full border-0 bg-[#EEF3FB] px-3 py-1 text-xs font-medium text-[#5B6F93] shadow-none">
               {evento.categoria}
             </Badge>
 
-            <span className="text-[11px] text-[#90A0BA]">
+            <span className="text-xs text-[#90A0BA]">
               · Identificado {evento.identificacao}
             </span>
 
-            <span className="text-[11px] text-[#90A0BA]">· {evento.data}</span>
+            <span className="text-xs text-[#90A0BA]">· {evento.data}</span>
           </div>
         </div>
 
         <div className="hidden w-[120px] shrink-0 xl:block">
-          <div className="flex items-center gap-2 text-[12px] text-[#30466E]">
+          <div className="flex items-center gap-2 text-sm text-[#30466E]">
             <svg
               viewBox="0 0 24 24"
               fill="none"
@@ -85,7 +85,7 @@ export default function CardEvento({
           </div>
 
           <Badge
-            className={`mt-3 rounded-full border-0 px-3 py-1 text-[11px] font-medium shadow-none ${estilosStatus[evento.status]}`}
+            className={`mt-3 rounded-full border-0 px-3 py-1 text-xs font-medium shadow-none ${estilosStatus[evento.status]}`}
           >
             {evento.status}
           </Badge>
@@ -96,16 +96,16 @@ export default function CardEvento({
             type="button"
             variant="outline"
             onClick={() => aoVerArtigos(evento)}
-            className="h-11 rounded-[12px] border-[#E2E8F2] bg-[#F3F6FB] px-4 text-[13px] font-medium text-[#30466E] shadow-none hover:bg-[#EAF0F8]"
+            className="h-11 rounded-lg border-[#E2E8F2] bg-[#F3F6FB] px-4 text-sm font-medium text-[#30466E] shadow-none transition-colors hover:bg-[#FBF7E5]"
           >
             Ver artigos
-            <span className="ml-2 text-[15px]">→</span>
+            <span className="ml-2 text-base">→</span>
           </Button>
 
           <button
             type="button"
             onClick={() => aoEditar(evento)}
-            className="flex h-10 w-10 items-center justify-center rounded-full text-[#597196] transition-colors hover:bg-[#F2F5FA]"
+            className="flex h-10 w-10 items-center justify-center rounded-full text-[#597196] transition-colors hover:bg-[#EBDD80]"
             aria-label={`Editar ${evento.titulo}`}
             title="Editar evento"
           >

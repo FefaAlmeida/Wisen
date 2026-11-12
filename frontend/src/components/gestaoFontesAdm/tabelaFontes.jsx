@@ -15,21 +15,24 @@ export default function TabelaFontes({ fontes, aoEditar, aoAlternarStatus }) {
       <Table className="w-full min-w-[850px]">
         <TableHeader>
           <TableRow className="border-none bg-[#F1F5FA] hover:bg-[#F1F5FA]">
-            <TableHead className="h-12 pl-4 text-xs text-[#52617E]">Veículo</TableHead>
-            <TableHead className="text-xs text-[#52617E]">URL do feed RSS</TableHead>
-            <TableHead className="text-xs text-[#52617E]">Status</TableHead>
-            <TableHead className="text-xs text-[#52617E]">Última coleta</TableHead>
-            <TableHead className="text-xs text-[#52617E]">Frequência</TableHead>
-            <TableHead className="pr-4 text-right text-xs text-[#52617E]">Ações</TableHead>
+            <TableHead className="h-12 pl-4 text-sm text-[#52617E]">Veículo</TableHead>
+            <TableHead className="text-sm text-[#52617E]">URL do feed RSS</TableHead>
+            <TableHead className="text-sm text-[#52617E]">Status</TableHead>
+            <TableHead className="text-sm text-[#52617E]">Última coleta</TableHead>
+            <TableHead className="text-sm text-[#52617E]">Frequência</TableHead>
+            <TableHead className="pr-4 text-right text-sm text-[#52617E]">Ações</TableHead>
           </TableRow>
         </TableHeader>
 
         <TableBody>
           {fontes.map((fonte) => (
-            <TableRow key={fonte.id} className="border-[#E8EDF4] hover:bg-[#F8FAFD]">
+            <TableRow
+              key={fonte.id}
+              className="border-[#E8EDF4] transition-colors hover:bg-[#FBF7E5]"
+            >
               <TableCell className="py-4 pl-4 font-semibold text-[#101A40]">{fonte.nome}</TableCell>
 
-              <TableCell className="max-w-[350px] truncate text-[13px] text-[#617398]">
+              <TableCell className="max-w-[350px] truncate text-sm text-[#617398]">
                 {fonte.url}
               </TableCell>
 
@@ -48,9 +51,9 @@ export default function TabelaFontes({ fontes, aoEditar, aoAlternarStatus }) {
                 </Badge>
               </TableCell>
 
-              <TableCell className="text-[13px] text-[#617398]">{fonte.ultimaColeta}</TableCell>
+              <TableCell className="text-sm text-[#617398]">{fonte.ultimaColeta}</TableCell>
 
-              <TableCell className="text-[13px] text-[#617398]">{fonte.frequencia}</TableCell>
+              <TableCell className="text-sm text-[#617398]">{fonte.frequencia}</TableCell>
 
               <TableCell>
                 <div className="flex justify-end gap-2">
@@ -60,7 +63,7 @@ export default function TabelaFontes({ fontes, aoEditar, aoAlternarStatus }) {
                     size="icon"
                     onClick={() => aoEditar(fonte)}
                     aria-label={`Editar ${fonte.nome}`}
-                    className="h-9 w-9 border-[#DFE6F0] bg-white text-[#101A40] shadow-none"
+                    className="h-9 w-9 rounded-lg border-[#DFE6F0] bg-white text-[#101A40] shadow-none transition-colors hover:bg-[#EBDD80]"
                   >
                     <svg
                       viewBox="0 0 24 24"
@@ -82,7 +85,7 @@ export default function TabelaFontes({ fontes, aoEditar, aoAlternarStatus }) {
                     size="icon"
                     onClick={() => aoAlternarStatus(fonte.id)}
                     aria-label={fonte.ativo ? "Pausar fonte" : "Ativar fonte"}
-                    className="h-9 w-9 border-[#DFE6F0] bg-white text-[#101A40] shadow-none"
+                    className="h-9 w-9 rounded-lg border-[#DFE6F0] bg-white text-[#101A40] shadow-none transition-colors hover:bg-[#EBDD80]"
                   >
                     {fonte.ativo ? "Ⅱ" : "▶"}
                   </Button>

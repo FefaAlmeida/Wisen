@@ -68,12 +68,12 @@ export function TabelaLogsIa() {
   ];
 
   return (
-    <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-2xs space-y-5">
+    <div className="space-y-5 rounded-lg border border-slate-200/80 bg-white p-6 shadow-2xs">
       {/* Cabeçalho da Tabela com Busca e Filtros */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h3 className="text-sm font-bold text-[#2B333F]">Logs de chamadas de IA</h3>
-          <p className="text-xs text-slate-400">
+          <h3 className="text-base font-semibold text-[#2B333F]">Logs de chamadas de IA</h3>
+          <p className="text-sm text-slate-500">
             Registros individuais de cada requisição, com detalhes de consumo, latência e custo.
           </p>
         </div>
@@ -84,13 +84,13 @@ export function TabelaLogsIa() {
             <input
               type="text"
               placeholder="Buscar por modelo, operação ou ID..."
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#2B333F]/20"
+              className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2 pr-4 pl-9 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#EBDD80]/60"
             />
           </div>
 
           <button
             type="button"
-            className="flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer shrink-0"
+            className="flex shrink-0 cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-[#FBF7E5]"
           >
             <Filter className="w-3.5 h-3.5 text-slate-500" />
             <span>Filtros</span>
@@ -100,9 +100,9 @@ export function TabelaLogsIa() {
 
       {/* Tabela de Dados */}
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-xs">
+        <table className="w-full text-left text-sm">
           <thead>
-            <tr className="border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+            <tr className="border-b border-slate-100 text-xs font-semibold tracking-wider text-slate-500 uppercase">
               <th className="py-3 px-2">Data e hora</th>
               <th className="py-3 px-2">Modelo</th>
               <th className="py-3 px-2">Tipo</th>
@@ -118,7 +118,7 @@ export function TabelaLogsIa() {
             {logs.map((item) => (
               <tr
                 key={`${item.dataHora}-${item.modelo}`}
-                className="hover:bg-slate-50/60 transition-colors"
+                className="transition-colors hover:bg-[#FBF7E5]"
               >
                 <td className="py-3.5 px-2 text-slate-500 font-medium whitespace-nowrap">
                   {item.dataHora}
@@ -154,7 +154,7 @@ export function TabelaLogsIa() {
                 </td>
 
                 <td className="py-3.5 px-2 whitespace-nowrap">
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200/60 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                     {item.status}
                   </span>
@@ -163,7 +163,7 @@ export function TabelaLogsIa() {
                 <td className="py-3.5 px-2 text-right whitespace-nowrap">
                   <button
                     type="button"
-                    className="p-1 rounded-lg text-slate-400 hover:text-[#2B333F] hover:bg-slate-100 transition-colors cursor-pointer"
+                    className="cursor-pointer rounded-lg p-1 text-slate-500 transition-colors hover:bg-[#EBDD80] hover:text-[#2B333F]"
                   >
                     <MoreVertical className="w-4 h-4" />
                   </button>
@@ -175,44 +175,44 @@ export function TabelaLogsIa() {
       </div>
 
       {/* Paginação */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-slate-100 text-xs text-slate-500 font-medium">
+      <div className="flex flex-col items-center justify-between gap-4 border-t border-slate-100 pt-3 text-sm font-medium text-slate-500 sm:flex-row">
         <span>Mostrando 1-5 de 1.248 requisições</span>
 
         <div className="flex items-center gap-1">
           <button
             type="button"
-            className="p-1.5 rounded-lg border border-slate-200 text-slate-400 hover:bg-slate-50 cursor-pointer"
+            className="cursor-pointer rounded-lg border border-slate-200 p-1.5 text-slate-500 transition-colors hover:bg-[#FBF7E5]"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
 
           <button
             type="button"
-            className="w-8 h-8 rounded-lg bg-[#2B333F] text-white font-bold text-xs flex items-center justify-center"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-[#EBDD80] text-sm font-semibold text-[#202D3A]"
           >
             1
           </button>
           <button
             type="button"
-            className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-600 font-medium text-xs flex items-center justify-center cursor-pointer"
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-sm font-medium text-slate-600 transition-colors hover:bg-[#EBDD80]"
           >
             2
           </button>
           <button
             type="button"
-            className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-600 font-medium text-xs flex items-center justify-center cursor-pointer"
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-sm font-medium text-slate-600 transition-colors hover:bg-[#EBDD80]"
           >
             3
           </button>
           <button
             type="button"
-            className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-600 font-medium text-xs flex items-center justify-center cursor-pointer"
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-sm font-medium text-slate-600 transition-colors hover:bg-[#EBDD80]"
           >
             4
           </button>
           <button
             type="button"
-            className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-600 font-medium text-xs flex items-center justify-center cursor-pointer"
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-sm font-medium text-slate-600 transition-colors hover:bg-[#EBDD80]"
           >
             5
           </button>
@@ -221,14 +221,14 @@ export function TabelaLogsIa() {
 
           <button
             type="button"
-            className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-600 font-medium text-xs flex items-center justify-center cursor-pointer"
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-sm font-medium text-slate-600 transition-colors hover:bg-[#EBDD80]"
           >
             250
           </button>
 
           <button
             type="button"
-            className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 cursor-pointer"
+            className="cursor-pointer rounded-lg border border-slate-200 p-1.5 text-slate-600 transition-colors hover:bg-[#FBF7E5]"
           >
             <ChevronRight className="w-4 h-4" />
           </button>

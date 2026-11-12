@@ -36,6 +36,9 @@ describe("onboarding de interesses", () => {
     const saveButton = await screen.findByRole("button", { name: "Salvar interesses" });
     expect(saveButton).toBeDisabled();
     expect(screen.queryByRole("button", { name: "Agora não" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Close" })).not.toBeInTheDocument();
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(screen.getByText("Quais assuntos interessam a você?")).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: /Tecnologia/ }));
     expect(saveButton).toBeDisabled();

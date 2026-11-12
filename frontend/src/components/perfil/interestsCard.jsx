@@ -31,8 +31,8 @@ export function InterestsCard({
 
   return (
     <Card
-      className={`rounded-2xl border bg-white shadow-xs ${
-        systemColors ? "border-wisen-borda" : "border-slate-200/80"
+      className={`rounded-2xl border shadow-xs ${
+        systemColors ? "border-wisen-borda bg-wisen-superficie" : "border-slate-200/80 bg-white"
       }`}
     >
       <CardHeader className="pb-4">
@@ -82,8 +82,8 @@ export function InterestsCard({
                 disabled={saving}
                 className={`inline-flex cursor-pointer items-center gap-1.5 rounded-xl border-none px-3 py-1.5 text-xs font-semibold transition-colors ${
                   systemColors
-                    ? "bg-[#E6ECF4] text-wisen-titulo hover:bg-[#DCE3ED]"
-                    : "bg-[#E8E191] text-[#2B333F] hover:bg-[#d8d181]"
+                    ? "bg-[#F3E69A] text-wisen-titulo hover:bg-[#EBDD80]"
+                    : "bg-[#F3E69A] text-[#2B333F] hover:bg-[#EBDD80]"
                 }`}
               >
                 {tag}

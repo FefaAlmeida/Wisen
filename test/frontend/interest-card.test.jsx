@@ -14,8 +14,9 @@ describe("cartão de interesses no onboarding", () => {
       />,
     );
 
-    expect(screen.getByRole("button", { name: /Tecnologia/ })).toHaveClass("bg-[#E6ECF4]");
+    expect(screen.getByRole("button", { name: /Tecnologia/ })).toHaveClass("bg-[#F3E69A]");
     expect(screen.getByRole("button", { name: /Economia/ })).toHaveClass("bg-wisen-superficie");
+    expect(document.querySelector('[data-slot="card"]')).toHaveClass("bg-wisen-superficie");
     expect(screen.queryByText("Seus assuntos estão salvos.")).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Salvar interesses" })).not.toBeInTheDocument();
   });

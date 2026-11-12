@@ -153,8 +153,11 @@ export function InitialInterestDialog() {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto border border-wisen-borda bg-white sm:max-w-xl">
+    <Dialog open={open} onOpenChange={(nextOpen) => nextOpen && setOpen(true)}>
+      <DialogContent
+        showCloseButton={false}
+        className="max-h-[90vh] overflow-y-auto border border-wisen-borda bg-white sm:max-w-xl"
+      >
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-wisen-titulo">
             Quais assuntos interessam a você?

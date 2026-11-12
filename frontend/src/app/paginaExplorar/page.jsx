@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowDownWideNarrow, ArrowUpRight, Search, Sparkles } from "lucide-react";
+import { ArrowDownWideNarrow, ArrowUpRight, Search, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -102,23 +102,18 @@ function normalize(value) {
     .toLowerCase();
 }
 
-function matchesInterests(story, interests) {
-  const storyTopics = [story.category, ...story.concepts].map(normalize);
-  return interests.some((interest) => {
-    const normalizedInterest = normalize(interest);
-    return storyTopics.some(
-      (topic) => topic.includes(normalizedInterest) || normalizedInterest.includes(topic),
-    );
-  });
-}
-
 export default function PaginaExplorar() {
   const [interests, setInterests] = useState([]);
   const [loadingInterests, setLoadingInterests] = useState(true);
-  const [view, setView] = useState("Para você");
   const [topic, setTopic] = useState("Todos os assuntos");
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("relevantes");
+
+  function clearFilters() {
+    setTopic("Todos os assuntos");
+    setSearch("");
+    setSort("relevantes");
+  }
 
   useEffect(() => {
     async function loadInterests() {
@@ -136,11 +131,7 @@ export default function PaginaExplorar() {
     loadInterests();
   }, []);
 
-  const personalizedStories = interests.length
-    ? stories.filter((story) => matchesInterests(story, interests))
-    : stories;
-  const sourceStories = view === "Para você" ? personalizedStories : stories;
-  const filteredStories = sourceStories.filter((story) => {
+  const filteredStories = stories.filter((story) => {
     const matchesTopic = topic === "Todos os assuntos" || story.category === topic;
     const searchText = normalize(
       `${story.title} ${story.summary} ${story.category} ${story.concepts.join(" ")}`,
@@ -155,7 +146,7 @@ export default function PaginaExplorar() {
     <div className="min-h-screen">
       <Sidebar activeItem="Explorar" />
       <main className="relative isolate min-h-screen min-w-0 bg-[radial-gradient(ellipse_at_70%_0%,#E3EAF4_0%,#F0F4F9_55%,#F0F4F9_100%)] font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
-        <ConnectionsBackground />
+        <ConnectionsBackground fadeTop={false} />
 
         <div className="relative z-10 mx-auto w-full max-w-[1600px]">
           <header className="relative z-50 flex items-center justify-end gap-3 px-4 pt-3 sm:px-5 lg:px-7">
@@ -178,49 +169,33 @@ export default function PaginaExplorar() {
           </header>
 
           <div className="space-y-7 px-4 pb-12 pt-7 sm:px-5 lg:px-7">
-            <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
-              <div>
-                <p className="text-[11px] font-semibold text-[#93A3BE]">DESCOBERTA</p>
-                <h1 className="mt-2 text-[34px] font-semibold leading-tight text-wisen-titulo sm:text-[40px]">
-                  Explore notícias
-                </h1>
-                <p className="mt-2 max-w-[620px] text-sm leading-6 text-[#7182A1]">
-                  Descubra histórias relacionadas aos temas e conceitos que você acompanha.
-                </p>
-              </div>
-              <Select value={sort} onValueChange={setSort}>
-                <SelectTrigger className="h-9 w-[170px] rounded-full border-wisen-borda bg-white/85 text-xs text-[#344469]">
-                  <div className="flex items-center gap-2">
-                    <ArrowDownWideNarrow className="size-3.5" />
-                    <SelectValue />
-                  </div>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="relevantes">Mais relevantes</SelectItem>
-                  <SelectItem value="recentes">Mais recentes</SelectItem>
-                </SelectContent>
-              </Select>
+            <div>
+              <p className="text-[11px] font-semibold text-[#93A3BE]">DESCOBERTA</p>
+              <h1 className="mt-4 text-[36px] leading-[1.05] font-medium text-wisen-titulo sm:text-[44px]">
+                Explore <span className="text-[#D7BF4D]">notícias.</span>
+              </h1>
             </div>
 
-            <section className="flex flex-col gap-3 rounded-lg border border-[#E1E7F0] bg-white/85 p-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-start gap-3">
-                <Sparkles className="mt-0.5 size-4 shrink-0 text-[#D1B83F]" />
-                <div>
-                  <h2 className="text-sm font-semibold text-wisen-titulo">Seus temas</h2>
-                  <p className="mt-1 text-xs text-[#7182A1]">
-                    {loadingInterests
-                      ? "Carregando seus interesses..."
-                      : interests.length
-                        ? "As recomendações consideram os assuntos e conceitos do seu perfil."
-                        : "Adicione interesses no perfil para personalizar suas recomendações."}
-                  </p>
-                </div>
+            <section className="flex flex-col gap-4 rounded-2xl border border-wisen-borda bg-wisen-superficie p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
+              <div className="min-w-0">
+                <h2 className="text-sm font-semibold text-wisen-titulo">Seus temas</h2>
+                <span
+                  aria-hidden="true"
+                  className="mt-2 block h-0.5 w-8 rounded-full bg-[#D7BF4D]"
+                />
+                <p className="mt-1 text-xs leading-5 text-wisen-texto-suave">
+                  {loadingInterests
+                    ? "Carregando seus interesses..."
+                    : interests.length
+                      ? "Seus assuntos e conceitos de interesse, definidos no perfil."
+                      : "Adicione assuntos de interesse no perfil para personalizar sua experiência."}
+                </p>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 sm:justify-end">
                 {(interests.length ? interests : topics).map((interest) => (
                   <span
                     key={interest}
-                    className="rounded-full border border-[#E8E1B7] bg-[#FBF7E5] px-3 py-1 text-[11px] text-[#52617E]"
+                    className="rounded-full border border-[#EBDD80] bg-[#F3E69A] px-3 py-1.5 text-[11px] font-medium text-wisen-titulo"
                   >
                     {interest}
                   </span>
@@ -237,31 +212,12 @@ export default function PaginaExplorar() {
             </section>
 
             <section>
-              <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-                <fieldset className="flex flex-wrap gap-2">
-                  <legend className="sr-only">Filtrar recomendações</legend>
-                  {[
-                    { label: "Para você", value: "Para você" },
-                    { label: "Todas", value: "Todas" },
-                  ].map((option) => (
-                    <Button
-                      key={option.value}
-                      type="button"
-                      size="sm"
-                      variant={view === option.value ? "default" : "outline"}
-                      onClick={() => setView(option.value)}
-                      className={
-                        view === option.value
-                          ? "h-9 rounded-full border-0 bg-wisen-destaque-suave px-4 text-xs text-wisen-texto shadow-none hover:bg-[#F1E18A]"
-                          : "h-9 rounded-full border-wisen-borda bg-white/85 px-4 text-xs text-[#607092] shadow-none"
-                      }
-                    >
-                      {option.label}
-                    </Button>
-                  ))}
-                </fieldset>
+              <div className="mb-4 flex flex-wrap items-center gap-2">
                 <Select value={topic} onValueChange={setTopic}>
-                  <SelectTrigger className="h-9 w-[190px] rounded-full border-wisen-borda bg-white/85 text-xs text-[#344469]">
+                  <SelectTrigger
+                    aria-label="Filtrar por assunto"
+                    className="h-9 w-[190px] rounded-full border-wisen-borda bg-white/85 text-xs text-[#344469] transition-colors hover:bg-[#F3E69A] hover:text-wisen-titulo"
+                  >
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -273,13 +229,34 @@ export default function PaginaExplorar() {
                     ))}
                   </SelectContent>
                 </Select>
+                <Select value={sort} onValueChange={setSort}>
+                  <SelectTrigger
+                    aria-label="Ordenar notícias"
+                    className="h-9 w-[170px] rounded-full border-wisen-borda bg-white/85 text-xs text-[#344469] transition-colors hover:bg-[#F3E69A] hover:text-wisen-titulo"
+                  >
+                    <div className="flex items-center gap-2">
+                      <ArrowDownWideNarrow className="size-3.5" />
+                      <SelectValue />
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="relevantes">Mais relevantes</SelectItem>
+                    <SelectItem value="recentes">Mais recentes</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={clearFilters}
+                  className="h-9 cursor-pointer gap-1.5 rounded-full border-wisen-borda bg-white/85 px-3 text-xs text-[#607092] shadow-none transition-colors hover:bg-[#F3E69A] hover:text-wisen-titulo"
+                >
+                  <X aria-hidden="true" className="size-3.5" />
+                  Limpar filtros
+                </Button>
               </div>
 
-              <div className="mb-3 flex items-center justify-between text-xs text-[#8290A8]">
+              <div className="mb-3 text-xs text-[#8290A8]">
                 <span>{visibleStories.length} notícias</span>
-                {view === "Para você" && interests.length > 0 && (
-                  <span>Relacionadas aos seus interesses</span>
-                )}
               </div>
 
               {visibleStories.length ? (
@@ -324,9 +301,10 @@ export default function PaginaExplorar() {
                         </div>
                         <Link
                           href="/paginaEvento"
-                          className="mt-4 inline-flex items-center gap-1.5 border-t border-[#E8ECF2] pt-3 text-xs font-semibold text-[#30466E] hover:text-[#172338]"
+                          className="group mt-4 inline-flex cursor-pointer items-center justify-between gap-1.5 rounded-lg border-t border-[#E8ECF2] px-2 py-3 text-xs font-semibold text-[#30466E] transition-colors hover:bg-[#F3E69A] hover:text-wisen-titulo"
                         >
-                          Ler notícia <ArrowUpRight size={14} />
+                          Ler notícia{" "}
+                          <ArrowUpRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
                         </Link>
                       </div>
                     </article>
@@ -344,11 +322,8 @@ export default function PaginaExplorar() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => {
-                      setSearch("");
-                      setTopic("Todos os assuntos");
-                    }}
-                    className="mt-4 rounded-full"
+                    onClick={clearFilters}
+                    className="mt-4 cursor-pointer rounded-full transition-colors hover:bg-[#F3E69A] hover:text-wisen-titulo"
                   >
                     Limpar filtros
                   </Button>

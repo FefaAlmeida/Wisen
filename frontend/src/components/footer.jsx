@@ -74,7 +74,7 @@ export function Footer({ variant = "plataforma" }) {
   }
 
   return (
-    <footer className="bg-[#2B333F] text-slate-300 border-t border-slate-700/50">
+    <footer className="bg-[#2B333F] text-slate-300 border-t border-slate-700/50 mt-0">
       <div className="max-w-7xl mx-auto px-6 py-12 md:py-16">
         {/* Grade Principal de Conteúdo */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-slate-700/60">

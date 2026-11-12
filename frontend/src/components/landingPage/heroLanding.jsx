@@ -21,24 +21,24 @@ export function HeroLanding() {
       <div className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-r from-[#101A40]/35 via-[#101A40]/10 to-[#101A40]/5" />
 
       <header className="absolute inset-x-0 top-0 z-20 px-4 pt-4 sm:px-6 lg:px-8 xl:px-12">
-        <div className="mx-auto flex max-w-[1320px] items-center justify-between gap-4 rounded-full border border-[#E8E191]/80 bg-[#E8E191] px-4 py-3 shadow-[0_12px_28px_-18px_rgba(232,225,145,0.9)] sm:px-5 lg:px-6">
+        <div className="mx-auto flex max-w-[1320px] items-center justify-between gap-4 rounded-full border border-white/20 bg-white/5 px-4 py-3 shadow-[0_12px_26px_-18px_rgba(7,13,31,0.75)] backdrop-blur-md sm:px-5 lg:px-6">
           <Link href="/" className="flex items-center gap-2 transition-opacity duration-200 hover:opacity-90">
-            <span className="text-[1.7rem] font-black leading-none tracking-[-0.08em] text-[#101A40] sm:text-[1.9rem]">
+            <span className="text-[1.7rem] font-black leading-none tracking-[-0.08em] text-white sm:text-[1.9rem]">
               Wisen
             </span>
-            <span className="text-[1.4rem] font-black leading-none tracking-[-0.08em] text-[#101A40] sm:text-[1.6rem]">
+            <span className="text-[1.4rem] font-black leading-none tracking-[-0.08em] text-[#E8E191] sm:text-[1.6rem]">
               •
             </span>
           </Link>
 
           <nav aria-label="Navegação da plataforma" className="hidden items-center gap-2 md:flex">
-            <Link href="/paginaLogin" className="rounded-full px-3 py-2 text-sm font-medium text-[#101A40]/80 transition-all duration-200 hover:bg-[#101A40]/5 hover:text-[#101A40]">
+            <Link href="/paginaLogin" className="rounded-full px-3 py-2 text-sm font-medium text-white/85 transition-all duration-200 hover:bg-white/10 hover:text-white">
               Entrar
             </Link>
-            <Link href="/paginaCadastro" className="rounded-full px-3 py-2 text-sm font-medium text-[#101A40]/80 transition-all duration-200 hover:bg-[#101A40]/5 hover:text-[#101A40]">
+            <Link href="/paginaCadastro" className="rounded-full px-3 py-2 text-sm font-medium text-white/85 transition-all duration-200 hover:bg-white/10 hover:text-white">
               Criar conta
             </Link>
-            <Link href="/paginaInicialCliente" className="rounded-full bg-[#101A40] px-4 py-2 text-sm font-semibold text-[#E8E191] shadow-[0_12px_20px_-12px_rgba(16,26,64,0.9)] transition-all duration-200 hover:bg-[#182A5D]">
+            <Link href="/paginaInicialCliente" className="rounded-full bg-[#E8E191] px-4 py-2 text-sm font-semibold text-[#101A40] shadow-[0_12px_20px_-12px_rgba(232,225,145,0.9)] transition-all duration-200 hover:bg-[#F3EB9B]">
               Acessar plataforma
             </Link>
           </nav>

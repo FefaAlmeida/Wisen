@@ -3,8 +3,8 @@ import Image from "next/image";
 
 export function ApresentacaoLanding() {
   return (
-    <section id="sobre" className="scroll-mt-24">
-      <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-14">
+    <section id="sobre" className="scroll-mt-24 py-8 md:py-12">
+      <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-12 lg:gap-20">
         {/* Prévia da plataforma */}
         <div className="relative lg:col-span-7">
           {/* Camada de profundidade */}

@@ -9,7 +9,7 @@ function hashToken(token) {
   return createHash("sha256").update(token).digest("hex");
 }
 
-async function hashPassword(password) {
+export async function hashPassword(password) {
   const salt = randomBytes(16);
   const hash = await scrypt(password, salt, 64, passwordOptions);
   return `${salt.toString("base64url")}.${hash.toString("base64url")}`;

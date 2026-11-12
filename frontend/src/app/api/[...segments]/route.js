@@ -1,5 +1,5 @@
 const apiUrl = process.env.BACKEND_INTERNAL_URL || "http://localhost:8080/api";
-const allowedRoots = new Set(["articles", "auth", "health", "search"]);
+const allowedRoots = new Set(["admin", "articles", "auth", "categories", "health", "search"]);
 
 // 1. Incluído "profile" nas ações permitidas de auth
 const allowedAuthActions = new Set([
@@ -18,7 +18,9 @@ async function forward(request, context) {
 
   if (
     !allowedRoots.has(root) ||
+    (root === "admin" && (segments.length !== 2 || action !== "categories")) ||
     (root === "auth" && (segments.length !== 2 || !allowedAuthActions.has(action))) ||
+    (root === "categories" && segments.length !== 1) ||
     (root === "health" && segments.length !== 1) ||
     (root === "search" && segments.length > 2) ||
     (root === "articles" && segments.length > 2)
@@ -36,6 +38,8 @@ async function forward(request, context) {
     (root === "auth" &&
       ["login", "logout", "register"].includes(action) &&
       request.method === "POST") ||
+    (root === "categories" && request.method === "GET") ||
+    (root === "admin" && action === "categories" && ["GET", "PUT"].includes(request.method)) ||
     ((root === "articles" || root === "health") && request.method === "GET") ||
     (root === "search" && request.method === "GET") ||
     (root === "search" && segments.length === 1 && request.method === "POST");

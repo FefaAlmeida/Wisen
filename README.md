@@ -108,12 +108,17 @@ Não use `docker compose down -v` para atualizar tabelas: esse comando apaga vol
 | POST   | `/api/auth/login`               | Inicia sessão                                               |
 | GET    | `/api/auth/session`             | Consulta sessão atual                                       |
 | POST   | `/api/auth/logout`              | Encerra sessão                                              |
+| GET    | `/api/categories`               | Lista assuntos habilitados para as preferências             |
+| GET    | `/api/admin/categories`         | Lista assuntos e disponibilidade (admin)                    |
+| PUT    | `/api/admin/categories`         | Atualiza disponibilidade dos assuntos (admin)              |
 | GET    | `/api/articles?page=1&limit=10` | Lista artigos coletados                                     |
 | GET    | `/api/articles/:id`             | Consulta artigo                                             |
 | POST   | `/api/search`                   | Recebe `{ "query": "juros", "limit": 5 }`; retorna 202 e id |
 | GET    | `/api/search/:id`               | Estado e resultados da busca                                |
 
 A sessão usa cookie `httpOnly` e as páginas da área do usuário redirecionam ao login quando ela não existe. A busca é assíncrona para manter o modelo no worker. Estados: `pending`, `processing`, `completed`, `failed`. Há até três retentativas, com intervalo crescente; falhas transitórias não concluem o pedido prematuramente. Pedidos concluídos ou falhos expiram após sete dias. Swagger expõe os contratos em `/docs/json`, somente fora de produção.
+
+A tela administrativa **Gestão de categorias** controla quais assuntos aparecem nas preferências dos usuários. A lista é carregada do banco, e o sistema mantém pelo menos duas categorias disponíveis para atender ao mínimo exigido no onboarding.
 
 ## Produção
 

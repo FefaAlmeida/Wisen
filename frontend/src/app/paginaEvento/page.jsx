@@ -29,27 +29,10 @@ const concepts = [
 ];
 
 const timeline = [
-  {
-    year: "2026 · Estudo mais recente",
-    title: "Aceleração do derretimento das geleiras",
-    detail: "Nova pesquisa aponta que o derretimento está mais rápido do que o previsto.",
-    active: true,
-  },
-  {
-    year: "2024",
-    title: "Recorde de perda de gelo na Antártida",
-    detail: "Dados mostram o menor nível de gelo registrado na região.",
-  },
-  {
-    year: "2022",
-    title: "Relatório da ONU sobre mudanças climáticas",
-    detail: "Alerta para o impacto do derretimento das geleiras no nível do mar.",
-  },
-  {
-    year: "2020",
-    title: "Estudo já indicava aceleração",
-    detail: "Pesquisadores apontavam sinais de aumento na taxa de derretimento.",
-  },
+  { year: "2026 · Estudo mais recente", title: "Aceleração do derretimento das geleiras", detail: "Nova pesquisa aponta que o derretimento está mais rápido do que o previsto.", active: true },
+  { year: "2024", title: "Recorde de perda de gelo na Antártida", detail: "Dados mostram o menor nível de gelo registrado na região." },
+  { year: "2022", title: "Relatório da ONU sobre mudanças climáticas", detail: "Alerta para o impacto do derretimento das geleiras no nível do mar." },
+  { year: "2020", title: "Estudo já indicava aceleração", detail: "Pesquisadores apontavam sinais de aumento na taxa de derretimento." },
 ];
 
 const sources = [
@@ -67,7 +50,9 @@ export default function PaginaEvento() {
 
   function toggleConcept(title) {
     setSavedConcepts((current) =>
-      current.includes(title) ? current.filter((item) => item !== title) : [...current, title],
+      current.includes(title)
+        ? current.filter((item) => item !== title)
+        : [...current, title]
     );
   }
 
@@ -129,14 +114,12 @@ export default function PaginaEvento() {
                 >
                   <Share2 size={15} /> Compartilhar
                 </Button>
+
               </div>
             </div>
 
             {shareFeedback && (
-              <p
-                role="status"
-                className="border-b border-[#E8EDF2] bg-[#FAFBFD] px-7 py-2 text-right text-xs text-[#30466E]"
-              >
+              <p role="status" className="border-b border-[#E8EDF2] bg-[#FAFBFD] px-7 py-2 text-right text-xs text-[#30466E]">
                 {shareFeedback}
               </p>
             )}
@@ -150,10 +133,7 @@ export default function PaginaEvento() {
                       role="img"
                       aria-label="Geleira e montanhas cobertas de neve"
                       className="absolute inset-0 bg-cover bg-center"
-                      style={{
-                        backgroundImage:
-                          "linear-gradient(180deg,rgba(18,35,48,.03) 45%,rgba(18,35,48,.48) 100%),url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1400&q=85')",
-                      }}
+                      style={{ backgroundImage: "linear-gradient(180deg,rgba(18,35,48,.03) 45%,rgba(18,35,48,.48) 100%),url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1400&q=85')" }}
                     />
                     <span className="absolute bottom-4 left-5 inline-flex items-center gap-1.5 rounded-full bg-[#263C4DCC] px-3 py-1.5 text-[11px] text-white sm:left-7">
                       <Sparkles size={13} /> Meio ambiente
@@ -168,17 +148,12 @@ export default function PaginaEvento() {
                       Estudo aponta aceleração do derretimento das geleiras no mundo
                     </h1>
                     <p className="mt-3 max-w-[820px] text-[14px] leading-[1.7] text-[#68778D]">
-                      Pesquisa internacional alerta que o derretimento das geleiras está acontecendo
-                      mais rápido do que o previsto, com impactos no clima e no aumento do nível do
-                      mar.
+                      Pesquisa internacional alerta que o derretimento das geleiras está acontecendo mais rápido do que o previsto, com impactos no clima e no aumento do nível do mar.
                     </p>
                     <div className="mt-5 flex flex-wrap items-center gap-2 text-[11px] text-[#75839A]">
                       <span className="mr-1">Fontes originais:</span>
                       {sources.map((source) => (
-                        <span
-                          key={source.name}
-                          className="inline-flex min-h-8 items-center gap-1.5 rounded-full border border-[#E6EBF0] bg-[#FAFBFD] px-2.5 py-1.5"
-                        >
+                        <span key={source.name} className="inline-flex min-h-8 items-center gap-1.5 rounded-full border border-[#E6EBF0] bg-[#FAFBFD] px-2.5 py-1.5">
                           <span className={`size-2.5 rounded-[3px] ${source.color}`} />
                           {source.name}
                         </span>
@@ -189,47 +164,25 @@ export default function PaginaEvento() {
                         onClick={() => setShowSources((current) => !current)}
                         className="inline-flex min-h-8 items-center gap-1.5 rounded-full border border-[#E6EBF0] px-2.5 py-1.5 transition hover:bg-[#F7F9FC]"
                       >
-                        +2 fontes{" "}
-                        <ChevronDown
-                          size={12}
-                          className={`transition-transform ${showSources ? "rotate-180" : ""}`}
-                        />
+                        +2 fontes <ChevronDown size={12} className={`transition-transform ${showSources ? "rotate-180" : ""}`} />
                       </button>
-                      {showSources && (
-                        <span className="w-full text-xs text-[#71809A]">
-                          Outras duas fontes ainda não foram cadastradas.
-                        </span>
-                      )}
+                      {showSources && <span className="w-full text-xs text-[#71809A]">Outras duas fontes ainda não foram cadastradas.</span>}
                     </div>
                   </div>
                 </article>
 
-                <section
-                  aria-labelledby="resumo-title"
-                  className="border-t border-[#E8EDF2] px-5 py-7 sm:px-7"
-                >
+                <section aria-labelledby="resumo-title" className="border-t border-[#E8EDF2] px-5 py-7 sm:px-7">
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <h2
-                      id="resumo-title"
-                      className="flex items-center gap-2.5 text-[16px] font-semibold text-[#101A40]"
-                    >
+                    <h2 id="resumo-title" className="flex items-center gap-2.5 text-[16px] font-semibold text-[#101A40]">
                       <Sparkles size={18} className="text-[#D6B92F]" /> Resumo para você
                     </h2>
-                    <span className="text-[11px] text-[#8996AA]">
-                      Adaptado ao seu nível de conhecimento
-                    </span>
+                    <span className="text-[11px] text-[#8996AA]">Adaptado ao seu nível de conhecimento</span>
                   </div>
                   <p className="mt-4 text-[14px] leading-[1.8] text-[#65748B]">
-                    Um novo estudo internacional mostrou que as geleiras do planeta estão derretendo
-                    mais rápido do que o estimado anteriormente. Esse processo é causado
-                    principalmente pelo aumento da temperatura global, resultado das emissões de
-                    gases de efeito estufa.
+                    Um novo estudo internacional mostrou que as geleiras do planeta estão derretendo mais rápido do que o estimado anteriormente. Esse processo é causado principalmente pelo aumento da temperatura global, resultado das emissões de gases de efeito estufa.
                   </p>
                   <p className="mt-3 text-[14px] leading-[1.8] text-[#65748B]">
-                    O derretimento das geleiras contribui para o aumento do nível do mar, afeta
-                    ecossistemas litorâneos e milhões de pessoas ao redor do mundo. Além disso,
-                    influencia o clima global, já que as geleiras ajudam a regular a temperatura do
-                    planeta.
+                    O derretimento das geleiras contribui para o aumento do nível do mar, afeta ecossistemas litorâneos e milhões de pessoas ao redor do mundo. Além disso, influencia o clima global, já que as geleiras ajudam a regular a temperatura do planeta.
                   </p>
                   <Separator className="my-5 bg-[#E8EDF2]" />
                   <div className="flex items-start gap-3">
@@ -237,13 +190,9 @@ export default function PaginaEvento() {
                       <Lightbulb size={18} />
                     </div>
                     <div>
-                      <h3 className="text-[13px] font-semibold text-[#101A40]">
-                        Por que isso importa?
-                      </h3>
+                      <h3 className="text-[13px] font-semibold text-[#101A40]">Por que isso importa?</h3>
                       <p className="mt-1 text-[13px] leading-[1.7] text-[#748198]">
-                        O derretimento das geleiras afeta o clima, a biodiversidade e a vida de
-                        milhões de pessoas. Entender esse tema ajuda a compreender melhor os debates
-                        sobre mudanças climáticas e suas consequências.
+                        O derretimento das geleiras afeta o clima, a biodiversidade e a vida de milhões de pessoas. Entender esse tema ajuda a compreender melhor os debates sobre mudanças climáticas e suas consequências.
                       </p>
                     </div>
                   </div>
@@ -254,28 +203,17 @@ export default function PaginaEvento() {
               <aside className="min-w-0 border-t border-[#E8EDF2] bg-[#FCFDFE] lg:border-l lg:border-t-0">
                 <section aria-labelledby="conceitos-title" className="px-5 py-6 sm:px-6">
                   <div className="mb-4 flex items-center justify-between gap-2">
-                    <h2 id="conceitos-title" className="text-[15px] font-semibold text-[#101A40]">
-                      Conceitos relacionados
-                    </h2>
-                    <CircleHelp
-                      size={15}
-                      className="text-[#9AA6B8]"
-                      aria-label="Conceitos associados à notícia"
-                    />
+                    <h2 id="conceitos-title" className="text-[15px] font-semibold text-[#101A40]">Conceitos relacionados</h2>
+                    <CircleHelp size={15} className="text-[#9AA6B8]" aria-label="Conceitos associados à notícia" />
                   </div>
                   <div>
                     {concepts.map(({ title, detail, color }) => {
                       const isSaved = savedConcepts.includes(title);
                       return (
-                        <div
-                          key={title}
-                          className="flex min-h-[58px] items-center gap-2.5 border-b border-[#EDF0F4] py-2 last:border-0"
-                        >
+                        <div key={title} className="flex min-h-[58px] items-center gap-2.5 border-b border-[#EDF0F4] py-2 last:border-0">
                           <span className={`size-2 shrink-0 rounded-full ${color}`} />
                           <div className="min-w-0 flex-1">
-                            <p className="text-[12px] font-medium leading-4 text-[#263654]">
-                              {title}
-                            </p>
+                            <p className="text-[12px] font-medium leading-4 text-[#263654]">{title}</p>
                             <p className="mt-0.5 text-[11px] leading-4 text-[#909BAD]">{detail}</p>
                           </div>
                           <button
@@ -294,10 +232,7 @@ export default function PaginaEvento() {
                   </div>
                 </section>
 
-                <section
-                  aria-labelledby="timeline-title"
-                  className="border-t border-[#E8EDF2] px-5 py-6 sm:px-6"
-                >
+                <section aria-labelledby="timeline-title" className="border-t border-[#E8EDF2] px-5 py-6 sm:px-6">
                   <button
                     type="button"
                     onClick={() => setShowTimeline((current) => !current)}
@@ -305,37 +240,19 @@ export default function PaginaEvento() {
                     aria-controls="timeline-content"
                     className="flex w-full items-center justify-between gap-3 text-left"
                   >
-                    <h2 id="timeline-title" className="text-[15px] font-semibold text-[#101A40]">
-                      Linha do tempo do evento
-                    </h2>
-                    <ChevronDown
-                      size={16}
-                      className={`shrink-0 text-[#8D96A1] transition-transform ${showTimeline ? "" : "-rotate-90"}`}
-                    />
+                    <h2 id="timeline-title" className="text-[15px] font-semibold text-[#101A40]">Linha do tempo do evento</h2>
+                    <ChevronDown size={16} className={`shrink-0 text-[#8D96A1] transition-transform ${showTimeline ? "" : "-rotate-90"}`} />
                   </button>
                   {showTimeline && (
                     <div id="timeline-content" className="relative ml-1.5 mt-5">
-                      <span
-                        aria-hidden="true"
-                        className="absolute bottom-2 left-[3px] top-2 w-px bg-[#E6EAF0]"
-                      />
+                      <span aria-hidden="true" className="absolute bottom-2 left-[3px] top-2 w-px bg-[#E6EAF0]" />
                       {timeline.map((item) => (
                         <article key={item.year} className="relative flex gap-3 pb-5 last:pb-0">
-                          <span
-                            className={`relative z-[1] mt-1 size-[7px] shrink-0 rounded-full border-2 border-[#FCFDFE] ${item.active ? "bg-[#D7BD46]" : "bg-[#9CA5AF]"}`}
-                          />
+                          <span className={`relative z-[1] mt-1 size-[7px] shrink-0 rounded-full border-2 border-[#FCFDFE] ${item.active ? "bg-[#D7BD46]" : "bg-[#9CA5AF]"}`} />
                           <div className="min-w-0">
-                            <p
-                              className={`text-[11px] ${item.active ? "font-medium text-[#A68E24]" : "text-[#858E99]"}`}
-                            >
-                              {item.year}
-                            </p>
-                            <h3 className="mt-1 text-[12px] font-semibold leading-[1.5] text-[#263654]">
-                              {item.title}
-                            </h3>
-                            <p className="mt-1 text-[11px] leading-[1.5] text-[#858E99]">
-                              {item.detail}
-                            </p>
+                            <p className={`text-[11px] ${item.active ? "font-medium text-[#A68E24]" : "text-[#858E99]"}`}>{item.year}</p>
+                            <h3 className="mt-1 text-[12px] font-semibold leading-[1.5] text-[#263654]">{item.title}</h3>
+                            <p className="mt-1 text-[11px] leading-[1.5] text-[#858E99]">{item.detail}</p>
                           </div>
                         </article>
                       ))}

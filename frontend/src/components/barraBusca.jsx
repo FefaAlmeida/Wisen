@@ -109,8 +109,9 @@ function applyHighlights(matches, currentIndex) {
   matches[currentIndex].element.setAttribute("data-wisen-page-search-current", "");
 }
 
-export function BarraBusca({ onQueryChange }) {
-  const [query, setQuery] = useState("");
+export function BarraBusca({ onQueryChange, value }) {
+  const [internalQuery, setInternalQuery] = useState("");
+  const query = value ?? internalQuery;
   const [matches, setMatches] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [message, setMessage] = useState("");
@@ -118,15 +119,25 @@ export function BarraBusca({ onQueryChange }) {
 
   useEffect(() => () => clearHighlights(document), []);
 
-  function handleChange(event) {
-    const value = event.target.value;
+  useEffect(() => {
+    if (value === undefined) return;
+
     clearHighlights(document);
     matchesRef.current = [];
-    setQuery(value);
     setMatches([]);
     setCurrentIndex(0);
     setMessage("");
-    onQueryChange?.(value);
+  }, [value]);
+
+  function handleChange(event) {
+    const nextValue = event.target.value;
+    clearHighlights(document);
+    matchesRef.current = [];
+    if (value === undefined) setInternalQuery(nextValue);
+    setMatches([]);
+    setCurrentIndex(0);
+    setMessage("");
+    onQueryChange?.(nextValue);
   }
 
   function focusMatch(index) {

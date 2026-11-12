@@ -28,21 +28,21 @@ export default function PaginaRevisoes() {
           {/* Conteúdo principal */}
           <div className="px-5 pt-10 pb-12 md:px-8">
             {/* Apresentação */}
-            <header className="mb-6">
-              <p className="mb-5 text-[11px] font-semibold tracking-[0.25em] text-[#93A3BE]">
-                BOM DIA, NATALIA
-              </p>
-
-              <h1 className="text-[38px] font-semibold leading-tight tracking-[-1.5px] text-wisen-titulo md:text-[46px]">
-                Central de revisão
+            <header className="mb-5">
+              <p className="text-[11px] font-semibold text-[#93A3BE]">REVISÕES</p>
+              <h1 className="mt-4 text-[36px] leading-[1.05] font-medium text-wisen-titulo sm:text-[44px]">
+                Central de <span className="text-[#D7BF4D]">revisão.</span>
               </h1>
-
-              <p className="mt-1 text-[17px] leading-6 text-[#7183A6]">
-                Atividades programadas para reforçar o seu aprendizado.
-                <br className="hidden sm:block" />
-                Revise conceitos a partir de notícias reais e consolide seu conhecimento.
-              </p>
             </header>
+
+            <section className="mb-5 rounded-2xl border border-wisen-borda bg-wisen-superficie px-4 py-4 sm:px-5">
+              <h2 className="text-sm font-semibold text-wisen-titulo">Sua rotina de revisão</h2>
+              <span aria-hidden="true" className="mt-2 block h-0.5 w-8 rounded-full bg-[#D7BF4D]" />
+              <p className="mt-2 text-xs leading-5 text-wisen-texto-suave">
+                Atividades programadas para reforçar seu aprendizado. Revise conceitos com base em
+                notícias reais e consolide seu conhecimento.
+              </p>
+            </section>
 
             {/* Resumo geral */}
             <ResumoRevisoes />

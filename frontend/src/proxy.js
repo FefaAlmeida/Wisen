@@ -6,6 +6,7 @@ const adminRoutes = [
   "/paginaCuidadoriaEventosAdm",
   "/paginaGestaoUsuariosAdm",
   "/paginaGestaoFonteAdm",
+  "/paginaGestaoCategoriasAdm",
   "/paginaMonitorIa",
 ];
 
@@ -78,6 +79,7 @@ export const config = {
     "/paginaCuidadoriaEventosAdm/:path*",
     "/paginaGestaoUsuariosAdm/:path*",
     "/paginaGestaoFonteAdm/:path*",
+    "/paginaGestaoCategoriasAdm/:path*",
     "/paginaMonitorIa/:path*",
   ],
 };

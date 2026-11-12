@@ -23,6 +23,7 @@ export default function PerfilPage() {
     notifications: { reviewReminders: true, weeklySummary: false },
   });
   const [savedInterests, setSavedInterests] = useState([]);
+  const [interestCategories, setInterestCategories] = useState([]);
   const [savedNotifications, setSavedNotifications] = useState(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
@@ -38,17 +39,28 @@ export default function PerfilPage() {
     const controller = new AbortController();
     setLoading(true);
     setLoadError("");
-    requisitar("/auth/profile", { signal: controller.signal })
-      .then((data) => {
+    Promise.all([
+      requisitar("/auth/profile", { signal: controller.signal }),
+      requisitar("/categories", { signal: controller.signal }),
+    ])
+      .then(([data, categoryData]) => {
         if (controller.signal.aborted) return;
+        if (!Array.isArray(categoryData.categories)) {
+          throw new Error("A resposta de categorias não contém uma lista válida.");
+        }
+        const categories = categoryData.categories.map((category) => category.name);
+        const interests = data.preferences.interests.filter((interest) =>
+          categories.includes(interest),
+        );
+        setInterestCategories(categories);
         setProfile({
           name: data.user.name,
           email: data.user.email,
           avatarDataUrl: data.avatarDataUrl,
-          interests: data.preferences.interests,
+          interests,
           notifications: data.preferences.notifications,
         });
-        setSavedInterests(data.preferences.interests);
+        setSavedInterests(interests);
         setSavedNotifications(data.preferences.notifications);
       })
       .catch((error) => {
@@ -195,10 +207,12 @@ export default function PerfilPage() {
                 feedback={feedback}
               />
               <InterestsCard
+                categories={interestCategories}
                 interests={profile.interests}
                 onToggle={toggleInterest}
                 onSave={saveInterests}
                 saving={Boolean(saving.interests || loading || loadError)}
+                minimumSelections={2}
                 hasChanges={interestsChanged}
                 feedback={interestsFeedback}
               />

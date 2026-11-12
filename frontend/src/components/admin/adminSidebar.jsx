@@ -1,6 +1,6 @@
 "use client";
 
-import { Activity, LayoutDashboard, Menu, Newspaper, Rss, Users, X } from "lucide-react";
+import { Activity, LayoutDashboard, Menu, Newspaper, Rss, Tags, Users, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -10,6 +10,7 @@ const navigation = [
   { label: "Curadoria de eventos", href: "/paginaCuidadoriaEventosAdm", icon: Newspaper },
   { label: "Gestão de usuários", href: "/paginaGestaoUsuariosAdm", icon: Users },
   { label: "Gestão de fontes", href: "/paginaGestaoFonteAdm", icon: Rss },
+  { label: "Gestão de categorias", href: "/paginaGestaoCategoriasAdm", icon: Tags },
   { label: "Monitor de IA", href: "/paginaMonitorIa", icon: Activity },
 ];
 

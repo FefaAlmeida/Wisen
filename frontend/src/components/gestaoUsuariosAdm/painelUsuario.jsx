@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Badge } from "@/components/ui/badge";
+
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -17,11 +18,45 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 
-export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
+export default function PainelUsuario({
+  usuario,
+  aberto,
+  aoFechar,
+  aoSalvar,
+}) {
   const [permissao, setPermissao] = useState("Usuário");
   const [status, setStatus] = useState("Ativo");
+
+  const historicoAcoes = [
+    {
+      titulo: "Perfil atualizado",
+      descricao: "Alterou o e-mail do usuário para atualização cadastral.",
+      data: "08/11/2026",
+      hora: "14:42",
+      tipo: "perfil",
+    },
+    {
+      titulo: "Permissão alterada",
+      descricao: "Modificou a permissão para Administrador.",
+      data: "04/11/2026",
+      hora: "09:15",
+      tipo: "permissao",
+    },
+    {
+      titulo: "Login realizado",
+      descricao: "Acesso concluído com sucesso ao painel administrativo.",
+      data: "02/11/2026",
+      hora: "08:30",
+      tipo: "login",
+    },
+  ];
 
   useEffect(() => {
     if (usuario) {
@@ -110,10 +145,7 @@ export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent
-                value="informacoes"
-                className="space-y-6 bg-white px-5 py-5 sm:px-6 sm:py-5"
-              >
+              <TabsContent value="informacoes" className="space-y-6 bg-white px-5 py-5 sm:px-6 sm:py-5">
                 <section className="space-y-3">
                   <div className="flex items-center gap-2.5">
                     <span className="h-4 w-[3px] rounded-full bg-[#EBDD80]" />
@@ -225,10 +257,36 @@ export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
                   </h3>
                 </div>
 
-                <p className="text-sm leading-6 text-[#8192B2]">
-                  Os registros das ações deste usuário aparecerão aqui quando o sistema de auditoria
-                  estiver integrado.
-                </p>
+                <div className="space-y-3">
+                  {historicoAcoes.map((acao) => (
+                    <div
+                      key={`${acao.titulo}-${acao.data}-${acao.hora}`}
+                      className="rounded-[10px] border border-[#EEF1F5] bg-[#F9FAFB] px-3 py-3"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#F4F0C5] text-[12px] font-semibold text-[#30466E]">
+                          {acao.tipo === "perfil" && "•"}
+                          {acao.tipo === "permissao" && "↺"}
+                          {acao.tipo === "login" && "✓"}
+                        </div>
+
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <p className="text-[13px] font-semibold text-[#101A40]">
+                              {acao.titulo}
+                            </p>
+                            <p className="text-[11px] text-[#6D7E99]">
+                              {acao.data} · {acao.hora}
+                            </p>
+                          </div>
+                          <p className="mt-1 text-[12px] leading-5 text-[#5D6F8E]">
+                            {acao.descricao}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </TabsContent>
             </Tabs>
 

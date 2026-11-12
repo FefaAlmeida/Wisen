@@ -28,7 +28,15 @@ const updateProfileSchema = z
   .object({
     name: z.string().trim().min(2).max(120).optional(),
     email: emailSchema.optional(),
-    interests: z.array(z.string().trim().min(1).max(120)).max(50).optional(),
+    interests: z
+      .array(z.string().trim().min(1).max(120))
+      .min(2)
+      .max(50)
+      .refine(
+        (interests) => new Set(interests).size === interests.length,
+        "Remova assuntos repetidos",
+      )
+      .optional(),
     notifications: z
       .object({
         reviewReminders: z.boolean(),

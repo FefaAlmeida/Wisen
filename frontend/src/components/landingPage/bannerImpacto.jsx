@@ -9,15 +9,15 @@ export function BannerImpacto() {
   ];
 
   return (
-    <section className="relative">
-      <div className="relative isolate overflow-hidden rounded-[28px] border border-[#293B5C] bg-[#172542] px-6 py-11 text-white shadow-[0_24px_65px_-40px_rgba(16,26,64,0.5)] sm:px-10 md:px-14 md:py-16">
+    <section className="relative w-screen -mx-[calc(50vw-50%)]">
+      <div className="relative isolate overflow-hidden border-y border-[#293B5C] bg-[#172542] px-6 py-11 text-white shadow-[0_24px_65px_-40px_rgba(16,26,64,0.5)] sm:px-10 md:px-14 md:py-16">
         {/* Imagem original */}
         <div className="pointer-events-none absolute inset-0 z-0 opacity-30">
           <Image
             src="/meuBanner.png"
             alt=""
             fill
-            sizes="(max-width: 1200px) calc(100vw - 3rem), 69rem"
+            sizes="100vw"
             className="object-cover mix-blend-overlay"
           />
         </div>
@@ -27,7 +27,7 @@ export function BannerImpacto() {
 
         <div className="pointer-events-none absolute -right-24 -top-28 z-0 h-80 w-80 rounded-full bg-[#E8E191]/10 blur-3xl" />
 
-        <div className="relative z-10 space-y-12">
+        <div className="relative z-10 mx-auto max-w-[1360px] space-y-12">
           {/* Título */}
           <div className="max-w-[700px] space-y-5">
             <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#E8E191]">

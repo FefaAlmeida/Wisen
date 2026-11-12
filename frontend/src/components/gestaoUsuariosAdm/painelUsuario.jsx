@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Badge } from "@/components/ui/badge";
+
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -17,11 +18,45 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 
-export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
+export default function PainelUsuario({
+  usuario,
+  aberto,
+  aoFechar,
+  aoSalvar,
+}) {
   const [permissao, setPermissao] = useState("Usuário");
   const [status, setStatus] = useState("Ativo");
+
+  const historicoAcoes = [
+    {
+      titulo: "Perfil atualizado",
+      descricao: "Alterou o e-mail do usuário para atualização cadastral.",
+      data: "08/11/2026",
+      hora: "14:42",
+      tipo: "perfil",
+    },
+    {
+      titulo: "Permissão alterada",
+      descricao: "Modificou a permissão para Administrador.",
+      data: "04/11/2026",
+      hora: "09:15",
+      tipo: "permissao",
+    },
+    {
+      titulo: "Login realizado",
+      descricao: "Acesso concluído com sucesso ao painel administrativo.",
+      data: "02/11/2026",
+      hora: "08:30",
+      tipo: "login",
+    },
+  ];
 
   useEffect(() => {
     if (usuario) {
@@ -48,7 +83,7 @@ export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
         if (!valor) aoFechar();
       }}
     >
-      <DialogContent className="max-h-[90vh] w-[calc(100%-2rem)] max-w-[600px] gap-0 overflow-y-auto rounded-[18px] border border-[#EAE7D6] bg-white p-0 shadow-[0_20px_50px_rgba(16,26,64,0.12)] sm:max-w-[600px]">
+      <DialogContent className="w-[calc(100%-2rem)] max-w-[600px] gap-0 overflow-hidden rounded-[18px] border border-[#EAE7D6] bg-white p-0 shadow-[0_20px_50px_rgba(16,26,64,0.12)] sm:max-w-[600px]">
         {usuario && (
           <>
             <DialogHeader className="bg-[#F7F3CD] px-4 pb-3 pt-4 sm:px-5">
@@ -110,10 +145,7 @@ export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent
-                value="informacoes"
-                className="space-y-6 bg-white px-5 py-5 sm:px-6 sm:py-5"
-              >
+              <TabsContent value="informacoes" className="space-y-6 bg-white px-5 py-5 sm:px-6 sm:py-5">
                 <section className="space-y-3">
                   <div className="flex items-center gap-2.5">
                     <span className="h-4 w-[3px] rounded-full bg-[#E8E191]" />
@@ -128,7 +160,9 @@ export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
                         <p className="text-[10.5px] font-medium uppercase tracking-[0.05em] text-[#6A7A96]">
                           Nome completo
                         </p>
-                        <p className="text-[13px] font-medium text-[#101A40]">{usuario.nome}</p>
+                        <p className="text-[13px] font-medium text-[#101A40]">
+                          {usuario.nome}
+                        </p>
                       </div>
 
                       <div className="flex flex-col gap-1 border-b border-[#EAEFF5] pb-2.5">
@@ -162,18 +196,12 @@ export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
 
                   <div className="grid gap-3 sm:grid-cols-2">
                     <div className="space-y-2">
-                      <label
-                        htmlFor="admin-user-role"
-                        className="text-[12px] font-medium text-[#30466E]"
-                      >
+                      <label className="text-[12px] font-medium text-[#30466E]">
                         Permissões
                       </label>
 
                       <Select value={permissao} onValueChange={setPermissao}>
-                        <SelectTrigger
-                          id="admin-user-role"
-                          className="h-10 w-full rounded-[8px] border border-[#DCE3EA] bg-white text-[13px] text-[#101A40] shadow-none transition-colors focus:border-[#E8E191] focus:ring-3 focus:ring-[#E8E191]/25"
-                        >
+                        <SelectTrigger className="h-10 w-full rounded-[8px] border border-[#DCE3EA] bg-white text-[13px] text-[#101A40] shadow-none transition-colors focus:border-[#E8E191] focus:ring-3 focus:ring-[#E8E191]/25">
                           <SelectValue />
                         </SelectTrigger>
 
@@ -185,18 +213,12 @@ export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
                     </div>
 
                     <div className="space-y-2">
-                      <label
-                        htmlFor="admin-user-status"
-                        className="text-[12px] font-medium text-[#30466E]"
-                      >
+                      <label className="text-[12px] font-medium text-[#30466E]">
                         Status da conta
                       </label>
 
                       <Select value={status} onValueChange={setStatus}>
-                        <SelectTrigger
-                          id="admin-user-status"
-                          className="h-10 w-full rounded-[8px] border border-[#DCE3EA] bg-white text-[13px] text-[#101A40] shadow-none transition-colors focus:border-[#E8E191] focus:ring-3 focus:ring-[#E8E191]/25"
-                        >
+                        <SelectTrigger className="h-10 w-full rounded-[8px] border border-[#DCE3EA] bg-white text-[13px] text-[#101A40] shadow-none transition-colors focus:border-[#E8E191] focus:ring-3 focus:ring-[#E8E191]/25">
                           <SelectValue />
                         </SelectTrigger>
 
@@ -225,10 +247,36 @@ export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
                   </h3>
                 </div>
 
-                <p className="text-[13px] leading-5 text-[#8192B2]">
-                  Os registros das ações deste usuário aparecerão aqui quando o sistema de auditoria
-                  estiver integrado.
-                </p>
+                <div className="space-y-3">
+                  {historicoAcoes.map((acao) => (
+                    <div
+                      key={`${acao.titulo}-${acao.data}-${acao.hora}`}
+                      className="rounded-[10px] border border-[#EEF1F5] bg-[#F9FAFB] px-3 py-3"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#F4F0C5] text-[12px] font-semibold text-[#30466E]">
+                          {acao.tipo === "perfil" && "•"}
+                          {acao.tipo === "permissao" && "↺"}
+                          {acao.tipo === "login" && "✓"}
+                        </div>
+
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <p className="text-[13px] font-semibold text-[#101A40]">
+                              {acao.titulo}
+                            </p>
+                            <p className="text-[11px] text-[#6D7E99]">
+                              {acao.data} · {acao.hora}
+                            </p>
+                          </div>
+                          <p className="mt-1 text-[12px] leading-5 text-[#5D6F8E]">
+                            {acao.descricao}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </TabsContent>
             </Tabs>
 

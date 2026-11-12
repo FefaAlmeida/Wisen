@@ -33,17 +33,17 @@ function WisenBrand({ className = "", large = false }) {
   return (
     <Link
       href="/paginaInicialCliente"
-      className={`inline-flex items-center gap-2.5 text-white ${className}`}
+      className={`inline-flex flex-col items-center gap-1.5 text-white ${className}`}
     >
       <Image
         src="/logoWisen-simbolo.png"
         alt="Logo Wisen"
-        width={32}
-        height={32}
-        className="size-7 shrink-0 rounded-lg border border-white/15 bg-[#f3f0e8] object-contain shadow-sm"
+        width={44}
+        height={44}
+        className="size-10 shrink-0 rounded-full border border-white/15 bg-[#f3f0e8] object-contain shadow-sm lg:size-11"
       />
       <span className={`text-xl font-bold tracking-tight ${large ? "lg:text-2xl" : ""}`}>
-        Wisen<span className="align-top text-[9px] text-[#f3d96b]">•</span>
+        Wisen
       </span>
     </Link>
   );
@@ -53,21 +53,21 @@ function NavigationItems({ activeItem, mobile = false }) {
   return (
     <nav
       aria-label="Navegação principal"
-      className={`flex flex-col ${mobile ? "gap-2.5" : "gap-2"}`}
+      className="flex flex-col gap-2.5"
     >
       {navigation.map(({ label, href, icon: Icon }) => {
         const isActive =
           label === activeItem || (activeItem === "Conceitos" && label === "Meu conhecimento");
         const className = mobile
-          ? `flex h-11 items-center gap-3 rounded-xl px-3 text-sm transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EBDD80] ${
+          ? `flex h-11 items-center gap-3 rounded-xl px-3 text-sm transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EBDD80] ${
               isActive
                 ? "bg-[#EBDD80] font-semibold text-[#202D3A] shadow-sm"
-                : "text-white hover:bg-[#EBDD80] hover:text-[#202D3A] hover:shadow-sm"
+                : "text-white hover:bg-white/10"
             }`
-          : `flex h-11 items-center gap-2.5 rounded-xl px-2.5 text-[10px] transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EBDD80] lg:gap-3 lg:px-2.5 lg:text-[12px] ${
+          : `flex h-11 items-center gap-2.5 rounded-xl px-2.5 text-[10px] transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EBDD80] lg:gap-3 lg:px-2.5 lg:text-[12px] ${
               isActive
                 ? "bg-[#EBDD80] font-semibold text-[#202D3A] shadow-sm"
-                : "text-white hover:bg-[#EBDD80] hover:text-[#202D3A] hover:shadow-sm"
+                : "text-white hover:bg-white/10"
             }`;
 
         if (!href) {
@@ -108,15 +108,15 @@ function NavigationItems({ activeItem, mobile = false }) {
 
 function SettingsLink({ activeItem, mobile = false }) {
   const className = mobile
-    ? `flex h-11 items-center gap-3 rounded-xl px-3 text-sm transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EBDD80] ${
+    ? `flex h-11 items-center gap-3 rounded-xl px-3 text-sm transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EBDD80] ${
         activeItem === "Configurações"
           ? "bg-[#EBDD80] font-semibold text-[#202D3A] shadow-sm"
-          : "text-white hover:bg-[#EBDD80] hover:text-[#202D3A] hover:shadow-sm"
+          : "text-white hover:bg-white/10"
       }`
-    : `mt-auto flex h-11 items-center gap-2.5 rounded-xl px-2.5 text-[10px] transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EBDD80] lg:gap-3 lg:px-2.5 lg:text-[12px] ${
+    : `mt-auto flex h-11 items-center gap-2.5 rounded-xl px-2.5 text-[10px] transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EBDD80] lg:gap-3 lg:px-2.5 lg:text-[12px] ${
         activeItem === "Configurações"
           ? "bg-[#EBDD80] font-semibold text-[#202D3A] shadow-sm"
-          : "text-white hover:bg-[#EBDD80] hover:text-[#202D3A] hover:shadow-sm"
+          : "text-white hover:bg-white/10"
       }`;
   const link = (
     <Link
@@ -162,7 +162,7 @@ function AdminDashboardLink({ mobile = false }) {
   const link = (
     <Link
       href="/paginaInicioAdm"
-      className={`flex h-11 items-center gap-2.5 rounded-xl px-2.5 text-[10px] text-white transition-all duration-200 hover:bg-[#EBDD80] hover:text-[#202D3A] hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EBDD80] ${
+      className={`flex h-11 items-center gap-2.5 rounded-xl px-2.5 text-[10px] text-white transition-colors duration-150 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EBDD80] ${
         mobile ? "h-11 gap-3 px-3 text-sm" : "lg:gap-3 lg:px-2.5 lg:text-[12px]"
       }`}
     >
@@ -178,8 +178,8 @@ export default function Sidebar({ activeItem }) {
   return (
     <>
       <Sheet>
-        <header className="sticky top-0 z-40 flex h-14 items-center justify-between bg-[#202d3a] px-4 text-white sm:hidden">
-          <WisenBrand />
+        <header className="sticky top-0 z-40 flex h-20 items-center justify-between bg-[#202d3a] px-4 text-white sm:hidden">
+          <WisenBrand className="absolute left-1/2 -translate-x-1/2" />
           <SheetTrigger
             aria-label="Abrir menu de navegação"
             className="flex size-10 items-center justify-center rounded-md text-white transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
@@ -203,7 +203,9 @@ export default function Sidebar({ activeItem }) {
             </SheetClose>
           </div>
 
-          <WisenBrand className="mb-6 px-3" />
+          <div className="mb-6 flex justify-center border-b border-white/15 pb-4">
+            <WisenBrand className="px-3" />
+          </div>
 
           <NavigationItems activeItem={activeItem} mobile />
           <div className="mt-2 border-t border-white/10 pt-2">
@@ -220,7 +222,9 @@ export default function Sidebar({ activeItem }) {
         className="fixed top-0 bottom-0 left-0 z-20 hidden w-[128px] flex-col bg-[#202d3a] px-2.5 py-6 text-white sm:flex lg:w-[220px] lg:px-4"
         style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
       >
-        <WisenBrand className="mb-8 px-1" large />
+        <div className="mb-6 flex justify-center border-b border-white/15 pb-4">
+          <WisenBrand className="px-1" large />
+        </div>
 
         <NavigationItems activeItem={activeItem} />
         <div className="mt-2 border-t border-white/10 pt-2">

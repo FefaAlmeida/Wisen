@@ -1,9 +1,13 @@
 import { unlink, writeFile } from "node:fs/promises";
 import { createPool } from "../../backend/src/database/index.js";
+import { taskService } from "../../backend/src/modules/generation/tasks.js";
 import { createQueue } from "../../backend/src/queue/index.js";
 import { configuration, QUEUES } from "../../backend/src/shared.js";
 import { createEmbedder } from "./embeddings.js";
+import { generationWorker } from "./generation.js";
+import { mailWorker } from "./mail.js";
 import { workerRepository } from "./repository.js";
+import { scheduleWork } from "./scheduler.js";
 import { processingService } from "./service.js";
 
 const config = configuration();
@@ -33,7 +37,12 @@ try {
   embedder = await createEmbedder(config.MODEL_CACHE_DIR);
   await embedder.embed("Verificação do modelo local.");
   boss = await createQueue(config.DATABASE_URL);
-  const repository = workerRepository(pool, boss);
+  const repository = workerRepository(pool, boss, config);
+  const generate = generationWorker(pool, config, undefined, {
+    embed: (text) => serial(() => embedder.embed(text)),
+  });
+  const mail = mailWorker(pool, config);
+  const tasks = taskService(pool, boss, config);
   const service = processingService(repository, embedder);
   for (const [kind, name] of Object.entries(QUEUES)) {
     await boss.work(
@@ -42,9 +51,13 @@ try {
       async ([job]) => {
         try {
           const result =
-            kind === "collect"
-              ? await service.collect(job.data.sourceId)
-              : await serial(() => service[kind](job.data.articleId ?? job.data.id));
+            kind === "generate"
+              ? await generate(job.data.id)
+              : kind === "mail"
+                ? await mail(job.data.id)
+                : kind === "collect"
+                  ? await service.collect(job.data.sourceId)
+                  : await serial(() => service[kind](job.data.articleId ?? job.data.id));
           console.log(
             JSON.stringify({
               event: "job-completed",
@@ -87,8 +100,12 @@ try {
     );
   }
   await repository.reconcileFailures();
+  await scheduleWork(pool, boss, config, tasks);
   reconcile = setInterval(
-    () => repository.reconcileFailures().catch((error) => console.error(error.message)),
+    () =>
+      Promise.all([repository.reconcileFailures(), scheduleWork(pool, boss, config, tasks)]).catch(
+        (error) => console.error(error.message),
+      ),
     30000,
   );
   const beat = () =>

@@ -2,6 +2,10 @@
 
 ## Arquitetura e Plano de Evolução
 
+> **Decisões do MVP alinhadas em 12/11/2026:** o detalhamento operacional vigente está em [docs/mvp-implementacao.md](docs/mvp-implementacao.md). O MVP entrega o ciclo completo em economia para leigos. A implementação preserva os workspaces `frontend/`, `backend/` e `ai/`, PostgreSQL/pgvector e **pg-boss**, substituindo a proposta inicial de Redis/BullMQ. Geração: OpenAI configurável (`gpt-6-luna` inicialmente), embeddings locais, e-mail via Resend. Teto único de IA de R$ 80/mês e cota inicial de 30 gerações por usuário/dia, ampliável pelo administrador. Onboarding por interesses e familiaridade autodeclarada, sem prova inicial. Publicação automática a partir de duas fontes; curadoria administrativa. O grafo visual avançado permanece para uma versão posterior.
+
+As seções abaixo preservam a visão original de evolução; em divergência de stack e organização de diretórios, prevalecem as decisões acima e o documento operacional.
+
 ---
 
 # 1. Proposta

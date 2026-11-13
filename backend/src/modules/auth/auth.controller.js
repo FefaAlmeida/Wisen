@@ -83,7 +83,7 @@ const changePasswordSchema = z
     message: "A nova senha deve ser diferente da senha atual",
   });
 
-export function authController(app, service, config) {
+export function authController(app, service, config, accounts) {
   app.decorateRequest("user", null);
   app.decorate("loadUser", async (request) => service.findSession(request.cookies[sessionCookie]));
   app.decorate("authenticate", async (request, reply) => {
@@ -106,6 +106,14 @@ export function authController(app, service, config) {
     },
     async (request, reply) => {
       const { user, token } = await service.register(request.body);
+      try {
+        await accounts?.request(user.id, "verify");
+      } catch (error) {
+        request.log.error(
+          { code: error.code },
+          "Falha ao preparar verificação; reenvio disponível na conta",
+        );
+      }
       reply.setCookie(sessionCookie, token, {
         ...cookieOptions(config),
         maxAge: 30 * 24 * 60 * 60,
@@ -192,6 +200,16 @@ export function authController(app, service, config) {
     },
     async (request, reply) => {
       const user = await service.updateProfile(request.user.id, request.body);
+      if (request.body.email) {
+        try {
+          await accounts?.request(user.id, "verify");
+        } catch (error) {
+          request.log.error(
+            { code: error.code },
+            "Falha ao preparar verificação; reenvio disponível na conta",
+          );
+        }
+      }
       return reply.code(200).send({ user });
     },
   );

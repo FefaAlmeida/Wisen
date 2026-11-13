@@ -9,3 +9,8 @@
 **/coverage
 *.pdf
 *.docx
+/backups
+**/*.sql.gz
+/test-results
+/playwright-report
+/.cache

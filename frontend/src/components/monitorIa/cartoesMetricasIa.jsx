@@ -30,9 +30,7 @@ export function CartoesMetricasIa() {
           </div>
         </div>
 
-        <p className="text-xs font-medium text-slate-500">
-          R$ 31,60 restantes até o limite mensal
-        </p>
+        <p className="text-xs font-medium text-slate-500">R$ 31,60 restantes até o limite mensal</p>
       </div>
 
       {/* Cartão 2: Requisições Totais */}

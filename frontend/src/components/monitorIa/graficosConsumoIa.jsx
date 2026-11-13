@@ -111,10 +111,10 @@ export function GraficosConsumoIa() {
       {/* 2. Gráfico Donut: Distribuição de custos por modelo */}
       <div className="space-y-5 rounded-lg border border-slate-200/80 bg-white p-5 shadow-2xs lg:col-span-5">
         <div>
-          <h3 className="text-base font-semibold text-[#2B333F]">Distribuição de custos por modelo</h3>
-          <p className="text-xs text-slate-500">
-            Custo total por modelo de IA (APIs externas).
-          </p>
+          <h3 className="text-base font-semibold text-[#2B333F]">
+            Distribuição de custos por modelo
+          </h3>
+          <p className="text-xs text-slate-500">Custo total por modelo de IA (APIs externas).</p>
         </div>
 
         <div className="flex flex-col sm:flex-row items-center gap-6 pt-1">
@@ -170,9 +170,7 @@ export function GraficosConsumoIa() {
             </svg>
 
             <div className="absolute text-center">
-              <span className="block text-sm font-bold leading-tight text-[#2B333F]">
-                R$ 68,40
-              </span>
+              <span className="block text-sm font-bold leading-tight text-[#2B333F]">R$ 68,40</span>
               <span className="text-xs font-medium text-slate-500">gasto no mês</span>
             </div>
           </div>
@@ -187,9 +185,7 @@ export function GraficosConsumoIa() {
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="font-bold text-[#2B333F]">{m.valor}</span>
-                  <span className="w-9 text-right text-xs font-medium text-slate-500">
-                    {m.pct}
-                  </span>
+                  <span className="w-9 text-right text-xs font-medium text-slate-500">{m.pct}</span>
                 </div>
               </div>
             ))}

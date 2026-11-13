@@ -55,9 +55,7 @@ export default function CardEvento({
               {evento.categoria}
             </Badge>
 
-            <span className="text-xs text-[#90A0BA]">
-              · Identificado {evento.identificacao}
-            </span>
+            <span className="text-xs text-[#90A0BA]">· Identificado {evento.identificacao}</span>
 
             <span className="text-xs text-[#90A0BA]">· {evento.data}</span>
           </div>

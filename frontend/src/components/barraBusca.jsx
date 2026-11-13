@@ -85,7 +85,8 @@ function findMatches(root, query) {
       range.setEnd(node, ends[matchStart + needle.length - 1]);
       matches.push({
         range,
-        element: node.parentElement.closest("p, li, h1, h2, h3, h4, a, blockquote") ?? node.parentElement,
+        element:
+          node.parentElement.closest("p, li, h1, h2, h3, h4, a, blockquote") ?? node.parentElement,
       });
       searchFrom = matchStart + needle.length;
     }
@@ -174,8 +175,9 @@ export function BarraBusca({ onQueryChange, value }) {
   }
 
   return (
-    <form className="relative w-full" role="search" onSubmit={handleSubmit}>
-      <style>{`
+    <search className="relative w-full">
+      <form onSubmit={handleSubmit}>
+        <style>{`
         ::highlight(${allMatchesName}) {
           background-color: #ebdd80;
           color: #202d3a;
@@ -193,60 +195,61 @@ export function BarraBusca({ onQueryChange, value }) {
           border-radius: 4px;
         }
       `}</style>
-      <Input
-        type="search"
-        value={query}
-        onChange={handleChange}
-        aria-label="Localizar nesta página"
-        aria-describedby={message || matches.length ? "busca-pagina-status" : undefined}
-        placeholder="Localizar nesta página..."
-        className="h-9 rounded-full border-wisen-borda bg-white/90 pl-4 pr-10 text-[11px] shadow-sm placeholder:text-[#8794AA] focus-visible:ring-[#DCE5F2]"
-      />
-      <button
-        type="submit"
-        aria-label="Localizar"
-        title="Localizar nesta página"
-        className="absolute top-1/2 right-1 flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-[#7182A1] transition-colors hover:bg-[#F0F4F9] hover:text-wisen-texto focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#EBDD80]"
-      >
-        <Search aria-hidden="true" size={15} />
-      </button>
-
-      {(message || matches.length > 0) && (
-        <div
-          id="busca-pagina-status"
-          className="absolute top-full z-[60] mt-2 flex w-full items-center justify-between gap-2 rounded-xl border border-wisen-borda bg-white px-3 py-2 shadow-lg"
+        <Input
+          type="search"
+          value={query}
+          onChange={handleChange}
+          aria-label="Localizar nesta página"
+          aria-describedby={message || matches.length ? "busca-pagina-status" : undefined}
+          placeholder="Localizar nesta página..."
+          className="h-9 rounded-full border-wisen-borda bg-white/90 pl-4 pr-10 text-[11px] shadow-sm placeholder:text-[#8794AA] focus-visible:ring-[#DCE5F2]"
+        />
+        <button
+          type="submit"
+          aria-label="Localizar"
+          title="Localizar nesta página"
+          className="absolute top-1/2 right-1 flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-[#7182A1] transition-colors hover:bg-[#F0F4F9] hover:text-wisen-texto focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#EBDD80]"
         >
-          {message ? (
-            <p role="status" className="text-xs text-[#607092]">
-              {message}
-            </p>
-          ) : (
-            <>
-              <p role="status" aria-live="polite" className="text-xs text-[#607092]">
-                {currentIndex + 1} de {matches.length} ocorrências
+          <Search aria-hidden="true" size={15} />
+        </button>
+
+        {(message || matches.length > 0) && (
+          <div
+            id="busca-pagina-status"
+            className="absolute top-full z-[60] mt-2 flex w-full items-center justify-between gap-2 rounded-xl border border-wisen-borda bg-white px-3 py-2 shadow-lg"
+          >
+            {message ? (
+              <p role="status" className="text-xs text-[#607092]">
+                {message}
               </p>
-              <div className="flex items-center gap-1">
-                <button
-                  type="button"
-                  aria-label="Ocorrência anterior"
-                  onClick={() => focusMatch(currentIndex - 1)}
-                  className="flex size-7 items-center justify-center rounded-full text-[#607092] transition-colors hover:bg-[#F0F4F9]"
-                >
-                  <ArrowUp aria-hidden="true" size={15} />
-                </button>
-                <button
-                  type="button"
-                  aria-label="Próxima ocorrência"
-                  onClick={() => focusMatch(currentIndex + 1)}
-                  className="flex size-7 items-center justify-center rounded-full text-[#607092] transition-colors hover:bg-[#F0F4F9]"
-                >
-                  <ArrowDown aria-hidden="true" size={15} />
-                </button>
-              </div>
-            </>
-          )}
-        </div>
-      )}
-    </form>
+            ) : (
+              <>
+                <p role="status" aria-live="polite" className="text-xs text-[#607092]">
+                  {currentIndex + 1} de {matches.length} ocorrências
+                </p>
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    aria-label="Ocorrência anterior"
+                    onClick={() => focusMatch(currentIndex - 1)}
+                    className="flex size-7 items-center justify-center rounded-full text-[#607092] transition-colors hover:bg-[#F0F4F9]"
+                  >
+                    <ArrowUp aria-hidden="true" size={15} />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Próxima ocorrência"
+                    onClick={() => focusMatch(currentIndex + 1)}
+                    className="flex size-7 items-center justify-center rounded-full text-[#607092] transition-colors hover:bg-[#F0F4F9]"
+                  >
+                    <ArrowDown aria-hidden="true" size={15} />
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        )}
+      </form>
+    </search>
   );
 }

@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { MODEL_VERSION, SOURCE } from "../../backend/src/shared.js";
+import { MODEL_VERSION, SOURCES } from "../../backend/src/shared.js";
 import { downloadText, extractArticle, parseFeed } from "./source.js";
 
 export function processingService(repository, embedder, download = downloadText) {
@@ -7,8 +7,9 @@ export function processingService(repository, embedder, download = downloadText)
     async collect(sourceId) {
       const source = await repository.source(sourceId);
       if (!source?.enabled) return;
-      if (source.feed_url !== SOURCE.feed) throw new Error("Fonte ainda não suportada");
-      const items = await parseFeed(await download(source.feed_url, { feed: true }));
+      const definition = SOURCES.find((item) => item.feed === source.feed_url);
+      if (!definition) throw new Error("Fonte ainda não suportada");
+      const items = await parseFeed(await download(source.feed_url, { feed: true }), definition);
       return repository.saveFeed(sourceId, items);
     },
     async article(id) {

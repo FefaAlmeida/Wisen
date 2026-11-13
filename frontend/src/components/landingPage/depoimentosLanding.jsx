@@ -1,5 +1,5 @@
-import Image from "next/image";
 import { Star } from "lucide-react";
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 
 export function DepoimentosLanding() {
@@ -68,8 +68,8 @@ export function DepoimentosLanding() {
               <CardContent className="flex flex-1 flex-col items-center justify-between px-5 py-5 text-center sm:px-5 sm:py-6">
                 <div className="flex w-full flex-col items-center justify-center gap-3">
                   <div className="flex items-center justify-center gap-1 text-[#D7B458]">
-                    {Array.from({ length: 5 }).map((_, index) => (
-                      <Star key={index} className="h-3.5 w-3.5 fill-[#D7B458] text-[#D7B458]" />
+                    {["um", "dois", "três", "quatro", "cinco"].map((star) => (
+                      <Star key={star} className="h-3.5 w-3.5 fill-[#D7B458] text-[#D7B458]" />
                     ))}
                   </div>
 

@@ -17,7 +17,7 @@ const filtros = [
   { id: "dominados", rotulo: "Dominados", status: "Dominado", cor: "bg-[#33B27C]" },
 ];
 
-export function FiltrosBiblioteca({ filtroAtivo, onFiltroChange }) {
+export function FiltrosBiblioteca({ filtroAtivo, onFiltroChange, items = conceitos }) {
   return (
     <div className="flex w-full flex-wrap items-center justify-between gap-4">
       {/* Filtros */}
@@ -25,8 +25,8 @@ export function FiltrosBiblioteca({ filtroAtivo, onFiltroChange }) {
         <legend className="sr-only">Filtrar conceitos por status</legend>
         {filtros.map((filtro) => {
           const quantidade = filtro.status
-            ? conceitos.filter((conceito) => conceito.status === filtro.status).length
-            : conceitos.length;
+            ? items.filter((conceito) => conceito.status === filtro.status).length
+            : items.length;
           const ativo = filtro.id === filtroAtivo;
 
           return (

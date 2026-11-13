@@ -110,7 +110,7 @@ Não use `docker compose down -v` para atualizar tabelas: esse comando apaga vol
 | POST   | `/api/auth/logout`              | Encerra sessão                                              |
 | GET    | `/api/categories`               | Lista assuntos habilitados para as preferências             |
 | GET    | `/api/admin/categories`         | Lista assuntos e disponibilidade (admin)                    |
-| PUT    | `/api/admin/categories`         | Atualiza disponibilidade dos assuntos (admin)              |
+| PUT    | `/api/admin/categories`         | Atualiza disponibilidade dos assuntos (admin)               |
 | GET    | `/api/articles?page=1&limit=10` | Lista artigos coletados                                     |
 | GET    | `/api/articles/:id`             | Consulta artigo                                             |
 | POST   | `/api/search`                   | Recebe `{ "query": "juros", "limit": 5 }`; retorna 202 e id |
@@ -137,3 +137,9 @@ As migrations são um serviço de execução única antes da API e do worker. Os
 A busca de uma pessoa autenticada fica vinculada à sua conta. O comando de busca pelo terminal usa `Authorization: Bearer <OPERATIONS_TOKEN>`. Esse token é operacional e não deve ser enviado ao navegador. Swagger fica desabilitado em produção.
 
 Os documentos acadêmicos originais ficam na raiz e não fazem parte do runtime da aplicação.
+
+## MVP adaptativo
+
+As páginas de eventos, conceitos, biblioteca, conhecimento, revisões, salvos e administração agora integram a API e o PostgreSQL. A geração assíncrona usa OpenAI e orçamento transacional; os embeddings continuam locais. Sem chave de IA configurada, a busca local e as funções disponíveis continuam operando, enquanto novas gerações ficam pausadas. E-mail depende de `RESEND_API_KEY` e `EMAIL_FROM` verificado.
+
+Leia [decisões, configuração e operação do MVP](docs/mvp-implementacao.md). O documento registra também as validações externas pendentes e os critérios de qualidade do TCC. `npm run test:load` valida 50 usuários em banco temporário; `npm run backup` cria um backup privado e `npm run backup:verify -- arquivo.sql.gz` testa a restauração em banco isolado. Produção usa o Caddy para HTTPS e exige domínio e segredos próprios.

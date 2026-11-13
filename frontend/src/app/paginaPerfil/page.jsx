@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Footer } from "@/components/footer";
 import { BarraBusca } from "@/components/barraBusca";
+import { Footer } from "@/components/footer";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
 import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import { InterestsCard } from "@/components/perfil/interestsCard";
@@ -229,6 +229,12 @@ export default function PerfilPage() {
           </div>
         </div>
       </main>
+      <a
+        href="/conta?action=delete"
+        className="block p-5 text-center text-sm text-red-700 underline"
+      >
+        Excluir minha conta
+      </a>
       <Footer variant="cliente" />
     </div>
   );

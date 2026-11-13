@@ -4,27 +4,27 @@ O pacote corrige fluxos existentes e centraliza a configuração. Os testes pass
 
 ## Correções
 
-| Fluxo | Problema corrigido |
-| --- | --- |
-| Landing | Ausência de caminhos claros para login, cadastro e plataforma; chamadas sem destino; rodapé apontando para uma rota inexistente. |
-| Rodapé público | Atalhos administrativos e formulário de newsletter sem implementação removidos; navegação alinhada ao produto. |
-| Início do usuário | “Explorar notícias” e “Ver todas” agora navegam para Explorar. |
-| Perfil | “Encerrar sessão” executa logout e apresenta falhas recuperáveis. |
-| Foto de perfil | Corpo acima de 16 KiB era rejeitado apesar de estar dentro do limite do avatar; limite ampliado somente nessa rota. |
-| Salvamento | Dados pessoais, interesses e notificações agora têm gravações independentes; campos omitidos são preservados. |
-| Notificações | Ação explícita de salvar, feedback e indicação de alterações pendentes. |
-| Falha de carregamento | Edição bloqueada e retentativa disponível; evita salvar valores vazios após erro inicial. |
-| Onboarding | Envia somente interesses; não sobrescreve nome, e-mail e notificações carregados anteriormente. Outros cartões não concluem o onboarding. |
-| E-mail | Normalização antes da validação e resposta 409 para conflito de índice único durante atualizações concorrentes. |
-| Login | Um destino `next` malformado não interrompe o redirecionamento após autenticação; destinos externos usam o destino interno padrão. |
-| Identidade | Menu usa iniciais e avatar do perfil em vez de “NB” fixo. |
-| Limite de acesso | Cabeçalhos de IP não são confiáveis por padrão; `TRUST_PROXY` configura os proxies autorizados. |
-| Encaminhamento HTTP | Respostas do servidor preservam `Retry-After` e `Allow`. |
+| Fluxo                   | Problema corrigido                                                                                                                                          |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Landing                 | Ausência de caminhos claros para login, cadastro e plataforma; chamadas sem destino; rodapé apontando para uma rota inexistente.                            |
+| Rodapé público          | Atalhos administrativos e formulário de newsletter sem implementação removidos; navegação alinhada ao produto.                                              |
+| Início do usuário       | “Explorar notícias” e “Ver todas” agora navegam para Explorar.                                                                                              |
+| Perfil                  | “Encerrar sessão” executa logout e apresenta falhas recuperáveis.                                                                                           |
+| Foto de perfil          | Corpo acima de 16 KiB era rejeitado apesar de estar dentro do limite do avatar; limite ampliado somente nessa rota.                                         |
+| Salvamento              | Dados pessoais, interesses e notificações agora têm gravações independentes; campos omitidos são preservados.                                               |
+| Notificações            | Ação explícita de salvar, feedback e indicação de alterações pendentes.                                                                                     |
+| Falha de carregamento   | Edição bloqueada e retentativa disponível; evita salvar valores vazios após erro inicial.                                                                   |
+| Onboarding              | Envia somente interesses; não sobrescreve nome, e-mail e notificações carregados anteriormente. Outros cartões não concluem o onboarding.                   |
+| E-mail                  | Normalização antes da validação e resposta 409 para conflito de índice único durante atualizações concorrentes.                                             |
+| Login                   | Um destino `next` malformado não interrompe o redirecionamento após autenticação; destinos externos usam o destino interno padrão.                          |
+| Identidade              | Menu usa iniciais e avatar do perfil em vez de “NB” fixo.                                                                                                   |
+| Limite de acesso        | Cabeçalhos de IP não são confiáveis por padrão; `TRUST_PROXY` configura os proxies autorizados.                                                             |
+| Encaminhamento HTTP     | Respostas do servidor preservam `Retry-After` e `Allow`.                                                                                                    |
 | Curadoria demonstrativa | Contagens derivadas dos artigos; transferência valida origem/destino; unificação não duplica artigos; contagem de sugestões considera os eventos restantes. |
-| Quiz demonstrativo | Numeração reflete a quantidade de questões disponível; botões anterior/próxima têm nomes acessíveis. |
-| Acessibilidade | Rótulos associados aos campos de edição; links de navegação com semântica nativa; gráficos decorativos identificados. |
-| Executor E2E | Execução assíncrona permite drenar logs dos servidores durante os testes, evitando bloqueio dos pipes. |
-| Testes de frontend | Hooks de preparação deixam de retornar acidentalmente a função mockada como função de limpeza. |
+| Quiz demonstrativo      | Numeração reflete a quantidade de questões disponível; botões anterior/próxima têm nomes acessíveis.                                                        |
+| Acessibilidade          | Rótulos associados aos campos de edição; links de navegação com semântica nativa; gráficos decorativos identificados.                                       |
+| Executor E2E            | Execução assíncrona permite drenar logs dos servidores durante os testes, evitando bloqueio dos pipes.                                                      |
+| Testes de frontend      | Hooks de preparação deixam de retornar acidentalmente a função mockada como função de limpeza.                                                              |
 
 A formatação e a organização de imports foram normalizadas para permitir a verificação global do repositório. Nenhuma dependência foi adicionada.
 
@@ -42,17 +42,17 @@ A formatação e a organização de imports foram normalizadas para permitir a v
 
 Ambiente de validação: Node 24.22.2 e npm 11.13.0.
 
-| Verificação | Resultado |
-| --- | --- |
-| Unidade | 17 testes passaram |
-| Integração com PostgreSQL/pgvector e pg-boss | 12 testes passaram |
-| Frontend | 27 testes passaram |
-| E2E Chromium | 5 testes passaram, incluindo landing em desktop/celular, cadastro/login, proteção administrativa, perfil e logout |
-| `npm test` | Passou: 61 testes |
-| `npm run check` | Passou: lint e build de produção |
-| `git diff --check` | Passou |
-| Compose desenvolvimento/produção | Configuração válida |
-| Ambiente local após recriação | Frontend, backend, worker e PostgreSQL saudáveis |
+| Verificação                                  | Resultado                                                                                                         |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Unidade                                      | 17 testes passaram                                                                                                |
+| Integração com PostgreSQL/pgvector e pg-boss | 12 testes passaram                                                                                                |
+| Frontend                                     | 27 testes passaram                                                                                                |
+| E2E Chromium                                 | 5 testes passaram, incluindo landing em desktop/celular, cadastro/login, proteção administrativa, perfil e logout |
+| `npm test`                                   | Passou: 61 testes                                                                                                 |
+| `npm run check`                              | Passou: lint e build de produção                                                                                  |
+| `git diff --check`                           | Passou                                                                                                            |
+| Compose desenvolvimento/produção             | Configuração válida                                                                                               |
+| Ambiente local após recriação                | Frontend, backend, worker e PostgreSQL saudáveis                                                                  |
 
 O lint mantém quatro avisos de desempenho por imagens `<img>` nas telas administrativas demonstrativas; nenhum erro. A troca dessas imagens por otimização automática fica fora das correções funcionais.
 

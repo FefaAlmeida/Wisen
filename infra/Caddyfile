@@ -1,0 +1,8 @@
+{$PUBLIC_DOMAIN} {
+ encode zstd gzip
+ header {
+  Referrer-Policy "strict-origin-when-cross-origin"
+  X-Content-Type-Options "nosniff"
+ }
+ reverse_proxy frontend:{$FRONTEND_PORT:3000}
+}

@@ -75,6 +75,7 @@ export const config = {
     "/paginaGuardados/:path*",
     "/paginaRevisoes/:path*",
     "/paginaPerfil/:path*",
+    "/artigo/:path*",
     "/paginaInicioAdm/:path*",
     "/paginaCuidadoriaEventosAdm/:path*",
     "/paginaGestaoUsuariosAdm/:path*",

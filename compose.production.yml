@@ -8,6 +8,19 @@ x-environment: &environment
   PORT: ${PORT:-8080}
   TRUST_PROXY: ${TRUST_PROXY:-}
 services:
+  edge:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports: ["80:80", "443:443", "443:443/udp"]
+    environment:
+      PUBLIC_DOMAIN: ${PUBLIC_DOMAIN:?Defina PUBLIC_DOMAIN}
+      FRONTEND_PORT: ${FRONTEND_PORT:-3000}
+    volumes:
+      - ./infra/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      frontend: { condition: service_started }
   database:
     image: pgvector/pgvector:pg17
     restart: unless-stopped
@@ -23,6 +36,7 @@ services:
       retries: 20
   migrate:
     build: { context: ., target: backend }
+    env_file: ${ENV_FILE:-.env.production}
     environment: *environment
     command: node backend/src/database/migrate.js
     depends_on:
@@ -31,6 +45,7 @@ services:
     build: { context: ., target: backend }
     init: true
     restart: unless-stopped
+    env_file: ${ENV_FILE:-.env.production}
     environment: *environment
     ports: ["127.0.0.1:${BACKEND_HOST_PORT:-8080}:${PORT:-8080}"]
     depends_on:
@@ -50,6 +65,7 @@ services:
     build: { context: ., target: ai }
     user: root
     profiles: [tools]
+    env_file: ${ENV_FILE:-.env.production}
     environment: *environment
     command: sh -c 'node ai/src/prepare-model.js && chown -R node:node "$$MODEL_CACHE_DIR"'
     volumes: ["model-cache:${MODEL_CACHE_DIR:-/models}"]
@@ -60,6 +76,7 @@ services:
     init: true
     restart: unless-stopped
     stop_grace_period: 45s
+    env_file: ${ENV_FILE:-.env.production}
     environment: *environment
     volumes: ["model-cache:${MODEL_CACHE_DIR:-/models}"]
     depends_on:
@@ -90,4 +107,6 @@ services:
       backend: { condition: service_healthy }
 volumes:
   postgres-data:
+  caddy-data:
+  caddy-config:
   model-cache:

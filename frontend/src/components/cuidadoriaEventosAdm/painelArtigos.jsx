@@ -147,9 +147,7 @@ export default function PainelArtigos({
             </div>
 
             <div className="min-w-0 flex-1">
-              <h4 className="text-sm font-semibold leading-5 text-[#101A40]">
-                {artigo.titulo}
-              </h4>
+              <h4 className="text-sm font-semibold leading-5 text-[#101A40]">{artigo.titulo}</h4>
 
               <p className="mt-1 text-xs text-[#8394B0]">
                 {artigo.fonte} · {artigo.data}

@@ -210,6 +210,9 @@ export default function FormularioLogin({ glass = false }) {
           </Button>
         </form>
 
+        <Link href="/conta?action=forgot" className="mt-5 block text-center text-sm underline">
+          Esqueci minha senha
+        </Link>
         <div className="mt-7 flex items-center gap-3">
           <div className={`h-px flex-1 ${glass ? "bg-white/30" : "bg-[#E4E9F1]"}`} />
           <span className={`text-xs ${glass ? "text-white/70" : "text-[#9BA7B9]"}`}>ou</span>

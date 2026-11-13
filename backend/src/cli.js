@@ -13,7 +13,7 @@ if (command === "collect") {
       const {
         rows: [source],
       } = await client.query(
-        "INSERT INTO sources(slug,name,feed_url) VALUES($1,$2,$3) ON CONFLICT(slug) DO UPDATE SET name=excluded.name RETURNING id,enabled",
+        "INSERT INTO sources(slug,name,feed_url,attribution,internal_reading) VALUES($1,$2,$3,$2,true) ON CONFLICT(slug) DO UPDATE SET name=excluded.name,attribution=excluded.attribution,internal_reading=true RETURNING id,enabled",
         [SOURCE.slug, SOURCE.name, SOURCE.feed],
       );
       if (!source.enabled) throw new Error("Fonte desativada");
@@ -56,6 +56,28 @@ if (command === "collect") {
       throw new Error(`Busca ainda pendente: ${id}. Consulte GET /api/search/${id}.`);
     await delay(1000);
   }
+} else if (command === "promote-admin") {
+  const email = args[0]?.trim().toLowerCase();
+  if (!email) throw new Error("Uso: promote-admin <email de conta existente>");
+  const pool = createPool(config.DATABASE_URL);
+  try {
+    await transaction(pool, async (c) => {
+      const user = (
+        await c.query(
+          "UPDATE users SET role='admin' WHERE lower(email)=$1 AND active RETURNING id",
+          [email],
+        )
+      ).rows[0];
+      if (!user) throw new Error("Conta ativa não encontrada");
+      await c.query(
+        "INSERT INTO admin_audit(action,target_id,after_data) VALUES('promote-admin-cli',$1,'{\"role\":\"admin\"}')",
+        [user.id],
+      );
+    });
+    console.log("Administrador configurado");
+  } finally {
+    await pool.end();
+  }
 } else {
-  throw new Error("Comandos: collect | search <texto>");
+  throw new Error("Comandos: collect | search <texto> | promote-admin <email>");
 }

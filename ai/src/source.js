@@ -1,12 +1,17 @@
 import { load } from "cheerio";
 import Parser from "rss-parser";
-import { SOURCE } from "../../backend/src/shared.js";
+import { SOURCE, SOURCES } from "../../backend/src/shared.js";
 
 export function articleUrl(value) {
   const url = new URL(value);
   if (
-    url.origin !== SOURCE.origin ||
-    !url.pathname.startsWith("/economia/noticia/") ||
+    !SOURCES.some(
+      (source) =>
+        source.origin === url.origin &&
+        (source.slug === SOURCE.slug
+          ? url.pathname.startsWith("/economia/noticia/")
+          : /^\/noticias\/\d+/.test(url.pathname)),
+    ) ||
     url.username ||
     url.password
   ) {
@@ -18,9 +23,10 @@ export function articleUrl(value) {
 }
 
 export async function downloadText(url, { maxBytes = 2_000_000, feed = false } = {}) {
-  if (feed ? url !== SOURCE.feed : articleUrl(url) !== url) throw new Error("URL não permitida");
+  if (feed ? !SOURCES.some((source) => source.feed === url) : articleUrl(url) !== url)
+    throw new Error("URL não permitida");
   const response = await fetch(url, {
-    headers: { "User-Agent": "Wisen/0.1 (projeto educacional; coleta manual)" },
+    headers: { "User-Agent": "Wisen/0.2 (projeto educacional; coleta automatica)" },
     redirect: "error",
     signal: AbortSignal.timeout(20000),
   });
@@ -42,7 +48,7 @@ export async function downloadText(url, { maxBytes = 2_000_000, feed = false } =
   return Buffer.concat(buffers).toString("utf8");
 }
 
-export async function parseFeed(xml) {
+export async function parseFeed(xml, source = SOURCE) {
   const feed = await new Parser().parseString(xml);
   const seen = new Set();
   const articles = [];
@@ -50,6 +56,7 @@ export async function parseFeed(xml) {
     let url;
     try {
       url = articleUrl(item.link);
+      if (new URL(url).origin !== source.origin) continue;
     } catch {
       continue;
     }
@@ -69,7 +76,7 @@ export async function parseFeed(xml) {
 export function extractArticle(html) {
   const $ = load(html);
   $("script, style, iframe, nav, footer, aside, form, .related, .social").remove();
-  const root = $(".conteudo-noticia").first();
+  const root = $(".conteudo-noticia, .materia__corpo").first();
   if (!root.length) throw new Error("Estrutura do artigo mudou: seletor não encontrado");
   const content = root
     .find("p,h2,h3,li")

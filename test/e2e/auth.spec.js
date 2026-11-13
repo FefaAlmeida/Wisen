@@ -15,10 +15,11 @@ test("cadastro, rota privada, busca, logout e login funcionam no navegador", asy
   await page.getByLabel("Senha", { exact: true }).fill(password);
   await page.getByRole("button", { name: /criar conta/i }).click();
   await expect(page).toHaveURL(/\/paginaInicialCliente$/);
-  await expect(page.getByText("Pessoa Playwright")).toBeVisible();
   const onboarding = page.getByRole("dialog", { name: "Quais assuntos interessam a você?" });
   await expect(onboarding).toBeVisible();
-  await onboarding.getByRole("button", { name: "Agora não" }).click();
+  await onboarding.getByRole("button", { name: "Economia", exact: true }).click();
+  await onboarding.getByRole("button", { name: "Juros", exact: true }).click();
+  await onboarding.getByRole("button", { name: "Salvar interesses", exact: true }).click();
   await expect(onboarding).not.toBeVisible();
   await expect(
     page
@@ -46,7 +47,7 @@ test("cadastro, rota privada, busca, logout e login funcionam no navegador", asy
   await page.getByRole("button", { name: "Abrir menu de navegação" }).click();
   await page.getByRole("dialog").getByRole("button", { name: "Meu conhecimento" }).click();
   await expect(page).toHaveURL(/\/paginaBiblioteca$/);
-  await expect(page.getByRole("heading", { name: /Explore conceitos/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Biblioteca de conceitos/ })).toBeVisible();
 
   await page.getByRole("button", { name: "Abrir menu do perfil" }).click();
   await page.getByRole("button", { name: "Sair da conta" }).click();
@@ -61,7 +62,7 @@ test("cadastro, rota privada, busca, logout e login funcionam no navegador", asy
   await page.getByLabel("Senha", { exact: true }).fill(password);
   await page.getByRole("button", { name: /^entrar/i }).click();
   await expect(page).toHaveURL(/\/paginaGuardados$/);
-  await expect(page.getByRole("heading", { name: "Meus guardados", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Conteúdos salvos", exact: true })).toBeVisible();
   const session = await page.request.get("/api/auth/session");
   expect(session.ok()).toBe(true);
   expect((await session.json()).user.email).toBe(email);
@@ -135,7 +136,8 @@ test("perfil salva cartões independentemente, mantém alterações e encerra se
   await page.goto("/paginaPerfil");
   await expect(page.getByLabel("Nome", { exact: true })).toHaveValue("Pessoa Perfil");
   await page.getByLabel("Nome", { exact: true }).fill("Nome ainda não salvo");
-  await page.getByRole("button", { name: "Tecnologia", exact: true }).click();
+  await page.getByRole("button", { name: "Juros", exact: true }).click();
+  await page.getByRole("button", { name: "Economia", exact: true }).click();
   await page.getByRole("button", { name: "Salvar interesses" }).click();
   await expect(page.getByText("Assuntos de interesse salvos.")).toBeVisible();
   await expect(page.getByLabel("Nome", { exact: true })).toHaveValue("Nome ainda não salvo");
@@ -150,7 +152,7 @@ test("perfil salva cartões independentemente, mantém alterações e encerra se
   await expect(page.getByLabel("Nome", { exact: true })).toHaveValue("Nome ainda não salvo");
   await expect(page.getByRole("switch", { name: "Resumo semanal" })).toBeChecked();
   response = await page.request.get("/api/auth/profile");
-  expect((await response.json()).preferences.interests).toEqual(["Tecnologia"]);
+  expect((await response.json()).preferences.interests).toEqual(["Juros", "Economia"]);
   await page.getByRole("button", { name: /Encerrar sessão/ }).click();
   await expect(page).toHaveURL(/\/paginaLogin$/);
   await page.goto("/paginaPerfil");

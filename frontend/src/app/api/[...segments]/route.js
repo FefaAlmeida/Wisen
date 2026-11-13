@@ -1,5 +1,27 @@
 const apiUrl = process.env.BACKEND_INTERNAL_URL || "http://localhost:8080/api";
-const allowedRoots = new Set(["admin", "articles", "auth", "categories", "health", "search"]);
+const platformMethods = {
+  feed: ["GET"],
+  events: ["GET"],
+  reading: ["GET"],
+  concepts: ["GET"],
+  discover: ["GET"],
+  knowledge: ["GET"],
+  reviews: ["GET", "POST"],
+  interactions: ["POST"],
+  preferences: ["GET", "PUT"],
+  saved: ["GET", "POST", "DELETE"],
+  generations: ["GET", "POST"],
+  account: ["GET", "POST", "DELETE"],
+  admin: ["GET", "POST"],
+};
+const allowedRoots = new Set([
+  "categories",
+  "articles",
+  "auth",
+  "health",
+  "search",
+  ...Object.keys(platformMethods),
+]);
 
 // 1. Incluído "profile" nas ações permitidas de auth
 const allowedAuthActions = new Set([
@@ -18,7 +40,6 @@ async function forward(request, context) {
 
   if (
     !allowedRoots.has(root) ||
-    (root === "admin" && (segments.length !== 2 || action !== "categories")) ||
     (root === "auth" && (segments.length !== 2 || !allowedAuthActions.has(action))) ||
     (root === "categories" && segments.length !== 1) ||
     (root === "health" && segments.length !== 1) ||
@@ -30,6 +51,7 @@ async function forward(request, context) {
 
   // 2. Restringe os métodos aceitos por recurso.
   const isMethodAllowed =
+    platformMethods[root]?.includes(request.method) ||
     (root === "auth" && action === "session" && request.method === "GET") ||
     (root === "auth" && action === "profile" && request.method === "GET") ||
     (root === "auth" && action === "profile" && request.method === "PUT") ||
@@ -48,6 +70,14 @@ async function forward(request, context) {
     return Response.json({ message: "Método não permitido" }, { status: 405 });
   }
 
+  if (!["GET", "HEAD"].includes(request.method)) {
+    const origin = request.headers.get("origin");
+    if (
+      origin &&
+      new URL(origin).host !== (request.headers.get("host") || new URL(request.url).host)
+    )
+      return Response.json({ message: "Origem não permitida" }, { status: 403 });
+  }
   const path = segments.map(encodeURIComponent).join("/");
   const query = new URL(request.url).search;
   let upstream;
@@ -79,7 +109,7 @@ async function forward(request, context) {
   headers.set("cache-control", "no-store");
   const contentType = upstream.headers.get("content-type");
   if (contentType) headers.set("content-type", contentType);
-  for (const name of ["retry-after", "allow"]) {
+  for (const name of ["retry-after", "allow", "content-disposition"]) {
     const value = upstream.headers.get(name);
     if (value) headers.set(name, value);
   }
@@ -95,3 +125,5 @@ async function forward(request, context) {
 export const GET = forward;
 export const POST = forward;
 export const PUT = forward;
+
+export const DELETE = forward;

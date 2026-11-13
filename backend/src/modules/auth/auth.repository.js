@@ -121,9 +121,9 @@ export function authRepository(pool) {
         const {
           rows: [user],
         } = await client.query(
-          `UPDATE users 
-              SET name = COALESCE($1, name), email = COALESCE($2, email), updated_at = now() 
-            WHERE id = $3 
+          `UPDATE users
+              SET name = COALESCE($1, name), email_verified_at = CASE WHEN $2::text IS NOT NULL AND lower($2::text) <> lower(email) THEN NULL ELSE email_verified_at END, email = COALESCE($2, email), updated_at = now()
+            WHERE id = $3
         RETURNING ${userColumns}`,
           [name, email, userId],
         );
@@ -133,7 +133,7 @@ export function authRepository(pool) {
              user_id, interests, review_reminders, weekly_summary, interest_onboarding_completed
            )
            VALUES ($1, COALESCE($2::text[], '{}'), COALESCE($3::boolean, true), COALESCE($4::boolean, false), $5)
-           ON CONFLICT (user_id) DO UPDATE 
+           ON CONFLICT (user_id) DO UPDATE
            SET interests = COALESCE($2::text[], user_preferences.interests),
                review_reminders = COALESCE($3::boolean, user_preferences.review_reminders),
                weekly_summary = COALESCE($4::boolean, user_preferences.weekly_summary),

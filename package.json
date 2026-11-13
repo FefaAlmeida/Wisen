@@ -31,7 +31,10 @@
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
-    "check": "npm run lint && npm run build"
+    "check": "npm run lint && npm run build",
+    "test:load": "node test/scripts/load-mvp.js",
+    "backup": "bash scripts/backup.sh",
+    "backup:verify": "node scripts/restore-check.js"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.3",

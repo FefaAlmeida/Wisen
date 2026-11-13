@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -18,19 +17,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export default function PainelUsuario({
-  usuario,
-  aberto,
-  aoFechar,
-  aoSalvar,
-}) {
+export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
   const [permissao, setPermissao] = useState("Usuário");
   const [status, setStatus] = useState("Ativo");
 
@@ -145,7 +134,10 @@ export default function PainelUsuario({
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="informacoes" className="space-y-6 bg-white px-5 py-5 sm:px-6 sm:py-5">
+              <TabsContent
+                value="informacoes"
+                className="space-y-6 bg-white px-5 py-5 sm:px-6 sm:py-5"
+              >
                 <section className="space-y-3">
                   <div className="flex items-center gap-2.5">
                     <span className="h-4 w-[3px] rounded-full bg-[#EBDD80]" />
@@ -167,9 +159,7 @@ export default function PainelUsuario({
                         <p className="text-xs font-medium uppercase tracking-[0.05em] text-[#6A7A96]">
                           Data de cadastro
                         </p>
-                        <p className="text-sm font-medium text-[#101A40]">
-                          {usuario.dataCadastro}
-                        </p>
+                        <p className="text-sm font-medium text-[#101A40]">{usuario.dataCadastro}</p>
                       </div>
                     </div>
 

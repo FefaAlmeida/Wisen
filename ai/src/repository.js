@@ -2,7 +2,7 @@ import { transaction, vectorLiteral } from "../../backend/src/database/index.js"
 import { enqueue } from "../../backend/src/queue/index.js";
 import { MODEL_VERSION, QUEUES } from "../../backend/src/shared.js";
 
-export function workerRepository(pool, boss) {
+export function workerRepository(pool, boss, config = { COLLECTION_DAILY_LIMIT: 20 }) {
   return {
     async source(id) {
       return (await pool.query("SELECT * FROM sources WHERE id=$1", [id])).rows[0];
@@ -15,8 +15,39 @@ export function workerRepository(pool, boss) {
     },
     async saveFeed(sourceId, items) {
       return transaction(pool, async (client) => {
+        await client.query("SELECT pg_advisory_xact_lock(881342)");
+        const count = Number(
+          (
+            await client.query(
+              "SELECT count(*) FROM articles WHERE created_at >= date_trunc('day',now() AT TIME ZONE 'America/Sao_Paulo') AT TIME ZONE 'America/Sao_Paulo'",
+            )
+          ).rows[0].count,
+        );
+        const sourceCount = Number(
+          (
+            await client.query(
+              "SELECT count(*) FROM articles WHERE source_id=$1 AND created_at>=date_trunc('day',now() AT TIME ZONE 'America/Sao_Paulo') AT TIME ZONE 'America/Sao_Paulo'",
+              [sourceId],
+            )
+          ).rows[0].count,
+        );
+        const enabledCount = Math.max(
+          1,
+          Number((await client.query("SELECT count(*) FROM sources WHERE enabled")).rows[0].count),
+        );
+        let allowance = Math.max(
+          0,
+          Math.min(
+            config.COLLECTION_DAILY_LIMIT - count,
+            Math.ceil(config.COLLECTION_DAILY_LIMIT / enabledCount) - sourceCount,
+          ),
+        );
         let queued = 0;
         for (const item of items) {
+          const exists = (await client.query("SELECT id FROM articles WHERE url=$1", [item.url]))
+            .rowCount;
+          if (!exists && allowance <= 0) continue;
+          if (!exists) allowance--;
           const {
             rows: [article],
           } = await client.query(
@@ -108,10 +139,20 @@ export function workerRepository(pool, boss) {
           SELECT DISTINCT ON (a.id) a.id,a.title,a.url,left(c.content,400) AS excerpt,
             1 - (c.embedding <=> $1::vector) AS score
           FROM article_chunks c JOIN articles a ON a.id=c.article_id
-          WHERE c.model_version=$2 AND a.processing_status='processed'
+          WHERE c.model_version=$2 AND a.processing_status='processed' AND a.visible
           ORDER BY a.id,c.embedding <=> $1::vector,c.position
-        ) SELECT * FROM matches ORDER BY score DESC,id LIMIT $3`,
-        [vectorLiteral(vector), MODEL_VERSION, limit],
+        ), combined AS (
+ SELECT *, 'article'::text kind FROM matches
+ UNION ALL SELECT e.id,e.title,$4||'/paginaEvento?id='||e.id,left(e.summary,400),1-(e.embedding<=>$1::vector),'event' FROM events e WHERE e.embedding IS NOT NULL AND e.embedding_version=$2 AND e.status='processed' AND e.lifecycle_status='active' AND EXISTS(SELECT 1 FROM event_articles ea JOIN articles a ON a.id=ea.article_id AND a.visible WHERE ea.event_id=e.id)
+ UNION ALL SELECT c.id,c.name,$4||'/paginaConceito?id='||c.id,left(c.description,400),1-(c.embedding<=>$1::vector),'concept' FROM concepts c WHERE c.embedding IS NOT NULL AND c.embedding_version=$2
+ UNION ALL SELECT n.id,n.name,$4||'/paginaExplorar?q='||replace(n.name,' ','%20'),left(n.description,400),max(m.score),'entity' FROM entities n JOIN article_entities ae ON ae.entity_id=n.id JOIN matches m ON m.id=ae.article_id GROUP BY n.id
+ ) SELECT * FROM combined ORDER BY score DESC,id LIMIT $3`,
+        [
+          vectorLiteral(vector),
+          MODEL_VERSION,
+          limit,
+          config.FRONTEND_URL ?? "http://localhost:3000",
+        ],
       );
       await pool.query(
         "UPDATE search_requests SET status='completed',results=$2::jsonb,error=NULL,updated_at=now() WHERE id=$1",

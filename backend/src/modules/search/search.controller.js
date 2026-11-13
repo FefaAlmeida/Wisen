@@ -32,6 +32,7 @@ export function searchController(app, service) {
               .array(
                 z.object({
                   id: uuidSchema,
+                  kind: z.enum(["article", "event", "concept", "entity"]).optional(),
                   title: z.string(),
                   url: z.string(),
                   excerpt: z.string(),

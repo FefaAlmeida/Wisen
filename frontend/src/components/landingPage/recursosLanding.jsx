@@ -3,7 +3,6 @@ import {
   BarChart3,
   Bookmark,
   BookOpen,
-  ChevronRight,
   Network,
   ShieldCheck,
   Sparkles,

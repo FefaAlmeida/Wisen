@@ -24,8 +24,8 @@ const navigation = [
     href: "/paginaBiblioteca",
     icon: GraduationCap,
   },
-  { label: "Notícias", href: "/paginaEvento", icon: Newspaper },
-  { label: "Aprendizado", icon: GraduationCap },
+  { label: "Notícias", href: "/paginaExplorar", icon: Newspaper },
+  { label: "Salvos", href: "/paginaGuardados", icon: GraduationCap },
 ];
 
 function WisenBrand({ className = "", large = false }) {
@@ -50,10 +50,7 @@ function WisenBrand({ className = "", large = false }) {
 
 function NavigationItems({ activeItem, mobile = false }) {
   return (
-    <nav
-      aria-label="Navegação principal"
-      className="flex flex-col gap-2.5"
-    >
+    <nav aria-label="Navegação principal" className="flex flex-col gap-2.5">
       {navigation.map(({ label, href, icon: Icon }) => {
         const isActive =
           label === activeItem || (activeItem === "Conceitos" && label === "Meu conhecimento");
@@ -184,7 +181,6 @@ export default function Sidebar({ activeItem }) {
           <div className="mt-2 border-t border-white/10 pt-2">
             <AdminDashboardLink mobile />
           </div>
-
         </SheetContent>
       </Sheet>
 

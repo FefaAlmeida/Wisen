@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Footer } from "@/components/footer";
 import { ApresentacaoLanding } from "@/components/landingPage/apresentacaoLanding";
 import { BannerImpacto } from "@/components/landingPage/bannerImpacto";

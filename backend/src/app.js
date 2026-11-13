@@ -12,6 +12,7 @@ import {
   validatorCompiler,
 } from "fastify-type-provider-zod";
 import { z } from "zod";
+import { accountController, accountService } from "./modules/accounts/accounts.js";
 import { articlesController } from "./modules/articles/articles.controller.js";
 import { articlesRepository } from "./modules/articles/articles.repository.js";
 import { articlesService } from "./modules/articles/articles.service.js";
@@ -21,6 +22,7 @@ import { authService } from "./modules/auth/auth.service.js";
 import { categoriesController } from "./modules/categories/categories.controller.js";
 import { categoriesRepository } from "./modules/categories/categories.repository.js";
 import { categoriesService } from "./modules/categories/categories.service.js";
+import { platformController } from "./modules/platform/controller.js";
 import { searchController } from "./modules/search/search.controller.js";
 import { searchRepository } from "./modules/search/search.repository.js";
 import { searchService } from "./modules/search/search.service.js";
@@ -39,7 +41,7 @@ export async function buildApp({ pool, boss, config, logger = true }) {
   await app.register(cookie);
   await app.register(helmet);
   await app.register(rateLimit, {
-    max: 60,
+    max: 600,
     timeWindow: "1 minute",
     keyGenerator: (request) => request.ip,
   });
@@ -49,7 +51,10 @@ export async function buildApp({ pool, boss, config, logger = true }) {
   });
   if (config.NODE_ENV !== "production") await app.register(swaggerUi, { routePrefix: "/docs" });
   const auth = authService(authRepository(pool));
-  authController(app, auth, config);
+  const accounts = accountService(pool, boss, config);
+  authController(app, auth, config, accounts);
+  accountController(app, pool, accounts);
+  platformController(app, pool, boss, config);
   categoriesController(app, categoriesService(categoriesRepository(pool)));
   app.decorateRequest("isOperations", false);
   app.decorate("authenticateSearch", async (request, reply) => {
@@ -80,7 +85,13 @@ export async function buildApp({ pool, boss, config, logger = true }) {
     if (status === 500) request.log.error({ err: error }, "Falha ao atender requisição");
     reply.code(status).send({
       code:
-        status === 400 ? "VALIDATION_ERROR" : status === 500 ? "INTERNAL_ERROR" : "REQUEST_ERROR",
+        error.code && status !== 500
+          ? error.code
+          : status === 400
+            ? "VALIDATION_ERROR"
+            : status === 500
+              ? "INTERNAL_ERROR"
+              : "REQUEST_ERROR",
       message:
         status === 500
           ? "Erro interno no servidor"

@@ -89,7 +89,7 @@ await withTestDatabase(async (databaseUrl) => {
     backend = launch("backend/src/server.js", [], env);
     frontend = launch(
       nextBin,
-      ["dev", "--webpack", "--hostname", "127.0.0.1", "--port", frontendPort],
+      ["dev", "--turbopack", "--hostname", "127.0.0.1", "--port", frontendPort],
       env,
       resolve(root, "frontend"),
     );

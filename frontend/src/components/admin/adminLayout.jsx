@@ -7,7 +7,7 @@ export function AdminLayout({ activeItem, children }) {
       <AdminSidebar activeItem={activeItem} />
       <div className="min-h-screen sm:ml-[128px] lg:ml-[220px]">
         {children}
-        <Footer />
+        <Footer variant="admin" />
       </div>
     </div>
   );

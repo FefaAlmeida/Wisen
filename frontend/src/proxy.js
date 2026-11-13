@@ -1,20 +1,9 @@
 import { NextResponse } from "next/server";
+import { loginDestination, routeRole } from "./lib/auth";
 
 const apiUrl = process.env.BACKEND_INTERNAL_URL || "http://localhost:8080/api";
-const adminRoutes = [
-  "/paginaInicioAdm",
-  "/paginaCuidadoriaEventosAdm",
-  "/paginaGestaoUsuariosAdm",
-  "/paginaGestaoFonteAdm",
-  "/paginaGestaoCategoriasAdm",
-  "/paginaMonitorIa",
-];
-
 export async function proxy(request) {
-  const isAdminRoute = adminRoutes.some(
-    (route) =>
-      request.nextUrl.pathname === route || request.nextUrl.pathname.startsWith(`${route}/`),
-  );
+  const requiredRole = routeRole(request.nextUrl.pathname);
   let response;
   try {
     const forwardedIp = request.headers.get("x-forwarded-for");
@@ -34,20 +23,21 @@ export async function proxy(request) {
   }
 
   if (response.ok) {
-    if (isAdminRoute) {
-      let session;
-      try {
-        session = await response.json();
-      } catch {
-        return NextResponse.json(
-          { message: "Não foi possível verificar as permissões da conta." },
-          { status: 503 },
-        );
-      }
+    let session;
+    try {
+      session = await response.json();
+      if (!["user", "admin"].includes(session?.user?.role)) throw new Error("Invalid role");
+    } catch {
+      return NextResponse.json(
+        { message: "Não foi possível verificar as permissões da conta." },
+        { status: 503 },
+      );
+    }
 
-      if (session?.user?.role !== "admin") {
-        return NextResponse.redirect(new URL("/paginaInicialCliente", request.url));
-      }
+    if (requiredRole && session.user.role !== requiredRole) {
+      return NextResponse.redirect(
+        new URL(loginDestination(null, request.nextUrl.origin, session.user.role), request.url),
+      );
     }
 
     return NextResponse.next();
@@ -74,6 +64,7 @@ export const config = {
     "/paginaEvento/:path*",
     "/paginaGuardados/:path*",
     "/paginaRevisoes/:path*",
+    "/paginaSessaoRevisao/:path*",
     "/paginaPerfil/:path*",
     "/artigo/:path*",
     "/paginaInicioAdm/:path*",

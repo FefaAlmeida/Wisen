@@ -54,12 +54,14 @@ export function Frame({
         <div className="relative z-10 mx-auto max-w-6xl">
           <header className="mb-8 flex items-center justify-between gap-4">
             <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
-            <div className="flex shrink-0 items-center gap-3">
-              <div className="hidden w-56 xl:block">
-                <BarraBusca value={pageSearch} onQueryChange={onPageSearchChange} />
+            {!admin && (
+              <div className="flex shrink-0 items-center gap-3">
+                <div className="hidden w-56 xl:block">
+                  <BarraBusca value={pageSearch} onQueryChange={onPageSearchChange} />
+                </div>
+                <MenuPerfil />
               </div>
-              <MenuPerfil />
-            </div>
+            )}
           </header>
           {children}
         </div>

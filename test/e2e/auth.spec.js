@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { createPool } from "../../backend/src/database/index.js";
 
 let clientNumber = 1;
 test.beforeEach(async ({ page }) => {
@@ -157,4 +158,41 @@ test("perfil salva cartões independentemente, mantém alterações e encerra se
   await expect(page).toHaveURL(/\/paginaLogin$/);
   await page.goto("/paginaPerfil");
   await expect(page).toHaveURL(/\/paginaLogin\?next=/);
+});
+
+test("admin fica na administração e pode sair em desktop e celular", async ({ page }) => {
+  const email = `admin-isolation-${Date.now()}@example.test`;
+  const password = "senha-admin-isolado-123";
+  const registered = await page.request.post("/api/auth/register", {
+    data: { name: "Administrador", email, password },
+  });
+  expect(registered.status()).toBe(201);
+  const { user } = await registered.json();
+  const pool = createPool(process.env.DATABASE_URL);
+  try {
+    await pool.query("UPDATE users SET role='admin' WHERE id=$1", [user.id]);
+    for (const width of [1280, 390]) {
+      await page.setViewportSize({ width, height: 844 });
+      await page.goto("/paginaLogin?next=%2FpaginaInicialCliente");
+      await page.getByLabel("E-mail").fill(email);
+      await page.getByLabel("Senha", { exact: true }).fill(password);
+      await page.getByRole("button", { name: /^entrar/i }).click();
+      await expect(page).toHaveURL(/\/paginaInicioAdm$/);
+      await expect(page.getByRole("button", { name: "Abrir menu do perfil" })).toHaveCount(0);
+      for (const path of ["/paginaInicialCliente", "/paginaPerfil", "/paginaSessaoRevisao"]) {
+        await page.goto(path);
+        await expect(page).toHaveURL(/\/paginaInicioAdm$/);
+      }
+      expect((await page.request.get("/api/feed")).status()).toBe(403);
+      expect((await page.request.get("/api/admin/overview")).status()).toBe(200);
+      if (width === 390) {
+        await page.getByRole("button", { name: "Abrir menu administrativo" }).click();
+      }
+      await page.getByRole("button", { name: "Sair da conta", exact: true }).click();
+      await expect(page).toHaveURL(/\/paginaLogin$/);
+      expect((await page.request.get("/api/auth/session")).status()).toBe(401);
+    }
+  } finally {
+    await pool.end();
+  }
 });

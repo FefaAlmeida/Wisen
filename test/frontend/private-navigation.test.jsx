@@ -31,7 +31,7 @@ describe("navegação privada", () => {
       "href",
       "/paginaRevisoes",
     );
-    await vi.waitFor(() => expect(fetch).toHaveBeenCalled());
+    expect(fetch).not.toHaveBeenCalled();
     expect(screen.queryByRole("link", { name: "Painel administrativo" })).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Configurações" })).not.toBeInTheDocument();
   });
@@ -51,12 +51,23 @@ describe("navegação privada", () => {
     expect(logo.parentElement).toHaveTextContent("Wisen");
   });
 
-  it("oferece acesso ao painel para administrador", async () => {
-    fetch.mockResolvedValue({ ok: true, json: async () => ({ user: { role: "admin" } }) });
+  it("mantém a navegação do cliente sem acesso administrativo", () => {
     render(<Sidebar activeItem="Início" />);
-    expect(await screen.findByRole("link", { name: "Painel administrativo" })).toHaveAttribute(
-      "href",
-      "/paginaInicioAdm",
+    expect(screen.queryByRole("link", { name: "Painel administrativo" })).not.toBeInTheDocument();
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
+  it("permite tentar novamente quando a saída do administrador falha", async () => {
+    const userEvent = (await import("@testing-library/user-event")).default;
+    fetch.mockRejectedValue(new Error("offline"));
+    render(<AdminSidebar activeItem="Visão geral" />);
+    const button = screen.getByRole("button", { name: "Sair da conta" });
+    await userEvent.click(button);
+    expect(await screen.findByRole("alert")).toHaveTextContent("Não foi possível sair da conta");
+    expect(button).toBeEnabled();
+    expect(fetch).toHaveBeenCalledWith(
+      "/api/auth/logout",
+      expect.objectContaining({ method: "POST" }),
     );
   });
 

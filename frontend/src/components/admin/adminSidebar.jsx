@@ -1,9 +1,21 @@
 "use client";
 
-import { Activity, LayoutDashboard, Menu, Newspaper, Rss, Tags, Users, X } from "lucide-react";
+import {
+  Activity,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  Newspaper,
+  Rss,
+  Tags,
+  Users,
+  X,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { requisitar } from "@/services/api";
 
 const navigation = [
   { label: "Visão geral", href: "/paginaInicioAdm", icon: LayoutDashboard },
@@ -71,6 +83,43 @@ function NavigationLinks({ activeItem, mobile = false }) {
   );
 }
 
+function AdminLogout() {
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState("");
+
+  async function logout() {
+    if (pending) return;
+    setPending(true);
+    setError("");
+    try {
+      await requisitar("/auth/logout", { method: "POST" });
+      window.location.assign("/paginaLogin");
+    } catch {
+      setError("Não foi possível sair da conta. Tente novamente.");
+      setPending(false);
+    }
+  }
+
+  return (
+    <div className="mt-auto border-t border-white/15 pt-4">
+      <button
+        type="button"
+        onClick={logout}
+        disabled={pending}
+        className="flex min-h-11 w-full items-center gap-2.5 rounded-xl px-2.5 text-left text-xs text-white hover:bg-white/10 disabled:opacity-50"
+      >
+        <LogOut size={17} />
+        {pending ? "Saindo…" : "Sair da conta"}
+      </button>
+      {error && (
+        <p role="alert" className="px-2.5 text-xs text-red-200">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
 export function AdminSidebar({ activeItem }) {
   return (
     <>
@@ -103,6 +152,7 @@ export function AdminSidebar({ activeItem }) {
             <AdminBrand className="px-3" />
           </div>
           <NavigationLinks activeItem={activeItem} mobile />
+          <AdminLogout />
         </SheetContent>
       </Sheet>
 
@@ -114,6 +164,7 @@ export function AdminSidebar({ activeItem }) {
           <AdminBrand className="px-1" large />
         </div>
         <NavigationLinks activeItem={activeItem} />
+        <AdminLogout />
       </aside>
     </>
   );

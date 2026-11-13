@@ -21,7 +21,7 @@ export function platformController(app, pool, boss, config) {
     learning = learningService(pool),
     tasks = taskService(pool, boss, config),
     budget = budgetService(pool, config);
-  const secured = { preHandler: app.authenticate };
+  const secured = { preHandler: app.authenticateClient };
   app.get("/api/feed", { ...secured, schema: { querystring: page } }, async (req) => ({
     items: await read.feed(req.user.id, req.query),
   }));

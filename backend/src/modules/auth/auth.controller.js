@@ -94,6 +94,14 @@ export function authController(app, service, config, accounts) {
     request.user = user;
   });
 
+  app.decorate("authenticateClient", async (request, reply) => {
+    await app.authenticate(request, reply);
+    if (reply.sent) return;
+    if (request.user.role !== "user") {
+      return reply.code(403).send({ message: "Acesso exclusivo de clientes" });
+    }
+  });
+
   app.post(
     "/api/auth/register",
     {

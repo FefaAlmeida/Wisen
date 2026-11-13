@@ -106,7 +106,7 @@ export function Footer({ variant = "plataforma" }) {
               </li>
               <li>
                 <Link
-                  href="/paginaInicialCliente"
+                  href={variant === "admin" ? "/paginaInicioAdm" : "/paginaInicialCliente"}
                   className="hover:text-[#E8E191] transition-colors"
                 >
                   Acessar plataforma

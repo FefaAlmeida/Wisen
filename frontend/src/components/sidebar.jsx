@@ -1,18 +1,8 @@
 "use client";
 
-import {
-  Clock3,
-  Compass,
-  GraduationCap,
-  Home,
-  LayoutDashboard,
-  Menu,
-  Newspaper,
-  X,
-} from "lucide-react";
+import { Clock3, Compass, GraduationCap, Home, Menu, Newspaper, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 const navigation = [
@@ -102,48 +92,6 @@ function NavigationItems({ activeItem, mobile = false }) {
   );
 }
 
-function AdminDashboardLink({ mobile = false }) {
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    let active = true;
-
-    async function checkAdminRole() {
-      try {
-        const response = await fetch("/api/auth/session", { cache: "no-store" });
-        if (!response.ok) {
-          throw new Error(`Não foi possível verificar a sessão (HTTP ${response.status}).`);
-        }
-        const { user } = await response.json();
-        if (active) setIsAdmin(user?.role === "admin");
-      } catch (error) {
-        console.error("Não foi possível verificar o acesso administrativo.", error);
-      }
-    }
-
-    checkAdminRole();
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  if (!isAdmin) return null;
-
-  const link = (
-    <Link
-      href="/paginaInicioAdm"
-      className={`flex h-11 items-center gap-2.5 rounded-xl px-2.5 text-[10px] text-white transition-colors duration-150 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EBDD80] ${
-        mobile ? "h-11 gap-3 px-3 text-sm" : "lg:gap-3 lg:px-2.5 lg:text-[12px]"
-      }`}
-    >
-      <LayoutDashboard size={mobile ? 19 : 17} strokeWidth={2.2} />
-      <span>Painel administrativo</span>
-    </Link>
-  );
-
-  return mobile ? <SheetClose nativeButton={false} render={link} /> : link;
-}
-
 export default function Sidebar({ activeItem }) {
   return (
     <>
@@ -178,9 +126,6 @@ export default function Sidebar({ activeItem }) {
           </div>
 
           <NavigationItems activeItem={activeItem} mobile />
-          <div className="mt-2 border-t border-white/10 pt-2">
-            <AdminDashboardLink mobile />
-          </div>
         </SheetContent>
       </Sheet>
 
@@ -193,9 +138,6 @@ export default function Sidebar({ activeItem }) {
         </div>
 
         <NavigationItems activeItem={activeItem} />
-        <div className="mt-2 border-t border-white/10 pt-2">
-          <AdminDashboardLink />
-        </div>
       </aside>
     </>
   );

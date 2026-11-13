@@ -6,6 +6,7 @@ const adminRoutes = [
   "/paginaCuidadoriaEventosAdm",
   "/paginaGestaoUsuariosAdm",
   "/paginaGestaoFonteAdm",
+  "/paginaGestaoCategoriasAdm",
   "/paginaMonitorIa",
 ];
 
@@ -49,10 +50,34 @@ describe("proteção das rotas após integração", () => {
     expect((await proxy(request(adminRoutes[0]))).status).toBe(503);
   });
 
-  it("não concede acesso administrativo com sessão nula", async () => {
-    fetch.mockResolvedValue({ ok: true, json: async () => null });
-    expect((await proxy(request(adminRoutes[0]))).headers.get("location")).toBe(
-      "http://localhost/paginaInicialCliente",
-    );
+  it.each([null, {}, { user: { role: "unknown" } }])(
+    "rejeita sessão inválida: %j",
+    async (session) => {
+      fetch.mockResolvedValue({ ok: true, json: async () => session });
+      for (const path of [adminRoutes[0], "/paginaInicialCliente"]) {
+        expect((await proxy(request(path))).status).toBe(503);
+      }
+    },
+  );
+
+  it.each(
+    config.matcher.filter((path) => !adminRoutes.some((route) => path === `${route}/:path*`)),
+  )("restringe %s e subrotas a clientes", async (matcher) => {
+    const path = matcher.replace("/:path*", "");
+    fetch.mockResolvedValue({ ok: true, json: async () => ({ user: { role: "admin" } }) });
+    for (const route of [path, `${path}/detalhes?aba=1`]) {
+      expect((await proxy(request(route))).headers.get("location")).toBe(
+        "http://localhost/paginaInicioAdm",
+      );
+    }
+    fetch.mockResolvedValue({ ok: true, json: async () => ({ user: { role: "user" } }) });
+    expect((await proxy(request(path))).headers.get("x-middleware-next")).toBe("1");
+  });
+
+  it("protege a sessão de revisão para visitantes", async () => {
+    expect(config.matcher).toContain("/paginaSessaoRevisao/:path*");
+    fetch.mockResolvedValue({ ok: false, status: 401 });
+    const response = await proxy(request("/paginaSessaoRevisao"));
+    expect(new URL(response.headers.get("location")).pathname).toBe("/paginaLogin");
   });
 });

@@ -19,6 +19,8 @@ npm run dev
 
 `dev` constrói a imagem de desenvolvimento, para os apps deste projeto, sincroniza dependências quando o lockfile muda, verifica o modelo, sobe o PostgreSQL, aplica migrations, executa o seed do administrador e inicia frontend, API e worker. Aguarda os healthchecks e retorna ao terminal. Mudanças de código são recarregadas automaticamente.
 
+O frontend usa Next.js 16.4.6 com Turbopack no desenvolvimento, mantendo a atualização automática. Os endereços `localhost` e `127.0.0.1` estão permitidos para a conexão de desenvolvimento.
+
 O seed de desenvolvimento cria o administrador com e-mail `wisenadmin@gmail.com` e senha inicial `AdminWisen@123`. Entre pela tela de login comum para acessar o painel administrativo. O seed pode rodar várias vezes: mantém uma única conta e preserva sua senha, preferências e estado de ativação. Se esse e-mail já existir, a conta recebe o perfil `admin` e mantém a senha existente. O seed não faz parte da inicialização de produção e recusa execução com `NODE_ENV=production`.
 
 | Serviço          | Endereço padrão                  |

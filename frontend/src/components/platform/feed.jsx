@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import HeroHome from "@/components/homeCliente/heroHome";
 import { InitialInterestDialog } from "@/components/homeCliente/initialInterestDialog";
 import SemanticResults from "./semantic";
-import { AccountNotice, EventList, Familiarity, Frame, Panel, State, useResource } from "./shared";
+import { AccountNotice, EventList, Frame, Panel, State, useResource } from "./shared";
 export default function Feed({ explore = false }) {
   const initialQuery = (useSearchParams()?.get("q") ?? "").slice(0, 200);
   const [topic, setTopic] = useState("");
@@ -51,7 +51,6 @@ export default function Feed({ explore = false }) {
         </div>
       )}
       <AccountNotice />
-      {!explore && <Familiarity />}
       <Panel>
         <form
           onSubmit={(e) => {

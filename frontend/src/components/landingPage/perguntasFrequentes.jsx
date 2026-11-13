@@ -34,7 +34,7 @@ export function PerguntasFrequentes() {
   };
 
   return (
-    <section id="faq" className="relative w-screen -mx-[calc(50vw-50%)] -mb-6 mt-0">
+    <section id="faq" className="relative w-screen -mx-[calc(50vw-50%)] mt-0">
       <div className="relative isolate overflow-hidden border-y border-[#293B5C] bg-[#172542] px-6 py-11 text-white shadow-[0_24px_65px_-42px_rgba(16,26,64,0.45)] sm:px-10 md:px-14 md:py-16">
         {/* Iluminação suave */}
         <div className="pointer-events-none absolute -bottom-32 -left-24 z-0 h-80 w-80 rounded-full bg-[#30466E]/30 blur-3xl" />

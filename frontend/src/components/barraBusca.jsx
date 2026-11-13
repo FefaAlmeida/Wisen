@@ -1,255 +1,307 @@
 "use client";
 
-import { ArrowDown, ArrowUp, Search } from "lucide-react";
+import { ArrowUpRight, BookOpen, Search, SearchX, X } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { Input } from "@/components/ui/input";
+import { useDemoMode } from "@/components/demo/mode";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { conceitos } from "@/data/conceitos";
+import { stories } from "@/data/noticiasDemo";
+import { requisitar } from "@/services/api";
+import styles from "./barraBusca.module.css";
 
-const allMatchesName = "wisen-page-search-matches";
-const currentMatchName = "wisen-page-search-current";
+const filters = ["Todos", "Notícias", "Conceitos", "Artigos"];
+const normalize = (text) =>
+  String(text ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("pt-BR");
 
-function getHighlightRegistry() {
-  if (typeof CSS === "undefined" || !CSS.highlights || typeof Highlight === "undefined") {
-    return null;
-  }
-  return CSS.highlights;
+function contentItems(data) {
+  return [
+    ...(data.events ?? data.items ?? []).map((item) => ({
+      ...item,
+      type: "Notícias",
+      href: `/paginaEvento?id=${encodeURIComponent(item.id)}`,
+    })),
+    ...(data.concepts ?? []).map((item) => ({
+      ...item,
+      title: item.name,
+      summary: item.description,
+      type: "Conceitos",
+      href: `/paginaConceito?id=${encodeURIComponent(item.id)}`,
+    })),
+    ...(data.articles ?? []).map((item) => ({
+      ...item,
+      type: "Artigos",
+      href: `/artigo?id=${encodeURIComponent(item.id)}`,
+    })),
+  ];
 }
 
-function clearHighlights(root) {
-  const registry = getHighlightRegistry();
-  registry?.delete(allMatchesName);
-  registry?.delete(currentMatchName);
-
-  for (const element of root.querySelectorAll(
-    "[data-wisen-page-search-match], [data-wisen-page-search-current]",
-  )) {
-    element.removeAttribute("data-wisen-page-search-match");
-    element.removeAttribute("data-wisen-page-search-current");
-  }
-}
-
-function normalizeWithOffsets(value) {
-  let normalized = "";
-  const starts = [];
-  const ends = [];
-  let offset = 0;
-
-  for (const character of value) {
-    const start = offset;
-    offset += character.length;
-    const folded = character
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLocaleLowerCase("pt-BR");
-
-    for (const normalizedCharacter of folded) {
-      normalized += normalizedCharacter;
-      starts.push(start);
-      ends.push(offset);
-    }
-  }
-
-  return { normalized, starts, ends };
-}
-
-function findMatches(root, query) {
-  const needle = normalizeWithOffsets(query).normalized;
-  if (!needle) return [];
-
-  const matches = [];
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
-    acceptNode(node) {
-      const parent = node.parentElement;
-      if (!parent || !node.nodeValue?.trim()) return NodeFilter.FILTER_REJECT;
-      if (
-        parent.closest(
-          "form, button, input, textarea, select, option, script, style, svg, [hidden], [aria-hidden='true'], [data-page-search-exclude]",
-        )
-      ) {
-        return NodeFilter.FILTER_REJECT;
-      }
-      return NodeFilter.FILTER_ACCEPT;
-    },
-  });
-
-  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
-    const text = node.nodeValue ?? "";
-    const { normalized, starts, ends } = normalizeWithOffsets(text);
-    let searchFrom = 0;
-
-    while (searchFrom < normalized.length) {
-      const matchStart = normalized.indexOf(needle, searchFrom);
-      if (matchStart === -1) break;
-
-      const range = document.createRange();
-      range.setStart(node, starts[matchStart]);
-      range.setEnd(node, ends[matchStart + needle.length - 1]);
-      matches.push({
-        range,
-        element:
-          node.parentElement.closest("p, li, h1, h2, h3, h4, a, blockquote") ?? node.parentElement,
-      });
-      searchFrom = matchStart + needle.length;
-    }
-  }
-
-  return matches;
-}
-
-function applyHighlights(matches, currentIndex) {
-  const registry = getHighlightRegistry();
-  if (registry) {
-    registry.set(allMatchesName, new Highlight(...matches.map(({ range }) => range)));
-    registry.set(currentMatchName, new Highlight(matches[currentIndex].range));
-    return;
-  }
-
-  for (const { element } of matches) {
-    element.setAttribute("data-wisen-page-search-match", "");
-    element.removeAttribute("data-wisen-page-search-current");
-  }
-  matches[currentIndex].element.setAttribute("data-wisen-page-search-current", "");
-}
+const demoItems = [
+  ...stories.map((item) => ({ ...item, type: "Notícias", href: "/paginaEvento" })),
+  ...conceitos.map((item) => ({
+    id: item.titulo,
+    title: item.titulo,
+    summary: item.descricao,
+    category: item.categoria,
+    type: "Conceitos",
+    href: "/paginaConceito",
+  })),
+];
 
 export function BarraBusca({ onQueryChange, value }) {
+  const demo = useDemoMode();
+  const [open, setOpen] = useState(false);
   const [internalQuery, setInternalQuery] = useState("");
   const query = value ?? internalQuery;
-  const [matches, setMatches] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [message, setMessage] = useState("");
-  const matchesRef = useRef([]);
-
-  useEffect(() => () => clearHighlights(document), []);
+  const [filter, setFilter] = useState("Todos");
+  const [resource, setResource] = useState({ items: [], loading: false, error: "" });
+  const [retry, setRetry] = useState(0);
+  const inputRef = useRef(null);
+  const resultsRef = useRef(null);
+  const triggerRef = useRef(null);
+  const term = query.trim();
 
   useEffect(() => {
-    if (value === undefined) return;
+    function shortcut(event) {
+      const editable =
+        event.target instanceof Element &&
+        event.target.closest("input, textarea, select, [contenteditable='true']");
+      if (event.defaultPrevented || document.querySelector('[role="dialog"]')) return;
+      if (
+        (event.key === "/" && !editable) ||
+        ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k")
+      ) {
+        event.preventDefault();
+        setOpen(true);
+      }
+    }
+    document.addEventListener("keydown", shortcut);
+    return () => document.removeEventListener("keydown", shortcut);
+  }, []);
 
-    clearHighlights(document);
-    matchesRef.current = [];
-    setMatches([]);
-    setCurrentIndex(0);
-    setMessage("");
-  }, [value]);
-
-  function handleChange(event) {
-    const nextValue = event.target.value;
-    clearHighlights(document);
-    matchesRef.current = [];
-    if (value === undefined) setInternalQuery(nextValue);
-    setMatches([]);
-    setCurrentIndex(0);
-    setMessage("");
-    onQueryChange?.(nextValue);
-  }
-
-  function focusMatch(index) {
-    const nextIndex = (index + matchesRef.current.length) % matchesRef.current.length;
-    applyHighlights(matchesRef.current, nextIndex);
-    matchesRef.current[nextIndex].element.scrollIntoView?.({
-      behavior: "smooth",
-      block: "center",
-    });
-    setCurrentIndex(nextIndex);
-  }
-
-  function handleSubmit(event) {
-    event.preventDefault();
-    clearHighlights(document);
-
-    const normalizedQuery = query.trim();
-    if (!normalizedQuery) {
-      matchesRef.current = [];
-      setMatches([]);
-      setCurrentIndex(0);
-      setMessage("Digite um termo para localizar nesta página.");
+  // biome-ignore lint/correctness/useExhaustiveDependencies: retry explicitly reloads failed requests.
+  useEffect(() => {
+    if (!open || demo) return;
+    if (term.length === 1) {
+      setResource({ items: [], loading: false, error: "" });
       return;
     }
+    const controller = new AbortController();
+    setResource({ items: [], loading: true, error: "" });
+    const timer = setTimeout(
+      async () => {
+        try {
+          const data = await requisitar(
+            term ? `/discover?q=${encodeURIComponent(term)}` : "/feed?order=recent&page=1",
+            { signal: controller.signal },
+          );
+          if (!controller.signal.aborted)
+            setResource({ items: contentItems(data), loading: false, error: "" });
+        } catch (error) {
+          if (!controller.signal.aborted)
+            setResource({ items: [], loading: false, error: error.message });
+        }
+      },
+      term ? 250 : 0,
+    );
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [open, demo, term, retry]);
 
-    const root = event.currentTarget.closest("main") ?? document.body;
-    const found = findMatches(root, normalizedQuery);
-    matchesRef.current = found;
-    setMatches(found);
-    setCurrentIndex(0);
-    setMessage(found.length ? "" : "Nenhuma ocorrência encontrada nesta página.");
+  function changeQuery(next) {
+    if (value === undefined) setInternalQuery(next);
+    onQueryChange?.(next);
+  }
 
-    if (found.length) focusMatch(0);
+  const items = (demo ? demoItems : resource.items).filter(
+    (item) =>
+      (filter === "Todos" || item.type === filter) &&
+      (!demo ||
+        normalize(
+          `${item.title} ${item.summary} ${item.category} ${(item.concepts ?? []).join(" ")}`,
+        ).includes(normalize(term))),
+  );
+  const visibleItems = term ? items : items.slice(0, 3);
+  const loading = !demo && resource.loading;
+  const error = !demo && resource.error;
+  const needsMore = !demo && term.length === 1;
+
+  function navigateResults(event) {
+    const links = Array.from(resultsRef.current?.querySelectorAll("a") ?? []);
+    if (!links.length) return;
+    const index = links.indexOf(document.activeElement);
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      event.preventDefault();
+      const next =
+        index === -1
+          ? event.key === "ArrowDown"
+            ? 0
+            : links.length - 1
+          : (index + (event.key === "ArrowDown" ? 1 : -1) + links.length) % links.length;
+      links[next].focus();
+    } else if (event.key === "Enter" && event.target === inputRef.current) {
+      event.preventDefault();
+      links[0].click();
+    }
   }
 
   return (
-    <search className="relative w-full">
-      <form onSubmit={handleSubmit}>
-        <style>{`
-        ::highlight(${allMatchesName}) {
-          background-color: #ebdd80;
-          color: #202d3a;
-        }
-        ::highlight(${currentMatchName}) {
-          background-color: #ebdd80;
-          color: #202d3a;
-        }
-        [data-wisen-page-search-match] {
-          background-color: #ebdd80;
-          border-radius: 2px;
-        }
-        [data-wisen-page-search-current] {
-          outline: 2px solid #ebdd80;
-          border-radius: 4px;
-        }
-      `}</style>
-        <Input
-          type="search"
-          value={query}
-          onChange={handleChange}
-          aria-label="Localizar nesta página"
-          aria-describedby={message || matches.length ? "busca-pagina-status" : undefined}
-          placeholder="Localizar nesta página..."
-          className="h-9 rounded-full border-wisen-borda bg-white/90 pl-4 pr-10 text-[11px] shadow-sm placeholder:text-[#8794AA] focus-visible:ring-[#DCE5F2]"
-        />
-        <button
-          type="submit"
-          aria-label="Localizar"
-          title="Localizar nesta página"
-          className="absolute top-1/2 right-1 flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-[#7182A1] transition-colors hover:bg-[#F0F4F9] hover:text-wisen-texto focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#EBDD80]"
-        >
-          <Search aria-hidden="true" size={15} />
-        </button>
-
-        {(message || matches.length > 0) && (
-          <div
-            id="busca-pagina-status"
-            className="absolute top-full z-[60] mt-2 flex w-full items-center justify-between gap-2 rounded-xl border border-wisen-borda bg-white px-3 py-2 shadow-lg"
-          >
-            {message ? (
-              <p role="status" className="text-xs text-[#607092]">
-                {message}
-              </p>
-            ) : (
-              <>
-                <p role="status" aria-live="polite" className="text-xs text-[#607092]">
-                  {currentIndex + 1} de {matches.length} ocorrências
-                </p>
-                <div className="flex items-center gap-1">
-                  <button
-                    type="button"
-                    aria-label="Ocorrência anterior"
-                    onClick={() => focusMatch(currentIndex - 1)}
-                    className="flex size-7 items-center justify-center rounded-full text-[#607092] transition-colors hover:bg-[#F0F4F9]"
-                  >
-                    <ArrowUp aria-hidden="true" size={15} />
-                  </button>
-                  <button
-                    type="button"
-                    aria-label="Próxima ocorrência"
-                    onClick={() => focusMatch(currentIndex + 1)}
-                    className="flex size-7 items-center justify-center rounded-full text-[#607092] transition-colors hover:bg-[#F0F4F9]"
-                  >
-                    <ArrowDown aria-hidden="true" size={15} />
-                  </button>
-                </div>
-              </>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger ref={triggerRef} className={styles.trigger}>
+        <Search size={16} aria-hidden="true" />
+        <span>Buscar no Wisen</span>
+        <kbd>/</kbd>
+      </DialogTrigger>
+      <DialogContent
+        className={styles.dialog}
+        showCloseButton={false}
+        initialFocus={inputRef}
+        finalFocus={triggerRef}
+      >
+        <DialogClose className={styles.close} aria-label="Fechar busca">
+          <X size={19} />
+        </DialogClose>
+        <DialogTitle className={styles.title}>O que você quer entender hoje?</DialogTitle>
+        <search>
+          <div className={styles.field}>
+            <Search size={22} aria-hidden="true" />
+            <input
+              ref={inputRef}
+              type="search"
+              aria-label="Buscar no Wisen"
+              placeholder="Qual notícia ou conceito você está procurando?"
+              value={query}
+              maxLength={200}
+              autoComplete="off"
+              spellCheck={false}
+              onChange={(event) => changeQuery(event.target.value)}
+              onKeyDown={navigateResults}
+            />
+            {query && (
+              <button
+                type="button"
+                aria-label="Limpar busca"
+                onClick={() => {
+                  changeQuery("");
+                  inputRef.current?.focus();
+                }}
+              >
+                <X size={18} />
+              </button>
             )}
           </div>
-        )}
-      </form>
-    </search>
+          <fieldset className={styles.filters} aria-label="Tipos de conteúdo">
+            {filters.map((label) => (
+              <button
+                key={label}
+                type="button"
+                aria-pressed={filter === label}
+                onClick={() => setFilter(label)}
+              >
+                {label}
+              </button>
+            ))}
+          </fieldset>
+          <div className={styles.resultsHeading}>
+            <h3>{term ? "Resultados" : "Conteúdos recentes"}</h3>
+            <span role="status" aria-live="polite">
+              {loading
+                ? "Buscando…"
+                : error
+                  ? "Não foi possível carregar"
+                  : needsMore
+                    ? "Digite pelo menos 2 caracteres"
+                    : term
+                      ? `${items.length} ${items.length === 1 ? "resultado encontrado" : "resultados encontrados"}`
+                      : ""}
+            </span>
+          </div>
+          <div
+            ref={resultsRef}
+            className={term ? styles.results : styles.suggestions}
+            aria-busy={loading}
+          >
+            {!loading &&
+              !error &&
+              !needsMore &&
+              visibleItems.map((item) => (
+                <Link
+                  key={`${item.type}-${item.id}`}
+                  href={item.href}
+                  className={styles.result}
+                  onKeyDown={navigateResults}
+                  onClick={() => setOpen(false)}
+                >
+                  {item.image ? (
+                    <Image
+                      src={item.image}
+                      alt=""
+                      width={540}
+                      height={240}
+                      className={styles.photo}
+                    />
+                  ) : (
+                    <div className={styles.paper}>
+                      <BookOpen size={28} aria-hidden="true" />
+                      <span>{item.summary || item.title}</span>
+                    </div>
+                  )}
+                  <div className={styles.copy}>
+                    <div className={styles.meta}>
+                      <span>
+                        {item.type === "Notícias"
+                          ? "Notícia"
+                          : item.type === "Conceitos"
+                            ? "Conceito"
+                            : "Artigo"}
+                      </span>
+                      <span>
+                        {item.category ||
+                          (item.updated_at
+                            ? new Date(item.updated_at).toLocaleDateString("pt-BR")
+                            : "Wisen")}
+                      </span>
+                    </div>
+                    <h4>{item.title}</h4>
+                    {term && item.summary && <p>{item.summary}</p>}
+                  </div>
+                  <ArrowUpRight size={18} className={styles.arrow} aria-hidden="true" />
+                </Link>
+              ))}
+          </div>
+          {!loading && (error || (!visibleItems.length && !needsMore)) && (
+            <div className={styles.empty}>
+              <SearchX size={28} aria-hidden="true" />
+              <h3>{error ? "Não foi possível buscar agora." : "Nenhum conteúdo encontrado."}</h3>
+              <p>{error || "Tente outra palavra ou escolha um tipo diferente."}</p>
+              <button
+                type="button"
+                onClick={() => {
+                  if (error) setRetry((count) => count + 1);
+                  else {
+                    changeQuery("");
+                    setFilter("Todos");
+                  }
+                }}
+              >
+                {error ? "Tentar novamente" : "Limpar busca e filtros"}
+              </button>
+            </div>
+          )}
+        </search>
+      </DialogContent>
+    </Dialog>
   );
 }

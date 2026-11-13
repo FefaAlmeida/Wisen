@@ -31,8 +31,8 @@ export function categoriesRepository(pool) {
         const { rows } = await client.query(
           `SELECT ${categoryColumns} FROM categories ORDER BY name`,
         );
-        if (rows.filter((category) => category.available).length < 2) {
-          throw Object.assign(new Error("Mantenha pelo menos duas categorias disponíveis."), {
+        if (rows.filter((category) => category.available).length < 3) {
+          throw Object.assign(new Error("Mantenha pelo menos três categorias disponíveis."), {
             statusCode: 400,
           });
         }

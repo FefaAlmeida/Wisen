@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 
 const acoes = [
@@ -16,6 +19,7 @@ const acoes = [
 ];
 
 export default function AcoesConceito() {
+  const [marked, setMarked] = useState(false);
   return (
     <Card className="h-full gap-0 rounded-xl border-0 bg-white p-0 shadow-none">
       <CardContent className="p-5">
@@ -34,9 +38,16 @@ export default function AcoesConceito() {
 
         <div className="grid gap-2 sm:grid-cols-2">
           {acoes.map((acao) => (
-            <div
+            <button
+              type="button"
+              onClick={() =>
+                acao.destaque
+                  ? window.location.assign("/paginaSessaoRevisao")
+                  : setMarked((value) => !value)
+              }
+              aria-pressed={!acao.destaque ? marked : undefined}
               key={acao.titulo}
-              className={`flex min-h-[170px] flex-col rounded-xl border p-4 ${
+              className={`flex min-h-[170px] flex-col text-left cursor-pointer rounded-xl border p-4 ${
                 acao.destaque ? "border-[#F5E5A0] bg-[#FFFAE6]" : "border-[#E1E8F2] bg-white"
               }`}
             >
@@ -49,14 +60,16 @@ export default function AcoesConceito() {
               </span>
 
               <div className="flex items-center justify-between gap-2">
-                <h3 className="text-[17px] font-semibold text-wisen-titulo">{acao.titulo}</h3>
+                <h3 className="text-[17px] font-semibold text-wisen-titulo">
+                  {!acao.destaque && marked ? "Lacuna registrada" : acao.titulo}
+                </h3>
                 <span aria-hidden="true" className="text-xl text-wisen-titulo">
                   →
                 </span>
               </div>
 
               <p className="mt-1 text-[13px] leading-5 text-wisen-texto-suave">{acao.descricao}</p>
-            </div>
+            </button>
           ))}
         </div>
       </CardContent>

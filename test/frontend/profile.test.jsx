@@ -18,7 +18,7 @@ const profile = {
   preferences: { interests: [], notifications: { reviewReminders: true, weeklySummary: false } },
 };
 const availableCategories = {
-  categories: [{ name: "Tecnologia" }, { name: "Saúde" }],
+  categories: [{ name: "Tecnologia" }, { name: "Saúde" }, { name: "Economia" }],
 };
 beforeEach(() => {
   mocks.requisitar.mockReset();
@@ -37,11 +37,13 @@ it("salva cada cartão sem enviar ou substituir rascunhos dos outros", async () 
   fireEvent.change(screen.getByLabelText("Nome"), { target: { value: "Nome pendente" } });
   await user.click(screen.getByRole("button", { name: "Tecnologia" }));
   await user.click(screen.getByRole("button", { name: "Saúde" }));
+  expect(screen.getByRole("button", { name: "Salvar interesses" })).toBeDisabled();
+  await user.click(screen.getByRole("button", { name: "Economia" }));
   await user.click(screen.getByRole("button", { name: "Salvar interesses" }));
   await screen.findByText("Assuntos de interesse salvos.");
   expect(mocks.requisitar).toHaveBeenLastCalledWith("/auth/profile", {
     method: "PUT",
-    body: { interests: ["Tecnologia", "Saúde"] },
+    body: { interests: ["Tecnologia", "Saúde", "Economia"] },
   });
   expect(screen.getByLabelText("Nome")).toHaveValue("Nome pendente");
   await user.click(screen.getByRole("switch", { name: "Resumo semanal" }));

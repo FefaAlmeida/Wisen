@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 
@@ -39,7 +40,9 @@ export default function CardConceitoMarcado({ conceito }) {
       </div>
 
       <div className="min-w-0 flex-1">
-        <h3 className="text-[13px] font-semibold text-wisen-titulo">{conceito.titulo}</h3>
+        <h3 className="text-[13px] font-semibold text-wisen-titulo">
+          <Link href="/paginaConceito">{conceito.titulo}</Link>
+        </h3>
         <p className="mt-1 line-clamp-2 text-[11px] leading-4 text-[#8A99B3]">
           {conceito.descricao}
         </p>

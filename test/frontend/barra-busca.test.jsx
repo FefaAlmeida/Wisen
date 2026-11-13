@@ -1,52 +1,76 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { BarraBusca } from "../../frontend/src/components/barraBusca.jsx";
+import { DemoContext } from "../../frontend/src/components/demo/mode.jsx";
 
-describe("localizar nesta página", () => {
-  it("destaca texto sem diferenciar acentos e navega entre ocorrências", () => {
-    const onQueryChange = vi.fn();
+afterEach(() => vi.unstubAllGlobals());
+
+describe("busca em modal", () => {
+  it("abre com foco, filtra demonstrações sem acentos e restaura o foco ao fechar", async () => {
+    const user = userEvent.setup();
     render(
-      <main>
-        <BarraBusca onQueryChange={onQueryChange} />
-        <article>
-          <h1>Inflação e economia</h1>
-          <p>A inflação afeta o custo de vida.</p>
-        </article>
-      </main>,
+      <DemoContext value={true}>
+        <BarraBusca />
+      </DemoContext>,
     );
-
-    const input = screen.getByRole("searchbox", { name: "Localizar nesta página" });
-    fireEvent.change(input, { target: { value: "inflacao" } });
-    expect(onQueryChange).toHaveBeenCalledWith("inflacao");
-    fireEvent.click(screen.getByRole("button", { name: "Localizar" }));
-
-    expect(screen.getByRole("status")).toHaveTextContent("1 de 2 ocorrências");
-    expect(screen.getByRole("heading", { name: "Inflação e economia" })).toHaveAttribute(
-      "data-wisen-page-search-current",
-      "",
-    );
-
-    fireEvent.click(screen.getByRole("button", { name: "Próxima ocorrência" }));
-    expect(screen.getByRole("status")).toHaveTextContent("2 de 2 ocorrências");
-    expect(screen.getByText("A inflação afeta o custo de vida.")).toHaveAttribute(
-      "data-wisen-page-search-current",
-      "",
-    );
+    const trigger = screen.getByRole("button", { name: /Buscar no Wisen/ });
+    await user.click(trigger);
+    const dialog = screen.getByRole("dialog");
+    const input = within(dialog).getByRole("searchbox");
+    await waitFor(() => expect(input).toHaveFocus());
+    expect(within(dialog).getAllByRole("link")).toHaveLength(3);
+    await user.type(input, "inflacao");
+    await user.click(within(dialog).getByRole("button", { name: "Conceitos", exact: true }));
+    expect(within(dialog).getByRole("link", { name: /Inflação/ })).toBeVisible();
+    expect(within(dialog).queryByRole("link", { name: /Copom/ })).not.toBeInTheDocument();
+    await user.keyboard("{Escape}");
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    expect(trigger).toHaveFocus();
   });
 
-  it("informa quando o termo não aparece na página", () => {
+  it("abre por atalho, mostra estado vazio e navega pelos resultados com as setas", async () => {
+    const user = userEvent.setup();
     render(
-      <main>
+      <DemoContext value={true}>
         <BarraBusca />
-        <p>Conteúdo disponível nesta página.</p>
-      </main>,
+      </DemoContext>,
     );
+    await user.keyboard("/");
+    const input = await screen.findByRole("searchbox");
+    await user.type(input, "inexistente");
+    expect(screen.getByText("Nenhum conteúdo encontrado.")).toBeVisible();
+    await user.click(screen.getByRole("button", { name: "Limpar busca e filtros" }));
+    await user.click(input);
+    await user.keyboard("{ArrowDown}");
+    expect(screen.getAllByRole("link")[0]).toHaveFocus();
+    await user.keyboard("{ArrowDown}");
+    expect(screen.getAllByRole("link")[1]).toHaveFocus();
+  });
 
-    fireEvent.change(screen.getByRole("searchbox"), { target: { value: "inexistente" } });
-    fireEvent.click(screen.getByRole("button", { name: "Localizar" }));
-
-    expect(screen.getByRole("status")).toHaveTextContent(
-      "Nenhuma ocorrência encontrada nesta página.",
+  it("carrega o feed e pesquisa na API com links para os conteúdos", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (url) => ({
+        ok: true,
+        json: async () =>
+          url.includes("/feed")
+            ? { items: [{ id: "1", title: "Notícia recente" }] }
+            : { concepts: [{ id: "2", name: "Inflação", description: "Preços" }] },
+      })),
     );
+    const user = userEvent.setup();
+    render(<BarraBusca />);
+    await user.click(screen.getByRole("button", { name: /Buscar no Wisen/ }));
+    expect(await screen.findByRole("link", { name: /Notícia recente/ })).toHaveAttribute(
+      "href",
+      "/paginaEvento?id=1",
+    );
+    fireEvent.change(screen.getByRole("searchbox"), { target: { value: "inflação" } });
+    expect(await screen.findByRole("link", { name: /Inflação/ })).toHaveAttribute(
+      "href",
+      "/paginaConceito?id=2",
+    );
+    expect(fetch).toHaveBeenLastCalledWith("/api/discover?q=infla%C3%A7%C3%A3o", expect.anything());
   });
 });

@@ -20,8 +20,11 @@ test("cadastro, rota privada, busca, logout e login funcionam no navegador", asy
   await expect(onboarding).toBeVisible();
   await onboarding.getByRole("button", { name: "Economia", exact: true }).click();
   await onboarding.getByRole("button", { name: "Juros", exact: true }).click();
-  await onboarding.getByRole("button", { name: "Salvar interesses", exact: true }).click();
-  await expect(onboarding).not.toBeVisible();
+  await onboarding.getByRole("button", { name: "Tecnologia", exact: true }).click();
+  await onboarding.getByRole("button", { name: "Continuar", exact: true }).click();
+  await page.getByLabel("Entendo o básico").check();
+  await page.getByRole("button", { name: "Concluir", exact: true }).click();
+  await expect(page.getByRole("dialog")).not.toBeVisible();
   await expect(
     page
       .getByRole("navigation", { name: "Navegação principal" })
@@ -139,6 +142,7 @@ test("perfil salva cartões independentemente, mantém alterações e encerra se
   await page.getByLabel("Nome", { exact: true }).fill("Nome ainda não salvo");
   await page.getByRole("button", { name: "Juros", exact: true }).click();
   await page.getByRole("button", { name: "Economia", exact: true }).click();
+  await page.getByRole("button", { name: "Tecnologia", exact: true }).click();
   await page.getByRole("button", { name: "Salvar interesses" }).click();
   await expect(page.getByText("Assuntos de interesse salvos.")).toBeVisible();
   await expect(page.getByLabel("Nome", { exact: true })).toHaveValue("Nome ainda não salvo");
@@ -153,7 +157,11 @@ test("perfil salva cartões independentemente, mantém alterações e encerra se
   await expect(page.getByLabel("Nome", { exact: true })).toHaveValue("Nome ainda não salvo");
   await expect(page.getByRole("switch", { name: "Resumo semanal" })).toBeChecked();
   response = await page.request.get("/api/auth/profile");
-  expect((await response.json()).preferences.interests).toEqual(["Juros", "Economia"]);
+  expect((await response.json()).preferences.interests).toEqual([
+    "Juros",
+    "Economia",
+    "Tecnologia",
+  ]);
   await page.getByRole("button", { name: /Encerrar sessão/ }).click();
   await expect(page).toHaveURL(/\/paginaLogin$/);
   await page.goto("/paginaPerfil");
@@ -195,4 +203,38 @@ test("admin fica na administração e pode sair em desktop e celular", async ({ 
   } finally {
     await pool.end();
   }
+});
+
+test("onboarding no celular exige três interesses e permite pular só a familiaridade", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.request.post("/api/auth/register", {
+    data: {
+      name: "Pessoa Onboarding",
+      email: `skip-${Date.now()}@example.test`,
+      password: "senha-onboarding-123",
+    },
+  });
+  await page.goto("/paginaInicialCliente");
+  await expect(page.getByRole("button", { name: "Pular esta etapa" })).toHaveCount(0);
+  for (const name of ["Economia", "Juros", "Tecnologia"]) {
+    await page.getByRole("dialog").getByRole("button", { name, exact: true }).click();
+  }
+  await page.getByRole("button", { name: "Continuar", exact: true }).click();
+  await expect(page.getByRole("dialog")).toHaveAccessibleName(
+    "Como você se sente ao ler sobre economia?",
+  );
+  await page.getByRole("button", { name: "Pular esta etapa" }).click();
+  await expect(page.getByRole("dialog")).not.toBeVisible();
+  await page.reload();
+  await expect(page.getByRole("heading", { name: "Entenda o que acontece" })).toBeVisible();
+  await expect
+    .poll(
+      async () =>
+        (await (await page.request.get("/api/auth/profile")).json()).preferences
+          .onboardingCompleted,
+    )
+    .toBe(true);
+  await expect(page.getByRole("dialog")).not.toBeVisible();
 });

@@ -74,6 +74,7 @@ await withTestDatabase(async (databaseUrl) => {
   const env = {
     ...process.env,
     NODE_ENV: "test",
+    AI_PROVIDER: "openai",
     DATABASE_URL: databaseUrl,
     PORT: backendPort,
     FRONTEND_URL: baseUrl,

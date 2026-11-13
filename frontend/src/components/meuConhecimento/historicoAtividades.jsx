@@ -1,113 +1,147 @@
+"use client";
+
 import { BookOpen, CheckCircle2, FileText, HelpCircle } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
+import { useState } from "react";
+import styles from "./conhecimento.module.css";
+import { SeletorSegmentado } from "./seletorSegmentado";
+
+const activities = [
+  {
+    id: 1,
+    type: "Leu uma notícia",
+    detail: "Copom mantém taxa Selic em 10,50% ao ano",
+    category: "Economia",
+    time: "há 2 horas",
+    icon: FileText,
+    color: "#41667F",
+    bg: "#EDF3F7",
+    filter: "Leituras",
+    href: "/artigo",
+  },
+  {
+    id: 2,
+    type: "Identificou uma lacuna",
+    detail: "Inflação de demanda",
+    category: "Economia",
+    time: "há 5 horas",
+    icon: HelpCircle,
+    color: "#9B5C51",
+    bg: "#FAF0EE",
+    filter: "Conceitos",
+    href: "/paginaConceito",
+  },
+  {
+    id: 3,
+    type: "Concluiu uma revisão",
+    detail: "Política monetária — 8 de 10 acertos",
+    time: "há 1 dia",
+    icon: CheckCircle2,
+    color: "#38765F",
+    bg: "#EEF6F1",
+    filter: "Revisões",
+    href: "/paginaRevisoes",
+  },
+  {
+    id: 4,
+    type: "Explorou um conceito",
+    detail: "Efeito estufa",
+    category: "Meio ambiente",
+    time: "há 1 dia",
+    icon: BookOpen,
+    color: "#7B7136",
+    bg: "#F6F3E5",
+    filter: "Conceitos",
+    href: "/paginaConceito",
+  },
+  {
+    id: 5,
+    type: "Leu uma notícia",
+    detail: "União Europeia aprova novas regras para Inteligência Artificial",
+    category: "Tecnologia",
+    time: "há 2 dias",
+    icon: FileText,
+    color: "#41667F",
+    bg: "#EDF3F7",
+    filter: "Leituras",
+    href: "/artigo",
+  },
+  {
+    id: 6,
+    type: "Concluiu uma revisão",
+    detail: "Acordo de Paris — 6 de 8 acertos",
+    time: "há 3 dias",
+    icon: CheckCircle2,
+    color: "#38765F",
+    bg: "#EEF6F1",
+    filter: "Revisões",
+    href: "/paginaRevisoes",
+  },
+];
 
 export function HistoricoAtividades() {
-  const atividades = [
-    {
-      id: 1,
-      tipo: "Leu uma notícia",
-      detalhe: "Copom mantém taxa Selic em 10,50% ao ano",
-      categoria: "Economia",
-      tempo: "há 2 horas",
-      icone: FileText,
-      corIcone: "bg-blue-50 text-blue-600",
-    },
-    {
-      id: 2,
-      tipo: 'Marcou "Não sei"',
-      detalhe: "Inflação de demanda",
-      categoria: "Economia",
-      tempo: "há 5 horas",
-      icone: HelpCircle,
-      corIcone: "bg-rose-50 text-rose-500",
-    },
-    {
-      id: 3,
-      tipo: "Concluiu uma revisão",
-      detalhe: "Política monetária — 8 de 10 acertos",
-      categoria: "",
-      tempo: "há 1 dia",
-      icone: CheckCircle2,
-      corIcone: "bg-emerald-50 text-emerald-600",
-    },
-    {
-      id: 4,
-      tipo: "Acessou um conceito",
-      detalhe: "Efeito estufa",
-      categoria: "Meio ambiente",
-      tempo: "há 1 dia",
-      icone: BookOpen,
-      corIcone: "bg-[#E8E191]/30 text-[#2B333F]",
-    },
-    {
-      id: 5,
-      tipo: "Leu uma notícia",
-      detalhe: "União Europeia aprova novas regras para Inteligência Artificial",
-      categoria: "Tecnologia",
-      tempo: "há 2 dias",
-      icone: FileText,
-      corIcone: "bg-blue-50 text-blue-600",
-    },
-    {
-      id: 6,
-      tipo: "Concluiu uma revisão",
-      detalhe: "Acordo de Paris — 6 de 8 acertos",
-      categoria: "",
-      tempo: "há 3 dias",
-      icone: CheckCircle2,
-      corIcone: "bg-emerald-50 text-emerald-600",
-    },
-  ];
-
+  const [filter, setFilter] = useState("Todas");
+  const [expanded, setExpanded] = useState(false);
+  const filtered = activities.filter((item) => filter === "Todas" || item.filter === filter);
+  const visible = expanded ? filtered : filtered.slice(0, 4);
   return (
-    <Card className="border border-slate-200/80 shadow-xs bg-white rounded-2xl">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-[#2B333F]" />
-          <CardTitle className="text-base font-bold text-[#2B333F]">
-            Histórico recente de atividades
-          </CardTitle>
+    <section className={`${styles.panel} ${styles.history}`} aria-labelledby="history-title">
+      <div className={styles.panelHeader}>
+        <div>
+          <h2 id="history-title">Seu aprendizado em movimento</h2>
         </div>
-        <button
-          type="button"
-          className="text-xs font-semibold text-slate-500 hover:text-[#2B333F] transition-colors cursor-pointer"
-        >
-          Ver todas
-        </button>
-      </CardHeader>
-
-      <CardContent className="pt-2">
-        <div className="divide-y divide-slate-100">
-          {atividades.map((item) => {
-            const IconeComponente = item.icone;
-            return (
-              <div
-                key={item.id}
-                className="py-3.5 flex items-center justify-between gap-4 first:pt-1 last:pb-1 hover:bg-slate-50/50 -mx-2 px-2 rounded-xl transition-colors"
+      </div>
+      <SeletorSegmentado
+        label="Filtrar atividades"
+        className={styles.activityFilters}
+        options={["Todas", "Leituras", "Revisões", "Conceitos"].map((label) => ({
+          value: label,
+          label,
+        }))}
+        value={filter}
+        onChange={(value) => {
+          setFilter(value);
+          setExpanded(false);
+        }}
+      />
+      <div className={styles.activityList} aria-live="polite">
+        {visible.map((item) => {
+          const Icon = item.icon;
+          return (
+            <Link href={item.href} className={styles.activity} key={item.id}>
+              <span
+                className={styles.activityIcon}
+                style={{ color: item.color, background: item.bg }}
               >
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className={`p-2 rounded-xl shrink-0 ${item.corIcone}`}>
-                    <IconeComponente className="w-4 h-4" />
-                  </div>
-                  <div className="truncate">
-                    <h4 className="text-xs font-semibold text-[#2B333F] truncate">{item.tipo}</h4>
-                    <p className="text-[11px] text-slate-500 truncate mt-0.5">
-                      {item.detalhe}
-                      {item.categoria && (
-                        <span className="text-slate-400"> · {item.categoria}</span>
-                      )}
-                    </p>
-                  </div>
-                </div>
-
-                <span className="text-[11px] text-slate-400 shrink-0 font-medium">
-                  {item.tempo}
-                </span>
+                <Icon size={16} aria-hidden="true" />
+              </span>
+              <div className={styles.activityText}>
+                <strong>{item.type}</strong>
+                <p title={item.detail}>
+                  {item.detail}
+                  {item.category ? ` · ${item.category}` : ""}
+                </p>
               </div>
-            );
-          })}
-        </div>
-      </CardContent>
-    </Card>
+              <span className={styles.activityTime}>{item.time}</span>
+            </Link>
+          );
+        })}
+      </div>
+      <div className={styles.historyFooter}>
+        <span>
+          {visible.length} de {filtered.length} atividades
+        </span>
+        {filtered.length > 4 && (
+          <button
+            type="button"
+            className={styles.textButton}
+            aria-expanded={expanded}
+            onClick={() => setExpanded(!expanded)}
+          >
+            {expanded ? "Mostrar menos" : "Ver todas as atividades"}
+          </button>
+        )}
+      </div>
+    </section>
   );
 }

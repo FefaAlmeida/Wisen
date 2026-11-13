@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 
@@ -31,7 +32,7 @@ export default function CardEventoSalvo({ evento }) {
         </div>
 
         <h3 className="text-[13px] leading-[17px] font-semibold text-wisen-titulo">
-          {evento.titulo}
+          <Link href="/paginaEvento">{evento.titulo}</Link>
         </h3>
 
         <p className="mt-1 line-clamp-2 text-[11px] leading-4 text-[#8392AD]">{evento.descricao}</p>

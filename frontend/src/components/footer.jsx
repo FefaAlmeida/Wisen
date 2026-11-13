@@ -1,72 +1,13 @@
 import { Heart } from "lucide-react";
 import Link from "next/link";
 
-const clienteExploreLinks = [
-  { label: "Início", href: "/paginaInicialCliente" },
-  { label: "Explorar notícias", href: "/paginaExplorar" },
-  { label: "Biblioteca de conceitos", href: "/paginaBiblioteca" },
-  { label: "Guardados", href: "/paginaGuardados" },
-];
-
-const clienteLearningLinks = [
-  { label: "Revisões", href: "/paginaRevisoes" },
-  { label: "Meu conhecimento", href: "/paginaConhecimento" },
-  { label: "Meu perfil", href: "/paginaPerfil" },
-];
-
-export function Footer({ variant = "plataforma" }) {
-  if (variant === "cliente") {
+export function Footer({ variant = "plataforma", background = "bg-[#F0F4F9]" }) {
+  if (variant === "cliente" || variant === "admin") {
     return (
-      <footer className="relative z-10 w-full border-t border-slate-700/50 bg-[#2B333F] text-slate-300">
-        <div className="mx-auto max-w-7xl px-6 py-8 md:px-8">
-          <div className="grid gap-8 border-b border-slate-700/60 pb-7 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr]">
-            <div className="max-w-sm">
-              <div className="flex items-center gap-1.5">
-                <span className="text-xl font-black text-white">Wisen</span>
-                <span className="size-2 rounded-full bg-[#E8E191]" />
-              </div>
-              <p className="mt-3 text-xs leading-5 text-slate-400">
-                Notícias, conceitos e revisões para você entender melhor o mundo e acompanhar seu
-                aprendizado.
-              </p>
-            </div>
-
-            <nav aria-label="Explorar conteúdo">
-              <h2 className="text-xs font-semibold text-white">Explorar</h2>
-              <ul className="mt-3 space-y-2">
-                {clienteExploreLinks.map(({ label, href }) => (
-                  <li key={href}>
-                    <Link
-                      href={href}
-                      className="text-xs text-slate-400 transition-colors hover:text-[#E8E191]"
-                    >
-                      {label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-
-            <nav aria-label="Aprendizado e conta">
-              <h2 className="text-xs font-semibold text-white">Aprendizado e conta</h2>
-              <ul className="mt-3 space-y-2">
-                {clienteLearningLinks.map(({ label, href }) => (
-                  <li key={href}>
-                    <Link
-                      href={href}
-                      className="text-xs text-slate-400 transition-colors hover:text-[#E8E191]"
-                    >
-                      {label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </div>
-
-          <div className="flex flex-col gap-2 pt-5 text-[11px] text-slate-500 sm:flex-row sm:items-center sm:justify-between">
-            <p>© 2026 Wisen</p>
-            <p>Seu aprendizado, conectado ao que acontece no mundo.</p>
+      <footer className={`relative z-10 w-full ${background} text-[#607092]`}>
+        <div className="mx-auto max-w-7xl px-6 py-7 text-center md:px-8">
+          <div className="border-t border-[#DCE3ED] pt-6">
+            <p className="text-[11px]">© 2026 Wisen. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function CardNoticia({
@@ -8,9 +9,10 @@ export default function CardNoticia({
   titulo,
   descricao,
   conceitos = [],
+  href = "/paginaEvento",
 }) {
   return (
-    <Card className="flex h-full flex-col gap-0 overflow-hidden rounded-lg border-0 bg-white p-0 shadow-none">
+    <Card className="relative flex h-full flex-col gap-0 overflow-hidden rounded-lg border-0 bg-white p-0 shadow-none">
       <Image
         src={imagem}
         width={900}
@@ -26,7 +28,11 @@ export default function CardNoticia({
           <span className="text-[11px] text-[#94A2B9]">{tempo}</span>
         </div>
 
-        <h3 className="text-[16px] font-semibold leading-5 text-wisen-titulo">{titulo}</h3>
+        <h3 className="text-[16px] font-semibold leading-5 text-wisen-titulo">
+          <Link href={href} className="after:absolute after:inset-0">
+            {titulo}
+          </Link>
+        </h3>
 
         <p className="mt-1 text-[13px] leading-[18px] text-wisen-texto-suave">{descricao}</p>
 

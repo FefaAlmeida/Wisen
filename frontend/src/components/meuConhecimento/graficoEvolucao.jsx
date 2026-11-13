@@ -1,126 +1,149 @@
 "use client";
 
-import { Info, TrendingUp } from "lucide-react";
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Info } from "lucide-react";
+import { useId, useState } from "react";
+import styles from "./conhecimento.module.css";
+import { formatDate, getEvolution, PERIODS } from "./historicoDemo";
+import { SeletorSegmentado } from "./seletorSegmentado";
 
 export function GraficoEvolucao() {
-  const [periodo, setPeriodo] = useState("30dias");
+  const [period, setPeriod] = useState(30);
+  const [inspection, setInspection] = useState(null);
+  const gradientId = useId();
+  const samples = getEvolution(period);
+  const first = samples[0];
+  const last = samples.at(-1);
+  const selected = samples[inspection ?? samples.length - 1];
+  const x = (index) => 36 + (index / (samples.length - 1)) * 644;
+  const y = (score) => 190 - score * 1.7;
+  const points = samples.map((point, index) => `${x(index)},${y(point.score)}`).join(" ");
 
-  // Pontos do gráfico (x, y) proporcional ao SVG (viewBox 0 0 500 150)
-  const pontos = "0,110 50,105 100,95 150,80 200,75 250,70 300,65 350,55 400,45 450,35 500,25";
-  const areaPreenchimento = `0,150 ${pontos} 500,150`;
+  function inspect(event) {
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const ratio = (event.clientX - bounds.left) / bounds.width;
+    setInspection(
+      Math.max(0, Math.min(samples.length - 1, Math.round(ratio * (samples.length - 1)))),
+    );
+  }
 
   return (
-    <Card className="border border-slate-200/80 shadow-xs bg-white rounded-2xl">
-      <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between pb-2 gap-4">
-        {/* Título com Ícone de Informação */}
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-[#E8E191]" />
-          <CardTitle className="text-base font-bold text-[#2B333F] flex items-center gap-1.5">
-            Evolução do mastery score
-            <Info className="w-3.5 h-3.5 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer" />
-          </CardTitle>
+    <section className={`${styles.panel} ${styles.evolution}`} aria-labelledby="evolution-title">
+      <div className={styles.panelHeader}>
+        <div>
+          <h2 id="evolution-title">Evolução do conhecimento</h2>
         </div>
-
-        {/* Botões de Seleção de Período */}
-        <div className="flex items-center bg-slate-100/80 p-1 rounded-xl text-xs font-medium text-slate-500">
-          {[
-            { id: "7dias", label: "7 dias" },
-            { id: "30dias", label: "30 dias" },
-            { id: "3meses", label: "3 meses" },
-            { id: "1ano", label: "1 ano" },
-          ].map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => setPeriodo(item.id)}
-              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                periodo === item.id
-                  ? "bg-[#E8E191] text-[#2B333F] font-semibold shadow-xs"
-                  : "hover:text-[#2B333F]"
-              }`}
-            >
-              {item.label}
-            </button>
-          ))}
+        <span
+          className={styles.info}
+          title="O mastery score vai de 0 a 100 e representa seu domínio dos conceitos estudados."
+        >
+          <Info size={16} aria-hidden="true" />
+          <span className="sr-only">
+            O mastery score vai de 0 a 100 e representa seu domínio dos conceitos estudados.
+          </span>
+        </span>
+      </div>
+      <div className={styles.chartToolbar}>
+        <SeletorSegmentado
+          label="Período da evolução"
+          options={PERIODS.map((item) => ({ value: item.days, label: item.label }))}
+          value={period}
+          onChange={(days) => {
+            setPeriod(days);
+            setInspection(null);
+          }}
+        />
+      </div>
+      <div className={styles.chart}>
+        <div className={styles.chartReadout} aria-live="polite" aria-atomic="true">
+          <span>{formatDate(selected.date, true)}</span>
+          <strong>{selected.score} pontos</strong>
         </div>
-      </CardHeader>
-
-      <CardContent className="pt-4 space-y-4">
-        {/* Área Visual do Gráfico */}
-        <div className="relative w-full h-52 pt-2">
-          {/* Badge Flutuante do Valor Atual */}
-          <div className="absolute right-4 top-2 bg-white/95 border border-slate-200 shadow-sm rounded-xl p-2.5 text-center z-10">
-            <span className="text-xl font-extrabold text-[#2B333F] block leading-none">72</span>
-            <span className="text-[10px] font-bold text-emerald-600 flex items-center justify-center gap-0.5 mt-0.5">
-              <TrendingUp className="w-3 h-3" />
-              +8 neste mês
-            </span>
+        <div className={styles.chartPlot}>
+          <div className={styles.yAxis} aria-hidden="true">
+            {[100, 75, 50, 25, 0].map((value) => (
+              <span key={value}>{value}</span>
+            ))}
           </div>
-
-          {/* Gráfico SVG */}
-          <div className="w-full h-40 relative">
-            <svg
-              role="img"
-              aria-label="Exemplo de evolução do domínio ao longo dos últimos sete dias"
-              viewBox="0 0 500 150"
-              className="w-full h-full overflow-visible"
-            >
-              <defs>
-                <linearGradient id="gradienteMastery" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#E8E191" stopOpacity="0.65" />
-                  <stop offset="100%" stopColor="#E8E191" stopOpacity="0.02" />
-                </linearGradient>
-              </defs>
-
-              <line x1="0" y1="0" x2="500" y2="0" stroke="#f1f5f9" strokeDasharray="3 3" />
-              <line x1="0" y1="37.5" x2="500" y2="37.5" stroke="#f1f5f9" strokeDasharray="3 3" />
-              <line x1="0" y1="75" x2="500" y2="75" stroke="#f1f5f9" strokeDasharray="3 3" />
-              <line x1="0" y1="112.5" x2="500" y2="112.5" stroke="#f1f5f9" strokeDasharray="3 3" />
-              <line x1="0" y1="150" x2="500" y2="150" stroke="#e2e8f0" />
-
-              <polygon points={areaPreenchimento} fill="url(#gradienteMastery)" />
-
-              <polyline
-                fill="none"
-                stroke="#2B333F"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                points={pontos}
-              />
-
-              {[
-                { x: 0, y: 110 },
-                { x: 100, y: 95 },
-                { x: 200, y: 75 },
-                { x: 300, y: 65 },
-                { x: 400, y: 45 },
-                { x: 500, y: 25 },
-              ].map((pt) => (
-                <circle
-                  key={pt.x}
-                  cx={pt.x}
-                  cy={pt.y}
-                  r="4"
-                  className="fill-[#E8E191] stroke-[#2B333F] stroke-2"
+          <svg
+            role="img"
+            aria-label={`Mastery score nos últimos ${period} dias: de ${first.score} para ${last.score} pontos.`}
+            viewBox="0 0 700 220"
+            preserveAspectRatio="none"
+          >
+            <defs>
+              <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#D8C966" stopOpacity="0.28" />
+                <stop offset="100%" stopColor="#D8C966" stopOpacity="0.01" />
+              </linearGradient>
+            </defs>
+            {[0, 25, 50, 75, 100].map((value) => (
+              <g key={value}>
+                <line
+                  x1="36"
+                  x2="680"
+                  y1={y(value)}
+                  y2={y(value)}
+                  stroke="#E5EAF0"
+                  strokeDasharray={value === 0 ? undefined : "3 5"}
                 />
-              ))}
-            </svg>
-          </div>
-
-          <div className="flex justify-between text-[11px] text-slate-400 font-medium px-1 mt-2">
-            <span>1 abr</span>
-            <span>5 abr</span>
-            <span>10 abr</span>
-            <span>15 abr</span>
-            <span>20 abr</span>
-            <span>25 abr</span>
-            <span>30 abr</span>
+              </g>
+            ))}
+            <polygon points={`36,190 ${points} 680,190`} fill={`url(#${gradientId})`} />
+            <polyline
+              data-evolution-line
+              points={points}
+              fill="none"
+              stroke="#304B5B"
+              strokeWidth="2.5"
+              strokeLinejoin="round"
+              strokeLinecap="round"
+              vectorEffect="non-scaling-stroke"
+            />
+            <line
+              x1={x(inspection ?? samples.length - 1)}
+              x2={x(inspection ?? samples.length - 1)}
+              y1="20"
+              y2="190"
+              stroke="#94A3B8"
+              strokeDasharray="3 4"
+            />
+            <circle
+              cx={x(inspection ?? samples.length - 1)}
+              cy={y(selected.score)}
+              r="5"
+              fill="#E8E191"
+              stroke="#304B5B"
+              strokeWidth="2"
+            />
+          </svg>
+          <div className={styles.xAxis} aria-hidden="true">
+            {[0, 0.25, 0.5, 0.75, 1].map((fraction) => (
+              <span key={fraction}>
+                {formatDate(samples[Math.round(fraction * (samples.length - 1))].date)}
+              </span>
+            ))}
           </div>
         </div>
-      </CardContent>
-    </Card>
+        <input
+          className={styles.chartInput}
+          type="range"
+          min="0"
+          max={samples.length - 1}
+          value={inspection ?? samples.length - 1}
+          aria-label="Explorar pontos do gráfico"
+          aria-valuetext={`${formatDate(selected.date, true)}: ${selected.score} pontos`}
+          onChange={(event) => setInspection(Number(event.target.value))}
+          onPointerMove={(event) => {
+            if (event.pointerType === "mouse") inspect(event);
+          }}
+          onPointerLeave={() => setInspection(null)}
+        />
+      </div>
+      <div className={styles.chartFooter}>
+        <span>
+          {formatDate(first.date, true)} a {formatDate(last.date, true)}
+        </span>
+      </div>
+    </section>
   );
 }

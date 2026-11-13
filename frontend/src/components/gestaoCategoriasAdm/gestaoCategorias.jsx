@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { requisitar } from "@/services/api";
 
-const MINIMUM_AVAILABLE_CATEGORIES = 2;
+const MINIMUM_AVAILABLE_CATEGORIES = 3;
 
 export default function GestaoCategorias() {
   const [categories, setCategories] = useState([]);
@@ -57,7 +57,7 @@ export default function GestaoCategorias() {
       category.id === id ? { ...category, available } : category,
     );
     if (updated.filter((category) => category.available).length < MINIMUM_AVAILABLE_CATEGORIES) {
-      setError("Mantenha pelo menos dois assuntos disponíveis para os usuários.");
+      setError("Mantenha pelo menos três assuntos disponíveis para os usuários.");
       return;
     }
 

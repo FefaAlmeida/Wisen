@@ -1,4 +1,11 @@
+import DemoPage from "@/components/demo/page";
+import Demo from "@/components/demo/paginaGestaoFonteAdm";
 import Admin from "@/components/platform/admin";
-export default function Page() {
+
+function LivePage() {
   return <Admin initial="sources" />;
+}
+
+export default function Page() {
+  return <DemoPage demo={<Demo />} live={<LivePage />} />;
 }

@@ -212,7 +212,7 @@ export default function PerfilPage() {
                 onToggle={toggleInterest}
                 onSave={saveInterests}
                 saving={Boolean(saving.interests || loading || loadError)}
-                minimumSelections={2}
+                minimumSelections={3}
                 hasChanges={interestsChanged}
                 feedback={interestsFeedback}
               />
@@ -235,7 +235,7 @@ export default function PerfilPage() {
       >
         Excluir minha conta
       </a>
-      <Footer variant="cliente" />
+      <Footer variant="cliente" background="bg-wisen-superficie" />
     </div>
   );
 }

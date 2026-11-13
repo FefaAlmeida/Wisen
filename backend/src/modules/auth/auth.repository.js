@@ -72,7 +72,7 @@ export function authRepository(pool) {
     async findProfile(userId) {
       const { rows } = await pool.query(
         `SELECT ${sessionUserColumns}, users.avatar_data_url, user_preferences.interests,
-                user_preferences.interest_onboarding_completed,
+                user_preferences.interest_onboarding_completed, user_preferences.familiarity,
                 user_preferences.review_reminders, user_preferences.weekly_summary
            FROM users
            JOIN user_preferences ON user_preferences.user_id = users.id
@@ -90,6 +90,7 @@ export function authRepository(pool) {
         avatar_data_url,
         interests,
         interest_onboarding_completed,
+        familiarity,
         review_reminders,
         weekly_summary,
       } = profile;
@@ -99,12 +100,16 @@ export function authRepository(pool) {
         preferences: {
           interests,
           onboardingCompleted: interest_onboarding_completed,
+          familiarity,
           notifications: { reviewReminders: review_reminders, weeklySummary: weekly_summary },
         },
       };
     },
 
-    async updateProfile(userId, { name, email, interests, notifications }) {
+    async updateProfile(
+      userId,
+      { name, email, interests, notifications, onboardingCompleted, familiarity },
+    ) {
       return transaction(pool, async (client) => {
         if (interests !== undefined) {
           const { rows } = await client.query(
@@ -130,21 +135,24 @@ export function authRepository(pool) {
 
         await client.query(
           `INSERT INTO user_preferences (
-             user_id, interests, review_reminders, weekly_summary, interest_onboarding_completed
+             user_id, interests, review_reminders, weekly_summary, interest_onboarding_completed, familiarity
            )
-           VALUES ($1, COALESCE($2::text[], '{}'), COALESCE($3::boolean, true), COALESCE($4::boolean, false), $5)
+           VALUES ($1, COALESCE($2::text[], '{}'), COALESCE($3::boolean, true), COALESCE($4::boolean, false), $5, $6)
            ON CONFLICT (user_id) DO UPDATE
            SET interests = COALESCE($2::text[], user_preferences.interests),
                review_reminders = COALESCE($3::boolean, user_preferences.review_reminders),
                weekly_summary = COALESCE($4::boolean, user_preferences.weekly_summary),
                interest_onboarding_completed = user_preferences.interest_onboarding_completed OR $5,
+               familiarity = COALESCE($6::text, user_preferences.familiarity),
+               knowledge_version = user_preferences.knowledge_version + CASE WHEN $6::text IS NOT NULL THEN 1 ELSE 0 END,
                updated_at = now()`,
           [
             userId,
             interests,
             notifications?.reviewReminders,
             notifications?.weeklySummary,
-            interests !== undefined,
+            onboardingCompleted === true || interests !== undefined,
+            familiarity,
           ],
         );
 

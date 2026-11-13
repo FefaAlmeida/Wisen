@@ -1,0 +1,63 @@
+.control {
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 4px;
+  border: 1px solid #e7ecf0;
+  border-radius: 9px;
+  background: #f5f7f9;
+}
+
+.control button {
+  min-width: 0;
+  min-height: 36px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: #5d6d7e;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 160ms ease,
+    color 160ms ease;
+}
+
+.control button:hover {
+  color: #263b42;
+  background: #e8edf1;
+}
+
+.control button[aria-pressed="true"] {
+  background: #e8e191;
+  color: #3c3c25;
+  box-shadow: 0 1px 3px #6e64221a;
+}
+
+.control button:focus-visible {
+  outline: 3px solid #587b96;
+  outline-offset: 2px;
+}
+
+@media (max-width: 767px) {
+  .control {
+    gap: 6px;
+  }
+  .control button {
+    min-height: 40px;
+    padding-inline: 6px;
+    font-size: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .control button {
+    transition: none;
+  }
+}

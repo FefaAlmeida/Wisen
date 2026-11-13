@@ -7,7 +7,7 @@ export default function CabecalhoConceito() {
     <section className="relative flex min-h-[235px] items-start overflow-hidden">
       <div className="relative z-10 max-w-[620px] pt-2">
         <nav className="mb-6 flex flex-wrap items-center gap-3 text-[13px] text-[#617398]">
-          <Link href="/biblioteca" className="hover:text-wisen-titulo">
+          <Link href="/paginaBiblioteca" className="hover:text-wisen-titulo">
             ←<span className="ml-3">Biblioteca de conceitos</span>
           </Link>
           <span>/</span>

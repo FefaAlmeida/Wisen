@@ -61,13 +61,11 @@ test("ciclo real de leitura, lacuna, revisão e adaptação persiste no navegado
   await expect(page).toHaveURL(/paginaInicialCliente$/);
   await page.getByRole("dialog").getByRole("button", { name: "Economia", exact: true }).click();
   await page.getByRole("dialog").getByRole("button", { name: "Juros", exact: true }).click();
-  await page
-    .getByRole("dialog")
-    .getByRole("button", { name: "Salvar interesses", exact: true })
-    .click();
-  await page.getByLabel("Como você se sente ao ler sobre economia?", { exact: false }).count();
-  await page.locator("#familiaridade").selectOption("beginner");
-  await expect(page.getByText(/Familiaridade salva/)).toBeVisible();
+  await page.getByRole("dialog").getByRole("button", { name: "Tecnologia", exact: true }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Continuar", exact: true }).click();
+  await page.getByLabel("Estou começando").check();
+  await page.getByRole("button", { name: "Concluir", exact: true }).click();
+  await expect(page.getByRole("dialog")).not.toBeVisible();
   const user = (await pool.query("SELECT * FROM users WHERE email=$1", [email])).rows[0];
   const mail = (await pool.query("SELECT body FROM mail_outbox WHERE user_id=$1", [user.id]))
     .rows[0];

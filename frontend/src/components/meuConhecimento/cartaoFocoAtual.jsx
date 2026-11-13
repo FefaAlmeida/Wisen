@@ -1,88 +1,65 @@
-import { ArrowRight, Compass, Cpu, Landmark, Leaf, Lightbulb } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowRight, ChevronRight, Compass, Cpu, Landmark, Leaf } from "lucide-react";
+import Link from "next/link";
+import styles from "./conhecimento.module.css";
+
+const topics = [
+  {
+    name: "Política monetária",
+    count: 3,
+    icon: Landmark,
+    concepts: "Taxa Selic, inflação de demanda e juros reais.",
+  },
+  {
+    name: "Mudanças climáticas",
+    count: 4,
+    icon: Leaf,
+    concepts: "Efeito estufa, emissões de carbono, transição energética e Acordo de Paris.",
+  },
+  {
+    name: "Inteligência artificial",
+    count: 3,
+    icon: Cpu,
+    concepts: "Aprendizado de máquina, redes neurais e IA generativa.",
+  },
+];
 
 export function CartaoFocoAtual() {
-  const focos = [
-    {
-      id: 1,
-      titulo: "Política monetária",
-      subtitulo: "3 conceitos para revisar",
-      icone: Landmark,
-    },
-    {
-      id: 2,
-      titulo: "Mudanças climáticas",
-      subtitulo: "4 conceitos para revisar",
-      icone: Leaf,
-    },
-    {
-      id: 3,
-      titulo: "Inteligência artificial",
-      subtitulo: "3 conceitos para revisar",
-      icone: Cpu,
-    },
-  ];
-
   return (
-    <Card className="border border-slate-200/80 shadow-xs bg-white rounded-2xl">
-      <CardHeader className="pb-3">
-        <div className="flex items-center gap-2">
-          <div className="p-2 bg-[#E8E191]/30 text-[#2B333F] rounded-xl shrink-0">
-            <Compass className="w-4 h-4" />
-          </div>
+    <section className={`${styles.panel} ${styles.focus}`} aria-labelledby="focus-title">
+      <div className={styles.panelHeader}>
+        <div>
+          <h2 id="focus-title">Seu próximo passo</h2>
+        </div>
+      </div>
+      <div className={styles.focusContent}>
+        <div className={styles.focusSummary}>
+          <Compass size={22} aria-hidden="true" />
           <div>
-            <CardTitle className="text-base font-bold text-[#2B333F]">Seu foco atual</CardTitle>
-            <p className="text-[11px] text-slate-500 leading-tight mt-0.5">
-              Com base no seu desempenho, sugerimos que você foque nestes temas.
-            </p>
+            <strong>10 conceitos para reforçar</strong>
           </div>
         </div>
-      </CardHeader>
-
-      <CardContent className="space-y-4">
-        {/* Lista de Temas Sugeridos */}
-        <div className="space-y-2">
-          {focos.map((item) => {
-            const Icone = item.icone;
-            return (
-              <button
-                key={item.id}
-                type="button"
-                className="w-full flex items-center justify-between p-2.5 rounded-xl border border-slate-100 hover:border-slate-200 hover:bg-slate-50/80 transition-all cursor-pointer group text-left"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-slate-100 text-[#2B333F] rounded-lg group-hover:bg-[#E8E191]/40 transition-colors">
-                    <Icone className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-semibold text-[#2B333F] group-hover:text-black">
-                      {item.titulo}
-                    </h4>
-                    <p className="text-[10px] text-slate-400 font-medium">{item.subtitulo}</p>
-                  </div>
-                </div>
-                <div className="p-1 rounded-lg bg-slate-50 text-slate-400 group-hover:bg-[#E8E191] group-hover:text-[#2B333F] transition-colors">
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </div>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Quadro Amarelo de Mensagem de Incentivo */}
-        <div className="p-4 bg-[#E8E191]/25 border border-[#E8E191]/60 rounded-xl flex items-start gap-3">
-          <div className="p-1.5 bg-[#E8E191] text-[#2B333F] rounded-lg shrink-0 mt-0.5">
-            <Lightbulb className="w-4 h-4 fill-[#2B333F]" />
-          </div>
-          <div className="space-y-1">
-            <h5 className="text-xs font-bold text-[#2B333F]">Continue assim!</h5>
-            <p className="text-[11px] text-slate-600 leading-normal">
-              Você evoluiu <strong>18%</strong> no seu mastery score neste mês. Mantenha a
-              constância nas leituras e revisões.
-            </p>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+        {topics.map((topic) => {
+          const Icon = topic.icon;
+          return (
+            <details className={styles.topic} key={topic.name}>
+              <summary>
+                <Icon size={17} aria-hidden="true" />
+                <span>
+                  <strong>{topic.name}</strong>
+                  <small>{topic.count} conceitos para revisar</small>
+                </span>
+                <ChevronRight size={15} aria-hidden="true" />
+              </summary>
+              <p>{topic.concepts}</p>
+            </details>
+          );
+        })}
+      </div>
+      <div className={styles.focusAction}>
+        <Link href="/paginaRevisoes" className={styles.primaryLink}>
+          Ir para minhas revisões <ArrowRight size={15} aria-hidden="true" />
+        </Link>
+      </div>
+    </section>
   );
 }

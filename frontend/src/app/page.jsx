@@ -19,8 +19,6 @@ export default function PaginaLanding() {
           <DepoimentosLanding />
           <PerguntasFrequentes />
         </div>
-
-        <div className="h-10 bg-[#F1F3F6] md:h-20" />
       </main>
 
       <Footer />

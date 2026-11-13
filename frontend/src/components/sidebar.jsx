@@ -3,6 +3,7 @@
 import { Clock3, Compass, GraduationCap, Home, Menu, Newspaper, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useDemoMode } from "@/components/demo/mode";
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 const navigation = [
@@ -39,9 +40,19 @@ function WisenBrand({ className = "", large = false }) {
 }
 
 function NavigationItems({ activeItem, mobile = false }) {
+  const demo = useDemoMode();
+  const items = demo
+    ? navigation.map((item) =>
+        item.label === "Notícias"
+          ? { ...item, href: "/paginaEvento" }
+          : item.label === "Salvos"
+            ? { ...item, label: "Aprendizado", href: "/paginaConhecimento" }
+            : item,
+      )
+    : navigation;
   return (
     <nav aria-label="Navegação principal" className="flex flex-col gap-2.5">
-      {navigation.map(({ label, href, icon: Icon }) => {
+      {items.map(({ label, href, icon: Icon }) => {
         const isActive =
           label === activeItem || (activeItem === "Conceitos" && label === "Meu conhecimento");
         const className = mobile

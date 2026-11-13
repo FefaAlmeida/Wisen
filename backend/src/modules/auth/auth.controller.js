@@ -30,13 +30,15 @@ const updateProfileSchema = z
     email: emailSchema.optional(),
     interests: z
       .array(z.string().trim().min(1).max(120))
-      .min(2)
+      .min(3, "Escolha pelo menos 3 áreas de interesse")
       .max(50)
       .refine(
         (interests) => new Set(interests).size === interests.length,
         "Remova assuntos repetidos",
       )
       .optional(),
+    onboardingCompleted: z.literal(true).optional(),
+    familiarity: z.enum(["beginner", "basic", "experienced"]).optional(),
     notifications: z
       .object({
         reviewReminders: z.boolean(),
@@ -45,6 +47,10 @@ const updateProfileSchema = z
       .optional(),
   })
   .strict()
+  .refine(
+    (data) => !data.onboardingCompleted || (data.interests?.length ?? 0) >= 3,
+    "Escolha pelo menos 3 áreas de interesse para concluir",
+  )
   .refine((data) => Object.keys(data).length > 0, "Envie ao menos um bloco")
   .refine(
     (data) => (data.name === undefined) === (data.email === undefined),
@@ -60,6 +66,7 @@ const profileSchema = z.object({
   preferences: z.object({
     interests: z.array(z.string()),
     onboardingCompleted: z.boolean(),
+    familiarity: z.enum(["beginner", "basic", "experienced"]).nullable(),
     notifications: z.object({
       reviewReminders: z.boolean(),
       weeklySummary: z.boolean(),

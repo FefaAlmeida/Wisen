@@ -4,7 +4,7 @@ import Image from "next/image";
 export function ApresentacaoLanding() {
   return (
     <section id="sobre" className="scroll-mt-24 py-8 md:py-12">
-      <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-12 lg:gap-20">
+      <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-stretch lg:gap-14 xl:gap-20">
         {/* Prévia da plataforma */}
         <div className="relative lg:col-span-7">
           {/* Camada de profundidade */}
@@ -165,12 +165,12 @@ export function ApresentacaoLanding() {
         </div>
 
         {/* Texto da apresentação */}
-        <div className="space-y-6 lg:col-span-5 lg:pl-3">
+        <div className="flex flex-col gap-6 lg:col-span-5 lg:justify-between lg:py-3 lg:pl-3">
           <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#8491A3]">
             Uma nova forma de aprender
           </span>
 
-          <h2 className="max-w-[480px] text-[clamp(2rem,3.4vw,3rem)] font-bold leading-[1.19] tracking-[-0.045em] text-[#101A40]">
+          <h2 className="max-w-[480px] text-[clamp(2rem,3.8vw,3.375rem)] font-bold leading-[1.12] tracking-[-0.045em] text-[#101A40]">
             Do que acontece no mundo ao que você{" "}
             <span className="decoration-[#E8E191] decoration-[6px] underline underline-offset-[7px]">
               realmente entende.
@@ -179,9 +179,22 @@ export function ApresentacaoLanding() {
 
           <p className="max-w-[460px] text-[15px] leading-[1.9] text-[#647184]">
             O Wisen combina inteligência avançada e curadoria de fontes confiáveis para trazer o
-            conhecimento certo, na dimensão certa e no momento certo. Conexões mais claras, uma
-            visão mais completa e decisões mais conscientes para a sua vida.
+            conhecimento certo, na dimensão certa e no momento certo.
           </p>
+
+          <ul className="w-full border-t border-[#D5DEE9] text-[clamp(1.125rem,1.6vw,1.375rem)] font-semibold leading-snug tracking-[-0.025em] text-[#101A40]">
+            {["Conexões mais claras", "Uma visão mais completa", "Decisões mais conscientes"].map(
+              (beneficio) => (
+                <li
+                  key={beneficio}
+                  className="flex items-center gap-4 border-b border-[#D5DEE9] py-5"
+                >
+                  <span aria-hidden="true" className="h-1.5 w-6 shrink-0 bg-[#E8E191]" />
+                  {beneficio}
+                </li>
+              ),
+            )}
+          </ul>
         </div>
       </div>
     </section>

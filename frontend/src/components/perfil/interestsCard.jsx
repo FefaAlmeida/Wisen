@@ -18,37 +18,45 @@ export function InterestsCard({
   onSave,
   saving,
   hasChanges,
-  minimumSelections = 1,
+  minimumSelections = 3,
   feedback,
   showSaveControls = true,
   systemColors = false,
+  embedded = false,
 }) {
   const [search, setSearch] = useState("");
   const searchTerm = normalize(search);
   const visibleTags = categories.filter((tag) => normalize(tag).includes(searchTerm));
   const selectedTags = categories.filter((tag) => interests.includes(tag));
-  const canSave = interests.length >= minimumSelections;
+  const canSave = new Set(interests).size >= minimumSelections;
 
   return (
     <Card
-      className={`rounded-2xl border shadow-xs ${
-        systemColors ? "border-wisen-borda bg-wisen-superficie" : "border-slate-200/80 bg-white"
+      className={`${embedded ? "gap-5 overflow-visible rounded-none bg-transparent py-0 shadow-none ring-0 [--card-spacing:0px]" : "rounded-2xl border shadow-xs"} ${
+        embedded
+          ? ""
+          : systemColors
+            ? "border-wisen-borda bg-wisen-superficie"
+            : "border-slate-200/80 bg-white"
       }`}
     >
-      <CardHeader className="pb-4">
-        <CardTitle
-          className={`text-base font-bold ${systemColors ? "text-wisen-titulo" : "text-[#2B333F]"}`}
-        >
-          Interesses
-        </CardTitle>
-        <CardDescription
-          className={`text-xs ${systemColors ? "text-wisen-texto-suave" : "text-slate-500"}`}
-        >
-          Escolha os temas que quer ver nas suas notícias.
-        </CardDescription>
-      </CardHeader>
+      {!embedded && (
+        <CardHeader className="pb-4">
+          <CardTitle
+            className={`text-base font-bold ${systemColors ? "text-wisen-titulo" : "text-[#2B333F]"}`}
+          >
+            Interesses
+          </CardTitle>
+          <CardDescription
+            className={`text-xs ${systemColors ? "text-wisen-texto-suave" : "text-slate-500"}`}
+          >
+            Escolha pelo menos {minimumSelections} áreas para acompanhar nas suas notícias e no seu
+            conhecimento.
+          </CardDescription>
+        </CardHeader>
+      )}
 
-      <CardContent className="space-y-4">
+      <CardContent className={embedded ? "gap-5" : "space-y-4"}>
         {/* Campo de Busca */}
         <div className="relative">
           <Search
@@ -61,7 +69,7 @@ export function InterestsCard({
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Buscar temas..."
             aria-label="Buscar temas de interesse"
-            className={`h-9 rounded-lg border pl-9 text-xs focus-visible:ring-wisen-destaque ${
+            className={`${embedded ? "h-12 text-base placeholder:text-wisen-titulo/60" : "h-9 text-xs"} rounded-lg border pl-9 focus-visible:ring-wisen-destaque ${
               systemColors
                 ? "border-wisen-borda bg-wisen-superficie text-wisen-titulo"
                 : "border-slate-200 bg-slate-50 text-[#2B333F]"
@@ -80,7 +88,8 @@ export function InterestsCard({
                 key={tag}
                 onClick={() => onToggle(tag)}
                 disabled={saving}
-                className={`inline-flex cursor-pointer items-center gap-1.5 rounded-xl border-none px-3 py-1.5 text-xs font-semibold transition-colors ${
+                aria-pressed={true}
+                className={`${embedded ? "min-h-11 px-4 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wisen-titulo" : "px-3 text-xs"} inline-flex cursor-pointer items-center gap-1.5 rounded-xl border-none py-1.5 font-semibold transition-colors ${
                   systemColors
                     ? "bg-[#F3E69A] text-wisen-titulo hover:bg-[#EBDD80]"
                     : "bg-[#F3E69A] text-[#2B333F] hover:bg-[#EBDD80]"
@@ -100,9 +109,10 @@ export function InterestsCard({
                 key={tag}
                 onClick={() => onToggle(tag)}
                 disabled={saving}
-                className={`inline-flex cursor-pointer items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-normal transition-colors ${
+                aria-pressed={false}
+                className={`${embedded ? "min-h-11 px-4 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wisen-titulo" : "px-3 text-xs"} inline-flex cursor-pointer items-center gap-1.5 rounded-xl border py-1.5 font-normal transition-colors ${
                   systemColors
-                    ? "border-wisen-borda bg-wisen-superficie text-wisen-texto-suave hover:bg-[#E6ECF4]"
+                    ? `border-wisen-borda bg-wisen-superficie ${embedded ? "text-wisen-titulo" : "text-wisen-texto-suave"} hover:bg-[#E6ECF4]`
                     : "border-slate-200 bg-slate-50/80 text-[#2B333F]/80 hover:bg-slate-100"
                 }`}
               >
@@ -113,6 +123,12 @@ export function InterestsCard({
               </button>
             ))}
         </div>
+
+        {embedded && visibleTags.length === 0 && (
+          <p className="py-4 text-sm text-wisen-titulo">
+            Nenhum tema encontrado. Tente outra busca.
+          </p>
+        )}
 
         {showSaveControls && (
           <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
@@ -125,7 +141,11 @@ export function InterestsCard({
               </p>
             ) : (
               <p className="text-xs text-slate-500">
-                {hasChanges ? "Você tem alterações pendentes." : "Seus assuntos estão salvos."}
+                {!canSave
+                  ? `Selecione pelo menos ${minimumSelections} interesses (${interests.length}/${minimumSelections}).`
+                  : hasChanges
+                    ? "Você tem alterações pendentes."
+                    : "Seus assuntos estão salvos."}
               </p>
             )}
             <Button

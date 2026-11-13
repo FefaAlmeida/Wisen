@@ -183,6 +183,15 @@ export function Familiarity() {
 export function AccountNotice() {
   const resource = useResource("/account/status");
   const [message, setMessage] = useState("");
+  if (resource.data?.aiProvider === "mock")
+    return (
+      <Panel title="Modo de demonstração">
+        <p className="text-sm">
+          Explore as telas com explicações simuladas, sem custo de IA. Os exemplos fictícios estão
+          identificados como demonstração. A confirmação de e-mail não é necessária neste modo.
+        </p>
+      </Panel>
+    );
   if (!resource.data || resource.data.user.email_verified_at) return null;
   return (
     <Panel title="Confirme seu e-mail">

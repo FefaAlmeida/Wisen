@@ -23,6 +23,7 @@ compose(
 compose("up", "-d", "--wait", "database");
 compose("run", "--rm", "migrate");
 compose("run", "--rm", "--no-deps", "backend", "node", "backend/src/database/seed.js");
+compose("run", "--rm", "--no-deps", "backend", "node", "backend/src/database/demo.js");
 compose("up", "-d", "--wait", "--wait-timeout", "240", "backend", "frontend", "ai");
 console.log(
   `Wisen: http://localhost:${process.env.FRONTEND_HOST_PORT || 3000} | Swagger: http://localhost:${process.env.BACKEND_HOST_PORT || 8080}/docs`,

@@ -3,6 +3,7 @@ import { transaction } from "../../database/index.js";
 import { enqueue } from "../../queue/index.js";
 import { MODEL_VERSION, QUEUES } from "../../shared.js";
 import { platformRead } from "../platform/read.js";
+import { generationMode } from "./mode.js";
 
 export const PROMPT_VERSION = "economia-v1";
 export const fingerprint = (value) =>
@@ -50,6 +51,7 @@ export function taskService(pool, boss, config) {
         context = { article: context, ...(await analysisCandidates(pool, articleId)) };
       }
       const input = {
+        provider: generationMode(config),
         operation,
         context,
         passage,
@@ -74,6 +76,7 @@ export function taskService(pool, boss, config) {
           operation === "grade"
             ? { ...input, context: { ...input.context, requestId: undefined } }
             : input,
+        provider: generationMode(config),
         model: config.AI_MODEL,
         prompt: PROMPT_VERSION,
       });

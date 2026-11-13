@@ -1,7 +1,9 @@
 import { transaction } from "../../backend/src/database/index.js";
+import { generationMode } from "../../backend/src/modules/generation/mode.js";
 import { enqueue } from "../../backend/src/queue/index.js";
 import { QUEUES, SOURCES } from "../../backend/src/shared.js";
 export async function scheduleWork(pool, boss, config, tasks) {
+  const mode = generationMode(config);
   await transaction(pool, async (c) => {
     await c.query("SELECT pg_advisory_xact_lock(881341)");
     for (const definition of SOURCES)
@@ -27,23 +29,25 @@ export async function scheduleWork(pool, boss, config, tasks) {
         "SELECT id FROM generation_tasks WHERE status='paused' AND error IN ('BUDGET_EXHAUSTED','DAILY_LIMIT','EMAIL_UNVERIFIED','Configure OPENAI_API_KEY para habilitar geração') AND updated_at<now()-interval '5 minutes' LIMIT 20",
       )
     ).rows;
-    if (config.OPENAI_API_KEY)
+    if (config.OPENAI_API_KEY || generationMode(config) === "mock")
       for (const row of paused) {
         await c.query("UPDATE generation_tasks SET updated_at=now() WHERE id=$1", [row.id]);
         await sendOnce(c, boss, QUEUES.generate, "id", row.id);
       }
   });
-  if (config.OPENAI_API_KEY) {
+  if (config.OPENAI_API_KEY || generationMode(config) === "mock") {
     const articles = (
       await pool.query(
-        "SELECT a.id FROM articles a WHERE a.processing_status='processed' AND a.visible AND NOT EXISTS(SELECT 1 FROM article_analyses aa WHERE aa.article_id=a.id) AND NOT EXISTS(SELECT 1 FROM generation_tasks t WHERE t.article_id=a.id AND t.operation='analysis' AND t.status IN ('pending','processing','paused','completed')) ORDER BY a.created_at LIMIT 5",
+        "SELECT a.id FROM articles a WHERE a.processing_status='processed' AND a.visible AND NOT EXISTS(SELECT 1 FROM sources s WHERE s.id=a.source_id AND s.slug='wisen-demo') AND NOT EXISTS(SELECT 1 FROM article_analyses aa WHERE aa.article_id=a.id AND ($1='mock' OR aa.model<>'mock-v1')) AND NOT EXISTS(SELECT 1 FROM generation_tasks t WHERE t.article_id=a.id AND t.operation='analysis' AND t.status IN ('pending','processing','paused','completed') AND COALESCE(t.input->>'provider','openai')=$1) ORDER BY a.created_at LIMIT 5",
+        [mode],
       )
     ).rows;
     for (const article of articles)
       await tasks.create(null, { operation: "analysis", articleId: article.id });
     const concepts = (
       await pool.query(
-        "SELECT c.id FROM concepts c WHERE NOT EXISTS(SELECT 1 FROM question_bank q WHERE q.concept_id=c.id) AND NOT EXISTS(SELECT 1 FROM generation_tasks t WHERE t.concept_id=c.id AND t.operation='questions' AND t.status IN ('pending','processing','paused','completed')) LIMIT 3",
+        "SELECT c.id FROM concepts c WHERE NOT EXISTS(SELECT 1 FROM question_bank q WHERE q.concept_id=c.id AND ($1='mock' OR q.prompt NOT LIKE '[Demonstração]%')) AND NOT EXISTS(SELECT 1 FROM generation_tasks t WHERE t.concept_id=c.id AND t.operation='questions' AND t.status IN ('pending','processing','paused','completed') AND COALESCE(t.input->>'provider','openai')=$1) LIMIT 3",
+        [mode],
       )
     ).rows;
     for (const concept of concepts)

@@ -1,6 +1,6 @@
 # Wisen
 
-Plataforma de conhecimento baseada em notícias. Esta etapa entrega a fundação técnica e um fluxo real de coleta, embeddings locais e busca semântica. As telas existentes continuam usando dados de demonstração.
+Plataforma de conhecimento baseada em notícias, com coleta, busca semântica, eventos, conceitos, explicações e revisões. No desenvolvimento sem chave de IA, o modo de demonstração permite explorar as telas com conteúdo fictício e respostas simuladas.
 
 ## Primeiro uso
 
@@ -17,7 +17,7 @@ npm run dev
 
 `setup:model` baixa e verifica o E5 Small INT8 uma vez, em um volume persistente. Requer internet. O worker usa esse cache sem downloads durante a execução. Se a versão configurada mudar, execute a preparação novamente.
 
-`dev` constrói a imagem de desenvolvimento, para os apps deste projeto, sincroniza dependências quando o lockfile muda, verifica o modelo, sobe o PostgreSQL, aplica migrations, executa o seed do administrador e inicia frontend, API e worker. Aguarda os healthchecks e retorna ao terminal. Mudanças de código são recarregadas automaticamente.
+`dev` constrói a imagem de desenvolvimento, para os apps deste projeto, sincroniza dependências quando o lockfile muda, verifica o modelo, sobe o PostgreSQL, aplica migrations, executa o seed do administrador, prepara os dados de demonstração quando o modo mock está ativo e inicia frontend, API e worker. Aguarda os healthchecks e retorna ao terminal. Mudanças de código são recarregadas automaticamente.
 
 O frontend usa Next.js 16.4.6 com Turbopack no desenvolvimento, mantendo a atualização automática. Os endereços `localhost` e `127.0.0.1` estão permitidos para a conexão de desenvolvimento.
 
@@ -91,13 +91,13 @@ As três aplicações ficam direto na raiz. `backend/` centraliza banco, fila e 
 
 O frontend mantém Next, React, Tailwind e shadcn/Base UI. `services/` concentra HTTP com fetch; `hooks/` concentra lógica de interação. Não há TanStack Query nesta etapa. Os nomes e URLs existentes foram preservados. A interface usa tokens semânticos do Wisen para cores recorrentes, sem mudar o desenho das telas.
 
-O backend usa Fastify e SQL parametrizado com `pg`. Cada módulo separa HTTP, regras e consultas. O worker roda em outro processo, usando **pg-boss no PostgreSQL**, sem Redis/BullMQ. Nenhum modelo externo pago é chamado.
+O backend usa Fastify e SQL parametrizado com `pg`. Cada módulo separa HTTP, regras e consultas. O worker roda em outro processo, usando **pg-boss no PostgreSQL**, sem Redis/BullMQ. Os embeddings usam o modelo local; a geração usa respostas simuladas ou a OpenAI conforme `AI_PROVIDER` e a presença de chave.
 
 ## Banco e migrations
 
 Os arquivos em `backend/migrations/` são aplicados em ordem, cada um em uma transação. `schema_migrations` guarda nome, checksum e data. Um advisory lock impede execuções concorrentes. Uma migration já aplicada não deve ser editada: crie um novo arquivo numerado.
 
-A autenticação por sessão já está funcional. O fluxo ativo usa fontes, artigos, trechos e pedidos de busca; as páginas de conteúdo ainda usam dados de demonstração. Eventos automáticos, grafo, explicações e revisão pedagógica seguem fora do escopo funcional, apesar de já haver entidades modeladas. O pg-boss mantém suas tabelas no schema `pgboss`.
+A autenticação por sessão, as páginas de conteúdo e o histórico de aprendizagem usam o PostgreSQL. Eventos, relações entre conceitos, explicações e revisões passam pela API e pelo worker. O modo mock mantém esse fluxo com respostas simuladas e sem cobrança de IA. O pg-boss mantém suas tabelas no schema `pgboss`.
 
 Não use `docker compose down -v` para atualizar tabelas: esse comando apaga volumes. A configuração nova usa volume PostgreSQL próprio e não converte nem apaga bases MySQL externas.
 
@@ -142,6 +142,20 @@ Os documentos acadêmicos originais ficam na raiz e não fazem parte do runtime 
 
 ## MVP adaptativo
 
-As páginas de eventos, conceitos, biblioteca, conhecimento, revisões, salvos e administração agora integram a API e o PostgreSQL. A geração assíncrona usa OpenAI e orçamento transacional; os embeddings continuam locais. Sem chave de IA configurada, a busca local e as funções disponíveis continuam operando, enquanto novas gerações ficam pausadas. E-mail depende de `RESEND_API_KEY` e `EMAIL_FROM` verificado.
+As páginas de eventos, conceitos, biblioteca, conhecimento, revisões, salvos e administração agora integram a API e o PostgreSQL. A geração assíncrona usa OpenAI e orçamento transacional; os embeddings continuam locais. Sem chave de IA configurada, a busca local e as funções disponíveis continuam operando, enquanto novas gerações ficam pausadas. E-mail depende de `RESEND_API_KEY` e `EMAIL_FROM` verificado. Veja a [configuração de e-mail com gowisen.app](docs/email.md).
 
 Leia [decisões, configuração e operação do MVP](docs/mvp-implementacao.md). O documento registra também as validações externas pendentes e os critérios de qualidade do TCC. `npm run test:load` valida 50 usuários em banco temporário; `npm run backup` cria um backup privado e `npm run backup:verify -- arquivo.sql.gz` testa a restauração em banco isolado. Produção usa o Caddy para HTTPS e exige domínio e segredos próprios.
+
+### Navegar sem chave de IA
+
+No desenvolvimento, `AI_PROVIDER=auto` (padrão) usa respostas simuladas quando `OPENAI_API_KEY` está vazia. Explicações, trechos, aprofundamento e questões passam pela API e pelo worker normalmente, sem chamadas externas de geração, cobrança ou confirmação de e-mail. A correção aberta é apenas ilustrativa e não avalia a resposta do aluno. Os embeddings e a busca semântica continuam usando o modelo local.
+
+`npm run dev` também prepara seis eventos fictícios, conceitos relacionados e uma conta de cliente para avaliar o design:
+
+- E-mail: `cliente@wisen.local`
+- Senha inicial: `ClienteWisen@123`
+- A conta inclui lacunas, conceitos em revisão e dominados, exercícios e conteúdos salvos. Novas contas podem explorar o mesmo feed e construir seu próprio histórico.
+
+O seed preserva senhas e progresso nas próximas inicializações. Os exemplos aparecem identificados como demonstração. Para preparar esses dados em um ambiente que já está rodando: `docker compose exec -T backend node backend/src/database/demo.js`.
+
+Para usar a OpenAI, preencha `OPENAI_API_KEY`, mantenha `AI_PROVIDER=auto` e recrie os serviços com `npm run dev`. Use `AI_PROVIDER=mock` para forçar a demonstração mesmo com uma chave preenchida; use `AI_PROVIDER=openai` para exigir o provedor real. O cache diferencia os provedores, portanto respostas simuladas não são reutilizadas como respostas reais. No modo real, a verificação de e-mail e os limites de custo continuam obrigatórios. Em produção, `auto` exige a chave; o seed com credenciais de demonstração recusa execução em produção.

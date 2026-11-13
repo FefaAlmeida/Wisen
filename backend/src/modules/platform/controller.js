@@ -3,6 +3,7 @@ import { transaction } from "../../database/index.js";
 import { enqueue } from "../../queue/index.js";
 import { QUEUES, SOURCES } from "../../shared.js";
 import { budgetService } from "../generation/budget.js";
+import { generationMode } from "../generation/mode.js";
 import { taskService } from "../generation/tasks.js";
 import { learningService } from "./learning.js";
 import { platformRead } from "./read.js";
@@ -166,7 +167,7 @@ export function platformController(app, pool, boss, config) {
       const user = (
         await pool.query("SELECT email_verified_at FROM users WHERE id=$1", [req.user.id])
       ).rows[0];
-      if (!user.email_verified_at)
+      if (!user.email_verified_at && generationMode(config) !== "mock")
         return reply.code(403).send({
           code: "EMAIL_UNVERIFIED",
           message: "Confirme seu e-mail para gerar explicações",
@@ -212,7 +213,8 @@ export function platformController(app, pool, boss, config) {
   app.get("/api/admin/overview", admin, async () => ({
     budget: await budget.summary(),
     integrations: {
-      ai: !!config.OPENAI_API_KEY,
+      ai: generationMode(config) === "mock" || !!config.OPENAI_API_KEY,
+      aiProvider: generationMode(config),
       email: !!(config.RESEND_API_KEY && config.EMAIL_FROM),
     },
     counts: (

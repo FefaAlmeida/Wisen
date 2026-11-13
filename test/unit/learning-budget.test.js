@@ -38,7 +38,9 @@ test("estimativa financeira inclui câmbio e margem sem arredondar para baixo", 
 });
 test("provedor não chama API sem chave e não expõe resposta HTTP com segredos", async () => {
   await assert.rejects(
-    generateStructured({}, {}, {}, "test", () => assert.fail("Não deve chamar rede")),
+    generateStructured({ AI_PROVIDER: "openai" }, {}, {}, "test", () =>
+      assert.fail("Não deve chamar rede"),
+    ),
     { code: "PROVIDER_NOT_CONFIGURED" },
   );
 });

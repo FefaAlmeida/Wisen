@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import { transaction, vectorLiteral } from "../../backend/src/database/index.js";
 import { budgetService } from "../../backend/src/modules/generation/budget.js";
+import { generationMode } from "../../backend/src/modules/generation/mode.js";
 import {
   analysisSchema,
   explanationSchema,
@@ -67,6 +68,7 @@ const questionsValidation = z.object({
 });
 export function generationWorker(pool, config, provider = generateStructured, embedder = null) {
   const budget = budgetService(pool, config);
+  const mock = generationMode(config) === "mock";
   return async (id) => {
     // Session advisory lock prevents duplicate provider calls after task retries.
     const lock = await pool.connect();
@@ -93,7 +95,7 @@ export function generationWorker(pool, config, provider = generateStructured, em
         );
         return;
       }
-      if (!config.OPENAI_API_KEY) {
+      if (!mock && !config.OPENAI_API_KEY) {
         await pool.query(
           "UPDATE generation_tasks SET status='paused',error='Configure OPENAI_API_KEY para habilitar geração' WHERE id=$1",
           [id],
@@ -120,20 +122,24 @@ export function generationWorker(pool, config, provider = generateStructured, em
         Buffer.byteLength(JSON.stringify(task.input)) +
         Buffer.byteLength(JSON.stringify(schema)) +
         3000;
-      charge = await budget.reserve(task, inputBound, config.AI_MAX_OUTPUT_TOKENS);
-      if (!charge) return;
+      if (!mock) {
+        charge = await budget.reserve(task, inputBound, config.AI_MAX_OUTPUT_TOKENS);
+        if (!charge) return;
+      }
       await pool.query(
         "UPDATE generation_tasks SET status='processing',error=NULL,updated_at=now() WHERE id=$1",
         [id],
       );
       const started = performance.now();
       const response = await provider(config, task.input, schema, task.operation);
-      await pool.query("UPDATE generation_charges SET latency_ms=$2 WHERE id=$1", [
-        charge.id,
-        Math.round(performance.now() - started),
-      ]);
-      await budget.settle(charge.id, response.usage);
-      charge = null;
+      if (charge) {
+        await pool.query("UPDATE generation_charges SET latency_ms=$2 WHERE id=$1", [
+          charge.id,
+          Math.round(performance.now() - started),
+        ]);
+        await budget.settle(charge.id, response.usage);
+        charge = null;
+      }
       if (!response.data) throw new Error("Resposta incompleta do modelo; tente novamente");
       const data =
         task.operation === "analysis"
@@ -205,17 +211,18 @@ export function generationWorker(pool, config, provider = generateStructured, em
               [task.user_id, review.question_id],
             )
           ).rowCount;
-          const next = repeated
-            ? { score: before }
-            : await recordEvidence(
-                c,
-                task.user_id,
-                task.concept_id,
-                data.verdict,
-                requestId,
-                task.review_id,
-              );
-          if (repeated)
+          const next =
+            repeated || mock
+              ? { score: before }
+              : await recordEvidence(
+                  c,
+                  task.user_id,
+                  task.concept_id,
+                  data.verdict,
+                  requestId,
+                  task.review_id,
+                );
+          if (repeated || mock)
             await c.query("UPDATE reviews SET completed_at=now() WHERE id=$1", [review.id]);
           await c.query(
             "INSERT INTO review_attempts(review_id,answer,correct,feedback,mastery_before,mastery_after,request_id) VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT(request_id) DO NOTHING",
@@ -233,6 +240,7 @@ export function generationWorker(pool, config, provider = generateStructured, em
         // Never expose model-generated answer keys or analysis internals to readers.
         const publicResult =
           task.operation === "questions" ? { message: "Questões disponíveis para revisão" } : data;
+        if (mock) publicResult.mock = true;
         await c.query(
           "UPDATE generation_tasks SET status='completed',result=$2,error=NULL,updated_at=now() WHERE id=$1",
           [id, JSON.stringify(publicResult)],
@@ -262,6 +270,7 @@ export function generationWorker(pool, config, provider = generateStructured, em
   };
 }
 async function saveAnalysis(c, task, data, config, vectors) {
+  const mock = generationMode(config) === "mock";
   await c.query("SELECT pg_advisory_xact_lock(891723)");
   const article = (
     await c.query("SELECT * FROM articles WHERE id=$1 FOR UPDATE", [task.article_id])
@@ -332,7 +341,7 @@ async function saveAnalysis(c, task, data, config, vectors) {
     ])
       await c.query(
         `INSERT INTO ${table}(${column},concept_id,source_type,source_id,method,model,confidence) VALUES($1,$2,'article',$3,'structured-analysis',$4,0.8) ON CONFLICT DO NOTHING`,
-        [key, id, article.id, config.AI_MODEL],
+        [key, id, article.id, mock ? "mock-v1" : config.AI_MODEL],
       );
   }
   for (const entity of data.entities) {
@@ -348,7 +357,7 @@ async function saveAnalysis(c, task, data, config, vectors) {
     ])
       await c.query(
         `INSERT INTO ${table}(${column},entity_id,source_type,source_id,method,model,confidence) VALUES($1,$2,'article',$3,'structured-analysis',$4,0.8) ON CONFLICT DO NOTHING`,
-        [key, id, article.id, config.AI_MODEL],
+        [key, id, article.id, mock ? "mock-v1" : config.AI_MODEL],
       );
   }
   for (const rel of data.relations) {
@@ -364,7 +373,7 @@ async function saveAnalysis(c, task, data, config, vectors) {
     if (override?.after_data.remove) continue;
     await c.query(
       "INSERT INTO concept_relations(from_id,to_id,relation,source_type,source_id,method,model,confidence) VALUES($1,$2,$3,'article',$4,'structured-analysis',$5,0.8) ON CONFLICT DO NOTHING",
-      [from, to, rel.relation, article.id, config.AI_MODEL],
+      [from, to, rel.relation, article.id, mock ? "mock-v1" : config.AI_MODEL],
     );
   }
   await c.query(
@@ -373,10 +382,10 @@ async function saveAnalysis(c, task, data, config, vectors) {
   );
   await c.query(
     "INSERT INTO event_relations(from_id,to_id,relation,source_type,source_id,method,model,confidence) SELECT $1,ec.event_id,'RELATED_TO','article',$2,'shared-concepts',$3,0.6 FROM event_concepts ec WHERE ec.concept_id IN (SELECT concept_id FROM event_concepts WHERE event_id=$1) AND ec.event_id<>$1 GROUP BY ec.event_id HAVING count(*)>=2 ON CONFLICT DO NOTHING",
-    [eventId, article.id, config.AI_MODEL],
+    [eventId, article.id, mock ? "mock-v1" : config.AI_MODEL],
   );
   await c.query(
     "INSERT INTO article_analyses(article_id,task_id,model,prompt_version,data) VALUES($1,$2,$3,$4,$5) ON CONFLICT(task_id) DO NOTHING",
-    [article.id, task.id, config.AI_MODEL, PROMPT_VERSION, JSON.stringify(data)],
+    [article.id, task.id, mock ? "mock-v1" : config.AI_MODEL, PROMPT_VERSION, JSON.stringify(data)],
   );
 }

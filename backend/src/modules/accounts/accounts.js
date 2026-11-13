@@ -4,6 +4,7 @@ import { transaction } from "../../database/index.js";
 import { enqueue } from "../../queue/index.js";
 import { QUEUES } from "../../shared.js";
 import { hashPassword } from "../auth/auth.service.js";
+import { generationMode } from "../generation/mode.js";
 import { encryptMail } from "./mail-crypto.js";
 
 const digest = (token) => createHash("sha256").update(token).digest("hex");
@@ -88,7 +89,7 @@ export function accountService(pool, boss, config) {
     },
   };
 }
-export function accountController(app, pool, accounts) {
+export function accountController(app, pool, accounts, config) {
   const email = z.object({ email: z.string().trim().toLowerCase().pipe(z.email()) });
   const token = z.object({ token: z.string().min(32).max(100) });
   const limited = { rateLimit: { max: 3, timeWindow: "1 minute" } };
@@ -118,6 +119,7 @@ export function accountController(app, pool, accounts) {
     (req) => accounts.consume(req.body.token, "reset", req.body.password),
   );
   app.get("/api/account/status", { preHandler: app.authenticate }, async (req) => ({
+    aiProvider: generationMode(config),
     user: (
       await pool.query("SELECT email_verified_at,generation_limit FROM users WHERE id=$1", [
         req.user.id,

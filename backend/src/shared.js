@@ -51,6 +51,7 @@ export function configuration(env = process.env) {
       FRONTEND_URL: z.url().default("http://localhost:3000"),
       MODEL_CACHE_DIR: z.string().default("/models"),
       OPENAI_API_KEY: z.string().default(""),
+      AI_PROVIDER: z.enum(["auto", "mock", "openai"]).default("auto"),
       AI_MODEL: z.string().default("gpt-6-luna"),
       AI_INPUT_USD_PER_MILLION: z.coerce.number().nonnegative().default(0.1),
       AI_OUTPUT_USD_PER_MILLION: z.coerce.number().nonnegative().default(0.5),

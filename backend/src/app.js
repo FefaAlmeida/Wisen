@@ -53,7 +53,7 @@ export async function buildApp({ pool, boss, config, logger = true }) {
   const auth = authService(authRepository(pool));
   const accounts = accountService(pool, boss, config);
   authController(app, auth, config, accounts);
-  accountController(app, pool, accounts);
+  accountController(app, pool, accounts, config);
   platformController(app, pool, boss, config);
   categoriesController(app, categoriesService(categoriesRepository(pool)));
   app.decorateRequest("isOperations", false);

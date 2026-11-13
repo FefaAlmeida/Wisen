@@ -1,4 +1,8 @@
+import { generateMock } from "./mock.js";
+import { generationMode } from "./mode.js";
+
 export async function generateStructured(config, input, schema, name, fetcher = fetch) {
+  if (generationMode(config) === "mock") return generateMock(input, name);
   if (!config.OPENAI_API_KEY)
     throw Object.assign(new Error("Configure OPENAI_API_KEY para habilitar geração"), {
       code: "PROVIDER_NOT_CONFIGURED",

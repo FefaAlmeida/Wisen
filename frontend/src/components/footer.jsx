@@ -1,4 +1,3 @@
-import { Heart } from "lucide-react";
 import Link from "next/link";
 
 export function Footer({ variant = "plataforma", background = "bg-[#F0F4F9]" }) {
@@ -81,14 +80,10 @@ export function Footer({ variant = "plataforma", background = "bg-[#F0F4F9]" }) 
         </div>
 
         {/* Linha Inferior: Direitos Autorais */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+        <div className="pt-8 text-center text-xs text-slate-400">
           <p>© 2026 Wisen Inc. Todos os direitos reservados.</p>
-          <p className="flex items-center gap-1.5">
-            Desenvolvido com <Heart className="w-3.5 h-3.5 text-[#E8E191] fill-[#E8E191]" /> para
-            alta performance.
-          </p>
         </div>
       </div>
     </footer>
-  );
+  );f
 }

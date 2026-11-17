@@ -49,7 +49,7 @@ export default function FormularioLogin({ glass = false }) {
       <CardHeader className="space-y-1 px-6 pt-8 pb-6 sm:px-10 sm:pt-10 sm:pb-7 lg:px-12">
         <CardTitle
           id="login-title"
-          className={`text-[32px] font-semibold tracking-tight ${glass ? "text-white" : "text-wisen-texto-forte"}`}
+          className={`text-[32px] font-semibold tracking-tight ${glass ? "text-[#F2DF73]" : "text-wisen-texto-forte"}`}
         >
           Entrar
         </CardTitle>
@@ -181,7 +181,7 @@ export default function FormularioLogin({ glass = false }) {
                 value="true"
                 checked={lembrar}
                 onCheckedChange={(checked) => setLembrar(Boolean(checked))}
-                className="border-[#E4D57E] bg-[#F4E69B] text-wisen-texto-forte data-[state=checked]:border-[#E4D57E] data-[state=checked]:bg-[#F4E69B]"
+                className="border-[#F2DF73] bg-transparent text-[#F2DF73] data-unchecked:border-[#F2DF73] data-unchecked:bg-transparent focus-visible:border-[#F2DF73] group-has-[:focus-visible]/field-label:not-data-checked:border-[#F2DF73] data-checked:border-[#F2DF73] data-checked:bg-transparent data-checked:text-[#F2DF73]"
               />
               <Label
                 htmlFor="lembrar"
@@ -210,7 +210,10 @@ export default function FormularioLogin({ glass = false }) {
           </Button>
         </form>
 
-        <Link href="/conta?action=forgot" className="mt-5 block text-center text-sm underline">
+        <Link
+          href="/conta?action=forgot"
+          className="mt-5 block text-center text-sm text-[#F2DF73] underline decoration-[#F2DF73] underline-offset-4 transition-colors hover:text-white focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F2DF73]"
+        >
           Esqueci minha senha
         </Link>
         <div className="mt-7 flex items-center gap-3">
@@ -223,7 +226,7 @@ export default function FormularioLogin({ glass = false }) {
           Ainda não tem conta?{" "}
           <Link
             href="/paginaCadastro"
-            className={`rounded-sm font-semibold underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F2DF83] ${glass ? "text-[#F2DF83]" : "text-[#30456D]"}`}
+            className={`rounded-sm font-semibold underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F2DF73] ${glass ? "text-[#F2DF73]" : "text-[#30456D]"}`}
           >
             Criar conta
           </Link>

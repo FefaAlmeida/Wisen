@@ -5,7 +5,7 @@ export function HeroLanding() {
   return (
     <section id="inicio" className="relative isolate w-full overflow-hidden bg-[#101A40]">
       <video
-        className="pointer-events-none absolute inset-0 z-0 h-full w-full scale-[1.05] object-cover object-center brightness-105 contrast-105"
+        className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover object-center brightness-105 contrast-105"
         autoPlay
         loop
         muted

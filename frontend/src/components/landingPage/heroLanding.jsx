@@ -39,16 +39,16 @@ export function HeroLanding() {
             className="flex w-full flex-wrap items-center justify-between gap-1 md:w-auto md:gap-2"
           >
             <Link
+              href="/paginaLogin"
+              className="rounded-full bg-[#E8E191] px-4 py-2 text-sm font-semibold text-[#101A40] shadow-[0_12px_20px_-12px_rgba(232,225,145,0.9)] transition-all duration-200 hover:bg-[#F3EB9B]"
+            >
+              Entrar
+            </Link>
+            <Link
               href="/paginaCadastro"
               className="rounded-full px-3 py-2 text-sm font-medium text-white/85 transition-all duration-200 hover:bg-white/10 hover:text-white"
             >
               Criar conta
-            </Link>
-            <Link
-              href="/paginaInicialCliente"
-              className="rounded-full bg-[#D1CB83] px-4 py-2 text-sm font-semibold text-[#101A40] shadow-[0_12px_20px_-12px_rgba(209,203,131,0.9)] transition-all duration-200 hover:bg-[#DBD48C]"
-            >
-              Acessar plataforma
             </Link>
           </nav>
         </div>

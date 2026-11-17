@@ -1,12 +1,48 @@
+"use client";
+
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 
 export function BannerImpacto() {
   const metricas = [
-    { valor: "+10 mil", legenda: "estudantes e profissionais" },
-    { valor: "+5 mil", legenda: "temas pesquisados" },
-    { valor: "+2 mil", legenda: "conexões em mapas mentais" },
-    { valor: "92%", legenda: "recomendam o Wisen" },
+    { valor: 10, prefixo: "+", sufixo: " mil", legenda: "estudantes e profissionais" },
+    { valor: 5, prefixo: "+", sufixo: " mil", legenda: "temas pesquisados" },
+    { valor: 2, prefixo: "+", sufixo: " mil", legenda: "conexões em mapas mentais" },
+    { valor: 92, prefixo: "", sufixo: "%", legenda: "recomendam o Wisen" },
   ];
+
+  const [progresso, setProgresso] = useState(0);
+  const metricasRef = useRef(null);
+
+  useEffect(() => {
+    const elemento = metricasRef.current;
+    if (!elemento) return;
+
+    let frameId = 0;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        observer.disconnect();
+
+        const inicio = performance.now();
+        const duracao = 2000;
+        const contar = (agora) => {
+          const decorrido = Math.min((agora - inicio) / duracao, 1);
+          setProgresso(Math.round(decorrido * 100) / 100);
+          if (decorrido < 1) frameId = window.requestAnimationFrame(contar);
+        };
+
+        frameId = window.requestAnimationFrame(contar);
+      },
+      { threshold: 0.3 },
+    );
+
+    observer.observe(elemento);
+    return () => {
+      observer.disconnect();
+      window.cancelAnimationFrame(frameId);
+    };
+  }, []);
 
   return (
     <section className="relative w-screen -mx-[calc(50vw-50%)]">
@@ -42,21 +78,44 @@ export function BannerImpacto() {
           </div>
 
           {/* Métricas */}
-          <div className="grid grid-cols-2 gap-x-6 gap-y-10 border-t border-white/15 pt-10 md:grid-cols-4 md:gap-5">
-            {metricas.map((item) => (
-              <div
-                key={item.legenda}
-                className="group space-y-3 md:border-l md:border-white/15 md:pl-6 md:first:border-l-0 md:first:pl-0"
-              >
-                <span className="block text-[clamp(2rem,3.4vw,3.1rem)] font-bold leading-none tracking-[-0.055em] text-white transition-colors duration-300 group-hover:text-[#E8E191]">
-                  {item.valor}
-                </span>
+          <div
+            ref={metricasRef}
+            className="grid grid-cols-2 gap-x-6 gap-y-10 border-t border-white/15 pt-10 md:grid-cols-4 md:gap-5"
+          >
+            {metricas.map((item) => {
+              const valorExibido =
+                progresso === 1
+                  ? item.valor
+                  : (item.valor * progresso).toLocaleString("pt-BR", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    });
 
-                <span className="block max-w-[180px] text-[12px] font-medium leading-[1.7] text-[#BDCADB]">
-                  {item.legenda}
-                </span>
-              </div>
-            ))}
+              return (
+                <div
+                  key={item.legenda}
+                  className="group space-y-3 md:border-l md:border-white/15 md:pl-6 md:first:border-l-0 md:first:pl-0"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="block text-[clamp(2rem,3.4vw,3.1rem)] font-bold leading-none tracking-[-0.055em] text-white transition-colors duration-300 group-hover:text-[#E8E191]"
+                  >
+                    {item.prefixo}
+                    {valorExibido}
+                    {item.sufixo}
+                  </span>
+                  <span className="sr-only">
+                    {item.prefixo}
+                    {item.valor}
+                    {item.sufixo}
+                  </span>
+
+                  <span className="block max-w-[180px] text-[12px] font-medium leading-[1.7] text-[#E8E191]">
+                    {item.legenda}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

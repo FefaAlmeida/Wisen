@@ -2,7 +2,11 @@
 
 import { useEffect, useRef } from "react";
 
-export function ConnectionsBackground({ fadeTop = true } = {}) {
+export function ConnectionsBackground({
+  fadeTop = true,
+  fullSpread = false,
+  particleDensity = 1,
+} = {}) {
   const canvasRef = useRef(null);
   const maskImage = fadeTop
     ? "linear-gradient(to bottom, transparent 0, transparent 370px, black 560px)"
@@ -31,12 +35,18 @@ export function ConnectionsBackground({ fadeTop = true } = {}) {
       canvas.height = Math.round(height * pixelRatio);
       context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 
-      const heroHeight = Math.min(height * 0.26, 390);
-      const count = Math.min(115, Math.max(48, Math.round((width * height) / 8500)));
+      const heroHeight = fullSpread ? 0 : Math.min(height * 0.26, 390);
+      const minimumCount = Math.round(48 * particleDensity);
+      const maximumCount = Math.round(115 * particleDensity);
+      const count = Math.min(
+        maximumCount,
+        Math.max(minimumCount, Math.round(((width * height) / 8500) * particleDensity)),
+      );
       particles = Array.from({ length: count }, () => ({
         x: Math.random() * width,
-        y:
-          Math.random() < 0.08
+        y: fullSpread
+          ? Math.random() * height
+          : Math.random() < 0.08
             ? Math.random() * heroHeight
             : heroHeight + Math.random() * (height - heroHeight),
         vx: (Math.random() - 0.5) * 0.28 * motionScale,
@@ -138,7 +148,7 @@ export function ConnectionsBackground({ fadeTop = true } = {}) {
       window.cancelAnimationFrame(frameId);
       resizeObserver.disconnect();
     };
-  }, []);
+  }, [fullSpread, particleDensity]);
 
   return (
     <div

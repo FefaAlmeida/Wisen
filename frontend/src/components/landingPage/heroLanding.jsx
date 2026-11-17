@@ -39,12 +39,6 @@ export function HeroLanding() {
             className="flex w-full flex-wrap items-center justify-between gap-1 md:w-auto md:gap-2"
           >
             <Link
-              href="/paginaLogin"
-              className="rounded-full px-3 py-2 text-sm font-medium text-white/85 transition-all duration-200 hover:bg-white/10 hover:text-white"
-            >
-              Entrar
-            </Link>
-            <Link
               href="/paginaCadastro"
               className="rounded-full px-3 py-2 text-sm font-medium text-white/85 transition-all duration-200 hover:bg-white/10 hover:text-white"
             >
@@ -52,7 +46,7 @@ export function HeroLanding() {
             </Link>
             <Link
               href="/paginaInicialCliente"
-              className="rounded-full bg-[#E8E191] px-4 py-2 text-sm font-semibold text-[#101A40] shadow-[0_12px_20px_-12px_rgba(232,225,145,0.9)] transition-all duration-200 hover:bg-[#F3EB9B]"
+              className="rounded-full bg-[#D1CB83] px-4 py-2 text-sm font-semibold text-[#101A40] shadow-[0_12px_20px_-12px_rgba(209,203,131,0.9)] transition-all duration-200 hover:bg-[#DBD48C]"
             >
               Acessar plataforma
             </Link>
@@ -98,7 +92,7 @@ export function HeroLanding() {
             <div className="flex flex-wrap items-center gap-3">
               <Link
                 href="/paginaCadastro"
-                className="group inline-flex h-14 items-center justify-center gap-3 rounded-xl bg-[#E8E191] px-5 text-sm font-semibold text-[#101A40] shadow-[0_12px_26px_-12px_rgba(232,225,145,0.9)] transition-colors duration-200 hover:bg-[#F3EB9B] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E8E191]"
+                className="group inline-flex h-14 items-center justify-center gap-3 rounded-xl bg-[#D1CB83] px-5 text-sm font-semibold text-[#101A40] shadow-[0_12px_26px_-12px_rgba(209,203,131,0.9)] transition-colors duration-200 hover:bg-[#DBD48C] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#D1CB83]"
               >
                 <span>Começar agora</span>
                 <ArrowRight className="h-4 w-4 text-[#101A40] transition-transform duration-300 group-hover:translate-x-1" />
@@ -108,8 +102,8 @@ export function HeroLanding() {
                 href="#sobre"
                 className="group inline-flex h-14 items-center justify-center gap-3 rounded-xl border border-white/20 bg-white/10 px-4 text-sm font-semibold text-white backdrop-blur-md transition-colors duration-200 hover:bg-white/15 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E8E191]"
               >
-                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#E8E191]">
-                  <Play className="ml-0.5 h-3 w-3 fill-[#101A40] text-[#101A40]" />
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#D1CB83]">
+                  <Play className="ml-0.5 h-3 w-3 fill-[#101A40] text-[#101A40] transition-transform duration-200 group-hover:scale-125" />
                 </div>
                 <span>Ver como funciona</span>
               </a>

@@ -1,171 +1,193 @@
-import { Bookmark, BrainCircuit, History, Home, Search, Settings, User } from "lucide-react";
+import { Bookmark, Clock3, Compass, GraduationCap, Home, Newspaper, Search } from "lucide-react";
 import Image from "next/image";
 
 export function ApresentacaoLanding() {
+  const navigation = [
+    { label: "Início", icon: Home, active: true },
+    { label: "Explorar", icon: Compass },
+    { label: "Revisões", icon: Clock3 },
+    { label: "Meu conhecimento", icon: GraduationCap },
+    { label: "Notícias", icon: Newspaper },
+    { label: "Salvos", icon: Bookmark },
+  ];
+  const articles = [
+    {
+      category: "Economia",
+      time: "há 2 horas",
+      title: "Copom mantém taxa Selic em 10,50% ao ano",
+      image:
+        "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=900&q=80",
+    },
+    {
+      category: "Meio ambiente",
+      time: "há 5 horas",
+      title: "Estudo aponta aceleração do derretimento das geleiras",
+      image:
+        "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=900&q=80",
+    },
+    {
+      category: "Tecnologia",
+      time: "há 8 horas",
+      title: "Inteligência artificial ganha espaço na educação",
+      image:
+        "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=900&q=80",
+    },
+  ];
+  const interests = [
+    { name: "Economia", percentage: 38 },
+    { name: "Meio ambiente", percentage: 27 },
+    { name: "Tecnologia", percentage: 22 },
+    { name: "Política", percentage: 13 },
+  ];
+
   return (
     <section id="sobre" className="scroll-mt-24 py-8 md:py-12">
-      <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-stretch lg:gap-14 xl:gap-20">
-        {/* Prévia da plataforma */}
-        <div className="relative lg:col-span-7">
-          {/* Camada de profundidade */}
+      <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-start lg:gap-14 xl:gap-20">
+        {/* Prévia da página inicial do cliente */}
+        <div className="relative order-2 lg:order-1 lg:col-span-7">
           <div className="pointer-events-none absolute -inset-2 rotate-[2deg] rounded-[30px] border border-[#DDDCA9]/70 bg-[#E8E191]/35 sm:-inset-3" />
-
           <div className="pointer-events-none absolute -bottom-6 left-[10%] right-[10%] h-16 rounded-full bg-[#30466E]/10 blur-3xl" />
-
-          {/* Moldura */}
           <div className="relative rounded-[25px] border border-[#D5DEE9] bg-gradient-to-br from-white to-[#E7EDF4] p-2.5 shadow-[0_22px_55px_-29px_rgba(16,26,64,0.35)] sm:p-3">
-            <div className="grid min-h-[440px] grid-cols-12 overflow-hidden rounded-[17px] border border-[#DFE6EF] bg-white text-xs">
-              {/* Sidebar */}
-              <div className="hidden space-y-7 border-r border-white/10 bg-[#172542] p-4 text-slate-300 sm:col-span-4 sm:block lg:p-5">
-                <div className="flex items-center gap-1.5 px-2">
-                  <span className="text-[19px] font-bold tracking-tight text-white">Wisen</span>
-
-                  <span className="h-2 w-2 rounded-full bg-[#E8E191]" />
+            <div className="flex min-h-[500px] overflow-hidden rounded-[17px] border border-[#DFE6EF] bg-[#F0F4F9] text-[#101A40]">
+              <aside className="hidden w-[28%] shrink-0 flex-col bg-[#202D3A] px-3 py-4 text-white sm:flex lg:px-4">
+                <div className="mb-4 flex flex-col items-center gap-1.5 border-b border-white/15 pb-3">
+                  <Image
+                    src="/logoWisen-simbolo.png"
+                    alt=""
+                    width={44}
+                    height={44}
+                    className="size-8 rounded-full border border-white/15 bg-[#f3f0e8] object-contain"
+                  />
+                  <span className="text-sm font-bold tracking-tight">Wisen</span>
                 </div>
 
-                <nav className="space-y-1 text-[11px]">
-                  <div className="flex items-center gap-2.5 rounded-lg border border-white/10 bg-white/10 px-3 py-2.5 font-semibold text-white">
-                    <Home className="h-3.5 w-3.5 shrink-0 text-[#E8E191]" />
-                    Início
-                  </div>
-
-                  <div className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[#B8C3D3] transition-colors hover:bg-white/5 hover:text-white">
-                    <Search className="h-3.5 w-3.5 shrink-0" />
-                    Buscar
-                  </div>
-
-                  <div className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[#B8C3D3] transition-colors hover:bg-white/5 hover:text-white">
-                    <Bookmark className="h-3.5 w-3.5 shrink-0" />
-                    Meu perfil
-                  </div>
-
-                  <div className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[#B8C3D3] transition-colors hover:bg-white/5 hover:text-white">
-                    <User className="h-3.5 w-3.5 shrink-0" />
-                    Meu conhec.
-                  </div>
-
-                  <div className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[#B8C3D3] transition-colors hover:bg-white/5 hover:text-white">
-                    <BrainCircuit className="h-3.5 w-3.5 shrink-0" />
-                    Mapas mentais
-                  </div>
-
-                  <div className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[#B8C3D3] transition-colors hover:bg-white/5 hover:text-white">
-                    <History className="h-3.5 w-3.5 shrink-0" />
-                    Leituras recentes
-                  </div>
+                <nav className="flex flex-col gap-1.5">
+                  {navigation.map(({ label, icon: Icon, active }) => (
+                    <div
+                      key={label}
+                      className={`flex h-8 items-center gap-2 rounded-lg px-2 text-[9px] ${
+                        active
+                          ? "bg-[#EBDD80] font-semibold text-[#202D3A]"
+                          : "text-white/75"
+                      }`}
+                    >
+                      <Icon className="h-3.5 w-3.5 shrink-0" />
+                      <span className="truncate">{label}</span>
+                    </div>
+                  ))}
                 </nav>
+              </aside>
 
-                <div className="border-t border-white/10 pt-5 text-[11px]">
-                  <div className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[#B8C3D3] transition-colors hover:bg-white/5 hover:text-white">
-                    <Settings className="h-3.5 w-3.5 shrink-0" />
-                    Configurações
-                  </div>
-                </div>
-              </div>
-
-              {/* Conteúdo interno */}
-              <div className="col-span-12 space-y-5 bg-[#FFFFFF] p-4 sm:col-span-8 sm:p-5">
-                {/* Barra superior */}
-                <div className="flex items-center justify-between gap-3 border-b border-[#EBEFF4] pb-4">
-                  <div className="relative w-full max-w-[220px]">
-                    <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#8997A9]" />
-
-                    <input
-                      type="text"
-                      placeholder="Buscar termos, ideias..."
-                      readOnly
-                      className="h-9 w-full rounded-full border border-[#E2E8F0] bg-[#F6F8FB] pl-9 pr-3 text-[11px] text-[#526175] outline-none placeholder:text-[#9AA6B6]"
-                    />
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#E8E191] text-[10px] font-bold text-[#101A40]">
+              <div className="min-w-0 flex-1 p-3 sm:p-4">
+                <div className="mb-3 flex items-center justify-between gap-2 border-b border-[#DEE5ED] pb-2">
+                  <span className="min-w-0 truncate text-[9px] font-semibold text-[#30466E]">
+                    Entenda o que acontece
+                  </span>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <div className="flex h-7 w-[125px] items-center gap-1.5 rounded-full border border-[#D5DEE9] bg-white px-2 text-[8px] text-[#8996A8] sm:w-[155px]">
+                      <Search className="h-3 w-3 shrink-0" />
+                      <span className="truncate">Buscar notícias, conceitos...</span>
+                    </div>
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#EBDD80] text-[8px] font-bold">
                       MA
                     </div>
                   </div>
                 </div>
 
-                {/* Saudação */}
-                <div className="space-y-1">
-                  <h3 className="text-[15px] font-bold tracking-tight text-[#101A40]">
-                    Boa tarde, Maria
-                  </h3>
+                <div className="grid min-h-[156px] grid-cols-1 items-center gap-1 border-b border-[#DEE5ED] pb-3 sm:grid-cols-[minmax(0,1fr)_100px]">
+                  <div className="min-w-0">
+                    <p className="mb-2 text-[7px] font-semibold tracking-[0.18em] text-[#93A3BE]">
+                      BOM DIA, MARIA
+                    </p>
+                    <h3 className="text-[17px] leading-[1.08] font-medium tracking-[-0.04em] text-[#101A40]">
+                      Suas notícias.
+                      <span className="block text-[#D7BF4D]">Seu aprendizado.</span>
+                      <span className="block">Um mundo de conexões.</span>
+                    </h3>
+                    <p className="mt-2 max-w-[270px] text-[8px] leading-relaxed text-[#7182A1]">
+                      Acompanhe os acontecimentos reais do mundo e evolua seu conhecimento de forma
+                      personalizada.
+                    </p>
+                    <span className="mt-2 inline-flex items-center gap-1 rounded-md bg-[#F3E69A] px-2 py-1 text-[7px] font-semibold text-[#30466E]">
+                      Explorar notícias <span aria-hidden="true">→</span>
+                    </span>
+                  </div>
 
-                  <p className="text-[11px] text-[#8996A8]">
-                    Aprenda 10m com resumo personalizado.
-                  </p>
-                </div>
-
-                {/* Card de notícia */}
-                <div className="group overflow-hidden rounded-xl border border-[#E4EAF1] bg-white shadow-[0_8px_20px_-14px_rgba(16,26,64,0.25)] transition-shadow duration-300 hover:shadow-md">
-                  <div className="overflow-hidden">
+                  <div className="relative hidden h-[130px] w-[100px] sm:block">
                     <Image
-                      src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=600&auto=format&fit=crop"
-                      width={600}
-                      height={240}
-                      alt="Destaque"
-                      sizes="(max-width: 1024px) 100vw, 50vw"
-                      className="h-32 w-full object-cover transition-transform duration-700 group-hover:scale-[1.025] sm:h-36"
+                      src="/foto_paginaInicialCliente.png"
+                      alt=""
+                      fill
+                      sizes="100px"
+                      className="object-contain"
                     />
                   </div>
-
-                  <div className="space-y-2 p-3.5">
-                    <h4 className="text-[12px] font-bold leading-relaxed text-[#101A40]">
-                      Grandes apostas na redução de emissões nos próximos nove anos
-                    </h4>
-
-                    <p className="line-clamp-2 text-[10px] leading-relaxed text-[#8996A8]">
-                      Uma análise completa sobre os acordos globais no que respeita ao setor nos
-                      próximos anos.
-                    </p>
-                  </div>
                 </div>
 
-                {/* Sugestões */}
-                <div className="space-y-3 pt-1">
-                  <span className="block text-[10px] font-bold uppercase tracking-[0.12em] text-[#8996A8]">
-                    Sugestões do tempo
-                  </span>
-
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between gap-2 rounded-lg border border-[#E8EDF3] bg-[#F7F9FC] px-3 py-2.5 transition-colors hover:bg-[#EFF3F8]">
-                      <span className="text-[11px] font-medium text-[#2B333F]">
-                        Impacto econômico
-                      </span>
-
-                      <span className="shrink-0 rounded-full bg-[#E8E191]/70 px-2 py-1 text-[9px] font-bold text-[#776925]">
-                        Tendência
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between gap-2 rounded-lg border border-[#E8EDF3] bg-[#F7F9FC] px-3 py-2.5 transition-colors hover:bg-[#EFF3F8]">
-                      <span className="text-[11px] font-medium text-[#2B333F]">
-                        Ciências da Saúde
-                      </span>
-
-                      <span className="shrink-0 rounded-full bg-[#F7EBCF] px-2 py-1 text-[9px] font-bold text-[#967436]">
-                        Em alta
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between gap-2 rounded-lg border border-[#E8EDF3] bg-[#F7F9FC] px-3 py-2.5 transition-colors hover:bg-[#EFF3F8]">
-                      <span className="text-[11px] font-medium text-[#2B333F]">
-                        Inteligência Artificial
-                      </span>
-
-                      <span className="shrink-0 rounded-full bg-[#F7E5E7] px-2 py-1 text-[9px] font-bold text-[#A35D67]">
-                        Polêmica
-                      </span>
-                    </div>
+                <section className="mt-3">
+                  <div className="mb-2 flex items-center justify-between">
+                    <h4 className="text-[10px] font-semibold text-[#30466E]">Seu feed de hoje</h4>
+                    <span className="text-[7px] font-medium text-[#30466E]">Ver todas →</span>
                   </div>
-                </div>
+
+                  <div className="grid grid-cols-3 gap-1.5">
+                    {articles.map((article) => (
+                      <article
+                        key={article.title}
+                        className="overflow-hidden rounded-md bg-white shadow-[0_2px_8px_rgba(16,26,64,0.06)]"
+                      >
+                        <Image
+                          src={article.image}
+                          width={300}
+                          height={120}
+                          alt=""
+                          sizes="(max-width: 640px) 30vw, 15vw"
+                          className="h-12 w-full object-cover"
+                        />
+                        <div className="p-1.5">
+                          <div className="mb-1 flex justify-between gap-1 text-[6px]">
+                            <span className="font-semibold uppercase text-[#30466E]">
+                              {article.category}
+                            </span>
+                            <span className="shrink-0 text-[#94A2B9]">{article.time}</span>
+                          </div>
+                          <h5 className="line-clamp-2 text-[8px] leading-tight font-semibold text-[#101A40]">
+                            {article.title}
+                          </h5>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+
+                <section className="mt-3">
+                  <h4 className="mb-2 text-[9px] font-semibold text-[#30466E]">
+                    O que você lê diariamente
+                  </h4>
+                  <div className="grid grid-cols-4 gap-1.5">
+                    {interests.map((interest) => (
+                      <div key={interest.name} className="rounded-md bg-white p-1.5">
+                        <div className="flex justify-between gap-1 text-[6px] text-[#52617E]">
+                          <span className="truncate">{interest.name}</span>
+                          <span>{interest.percentage}%</span>
+                        </div>
+                        <div className="mt-1 h-1 overflow-hidden rounded-full bg-[#E4EAF1]">
+                          <div
+                            className="h-full rounded-full bg-[#D7BF4D]"
+                            style={{ width: `${interest.percentage}%` }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
               </div>
             </div>
           </div>
         </div>
 
         {/* Texto da apresentação */}
-        <div className="flex flex-col gap-6 lg:col-span-5 lg:justify-between lg:py-3 lg:pl-3">
+        <div className="order-1 flex flex-col gap-6 lg:order-2 lg:col-span-5 lg:justify-between lg:py-3 lg:pl-3">
           <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#8491A3]">
             Uma nova forma de aprender
           </span>

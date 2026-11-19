@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import MiniaturaCuradoria from "./miniaturaCuradoria";
 
 const estilosStatus = {
   Pendente: "bg-[#FBF2CC] text-[#7A6418]",
@@ -27,8 +28,8 @@ export default function CardEvento({
             : "border-[#E5EAF2] bg-white"
       }`}
     >
-      <div className="flex items-center gap-4">
-        <div className="pt-0.5">
+      <div className="flex min-w-0 items-center gap-4">
+        <div className="shrink-0 pt-0.5">
           <Checkbox
             checked={selecionado}
             onCheckedChange={(valor) => aoSelecionar(evento.id, valor === true)}
@@ -37,18 +38,18 @@ export default function CardEvento({
           />
         </div>
 
-        <div className="h-[76px] w-[76px] shrink-0 overflow-hidden rounded-lg bg-[#EDF2F8]">
-          {evento.imagem && (
-            <img src={evento.imagem} alt={evento.titulo} className="h-full w-full object-cover" />
-          )}
-        </div>
+        <MiniaturaCuradoria
+          categoria={evento.categoria}
+          titulo={evento.titulo}
+          className="h-[76px] w-[76px]"
+        />
 
         <div className="min-w-0 flex-1">
-          <h3 className="text-base font-semibold leading-6 text-[#101A40]">{evento.titulo}</h3>
+          <h3 className="line-clamp-1 text-base font-semibold leading-6 text-[#101A40]">
+            {evento.titulo}
+          </h3>
 
-          <p className="mt-1 max-h-[44px] overflow-hidden text-sm leading-5 text-[#6E809F]">
-            {evento.descricao}
-          </p>
+          <p className="mt-1 line-clamp-2 text-sm leading-5 text-[#6E809F]">{evento.descricao}</p>
 
           <div className="mt-2.5 flex flex-wrap items-center gap-2">
             <Badge className="rounded-full border-0 bg-[#EEF3FB] px-3 py-1 text-xs font-medium text-[#5B6F93] shadow-none">

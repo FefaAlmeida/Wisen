@@ -23,7 +23,7 @@ export default function RevisoesLayout({ children }) {
 
           {children}
         </div>
-        <Footer variant="cliente" />
+        <Footer variant="cliente" sidebarOffset={false} />
       </main>
     </div>
   );

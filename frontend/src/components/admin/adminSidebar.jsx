@@ -1,16 +1,6 @@
 "use client";
 
-import {
-  Activity,
-  LayoutDashboard,
-  LogOut,
-  Menu,
-  Newspaper,
-  Rss,
-  Tags,
-  Users,
-  X,
-} from "lucide-react";
+import { Bot, CalendarDays, Gauge, Globe, LogOut, Menu, Tags, UsersRound, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -18,12 +8,12 @@ import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/com
 import { requisitar } from "@/services/api";
 
 const navigation = [
-  { label: "Visão geral", href: "/paginaInicioAdm", icon: LayoutDashboard },
-  { label: "Curadoria de eventos", href: "/paginaCuidadoriaEventosAdm", icon: Newspaper },
-  { label: "Gestão de usuários", href: "/paginaGestaoUsuariosAdm", icon: Users },
-  { label: "Gestão de fontes", href: "/paginaGestaoFonteAdm", icon: Rss },
+  { label: "Visão geral", href: "/paginaInicioAdm", icon: Gauge },
+  { label: "Curadoria de eventos", href: "/paginaCuidadoriaEventosAdm", icon: CalendarDays },
+  { label: "Gestão de usuários", href: "/paginaGestaoUsuariosAdm", icon: UsersRound },
+  { label: "Gestão de fontes", href: "/paginaGestaoFonteAdm", icon: Globe },
   { label: "Gestão de categorias", href: "/paginaGestaoCategoriasAdm", icon: Tags },
-  { label: "Monitor de IA", href: "/paginaMonitorIa", icon: Activity },
+  { label: "Monitor de IA", href: "/paginaMonitorIa", icon: Bot },
 ];
 
 function AdminBrand({ className = "", large = false }) {

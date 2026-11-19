@@ -1,9 +1,17 @@
 import Link from "next/link";
 
-export function Footer({ variant = "plataforma", background = "bg-[#F0F4F9]" }) {
+export function Footer({
+  variant = "plataforma",
+  background = "bg-[#F0F4F9]",
+  sidebarOffset = variant === "cliente",
+}) {
   if (variant === "cliente" || variant === "admin") {
     return (
-      <footer className={`relative z-10 w-full ${background} text-[#607092]`}>
+      <footer
+        className={`relative z-10 w-full ${background} text-[#607092} ${
+          sidebarOffset ? "sm:ml-[128px] sm:w-auto lg:ml-[220px]" : ""
+        }`}
+      >
         <div className="mx-auto max-w-7xl px-6 py-7 text-center md:px-8">
           <div className="border-t border-[#DCE3ED] pt-6">
             <p className="text-[11px]">© 2026 Wisen. Todos os direitos reservados.</p>

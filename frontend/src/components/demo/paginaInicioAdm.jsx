@@ -7,7 +7,7 @@ import { TabelasDesempenhoAdm } from "@/components/inicioAdm/tabelasDesempenhoAd
 export default function PaginaInicioAdm() {
   return (
     <AdminLayout activeItem="Visão geral">
-      <div className="min-h-screen space-y-8 bg-slate-50/60 p-6 font-[family-name:var(--font-geist-sans)] text-[#2B333F] selection:bg-[#EBDD80] md:p-10">
+      <div className="min-h-screen space-y-8 bg-transparent p-6 font-[family-name:var(--font-geist-sans)] text-wisen-titulo selection:bg-[#EBDD80] md:p-10">
         {/* Etapa 1: Banner do Topo */}
         <BannerInicioAdm />
 

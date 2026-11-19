@@ -4,7 +4,7 @@ import GestaoUsuarios from "@/components/gestaoUsuariosAdm/gestaoUsuarios";
 export default function PaginaGestaoUsuarios() {
   return (
     <AdminLayout activeItem="Gestão de usuários">
-      <main className="min-h-screen w-full min-w-0 bg-[#F1F3F6] font-[family-name:var(--font-geist-sans)]">
+      <main className="min-h-screen w-full min-w-0 bg-transparent font-[family-name:var(--font-geist-sans)]">
         <div className="w-full px-5 pt-8 pb-12 md:px-8">
           <header className="mb-6">
             <p className="mb-1 text-sm text-[#7183A6]">Administrador</p>

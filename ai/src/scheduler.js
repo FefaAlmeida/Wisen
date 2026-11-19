@@ -35,10 +35,13 @@ export async function scheduleWork(pool, boss, config, tasks) {
         await sendOnce(c, boss, QUEUES.generate, "id", row.id);
       }
   });
-  if (config.OPENAI_API_KEY || generationMode(config) === "mock") {
+  if (
+    config.AI_BACKGROUND_GENERATION_ENABLED &&
+    (config.OPENAI_API_KEY || generationMode(config) === "mock")
+  ) {
     const articles = (
       await pool.query(
-        "SELECT a.id FROM articles a WHERE a.processing_status='processed' AND a.visible AND NOT EXISTS(SELECT 1 FROM sources s WHERE s.id=a.source_id AND s.slug='wisen-demo') AND NOT EXISTS(SELECT 1 FROM article_analyses aa WHERE aa.article_id=a.id AND ($1='mock' OR aa.model<>'mock-v1')) AND NOT EXISTS(SELECT 1 FROM generation_tasks t WHERE t.article_id=a.id AND t.operation='analysis' AND t.status IN ('pending','processing','paused','completed') AND COALESCE(t.input->>'provider','openai')=$1) ORDER BY a.created_at LIMIT 5",
+        "SELECT a.id FROM articles a WHERE a.processing_status='processed' AND a.visible AND NOT EXISTS(SELECT 1 FROM sources s WHERE s.id=a.source_id AND s.slug='wisen-demo') AND NOT EXISTS(SELECT 1 FROM article_analyses aa WHERE aa.article_id=a.id AND ($1='mock' OR aa.model<>'mock-v1')) AND NOT EXISTS(SELECT 1 FROM generation_tasks t WHERE t.article_id=a.id AND t.operation='analysis' AND COALESCE(t.input->>'provider','openai')=$1) ORDER BY a.created_at LIMIT 5",
         [mode],
       )
     ).rows;
@@ -46,7 +49,7 @@ export async function scheduleWork(pool, boss, config, tasks) {
       await tasks.create(null, { operation: "analysis", articleId: article.id });
     const concepts = (
       await pool.query(
-        "SELECT c.id FROM concepts c WHERE NOT EXISTS(SELECT 1 FROM question_bank q WHERE q.concept_id=c.id AND ($1='mock' OR q.prompt NOT LIKE '[Demonstração]%')) AND NOT EXISTS(SELECT 1 FROM generation_tasks t WHERE t.concept_id=c.id AND t.operation='questions' AND t.status IN ('pending','processing','paused','completed') AND COALESCE(t.input->>'provider','openai')=$1) LIMIT 3",
+        "SELECT c.id FROM concepts c WHERE NOT EXISTS(SELECT 1 FROM question_bank q WHERE q.concept_id=c.id AND ($1='mock' OR q.prompt NOT LIKE '[Demonstração]%')) AND NOT EXISTS(SELECT 1 FROM generation_tasks t WHERE t.concept_id=c.id AND t.operation='questions' AND COALESCE(t.input->>'provider','openai')=$1) LIMIT 3",
         [mode],
       )
     ).rows;

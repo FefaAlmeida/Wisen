@@ -69,7 +69,7 @@ test("verificação usa token único; geração exige e-mail verificado", async 
     conceptId: concept.id,
   });
   assert.equal(task.statusCode, 202, task.body);
-  await generationWorker(pool, config, async () => ({
+  await generationWorker(pool, { ...config, AI_BACKGROUND_GENERATION_ENABLED: true }, async () => ({
     data: { text: "Explicação de economia.", concepts: [] },
     usage: { input_tokens: 300, output_tokens: 40 },
   }))(task.json().id);
@@ -228,7 +228,7 @@ test("análise estruturada cria evento, conceitos, relações e proveniência; c
   const task = await tasks.create(null, { operation: "analysis", articleId: article.id });
   const name = `Selic ${randomUUID()}`,
     prerequisite = `Juros ${randomUUID()}`;
-  await generationWorker(pool, config, async () => ({
+  await generationWorker(pool, { ...config, AI_BACKGROUND_GENERATION_ENABLED: true }, async () => ({
     data: {
       title: "Decisão de juros",
       summary: "A taxa Selic influencia os juros.",
@@ -357,7 +357,7 @@ test("interrupção real do processo conserva reserva e impede cobrança duplica
       ])
     ).rows[0];
     assert.ok(reserved);
-    await generationWorker(pool, config, () =>
+    await generationWorker(pool, { ...config, AI_BACKGROUND_GENERATION_ENABLED: true }, () =>
       assert.fail("Consumo desconhecido não pode repetir chamada"),
     )(task.id);
     const paused = (await pool.query("SELECT status FROM generation_tasks WHERE id=$1", [task.id]))

@@ -64,7 +64,7 @@ test("cliente sem e-mail confirmado gera explicação, trecho, questões e corre
   const context = await read.event(user.id, event.id);
   const article = await read.article(context.articles[0].id);
   const review = (await read.reviews(user.id))[0];
-  const worker = generationWorker(pool, config);
+  const worker = generationWorker(pool, { ...config, AI_BACKGROUND_GENERATION_ENABLED: true });
   for (const payload of [
     { operation: "explanation", eventId: event.id },
     { operation: "deepen", eventId: event.id },
@@ -133,7 +133,7 @@ test("ao ativar OpenAI, o agendador reprocessa análise mock e ignora artigos fi
   ).rows[0];
   const tasks = taskService(pool, boss, config);
   const analysis = await tasks.create(null, { operation: "analysis", articleId: article.id });
-  await generationWorker(pool, config)(analysis.id);
+  await generationWorker(pool, { ...config, AI_BACKGROUND_GENERATION_ENABLED: true })(analysis.id);
   assert.equal(
     (await pool.query("SELECT status FROM generation_tasks WHERE id=$1", [analysis.id])).rows[0]
       .status,
@@ -143,7 +143,12 @@ test("ao ativar OpenAI, o agendador reprocessa análise mock e ignora artigos fi
   await scheduleWork(
     pool,
     boss,
-    { ...config, AI_PROVIDER: "openai", OPENAI_API_KEY: "not-sent" },
+    {
+      ...config,
+      AI_BACKGROUND_GENERATION_ENABLED: true,
+      AI_PROVIDER: "openai",
+      OPENAI_API_KEY: "not-sent",
+    },
     { create: async (_user, input) => scheduled.push(input) },
   );
   assert.ok(scheduled.some((t) => t.articleId === article.id));
@@ -153,4 +158,34 @@ test("ao ativar OpenAI, o agendador reprocessa análise mock e ignora artigos fi
     )
   ).rows;
   assert.ok(!scheduled.some((t) => demoArticles.some((a) => a.id === t.articleId)));
+});
+
+test("disabled background never creates tasks or calls provider for queued analysis", async () => {
+  const scheduled = [];
+  for (let i = 0; i < 2; i++)
+    await scheduleWork(
+      pool,
+      boss,
+      { ...config, AI_BACKGROUND_GENERATION_ENABLED: false },
+      { create: async (...args) => scheduled.push(args) },
+    );
+  assert.equal(scheduled.length, 0);
+  const task = (
+    await pool.query(
+      "INSERT INTO generation_tasks(operation,cache_key,input) VALUES('analysis',$1,'{}') RETURNING id",
+      [randomUUID()],
+    )
+  ).rows[0];
+  await generationWorker(pool, { ...config, AI_BACKGROUND_GENERATION_ENABLED: false }, () =>
+    assert.fail("no paid call"),
+  )(task.id);
+  const result = (
+    await pool.query("SELECT status,error FROM generation_tasks WHERE id=$1", [task.id])
+  ).rows[0];
+  assert.equal(result.status, "paused");
+  assert.equal(result.error, "BACKGROUND_DISABLED");
+  assert.equal(
+    (await pool.query("SELECT * FROM generation_charges WHERE task_id=$1", [task.id])).rowCount,
+    0,
+  );
 });

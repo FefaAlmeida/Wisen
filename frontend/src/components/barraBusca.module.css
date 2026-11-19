@@ -20,16 +20,6 @@
 .trigger span {
   flex: 1;
 }
-.trigger kbd {
-  display: grid;
-  place-items: center;
-  width: 20px;
-  height: 19px;
-  border: 1px solid #dce3ed;
-  border-radius: 4px;
-  background: #f0f4f9;
-  font: inherit;
-}
 .trigger:focus-visible,
 .dialog button:focus-visible,
 .result:focus-visible {

@@ -162,7 +162,6 @@ export function BarraBusca({ onQueryChange, value }) {
       <DialogTrigger ref={triggerRef} className={styles.trigger}>
         <Search size={16} aria-hidden="true" />
         <span>Buscar no Wisen</span>
-        <kbd>/</kbd>
       </DialogTrigger>
       <DialogContent
         className={styles.dialog}

@@ -1,5 +1,6 @@
 import { BarraBusca } from "@/components/barraBusca";
 import { Footer } from "@/components/footer";
+import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
 import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import { CabecalhoConhecimento } from "@/components/meuConhecimento/cabecalhoConhecimento";
 import { CartaoFocoAtual } from "@/components/meuConhecimento/cartaoFocoAtual";
@@ -13,9 +14,10 @@ import Sidebar from "@/components/sidebar";
 export default function PaginaConhecimento() {
   return (
     <div className="min-h-screen">
-      <Sidebar activeItem="Meu conhecimento" />
+      <Sidebar activeItem="Aprendizado" />
 
       <main className="relative isolate min-h-screen min-w-0 bg-[#F0F4F8] font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
+        <ConnectionsBackground />
         <div className="relative z-10 mx-auto w-full max-w-[1600px]">
           {/* Barra de pesquisa e perfil */}
           <div className="relative z-50 flex items-center justify-end gap-3 px-5 pt-3 md:px-8">

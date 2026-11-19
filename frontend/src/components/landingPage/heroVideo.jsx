@@ -36,7 +36,7 @@ export default function HeroVideo() {
       muted
       playsInline
       preload="metadata"
-      poster="/globo-poster-v1.webp"
+      poster="/globoWisen-v1.webp"
       tabIndex={-1}
       aria-hidden="true"
     >

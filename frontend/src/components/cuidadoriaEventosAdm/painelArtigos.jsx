@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import MiniaturaCuradoria from "./miniaturaCuradoria";
 
 export default function PainelArtigos({
   evento,
@@ -22,11 +23,11 @@ export default function PainelArtigos({
     <Card className="gap-0 rounded-lg border border-[#E4EAF3] bg-white p-5 shadow-none">
       <div className="mb-5 flex items-start justify-between gap-4">
         <div className="flex min-w-0 items-start gap-4">
-          <div className="h-[96px] w-[92px] shrink-0 overflow-hidden rounded-lg bg-[#EEF3FA]">
-            {evento.imagem && (
-              <img src={evento.imagem} alt={evento.titulo} className="h-full w-full object-cover" />
-            )}
-          </div>
+          <MiniaturaCuradoria
+            categoria={evento.categoria}
+            titulo={evento.titulo}
+            className="h-24 w-24"
+          />
 
           <div className="min-w-0 pt-1">
             <h2 className="text-xl font-semibold leading-7 text-[#101A40]">{evento.titulo}</h2>
@@ -134,22 +135,20 @@ export default function PainelArtigos({
         {artigosFiltrados.map((artigo) => (
           <div
             key={artigo.id}
-            className="flex items-center gap-3 rounded-lg px-1 py-2 transition-colors hover:bg-[#FBF7E5]"
+            className="grid grid-cols-[58px_minmax(0,1fr)_auto] items-center gap-3 rounded-lg px-1 py-2 transition-colors hover:bg-[#FBF7E5]"
           >
-            <div className="h-[58px] w-[58px] shrink-0 overflow-hidden rounded-lg bg-[#EEF3FA]">
-              {artigo.imagem && (
-                <img
-                  src={artigo.imagem}
-                  alt={artigo.titulo}
-                  className="h-full w-full object-cover"
-                />
-              )}
-            </div>
+            <MiniaturaCuradoria
+              categoria={evento.categoria}
+              titulo={artigo.titulo}
+              className="h-[58px] w-[58px]"
+            />
 
             <div className="min-w-0 flex-1">
-              <h4 className="text-sm font-semibold leading-5 text-[#101A40]">{artigo.titulo}</h4>
+              <h4 className="line-clamp-2 text-sm font-semibold leading-5 text-[#101A40]">
+                {artigo.titulo}
+              </h4>
 
-              <p className="mt-1 text-xs text-[#8394B0]">
+              <p className="mt-1 truncate text-xs text-[#8394B0]">
                 {artigo.fonte} · {artigo.data}
               </p>
             </div>
@@ -158,7 +157,7 @@ export default function PainelArtigos({
               type="button"
               variant="outline"
               onClick={() => aoMover(artigo)}
-              className="h-9 rounded-lg border-[#E3E9F3] bg-[#F4F7FC] px-3 text-sm font-medium text-[#30466E] shadow-none transition-colors hover:bg-[#FBF7E5]"
+              className="h-9 shrink-0 rounded-lg border-[#E3E9F3] bg-[#F4F7FC] px-3 text-sm font-medium text-[#30466E] shadow-none transition-colors hover:bg-[#FBF7E5]"
             >
               <svg
                 viewBox="0 0 24 24"

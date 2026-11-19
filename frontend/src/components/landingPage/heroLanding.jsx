@@ -177,7 +177,7 @@ export function HeroLanding() {
               personalizadas e o seu mundo completo ao seu alcance.
             </p>
 
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-5 sm:gap-3">
               <Link
                 href="/paginaCadastro"
                 className="group inline-flex h-14 items-center justify-center gap-3 rounded-xl bg-[#D1CB83] px-5 text-sm font-semibold text-[#101A40] shadow-[0_12px_26px_-12px_rgba(209,203,131,0.9)] transition-colors duration-200 hover:bg-[#DBD48C] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#D1CB83]"

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { BarraBusca } from "@/components/barraBusca";
 import { Footer } from "@/components/footer";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
 import MenuPerfil from "@/components/homeCliente/menuPerfil";
@@ -170,10 +169,6 @@ export default function PerfilPage() {
         <ConnectionsBackground />
         <div className="relative z-10 mx-auto w-full max-w-[1600px]">
           <div className="relative z-50 flex items-center justify-end gap-3 px-4 pt-3 sm:px-5 lg:px-7">
-            <div className="relative min-w-0 flex-1 sm:w-[360px] sm:flex-none">
-              <BarraBusca />
-            </div>
-
             <MenuPerfil />
           </div>
 

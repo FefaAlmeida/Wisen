@@ -1,38 +1,40 @@
-import { BarChart2, BrainCircuit, FileText, Globe, UserPlus } from "lucide-react";
+import { BarChart2, CalendarDays, FileText, Lightbulb, UserPlus } from "lucide-react";
 
 export function GraficosAtividadeAdm() {
   const temas = [
-    { nome: "Economia", pct: "28%", cor: "bg-[#EBDD80]" },
-    { nome: "Meio ambiente", pct: "22%", cor: "bg-[#2B333F]" },
-    { nome: "Tecnologia", pct: "18%", cor: "bg-[#4B5563]" },
-    { nome: "Saúde", pct: "12%", cor: "bg-[#9CA3AF]" },
-    { nome: "Política", pct: "10%", cor: "bg-[#CBD5E1]" },
-    { nome: "Sociedade", pct: "10%", cor: "bg-[#E2E8F0]" },
+    { nome: "Economia", pct: "28%", cor: "bg-[#D7BF4D]" },
+    { nome: "Meio ambiente", pct: "22%", cor: "bg-[#30466E]" },
+    { nome: "Tecnologia", pct: "18%", cor: "bg-[#7182A1]" },
+    { nome: "Saúde", pct: "12%", cor: "bg-[#A9B8CB]" },
+    { nome: "Política", pct: "10%", cor: "bg-[#EBDD80]" },
+    { nome: "Sociedade", pct: "10%", cor: "bg-[#E3E9F1]" },
   ];
 
   const atividades = [
     { icone: UserPlus, texto: "Novo usuário cadastrado", tempo: "há 5 minutos" },
     { icone: FileText, texto: "Conteúdo publicado", tempo: "há 32 minutos" },
-    { icone: Globe, texto: "Evento atualizado", tempo: "há 1 hora" },
-    { icone: BrainCircuit, texto: "Conceito adicionado", tempo: "há 2 horas" },
+    { icone: CalendarDays, texto: "Evento atualizado", tempo: "há 1 hora" },
+    { icone: Lightbulb, texto: "Conceito adicionado", tempo: "há 2 horas" },
     { icone: BarChart2, texto: "Relatório gerado", tempo: "há 3 horas" },
   ];
 
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
       {/* 1. Gráfico de Linha (Evolução de Usuários) */}
-      <div className="admin-chart-card space-y-4 rounded-lg border border-slate-200/80 bg-white p-5 shadow-2xs lg:col-span-6">
+      <div className="admin-chart-card space-y-4 rounded-lg border border-[#E3E9F1] bg-white p-5 shadow-2xs lg:col-span-6">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-base font-semibold text-[#2B333F]">Evolução de usuários ativos</h3>
-            <p className="text-xs text-slate-500">Comparativo dos últimos 6 meses</p>
+            <h3 className="text-base font-semibold text-wisen-titulo">
+              Evolução de usuários ativos
+            </h3>
+            <p className="text-xs text-[#7182A1]">Comparativo dos últimos 6 meses</p>
           </div>
           <div className="flex items-center gap-3 text-xs font-semibold">
-            <span className="flex items-center gap-1 text-[#2B333F]">
-              <span className="w-2 h-2 rounded-full bg-[#EBDD80]" /> Ativos
+            <span className="flex items-center gap-1 text-[#9A7E14]">
+              <span className="w-2 h-2 rounded-full bg-[#D7BF4D]" /> Ativos
             </span>
-            <span className="flex items-center gap-1 text-slate-400">
-              <span className="w-2 h-2 rounded-full bg-slate-300" /> Novos
+            <span className="flex items-center gap-1 text-[#7182A1]">
+              <span className="w-2 h-2 rounded-full bg-[#A9B8CB]" /> Novos
             </span>
           </div>
         </div>
@@ -63,14 +65,14 @@ export function GraficosAtividadeAdm() {
               pathLength={1}
               d="M 0 70 Q 80 50, 160 35 T 320 20 T 400 15"
               fill="none"
-              stroke="#EBDD80"
+              stroke="#D7BF4D"
               strokeWidth="3"
             />
 
-            <circle className="admin-chart-point" cx="400" cy="15" r="4" fill="#2B333F" />
+            <circle className="admin-chart-point" cx="400" cy="15" r="4" fill="#D6B92F" />
           </svg>
 
-          <div className="flex justify-between border-t border-slate-100 pt-2 text-xs text-slate-500">
+          <div className="flex justify-between border-t border-[#E3E9F1] pt-2 text-xs text-[#7182A1]">
             <span>Abr</span>
             <span>Mai</span>
             <span>Jun</span>
@@ -82,12 +84,12 @@ export function GraficosAtividadeAdm() {
       </div>
 
       {/* 2. Gráfico Donut (Distribuição dos Temas) */}
-      <div className="admin-chart-card admin-chart-card-delayed space-y-4 rounded-lg border border-slate-200/80 bg-white p-5 shadow-2xs lg:col-span-6">
+      <div className="admin-chart-card admin-chart-card-delayed space-y-4 rounded-lg border border-[#E3E9F1] bg-white p-5 shadow-2xs lg:col-span-6">
         <div>
-          <h3 className="text-base font-semibold text-[#2B333F]">
+          <h3 className="text-base font-semibold text-wisen-titulo">
             Distribuição dos temas mais acessados
           </h3>
-          <p className="text-xs text-slate-500">Baseado nas leituras e revisões dos usuários</p>
+          <p className="text-xs text-[#7182A1]">Baseado nas leituras e revisões dos usuários</p>
         </div>
 
         <div className="flex items-center justify-center gap-8">
@@ -109,7 +111,7 @@ export function GraficosAtividadeAdm() {
               />
               <path
                 className="admin-chart-segment-dark"
-                stroke="#2B333F"
+                stroke="#30466E"
                 strokeWidth="4"
                 strokeDasharray="22, 100"
                 strokeDashoffset="-28"
@@ -118,8 +120,10 @@ export function GraficosAtividadeAdm() {
               />
             </svg>
             <div className="absolute text-center">
-              <span className="block text-base font-bold leading-none text-[#2B333F]">1.248</span>
-              <span className="text-sm text-slate-500">acessos</span>
+              <span className="block text-base font-bold leading-none text-wisen-titulo">
+                1.248
+              </span>
+              <span className="text-sm text-[#7182A1]">acessos</span>
             </div>
           </div>
 
@@ -128,9 +132,9 @@ export function GraficosAtividadeAdm() {
               <div key={item.nome} className="flex items-center gap-3">
                 <div className="flex items-center gap-2">
                   <span className={`w-2 h-2 rounded-full ${item.cor}`} />
-                  <span className="text-slate-600 font-medium">{item.nome}</span>
+                  <span className="font-medium text-[#526584]">{item.nome}</span>
                 </div>
-                <span className="min-w-10 text-right font-bold text-[#2B333F]">{item.pct}</span>
+                <span className="min-w-10 text-right font-bold text-wisen-titulo">{item.pct}</span>
               </div>
             ))}
           </div>
@@ -138,22 +142,25 @@ export function GraficosAtividadeAdm() {
       </div>
 
       {/* 3. Atividade Recente */}
-      <div className="space-y-4 rounded-lg border border-slate-200/80 bg-white p-5 shadow-2xs lg:col-span-12">
+      <div className="space-y-4 rounded-lg border border-[#263343] bg-[#263343] p-5 shadow-2xs lg:col-span-12">
         <div className="flex items-center justify-between">
-          <h3 className="text-base font-semibold text-[#2B333F]">Atividade recente</h3>
+          <h3 className="text-base font-semibold text-white">Atividade recente</h3>
         </div>
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {atividades.map((item) => {
             const Icone = item.icone;
             return (
-              <div key={item.texto} className="flex items-start gap-3 text-sm">
-                <div className="mt-0.5 shrink-0 rounded-lg bg-slate-100 p-1.5 text-[#2B333F]">
+              <div
+                key={item.texto}
+                className="flex items-start gap-3 rounded-lg border border-white/10 bg-white/[0.065] p-3 text-sm transition-colors hover:bg-white/[0.1]"
+              >
+                <div className="mt-0.5 shrink-0 rounded-lg bg-[#F3E69A] p-1.5 text-[#263343]">
                   <Icone className="h-4 w-4" />
                 </div>
                 <div className="overflow-hidden">
-                  <h4 className="font-semibold text-[#2B333F] truncate">{item.texto}</h4>
-                  <p className="text-xs text-slate-500">{item.tempo}</p>
+                  <h4 className="truncate font-semibold text-white">{item.texto}</h4>
+                  <p className="text-xs text-[#C6D0DD]">{item.tempo}</p>
                 </div>
               </div>
             );

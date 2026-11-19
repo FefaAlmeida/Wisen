@@ -24,27 +24,14 @@ export function ConnectionsBackground({
     let connectedPairIds = new Set();
     let width = 0;
     let height = 0;
+    let pixelRatio = 0;
     let frameId = 0;
     let visible = true;
     let lastFrame = 0;
 
-    function resize() {
-      const bounds = canvas.getBoundingClientRect();
-      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
-      width = bounds.width;
-      height = bounds.height;
-      canvas.width = Math.round(width * pixelRatio);
-      canvas.height = Math.round(height * pixelRatio);
-      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-
+    function createParticle() {
       const heroHeight = fullSpread ? 0 : Math.min(height * 0.26, 390);
-      const minimumCount = Math.round(48 * particleDensity);
-      const maximumCount = Math.round(115 * particleDensity);
-      const count = Math.min(
-        maximumCount,
-        Math.max(minimumCount, Math.round(((width * height) / 8500) * particleDensity)),
-      );
-      particles = Array.from({ length: count }, () => ({
+      return {
         x: Math.random() * width,
         y: fullSpread
           ? Math.random() * height
@@ -53,8 +40,11 @@ export function ConnectionsBackground({
             : heroHeight + Math.random() * (height - heroHeight),
         vx: (Math.random() - 0.5) * 0.28 * motionScale,
         vy: (Math.random() - 0.5) * 0.28 * motionScale,
-      }));
+      };
+    }
 
+    function rebuildConnections() {
+      const count = particles.length;
       connectedPairs = [];
       connectedPairIds = new Set();
       const connectionDistance = new Float64Array(count).fill(Number.POSITIVE_INFINITY);
@@ -93,6 +83,52 @@ export function ConnectionsBackground({
           }
         }
       }
+    }
+
+    function resize() {
+      const bounds = canvas.getBoundingClientRect();
+      const nextWidth = Math.round(bounds.width);
+      const nextHeight = Math.round(bounds.height);
+      const nextPixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+      if (!nextWidth || !nextHeight) return;
+      if (nextWidth === width && nextHeight === height && nextPixelRatio === pixelRatio) return;
+
+      const previousWidth = width;
+      const previousHeight = height;
+      const previousCount = particles.length;
+      width = nextWidth;
+      height = nextHeight;
+      pixelRatio = nextPixelRatio;
+      canvas.width = Math.round(width * pixelRatio);
+      canvas.height = Math.round(height * pixelRatio);
+      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+
+      const minimumCount = Math.round(48 * particleDensity);
+      const maximumCount = Math.round(115 * particleDensity);
+      const count = Math.min(
+        maximumCount,
+        Math.max(minimumCount, Math.round(((width * height) / 8500) * particleDensity)),
+      );
+
+      if (!previousWidth || !previousHeight) {
+        particles = Array.from({ length: count }, createParticle);
+      } else {
+        const scaleX = width / previousWidth;
+        const scaleY = height / previousHeight;
+        for (const particle of particles) {
+          particle.x *= scaleX;
+          particle.y *= scaleY;
+        }
+        particles.length = Math.min(particles.length, count);
+        while (particles.length < count) particles.push(createParticle());
+      }
+
+      if (!previousWidth || particles.length !== previousCount) rebuildConnections();
+
+      window.cancelAnimationFrame(frameId);
+      frameId = 0;
+      lastFrame = 0;
+      if (visible && !document.hidden) draw(performance.now());
     }
 
     function connect(first, second, opacity) {
@@ -154,11 +190,13 @@ export function ConnectionsBackground({
     }
     resize();
     sync();
-    const visibilityObserver = new IntersectionObserver(([entry]) => {
-      visible = entry.isIntersecting;
-      sync();
-    });
-    visibilityObserver.observe(canvas);
+    const visibilityObserver = fullSpread
+      ? null
+      : new IntersectionObserver(([entry]) => {
+          visible = entry.isIntersecting;
+          sync();
+        });
+    visibilityObserver?.observe(canvas);
     document.addEventListener("visibilitychange", sync);
 
     const resizeObserver = new ResizeObserver(resize);
@@ -167,7 +205,7 @@ export function ConnectionsBackground({
     return () => {
       window.cancelAnimationFrame(frameId);
       resizeObserver.disconnect();
-      visibilityObserver.disconnect();
+      visibilityObserver?.disconnect();
       document.removeEventListener("visibilitychange", sync);
     };
   }, [fullSpread, particleDensity]);

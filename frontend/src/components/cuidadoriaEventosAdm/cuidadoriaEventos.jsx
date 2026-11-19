@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowDownWideNarrow, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -23,7 +24,11 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { mergeEvents, transferArticle } from "@/lib/event-curation";
 
 import CardEvento from "./cardEvento";
+import MiniaturaCuradoria from "./miniaturaCuradoria";
 import PainelArtigos from "./painelArtigos";
+
+const filterItemClassName =
+  "data-[highlighted]:bg-[#F3E69A] data-[highlighted]:text-wisen-titulo focus:bg-[#F3E69A] focus:text-wisen-titulo";
 
 const eventosIniciais = [
   {
@@ -37,49 +42,42 @@ const eventosIniciais = [
     data: "23/10/2026",
     identificacao: "hoje",
     status: "Pendente",
-    imagem: "/eventos/copom.jpg",
     artigos: [
       {
         id: 101,
         titulo: "Copom mantém Selic em 10,75% ao ano",
         fonte: "G1",
         data: "23/10/2026",
-        imagem: "/eventos/copom.jpg",
       },
       {
         id: 102,
         titulo: "Decisão do Copom reforça cautela com inflação",
         fonte: "Valor Econômico",
         data: "23/10/2026",
-        imagem: "/eventos/mercado.jpg",
       },
       {
         id: 103,
         titulo: "Mercado reage à manutenção da taxa Selic",
         fonte: "Estadão",
         data: "23/10/2026",
-        imagem: "/eventos/copom.jpg",
       },
       {
         id: 104,
         titulo: "Especialistas avaliam próximos passos da política monetária",
         fonte: "BBC News Brasil",
         data: "22/10/2026",
-        imagem: "/eventos/vacina.jpg",
       },
       {
         id: 105,
         titulo: "Impacto da Selic no crédito e no consumo",
         fonte: "CNN Brasil",
         data: "22/10/2026",
-        imagem: "/eventos/mercado.jpg",
       },
       {
         id: 106,
         titulo: "Selic estável: o que muda para o investidor?",
         fonte: "Folha de S.Paulo",
         data: "22/10/2026",
-        imagem: "/eventos/copom.jpg",
       },
     ],
   },
@@ -93,21 +91,18 @@ const eventosIniciais = [
     data: "23/10/2026",
     identificacao: "hoje",
     status: "Pendente",
-    imagem: "/eventos/inteligenciaArtificial.jpg",
     artigos: [
       {
         id: 201,
         titulo: "Novas diretrizes para uso de IA no Brasil",
         fonte: "Agência Brasil",
         data: "23/10/2026",
-        imagem: "/eventos/inteligenciaArtificial.jpg",
       },
       {
         id: 202,
         titulo: "Especialistas comentam regulação da IA",
         fonte: "Nexo",
         data: "23/10/2026",
-        imagem: "/eventos/inteligenciaArtificial.jpg",
       },
     ],
   },
@@ -122,14 +117,12 @@ const eventosIniciais = [
     data: "22/10/2026",
     identificacao: "ontem",
     status: "Revisado",
-    imagem: "/eventos/medicamento.jpg",
     artigos: [
       {
         id: 301,
         titulo: "Novo tratamento para diabetes é aprovado",
         fonte: "Portal Saúde",
         data: "22/10/2026",
-        imagem: "/eventos/medicamento.jpg",
       },
     ],
   },
@@ -143,14 +136,12 @@ const eventosIniciais = [
     data: "22/10/2026",
     identificacao: "ontem",
     status: "Ajustado",
-    imagem: "/eventos/amazonia.jpg",
     artigos: [
       {
         id: 401,
         titulo: "Monitoramento mostra avanço do desmatamento",
         fonte: "Agência Brasil",
         data: "22/10/2026",
-        imagem: "/eventos/amazonia.jpg",
       },
     ],
   },
@@ -165,14 +156,12 @@ const eventosIniciais = [
     data: "21/10/2026",
     identificacao: "em 21/10/2026",
     status: "Pendente",
-    imagem: "/eventos/mercado.jpg",
     artigos: [
       {
         id: 501,
         titulo: "Inflação americana influencia bolsas globais",
         fonte: "Valor Econômico",
         data: "21/10/2026",
-        imagem: "/eventos/mercado.jpg",
       },
     ],
   },
@@ -186,14 +175,12 @@ const eventosIniciais = [
     data: "21/10/2026",
     identificacao: "em 21/10/2026",
     status: "Revisado",
-    imagem: "/eventos/vacina.jpg",
     artigos: [
       {
         id: 601,
         titulo: "Campanha de vacinação será ampliada em 2026",
         fonte: "Ministério da Saúde",
         data: "21/10/2026",
-        imagem: "/eventos/vacina.jpg",
       },
     ],
   },
@@ -205,42 +192,42 @@ const artigosNaoAssociadosIniciais = [
     titulo: "Especialistas analisam próximos passos da política monetária",
     fonte: "BBC News Brasil",
     data: "22/10/2026",
-    imagem: "/eventos/copom.jpg",
+    categoria: "Economia",
   },
   {
     id: 702,
     titulo: "Novas pesquisas sobre eventos climáticos extremos",
     fonte: "Mongabay",
     data: "22/10/2026",
-    imagem: "/eventos/amazonia.jpg",
+    categoria: "Meio ambiente",
   },
   {
     id: 703,
     titulo: "Mercado internacional acompanha novos indicadores",
     fonte: "Bloomberg Línea",
     data: "22/10/2026",
-    imagem: "/eventos/mercado.jpg",
+    categoria: "Economia",
   },
   {
     id: 704,
     titulo: "Especialistas comentam medicamento recém-aprovado",
     fonte: "Veja Saúde",
     data: "22/10/2026",
-    imagem: "/eventos/medicamento.jpg",
+    categoria: "Saúde",
   },
   {
     id: 705,
     titulo: "Nova nota técnica sobre inteligência artificial",
     fonte: "Canaltech",
     data: "22/10/2026",
-    imagem: "/eventos/inteligenciaArtificial.jpg",
+    categoria: "Tecnologia",
   },
   {
     id: 706,
     titulo: "Campanha de vacinação é ampliada em novos estados",
     fonte: "G1",
     data: "22/10/2026",
-    imagem: "/eventos/vacina.jpg",
+    categoria: "Saúde",
   },
 ];
 
@@ -310,6 +297,13 @@ export default function CuradoriaEventos() {
 
   function limparSelecionados() {
     setSelecionados([]);
+  }
+
+  function limparFiltros() {
+    setBusca("");
+    setCategoria("todas");
+    setStatus("todos");
+    setOrdem("recentes");
   }
 
   function abrirEdicao(evento) {
@@ -425,25 +419,21 @@ export default function CuradoriaEventos() {
             {artigosNaoAssociados.map((artigo) => (
               <div
                 key={artigo.id}
-                className="flex items-center justify-between gap-3 rounded-lg border border-[#E6EBF3] bg-[#FCFDFF] p-4 transition-colors hover:bg-[#FBF7E5]"
+                className="grid grid-cols-[62px_minmax(0,1fr)_auto] items-center gap-3 rounded-lg border border-[#E6EBF3] bg-[#FCFDFF] p-4 transition-colors hover:bg-[#FBF7E5]"
               >
-                <div className="flex min-w-0 items-center gap-3">
-                  <div className="h-[62px] w-[62px] shrink-0 overflow-hidden rounded-lg bg-[#EEF3FA]">
-                    {artigo.imagem && (
-                      <img
-                        src={artigo.imagem}
-                        alt={artigo.titulo}
-                        className="h-full w-full object-cover"
-                      />
-                    )}
-                  </div>
+                <MiniaturaCuradoria
+                  categoria={artigo.categoria}
+                  titulo={artigo.titulo}
+                  className="h-[62px] w-[62px]"
+                />
 
-                  <div className="min-w-0">
-                    <h3 className="text-base font-semibold text-[#101A40]">{artigo.titulo}</h3>
-                    <p className="mt-1 text-sm text-[#8A9AB5]">
-                      {artigo.fonte} · {artigo.data}
-                    </p>
-                  </div>
+                <div className="min-w-0">
+                  <h3 className="line-clamp-1 text-base font-semibold text-[#101A40]">
+                    {artigo.titulo}
+                  </h3>
+                  <p className="mt-1 truncate text-sm text-[#8A9AB5]">
+                    {artigo.fonte} · {artigo.data}
+                  </p>
                 </div>
 
                 <Button
@@ -454,7 +444,7 @@ export default function CuradoriaEventos() {
                     setDestinoId("");
                     setModal("mover");
                   }}
-                  className="h-10 rounded-lg border-[#E3E9F3] bg-[#F4F7FC] px-4 text-sm text-[#30466E] shadow-none transition-colors hover:bg-[#FBF7E5]"
+                  className="h-10 shrink-0 rounded-lg border-[#E3E9F3] bg-[#F4F7FC] px-4 text-sm text-[#30466E] shadow-none transition-colors hover:bg-[#FBF7E5]"
                 >
                   Associar
                 </Button>
@@ -469,8 +459,8 @@ export default function CuradoriaEventos() {
           }`}
         >
           <Card className="rounded-lg border border-[#E4EAF3] bg-white p-4 shadow-none">
-            <div className="mb-4 grid grid-cols-1 gap-3 xl:grid-cols-[minmax(0,1fr)_170px_170px_145px_46px]">
-              <div className="relative">
+            <div className="mb-4 flex flex-wrap items-center gap-2">
+              <div className="relative w-full sm:w-[220px]">
                 <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-[#7C8EAE]">
                   <svg
                     viewBox="0 0 24 24"
@@ -491,70 +481,88 @@ export default function CuradoriaEventos() {
                   value={busca}
                   onChange={(e) => setBusca(e.target.value)}
                   placeholder="Buscar eventos..."
-                  className="h-11 rounded-lg border-[#DCE4F0] bg-white pl-10 text-sm text-[#30466E] placeholder:text-[#90A0BA]"
+                  aria-label="Buscar eventos"
+                  className="h-9 rounded-[10px] border-wisen-borda bg-white/85 pl-9 text-xs text-[#344469] placeholder:text-[#90A0BA] transition-colors hover:bg-[#F3E69A] hover:text-wisen-titulo"
                 />
               </div>
 
               <Select value={categoria} onValueChange={setCategoria}>
-                <SelectTrigger className="h-11 rounded-lg border-[#DCE4F0] bg-white text-sm text-[#30466E] shadow-none">
+                <SelectTrigger
+                  aria-label="Filtrar por categoria"
+                  className="h-9 w-[165px] rounded-[10px] border-wisen-borda bg-white/85 text-xs text-[#344469] shadow-none transition-colors hover:bg-[#F3E69A] hover:text-wisen-titulo"
+                >
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="todas">Todas as categorias</SelectItem>
-                  <SelectItem value="Economia">Economia</SelectItem>
-                  <SelectItem value="Tecnologia">Tecnologia</SelectItem>
-                  <SelectItem value="Saúde">Saúde</SelectItem>
-                  <SelectItem value="Meio ambiente">Meio ambiente</SelectItem>
+                  <SelectItem className={filterItemClassName} value="todas">
+                    Todas as categorias
+                  </SelectItem>
+                  <SelectItem className={filterItemClassName} value="Economia">
+                    Economia
+                  </SelectItem>
+                  <SelectItem className={filterItemClassName} value="Tecnologia">
+                    Tecnologia
+                  </SelectItem>
+                  <SelectItem className={filterItemClassName} value="Saúde">
+                    Saúde
+                  </SelectItem>
+                  <SelectItem className={filterItemClassName} value="Meio ambiente">
+                    Meio ambiente
+                  </SelectItem>
                 </SelectContent>
               </Select>
 
               <Select value={status} onValueChange={setStatus}>
-                <SelectTrigger className="h-11 rounded-lg border-[#DCE4F0] bg-white text-sm text-[#30466E] shadow-none">
+                <SelectTrigger
+                  aria-label="Filtrar por status"
+                  className="h-9 w-[145px] rounded-[10px] border-wisen-borda bg-white/85 text-xs text-[#344469] shadow-none transition-colors hover:bg-[#F3E69A] hover:text-wisen-titulo"
+                >
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="todos">Todos os status</SelectItem>
-                  <SelectItem value="Pendente">Pendente</SelectItem>
-                  <SelectItem value="Revisado">Revisado</SelectItem>
-                  <SelectItem value="Ajustado">Ajustado</SelectItem>
+                  <SelectItem className={filterItemClassName} value="todos">
+                    Todos os status
+                  </SelectItem>
+                  <SelectItem className={filterItemClassName} value="Pendente">
+                    Pendente
+                  </SelectItem>
+                  <SelectItem className={filterItemClassName} value="Revisado">
+                    Revisado
+                  </SelectItem>
+                  <SelectItem className={filterItemClassName} value="Ajustado">
+                    Ajustado
+                  </SelectItem>
                 </SelectContent>
               </Select>
 
               <Select value={ordem} onValueChange={setOrdem}>
-                <SelectTrigger className="h-11 rounded-lg border-[#DCE4F0] bg-white text-sm text-[#30466E] shadow-none">
-                  <SelectValue />
+                <SelectTrigger
+                  aria-label="Ordenar eventos"
+                  className="h-9 w-[150px] rounded-[10px] border-wisen-borda bg-white/85 text-xs text-[#344469] shadow-none transition-colors hover:bg-[#F3E69A] hover:text-wisen-titulo"
+                >
+                  <span className="flex items-center gap-2">
+                    <ArrowDownWideNarrow className="size-3.5" />
+                    <SelectValue />
+                  </span>
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="recentes">Mais recentes</SelectItem>
-                  <SelectItem value="alfabetica">Ordem alfabética</SelectItem>
+                  <SelectItem className={filterItemClassName} value="recentes">
+                    Mais recentes
+                  </SelectItem>
+                  <SelectItem className={filterItemClassName} value="alfabetica">
+                    Ordem alfabética
+                  </SelectItem>
                 </SelectContent>
               </Select>
 
               <Button
                 type="button"
                 variant="outline"
-                className="h-11 rounded-lg border-[#DCE4F0] bg-white p-0 text-[#5D7398] shadow-none transition-colors hover:bg-[#EBDD80]"
+                onClick={limparFiltros}
+                className="h-9 cursor-pointer gap-1.5 rounded-[10px] border-wisen-borda bg-white/85 px-3 text-xs text-[#607092] shadow-none transition-colors hover:bg-[#F3E69A] hover:text-wisen-titulo"
               >
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="mx-auto h-4 w-4"
-                  aria-hidden="true"
-                >
-                  <path d="M4 21v-7" />
-                  <path d="M4 10V3" />
-                  <path d="M12 21v-9" />
-                  <path d="M12 8V3" />
-                  <path d="M20 21v-4" />
-                  <path d="M20 13V3" />
-                  <path d="M1 14h6" />
-                  <path d="M9 8h6" />
-                  <path d="M17 17h6" />
-                </svg>
+                <X aria-hidden="true" className="size-3.5" />
+                Limpar filtros
               </Button>
             </div>
 

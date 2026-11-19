@@ -63,7 +63,7 @@ export function DepoimentosLanding() {
           {depoimentos.map((item) => (
             <Card
               key={item.id}
-              className="group flex h-full min-h-[280px] flex-col justify-between overflow-hidden rounded-[14px] border border-[#E8E191] bg-[#EAF1F8] p-0 shadow-[0_0_0_1px_rgba(16,26,64,0.02)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-28px_rgba(16,26,64,0.28)]"
+              className="group mx-auto flex h-full min-h-[280px] w-[88%] max-w-[360px] flex-col justify-between overflow-hidden rounded-[14px] border border-[#E8E191] bg-[#EAF1F8] p-0 shadow-[0_0_0_1px_rgba(16,26,64,0.02)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-28px_rgba(16,26,64,0.28)] sm:mx-0 sm:w-full sm:max-w-none"
             >
               <CardContent className="flex flex-1 flex-col items-center px-5 py-5 text-center sm:px-5 sm:py-6">
                 <div className="flex h-32 w-full shrink-0 flex-col items-center justify-start gap-3">

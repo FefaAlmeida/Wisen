@@ -63,9 +63,9 @@ export function TabelasDesempenhoAdm() {
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
       {/* 1. Utilizadores Mais Ativos */}
-      <div className="space-y-4 rounded-lg border border-slate-200/80 bg-white p-5 shadow-2xs lg:col-span-5">
-        <div className="flex items-center justify-between">
-          <h3 className="text-base font-semibold text-[#2B333F]">Usuários mais ativos</h3>
+      <div className="space-y-4 rounded-lg border border-[#E3E9F1] bg-white p-5 shadow-2xs lg:col-span-5">
+        <div className="flex items-center justify-between border-b border-[#E3E9F1] pb-3">
+          <h3 className="text-base font-semibold text-[#9A7E14]">Usuários mais ativos</h3>
           <Link
             href="/paginaGestaoUsuariosAdm"
             className="text-sm font-semibold text-[#30466E] transition-colors hover:text-[#D6B92F]"
@@ -74,10 +74,10 @@ export function TabelasDesempenhoAdm() {
           </Link>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto pt-3">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-slate-100 text-xs font-semibold text-slate-500 uppercase">
+              <tr className="border-b border-[#E3E9F1] text-xs font-semibold text-[#7182A1] uppercase">
                 <th className="pb-2">Usuário</th>
                 <th className="pb-2">Revisões</th>
                 <th className="pb-2">Leituras</th>
@@ -85,13 +85,13 @@ export function TabelasDesempenhoAdm() {
                 <th className="pb-2">Nível</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-[#E3E9F1]">
               {usuarios.map((item) => (
-                <tr key={item.nome} className="transition-colors hover:bg-[#FBF7E5]">
-                  <td className="py-2.5 font-bold text-[#2B333F]">{item.nome}</td>
-                  <td className="py-2.5 text-slate-500">{item.revisoes}</td>
-                  <td className="py-2.5 text-slate-500">{item.leituras}</td>
-                  <td className="py-2.5 text-slate-500">{item.tempo}</td>
+                <tr key={item.nome} className="cursor-pointer transition-colors hover:bg-[#FBF7E5]">
+                  <td className="py-2.5 font-bold text-wisen-titulo">{item.nome}</td>
+                  <td className="py-2.5 text-[#7182A1]">{item.revisoes}</td>
+                  <td className="py-2.5 text-[#7182A1]">{item.leituras}</td>
+                  <td className="py-2.5 text-[#7182A1]">{item.tempo}</td>
                   <td className="py-2.5">
                     <span
                       className={`rounded-full px-2 py-0.5 text-xs font-semibold ${item.corNivel}`}
@@ -107,22 +107,22 @@ export function TabelasDesempenhoAdm() {
       </div>
 
       {/* 2. Conteúdos Mais Acessados */}
-      <div className="space-y-4 rounded-lg border border-slate-200/80 bg-white p-5 shadow-2xs lg:col-span-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-base font-semibold text-[#2B333F]">Conteúdos mais acessados</h3>
+      <div className="space-y-4 rounded-lg border border-[#E3E9F1] bg-white p-5 shadow-2xs lg:col-span-4">
+        <div className="flex items-center justify-between border-b border-[#E3E9F1] pb-3">
+          <h3 className="text-base font-semibold text-[#9A7E14]">Conteúdos mais acessados</h3>
         </div>
 
-        <div className="space-y-3 text-sm">
+        <div className="space-y-3 pt-3 text-sm">
           {conteudos.map((item) => (
             <div
               key={item.titulo}
-              className="flex items-center justify-between pb-2 border-b border-slate-100 last:border-0"
+              className="flex cursor-pointer items-center justify-between rounded-md border-b border-[#E3E9F1] px-2 py-2 transition-colors hover:bg-[#FBF7E5] last:border-0"
             >
               <div>
-                <h4 className="font-bold text-[#2B333F] truncate">{item.titulo}</h4>
-                <span className="text-xs text-slate-500">{item.categoria}</span>
+                <h4 className="truncate font-bold text-wisen-titulo">{item.titulo}</h4>
+                <span className="text-xs text-[#7182A1]">{item.categoria}</span>
               </div>
-              <span className="rounded-lg bg-slate-100 px-2 py-1 text-xs font-bold text-[#2B333F]">
+              <span className="rounded-lg bg-[#FBF7E5] px-2 py-1 text-xs font-bold text-[#9A7E14]">
                 {item.views}
               </span>
             </div>
@@ -131,20 +131,23 @@ export function TabelasDesempenhoAdm() {
       </div>
 
       {/* 3. Conceitos Com Mais Lacunas */}
-      <div className="space-y-4 rounded-lg border border-slate-200/80 bg-white p-5 shadow-2xs lg:col-span-3">
-        <div className="flex items-center justify-between">
-          <h3 className="text-base font-semibold text-[#2B333F]">Conceitos com mais lacunas</h3>
+      <div className="space-y-4 rounded-lg border border-[#E3E9F1] bg-white p-5 shadow-2xs lg:col-span-3">
+        <div className="flex items-center justify-between border-b border-[#E3E9F1] pb-3">
+          <h3 className="text-base font-semibold text-[#9A7E14]">Conceitos com mais lacunas</h3>
         </div>
 
-        <div className="space-y-3 text-sm">
+        <div className="space-y-3 pt-3 text-sm">
           {lacunas.map((item) => (
-            <div key={item.conceito} className="space-y-1">
+            <div
+              key={item.conceito}
+              className="cursor-pointer space-y-1 rounded-md border-b border-[#E3E9F1] px-2 py-2 transition-colors hover:bg-[#FBF7E5] last:border-0"
+            >
               <div className="flex items-center justify-between">
-                <span className="font-medium text-[#2B333F]">{item.conceito}</span>
-                <span className="text-xs font-semibold text-slate-500">{item.pct}</span>
+                <span className="font-medium text-wisen-titulo">{item.conceito}</span>
+                <span className="text-xs font-semibold text-[#9A7E14]">{item.pct}</span>
               </div>
-              <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                <div className="h-1.5 rounded-full bg-[#EBDD80]" style={{ width: item.pct }} />
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-[#DCE3ED]">
+                <div className="h-1.5 rounded-full bg-[#D7BF4D]" style={{ width: item.pct }} />
               </div>
             </div>
           ))}

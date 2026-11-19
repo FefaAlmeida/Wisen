@@ -21,6 +21,8 @@ import {
 import { stories } from "@/data/noticiasDemo";
 
 const topics = ["Economia", "Meio ambiente", "Tecnologia"];
+const filterItemClassName =
+  "data-[highlighted]:bg-[#F3E69A] data-[highlighted]:text-wisen-titulo focus:bg-[#F3E69A] focus:text-wisen-titulo";
 
 function normalize(value) {
   return value
@@ -131,14 +133,16 @@ export default function PaginaExplorar() {
                 <Select value={topic} onValueChange={setTopic}>
                   <SelectTrigger
                     aria-label="Filtrar por assunto"
-                    className="h-9 w-[190px] rounded-full border-wisen-borda bg-white/85 text-xs text-[#344469] transition-colors hover:bg-[#F3E69A] hover:text-wisen-titulo"
+                    className="h-9 w-[190px] rounded-[10px] border-wisen-borda bg-white/85 text-xs text-[#344469] transition-colors hover:bg-[#F3E69A] hover:text-wisen-titulo"
                   >
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Todos os assuntos">Todos os assuntos</SelectItem>
+                    <SelectItem className={filterItemClassName} value="Todos os assuntos">
+                      Todos os assuntos
+                    </SelectItem>
                     {topics.map((item) => (
-                      <SelectItem key={item} value={item}>
+                      <SelectItem key={item} value={item} className={filterItemClassName}>
                         {item}
                       </SelectItem>
                     ))}
@@ -147,7 +151,7 @@ export default function PaginaExplorar() {
                 <Select value={sort} onValueChange={setSort}>
                   <SelectTrigger
                     aria-label="Ordenar notícias"
-                    className="h-9 w-[170px] rounded-full border-wisen-borda bg-white/85 text-xs text-[#344469] transition-colors hover:bg-[#F3E69A] hover:text-wisen-titulo"
+                    className="h-9 w-[170px] rounded-[10px] border-wisen-borda bg-white/85 text-xs text-[#344469] transition-colors hover:bg-[#F3E69A] hover:text-wisen-titulo"
                   >
                     <div className="flex items-center gap-2">
                       <ArrowDownWideNarrow className="size-3.5" />
@@ -155,15 +159,19 @@ export default function PaginaExplorar() {
                     </div>
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="relevantes">Mais relevantes</SelectItem>
-                    <SelectItem value="recentes">Mais recentes</SelectItem>
+                    <SelectItem className={filterItemClassName} value="relevantes">
+                      Mais relevantes
+                    </SelectItem>
+                    <SelectItem className={filterItemClassName} value="recentes">
+                      Mais recentes
+                    </SelectItem>
                   </SelectContent>
                 </Select>
                 <Button
                   type="button"
                   variant="outline"
                   onClick={clearFilters}
-                  className="h-9 cursor-pointer gap-1.5 rounded-full border-wisen-borda bg-white/85 px-3 text-xs text-[#607092] shadow-none transition-colors hover:bg-[#F3E69A] hover:text-wisen-titulo"
+                  className="h-9 cursor-pointer gap-1.5 rounded-[10px] border-wisen-borda bg-white/85 px-3 text-xs text-[#607092] shadow-none transition-colors hover:bg-[#F3E69A] hover:text-wisen-titulo"
                 >
                   <X aria-hidden="true" className="size-3.5" />
                   Limpar filtros

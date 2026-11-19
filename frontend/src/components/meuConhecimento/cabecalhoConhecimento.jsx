@@ -4,7 +4,7 @@ export function CabecalhoConhecimento() {
   return (
     <header className={styles.header}>
       <div>
-        <h1>Meu conhecimento</h1>
+        <h1>Aprendizado</h1>
         <div className={styles.headerMeta}>
           <span className={styles.preview}>Prévia</span>
           <span>Dados ilustrativos · 13 nov 2026</span>

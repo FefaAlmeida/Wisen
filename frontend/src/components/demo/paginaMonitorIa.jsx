@@ -7,7 +7,7 @@ import { TopoMonitorIa } from "@/components/monitorIa/topoMonitorIa";
 export default function PaginaMonitorIa() {
   return (
     <AdminLayout activeItem="Monitor de IA">
-      <div className="min-h-screen space-y-8 bg-slate-50/60 p-6 font-[family-name:var(--font-geist-sans)] text-[#2B333F] selection:bg-[#EBDD80] md:p-10">
+      <div className="min-h-screen space-y-8 bg-transparent p-6 font-[family-name:var(--font-geist-sans)] text-[#2B333F] selection:bg-[#EBDD80] md:p-10">
         {/* Etapa 1: Topo do Monitor */}
         <TopoMonitorIa />
 

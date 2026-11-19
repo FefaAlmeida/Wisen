@@ -16,6 +16,8 @@ const filtros = [
   { id: "revisao", rotulo: "Em revisão", status: "Em revisão", cor: "bg-[#FFD33D]" },
   { id: "dominados", rotulo: "Dominados", status: "Dominado", cor: "bg-[#33B27C]" },
 ];
+const itemOrdenacaoClassName =
+  "data-[highlighted]:bg-[#F3E69A] data-[highlighted]:text-wisen-titulo focus:bg-[#F3E69A] focus:text-wisen-titulo";
 
 export function FiltrosBiblioteca({ filtroAtivo, onFiltroChange, items = conceitos }) {
   return (
@@ -39,8 +41,8 @@ export function FiltrosBiblioteca({ filtroAtivo, onFiltroChange, items = conceit
               onClick={() => onFiltroChange(filtro.id)}
               className={
                 ativo
-                  ? "h-9 rounded-full border-0 bg-wisen-destaque-suave px-5 text-[13px] font-medium text-wisen-texto shadow-none hover:bg-[#F1E18A]"
-                  : "h-9 rounded-full border-wisen-borda bg-white/80 px-4 text-[13px] font-normal text-[#607092] shadow-none hover:bg-white hover:text-wisen-texto"
+                  ? "h-9 rounded-[10px] border-0 bg-wisen-destaque-suave px-5 text-[13px] font-medium text-wisen-texto shadow-none hover:bg-[#F1E18A]"
+                  : "h-9 rounded-[10px] border-wisen-borda bg-white/80 px-4 text-[13px] font-normal text-[#607092] shadow-none hover:bg-white hover:text-wisen-texto"
               }
             >
               {filtro.cor && <span className={`mr-2 h-2 w-2 rounded-full ${filtro.cor}`} />}
@@ -51,7 +53,7 @@ export function FiltrosBiblioteca({ filtroAtivo, onFiltroChange, items = conceit
       </fieldset>
 
       <Select defaultValue="relevantes">
-        <SelectTrigger className="h-9 w-[165px] rounded-full border border-[#E1E7F0] bg-[#F8FAFD] px-3 text-xs font-medium text-[#344469] shadow-none focus:ring-0 [&>svg:last-child]:h-3.5 [&>svg:last-child]:w-3.5">
+        <SelectTrigger className="h-9 w-[165px] rounded-[10px] border border-[#E1E7F0] bg-[#F8FAFD] px-3 text-xs font-medium text-[#344469] shadow-none transition-colors hover:bg-[#F3E69A] hover:text-wisen-titulo focus:ring-0 [&>svg:last-child]:h-3.5 [&>svg:last-child]:w-3.5">
           <div className="flex min-w-0 items-center gap-2">
             <svg
               viewBox="0 0 24 24"
@@ -72,9 +74,15 @@ export function FiltrosBiblioteca({ filtroAtivo, onFiltroChange, items = conceit
         </SelectTrigger>
 
         <SelectContent>
-          <SelectItem value="relevantes">Mais relevantes</SelectItem>
-          <SelectItem value="recentes">Mais recentes</SelectItem>
-          <SelectItem value="alfabetica">Ordem alfabética</SelectItem>
+          <SelectItem className={itemOrdenacaoClassName} value="relevantes">
+            Mais relevantes
+          </SelectItem>
+          <SelectItem className={itemOrdenacaoClassName} value="recentes">
+            Mais recentes
+          </SelectItem>
+          <SelectItem className={itemOrdenacaoClassName} value="alfabetica">
+            Ordem alfabética
+          </SelectItem>
         </SelectContent>
       </Select>
     </div>

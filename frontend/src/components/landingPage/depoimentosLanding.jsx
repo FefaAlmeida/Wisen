@@ -63,29 +63,17 @@ export function DepoimentosLanding() {
           {depoimentos.map((item) => (
             <Card
               key={item.id}
-              className="group flex h-full min-h-[280px] flex-col justify-between overflow-hidden rounded-[14px] border border-[#EDEDED] bg-[#F7F7F5] p-0 shadow-[0_0_0_1px_rgba(16,26,64,0.02)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-28px_rgba(16,26,64,0.28)]"
+              className="group flex h-full min-h-[280px] flex-col justify-between overflow-hidden rounded-[14px] border border-[#E8E191] bg-[#EAF1F8] p-0 shadow-[0_0_0_1px_rgba(16,26,64,0.02)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-28px_rgba(16,26,64,0.28)]"
             >
-              <CardContent className="flex flex-1 flex-col items-center justify-between px-5 py-5 text-center sm:px-5 sm:py-6">
-                <div className="flex w-full flex-col items-center justify-center gap-3">
-                  <div className="flex items-center justify-center gap-1 text-[#D7B458]">
-                    {["um", "dois", "três", "quatro", "cinco"].map((star) => (
-                      <Star key={star} className="h-3.5 w-3.5 fill-[#D7B458] text-[#D7B458]" />
-                    ))}
-                  </div>
-
-                  <p className="max-w-[220px] text-[13px] leading-[1.7] font-medium text-[#202020]">
-                    {item.texto}
-                  </p>
-                </div>
-
-                <div className="mt-4 flex w-full flex-col items-center justify-center gap-3">
+              <CardContent className="flex flex-1 flex-col items-center px-5 py-5 text-center sm:px-5 sm:py-6">
+                <div className="flex h-32 w-full shrink-0 flex-col items-center justify-start gap-3">
                   <Image
                     src={item.avatar}
                     width={68}
                     height={68}
                     alt={item.nome}
                     sizes="68px"
-                    className="h-[68px] w-[68px] rounded-full border-2 border-white object-cover shadow-[0_8px_18px_rgba(0,0,0,0.12)]"
+                    className="h-[68px] w-[68px] rounded-full border-2 border-[#E8E191] object-cover shadow-[0_8px_18px_rgba(0,0,0,0.12)]"
                   />
 
                   <div className="space-y-1 text-center">
@@ -93,6 +81,16 @@ export function DepoimentosLanding() {
                     <p className="text-[12px] text-[#5B6474]">{item.cargo}</p>
                   </div>
                 </div>
+
+                <div className="flex items-center justify-center gap-1 text-[#D7B458]">
+                  {["um", "dois", "três", "quatro", "cinco"].map((star) => (
+                    <Star key={star} className="h-3.5 w-3.5 fill-[#D7B458] text-[#D7B458]" />
+                  ))}
+                </div>
+
+                <p className="mt-3 max-w-[220px] text-[13px] leading-[1.7] font-medium text-[#202020]">
+                  {item.texto}
+                </p>
               </CardContent>
             </Card>
           ))}

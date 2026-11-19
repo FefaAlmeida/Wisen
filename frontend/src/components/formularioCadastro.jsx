@@ -45,7 +45,7 @@ export default function FormularioCadastro({ glass = false }) {
       <CardHeader className="space-y-1 px-6 pt-8 pb-6 sm:px-10 sm:pt-10 sm:pb-7 lg:px-12">
         <CardTitle
           id="cadastro-title"
-          className={`text-[32px] font-semibold tracking-tight ${glass ? "text-white" : "text-wisen-texto-forte"}`}
+          className={`text-[32px] font-semibold tracking-tight ${glass ? "text-[#F2DF73]" : "text-wisen-texto-forte"}`}
         >
           Criar conta
         </CardTitle>

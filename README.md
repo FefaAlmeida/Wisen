@@ -48,7 +48,7 @@ npm run dev:logs
 npm run search -- taxa de juros e inflação
 ```
 
-A coleta é **manual** e usa exclusivamente o RSS de Economia da Agência Brasil. O comando agenda o trabalho e retorna; aguarde as mensagens `job-completed` no worker antes de buscar. Cada rodada lê até 20 itens do feed, ignora URLs externas e não duplica artigos já processados. Conteúdo é extraído com Cheerio; mudança na estrutura da fonte gera erro e retentativa, sem fallback de navegador nesta etapa.
+A coleta usa os feeds de Economia da Agência Brasil e da Agência Câmara. O worker agenda rodadas conforme o intervalo e o limite configurados; o comando abaixo também permite solicitar uma rodada manual. O comando agenda o trabalho e retorna; aguarde as mensagens `job-completed` no worker antes de buscar. Cada rodada lê até 20 itens do feed, ignora URLs externas e não duplica artigos já processados. Conteúdo é extraído com Cheerio; mudança na estrutura da fonte gera erro e retentativa, sem fallback de navegador nesta etapa.
 
 A busca usa os trechos já indexados e retorna até cinco artigos por padrão. O resultado é similaridade semântica, não uma medida de confiabilidade da notícia nem um agrupamento automático em eventos.
 
@@ -124,17 +124,11 @@ A tela administrativa **Gestão de categorias** controla quais assuntos aparecem
 
 ## Produção
 
-A configuração está preparada, mas nenhum deploy é realizado pelos comandos de desenvolvimento. Use `compose.production.yml`, com volumes separados e um proxy HTTPS à frente das portas locais. Configure o proxy de borda para sobrescrever `X-Forwarded-For` com o IP de origem, sem aceitar o valor enviado pelo cliente. Defina `TRUST_PROXY` com os IPs/CIDRs dos proxies confiáveis entre o cliente e a API (incluindo o servidor Next). A API ignora cabeçalhos de origem de conexões não confiáveis por padrão; sem essa configuração, o limite de requisições é compartilhado pelo IP do servidor Next. Não use uma faixa que inclua clientes não confiáveis. PostgreSQL não tem porta publicada nessa configuração.
+O deploy é feito pelo GitHub Actions após a CI da `main`. O GitHub constrói as imagens de frontend, API e worker e publica no GHCR; o VPS recebe os digests e executa o Compose, sem build no servidor. O Caddy do host atende `gowisen.app` por HTTPS com Cloudflare Full Strict. Apenas o frontend publica uma porta em localhost; banco e API ficam na rede Docker exclusiva.
 
-Crie `.env.production` a partir de `.env.example`, fora do Git, e ajuste `NODE_ENV=production`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `DATABASE_URL`, `FRONTEND_URL`, `BACKEND_INTERNAL_URL`, `OPERATIONS_TOKEN` e `TRUST_PROXY` para o servidor. O Compose de produção força `NODE_ENV=production`. Gere senha e token com valores aleatórios; uma senha hexadecimal evita caracteres reservados na URL de conexão. O token deve ter pelo menos 32 caracteres. O arquivo local de desenvolvimento não substitui a configuração de produção.
+As configurações vêm dos secrets e variables de produção. O helper restrito cria o arquivo privado de ambiente, preserva credenciais entre versões, faz backup antes de migrations e aguarda healthchecks. O primeiro bootstrap importa conteúdo editorial real e cria o administrador; execuções posteriores preservam a senha e o conteúdo existente. A nova central de revisões persiste sessões, quizzes, flashcards e histórico por usuário.
 
-```sh
-docker compose --env-file .env.production -f compose.production.yml build
-docker compose --env-file .env.production -f compose.production.yml run --rm prepare-model
-docker compose --env-file .env.production -f compose.production.yml up -d
-```
-
-As migrations são um serviço de execução única antes da API e do worker. Os processos de aplicação usam usuário sem privilégios. O preparo do modelo ajusta a propriedade do volume para esse usuário. O frontend encaminha as chamadas para a API pelo próprio servidor, usando `BACKEND_INTERNAL_URL` na rede Docker.
+Consulte [operação de produção](docs/production.md) para deploy, secrets, ativação posterior da OpenAI, backups e rollback. A [checklist de entrega](docs/deploy-checklist.md) registra o que foi validado. Não use os comandos de desenvolvimento para atualizar produção.
 
 A busca de uma pessoa autenticada fica vinculada à sua conta. O comando de busca pelo terminal usa `Authorization: Bearer <OPERATIONS_TOKEN>`. Esse token é operacional e não deve ser enviado ao navegador. Swagger fica desabilitado em produção.
 

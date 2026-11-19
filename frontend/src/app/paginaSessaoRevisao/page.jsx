@@ -3,10 +3,10 @@ import Demo from "@/components/centralRevisao/demo-route";
 import LiveReviews from "@/components/centralRevisao/live";
 import DemoPage from "@/components/demo/page";
 
-function LivePage() {
+function LivePage({ sessionId }) {
   return (
     <Suspense fallback={<p>Carregando…</p>}>
-      <LiveReviews key={params.sessao || "none"} view="sessao" />
+      <LiveReviews key={sessionId || "none"} view="sessao" />
     </Suspense>
   );
 }
@@ -18,7 +18,7 @@ export default async function Page({ searchParams }) {
   return (
     <DemoPage
       demo={<Demo view="sessao" initialTemas={temas} initialModo={formato} />}
-      live={<LivePage />}
+      live={<LivePage sessionId={params.sessao} />}
     />
   );
 }

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { transaction } from "../../database/index.js";
-import { recordEvidence } from "./learning.js";
+import { hasRecentQuestionEvidence, recordEvidence } from "./learning.js";
 
 const fail = (message, statusCode = 409) => Object.assign(new Error(message), { statusCode });
 const uuid = z.uuid();
@@ -169,12 +169,7 @@ export function reviewController(app, pool) {
           if (req.body.answer === undefined || req.body.answer >= item.snapshot.options.length)
             throw fail("Selecione uma alternativa válida", 400);
           correct = req.body.answer === item.snapshot.correct_index;
-          const repeated = (
-            await c.query(
-              `SELECT 1 FROM review_session_items i JOIN review_sessions s ON s.id=i.session_id WHERE s.user_id=$1 AND i.question_id=$2 AND i.completed_at>now()-interval '24 hours' UNION ALL SELECT 1 FROM review_attempts a JOIN reviews r ON r.id=a.review_id WHERE r.user_id=$1 AND r.question_id=$2 AND a.created_at>now()-interval '24 hours' LIMIT 1`,
-              [req.user.id, item.question_id],
-            )
-          ).rowCount;
+          const repeated = await hasRecentQuestionEvidence(c, req.user.id, item.question_id);
           if (!repeated)
             await recordEvidence(
               c,

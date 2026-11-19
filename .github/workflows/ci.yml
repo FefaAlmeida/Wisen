@@ -31,6 +31,6 @@ jobs:
           E2E_PRODUCTION: "1"
       - name: Validate deployment scripts
         run: |
-          bash -n deploy/restricted-deploy.sh deploy/backup.sh
+          bash -n deploy/restricted-deploy.sh deploy/backup.sh scripts/backup.sh
           sh -n deploy/ssh-entry.sh
           python3 -m py_compile deploy/receive-config.py deploy/action-payload.py

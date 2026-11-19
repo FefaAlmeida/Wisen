@@ -103,6 +103,17 @@ export async function recordEvidence(
     );
   return next;
 }
+export async function hasRecentQuestionEvidence(client, userId, questionId) {
+  return (
+    (
+      await client.query(
+        `SELECT 1 FROM review_session_items i JOIN review_sessions s ON s.id=i.session_id WHERE s.user_id=$1 AND s.format='quiz' AND i.question_id=$2 AND i.completed_at>now()-interval '24 hours'
+     UNION ALL SELECT 1 FROM review_attempts a JOIN reviews r ON r.id=a.review_id WHERE r.user_id=$1 AND r.question_id=$2 AND a.created_at>now()-interval '24 hours' LIMIT 1`,
+        [userId, questionId],
+      )
+    ).rowCount > 0
+  );
+}
 export function learningService(pool) {
   return {
     async interact(userId, { conceptId, type, requestId }) {
@@ -137,12 +148,7 @@ export function learningService(pool) {
         ).rows[0];
         if (!review || review.completed_at)
           throw Object.assign(new Error("Revisão não disponível"), { statusCode: 409 });
-        const already = (
-          await c.query(
-            "SELECT 1 FROM review_attempts a JOIN reviews r ON r.id=a.review_id WHERE r.user_id=$1 AND r.question_id=$2 AND a.correct AND a.created_at > now()-interval '24 hours'",
-            [userId, review.question_id],
-          )
-        ).rowCount;
+        const already = await hasRecentQuestionEvidence(c, userId, review.question_id);
         const correct = answer === review.correct_index;
         const before =
           (

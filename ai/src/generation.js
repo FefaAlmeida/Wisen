@@ -11,7 +11,10 @@ import {
   questionsSchema,
 } from "../../backend/src/modules/generation/provider.js";
 import { analysisCandidates, PROMPT_VERSION } from "../../backend/src/modules/generation/tasks.js";
-import { recordEvidence } from "../../backend/src/modules/platform/learning.js";
+import {
+  hasRecentQuestionEvidence,
+  recordEvidence,
+} from "../../backend/src/modules/platform/learning.js";
 import { MODEL_VERSION } from "../../backend/src/shared.js";
 
 const analysisValidation = z.object({
@@ -205,12 +208,7 @@ export function generationWorker(pool, config, provider = generateStructured, em
                 [task.user_id, task.concept_id],
               )
             ).rows[0]?.mastery_score ?? 0;
-          const repeated = (
-            await c.query(
-              "SELECT 1 FROM review_attempts a JOIN reviews r ON r.id=a.review_id WHERE r.user_id=$1 AND r.question_id=$2 AND a.correct AND a.created_at>now()-interval '24 hours'",
-              [task.user_id, review.question_id],
-            )
-          ).rowCount;
+          const repeated = await hasRecentQuestionEvidence(c, task.user_id, review.question_id);
           const next =
             repeated || mock
               ? { score: before }

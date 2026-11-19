@@ -113,6 +113,30 @@ test("sessões privadas persistem, ocultam gabaritos e não duplicam evidências
     ),
     0.25,
   );
+  const legacy = (
+    await pool.query(
+      "SELECT id FROM reviews WHERE user_id=$1 AND concept_id=$2 AND completed_at IS NULL",
+      [userId, conceptId],
+    )
+  ).rows[0];
+  assert.ok(legacy);
+  const legacyAnswer = await call("/api/reviews/answer", "POST", {
+    reviewId: legacy.id,
+    answer: 0,
+    requestId: randomUUID(),
+  });
+  assert.equal(legacyAnswer.statusCode, 200, legacyAnswer.body);
+  assert.equal(
+    Number(
+      (
+        await pool.query(
+          "SELECT mastery_score FROM user_concepts WHERE user_id=$1 AND concept_id=$2",
+          [userId, conceptId],
+        )
+      ).rows[0].mastery_score,
+    ),
+    0.25,
+  );
   const summary = await call("/api/reviews/summary");
   assert.equal(summary.statusCode, 200, summary.body);
   assert.equal(summary.json().week.length, 7);
@@ -163,4 +187,53 @@ test("flashcards registram estudo sem pontuar domínio e bootstrap preserva cont
     payload: { email: env.WISEN_ADMIN_EMAIL, password: env.WISEN_ADMIN_PASSWORD },
   });
   assert.equal(login.statusCode, 200, login.body);
+});
+
+test("revelar um flashcard não impede a primeira avaliação objetiva do mesmo conceito", async () => {
+  const fresh = (
+    await pool.query(
+      "INSERT INTO concepts(name,description) VALUES($1,'Estudo livre') RETURNING id",
+      [`Flashcard ${randomUUID()}`],
+    )
+  ).rows[0].id;
+  await pool.query(
+    "INSERT INTO question_bank(concept_id,prompt,options,correct_index,explanation,rubric) VALUES($1,'Lembre o conceito','[\"Correta\",\"Outra\",\"Terceira\",\"Quarta\"]',0,'Explicação','Rubrica')",
+    [fresh],
+  );
+  for (const format of ["flashcards", "quiz"]) {
+    const s = (
+      await call("/api/reviews/sessions", "POST", {
+        conceptIds: [fresh],
+        format,
+        requestId: randomUUID(),
+      })
+    ).json();
+    const r = await call(
+      `/api/reviews/sessions/${s.id}/items/${s.items[0].id}`,
+      "POST",
+      format === "quiz" ? { answer: 0 } : {},
+    );
+    assert.equal(r.statusCode, 200, r.body);
+    if (format === "flashcards")
+      assert.equal(
+        (
+          await pool.query("SELECT 1 FROM user_concepts WHERE user_id=$1 AND concept_id=$2", [
+            userId,
+            fresh,
+          ])
+        ).rowCount,
+        0,
+      );
+  }
+  assert.equal(
+    Number(
+      (
+        await pool.query(
+          "SELECT mastery_score FROM user_concepts WHERE user_id=$1 AND concept_id=$2",
+          [userId, fresh],
+        )
+      ).rows[0].mastery_score,
+    ),
+    0.25,
+  );
 });

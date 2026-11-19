@@ -41,7 +41,7 @@ export default function Feed({ explore = false }) {
           </div>
           <div className="relative hidden h-72 w-1/3 md:block">
             <Image
-              src="/foto_paginaInicialCliente.png"
+              src="/foto_paginaInicialCliente-v1.webp"
               alt="Planeta com conexões do Wisen"
               fill
               sizes="33vw"

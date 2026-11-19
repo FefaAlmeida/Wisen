@@ -3,7 +3,7 @@ export default function ApresentacaoLogin({ showCopy = true, showBrand = true })
     <section className="relative flex min-h-[420px] flex-col items-center justify-start overflow-hidden bg-[#202C3B] px-10 pt-7 pb-10 text-white lg:min-h-screen lg:px-14 lg:pt-10 lg:pb-14">
       <div
         className="absolute inset-0 bg-[length:auto_120%] bg-[position:center_top] bg-no-repeat"
-        style={{ backgroundImage: "url('/globoWisen.png')" }}
+        style={{ backgroundImage: "url('/globoWisen-v1.webp')" }}
       />
 
       <div className="absolute inset-0 bg-gradient-to-b from-[#202C3B]/75 via-transparent to-[#101B29]/20" />

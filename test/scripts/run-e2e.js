@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import { cpSync } from "node:fs";
 import { resolve } from "node:path";
 import { root, withTestDatabase } from "./database.js";
 
@@ -88,12 +89,25 @@ await withTestDatabase(async (databaseUrl) => {
   let frontend;
   try {
     backend = launch("backend/src/server.js", [], env);
-    frontend = launch(
-      nextBin,
-      ["dev", "--turbopack", "--hostname", "127.0.0.1", "--port", frontendPort],
-      env,
-      resolve(root, "frontend"),
-    );
+    if (process.env.E2E_PRODUCTION === "1") {
+      const standalone = resolve(root, "frontend/.next/standalone/frontend");
+      cpSync(resolve(root, "frontend/public"), resolve(standalone, "public"), { recursive: true });
+      cpSync(resolve(root, "frontend/.next/static"), resolve(standalone, ".next/static"), {
+        recursive: true,
+      });
+      frontend = launch(
+        resolve(standalone, "server.js"),
+        [],
+        { ...env, HOSTNAME: "127.0.0.1", PORT: frontendPort },
+        standalone,
+      );
+    } else
+      frontend = launch(
+        nextBin,
+        ["dev", "--turbopack", "--hostname", "127.0.0.1", "--port", frontendPort],
+        env,
+        resolve(root, "frontend"),
+      );
     await waitFor(`http://127.0.0.1:${backendPort}/api/health`, backend, "backend de teste");
     await waitFor(`${baseUrl}/paginaLogin`, frontend, "frontend de teste");
 

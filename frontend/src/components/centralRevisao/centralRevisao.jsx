@@ -41,8 +41,8 @@ export default function CentralRevisao({
     focar();
   }
 
-  if (view === "painel") return <PainelRevisoes />;
-  if (view === "nova") return <NovaRevisao />;
+  if (view === "painel") return <PainelRevisoes areas={areas} questoes={questoes} />;
+  if (view === "nova") return <NovaRevisao areas={areas} questoes={questoes} />;
   if (!selecionadas.length)
     return (
       <div className={styles.page}>

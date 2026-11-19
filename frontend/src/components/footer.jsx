@@ -85,5 +85,5 @@ export function Footer({ variant = "plataforma", background = "bg-[#F0F4F9]" }) 
         </div>
       </div>
     </footer>
-  );f
+  );
 }

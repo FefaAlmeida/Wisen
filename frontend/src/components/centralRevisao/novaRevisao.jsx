@@ -5,9 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import styles from "./revisoes.module.css";
-import { areas, questoes } from "./revisoesDemo";
 
-export default function NovaRevisao() {
+export default function NovaRevisao({ areas = [], questoes = [], onStart, busy = false }) {
   const router = useRouter();
   const [passo, setPasso] = useState(1);
   const [temas, setTemas] = useState([]);
@@ -200,9 +199,10 @@ export default function NovaRevisao() {
           <button
             type="button"
             className={styles.primario}
-            disabled={!selecionadas.length}
+            disabled={!selecionadas.length || busy}
             onClick={() => {
               if (passo < 3) mudarPasso(passo + 1);
+              else if (onStart) onStart(temas, modo);
               else
                 router.push(
                   `/paginaSessaoRevisao?${new URLSearchParams({ temas: temas.join(","), formato: modo })}`,

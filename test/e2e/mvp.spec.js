@@ -115,12 +115,27 @@ test("ciclo real de leitura, lacuna, revisão e adaptação persiste no navegado
   await expect(
     page.getByText("Juros são o custo do crédito. Vamos entender esse conceito primeiro."),
   ).toBeVisible();
-  for (let n = 0; n < 3; n++) {
-    await page.goto("/paginaRevisoes");
-    await page.getByRole("radio", { name: "Custo do crédito" }).check();
-    await page.getByRole("button", { name: "Corrigir resposta" }).click();
-    await expect(page.getByText(/Resposta correta/)).toBeVisible();
+  await page.goto("/paginaRevisoes/nova");
+  await page.getByRole("checkbox", { name: /Juros do teste/ }).check();
+  await page.getByRole("button", { name: "Continuar", exact: true }).click();
+  await page.getByRole("button", { name: "Continuar", exact: true }).click();
+  await page.getByRole("button", { name: /Iniciar revisão/ }).click();
+  await expect(page).toHaveURL(/paginaSessaoRevisao\?sessao=/);
+  for (let n = 0; n < 4; n++) {
+    await page.getByRole("button", { name: /Custo do crédito/ }).click();
+    await expect(page.getByRole("status")).toContainText("Resposta correta");
+    if (n === 0) {
+      await page.reload();
+      await expect(page.getByText(/Questão 2 de 4/)).toBeVisible();
+      continue;
+    }
+    await page
+      .getByRole("button", { name: n === 3 ? /Concluir revisão/ : /Próxima questão/ })
+      .click();
   }
+  await expect(page.getByText("4 de 4 respostas corretas")).toBeVisible();
+  await page.goto("/paginaRevisoes");
+  await expect(page.getByRole("heading", { name: "Central de revisões" })).toBeVisible();
   await page.goto(`/paginaEvento?id=${eventId}`);
   await expect(page.getByText("Dominado", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Explicar para mim" }).click();

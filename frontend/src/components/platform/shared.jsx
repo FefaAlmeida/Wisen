@@ -13,6 +13,8 @@ export { requisitar };
 
 const generationError = (error) =>
   ({
+    "Configure OPENAI_API_KEY para habilitar geração":
+      "A geração de novos conteúdos está temporariamente indisponível. Você pode continuar estudando os conteúdos já publicados.",
     BUDGET_EXHAUSTED:
       "O limite mensal de IA foi atingido. Conteúdos já disponíveis continuam acessíveis.",
     DAILY_LIMIT: "Você atingiu seu limite de gerações de hoje. Tente novamente amanhã.",

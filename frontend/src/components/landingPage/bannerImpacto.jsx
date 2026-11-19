@@ -17,6 +17,10 @@ export function BannerImpacto() {
   useEffect(() => {
     const elemento = metricasRef.current;
     if (!elemento) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setProgresso(1);
+      return;
+    }
 
     let frameId = 0;
     const observer = new IntersectionObserver(
@@ -50,7 +54,7 @@ export function BannerImpacto() {
         {/* Imagem original */}
         <div className="pointer-events-none absolute inset-0 z-0 opacity-30">
           <Image
-            src="/meuBanner.png"
+            src="/meuBanner-v1.webp"
             alt=""
             fill
             sizes="100vw"

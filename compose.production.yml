@@ -1,86 +1,78 @@
 name: wisen-production
-x-environment: &environment
-  NODE_ENV: production
-  DATABASE_URL: ${DATABASE_URL:?Defina DATABASE_URL no arquivo de ambiente}
-  FRONTEND_URL: ${FRONTEND_URL:?Defina FRONTEND_URL}
-  OPERATIONS_TOKEN: ${OPERATIONS_TOKEN:?Defina OPERATIONS_TOKEN}
-  MODEL_CACHE_DIR: ${MODEL_CACHE_DIR:-/models}
-  PORT: ${PORT:-8080}
-  TRUST_PROXY: ${TRUST_PROXY:-}
+x-app: &app
+  init: true
+  restart: unless-stopped
+  env_file: ${ENV_FILE:-.env.production}
+  networks: [private]
+  logging: { driver: json-file, options: { max-size: 10m, max-file: "3" } }
 services:
-  edge:
-    image: caddy:2-alpine
-    restart: unless-stopped
-    ports: ["80:80", "443:443", "443:443/udp"]
-    environment:
-      PUBLIC_DOMAIN: ${PUBLIC_DOMAIN:?Defina PUBLIC_DOMAIN}
-      FRONTEND_PORT: ${FRONTEND_PORT:-3000}
-    volumes:
-      - ./infra/Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy-data:/data
-      - caddy-config:/config
-    depends_on:
-      frontend: { condition: service_started }
   database:
+    <<: *app
+    env_file: []
     image: pgvector/pgvector:pg17
-    restart: unless-stopped
+    mem_limit: 512m
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:?Defina POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB:?Defina POSTGRES_DB}
-    volumes: ["postgres-data:/var/lib/postgresql/data"]
+      POSTGRES_USER: wisen
+      POSTGRES_DB: wisen
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Configure POSTGRES_PASSWORD}
+    volumes: [postgres-data:/var/lib/postgresql/data]
     healthcheck:
       test: [CMD-SHELL, 'pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"']
       interval: 5s
       timeout: 3s
       retries: 20
   migrate:
-    build: { context: ., target: backend }
-    env_file: ${ENV_FILE:-.env.production}
-    environment: *environment
+    <<: *app
+    image: ${WISEN_BACKEND_IMAGE:?Configure WISEN_BACKEND_IMAGE}
+    restart: "no"
+    mem_limit: 384m
     command: node backend/src/database/migrate.js
     depends_on:
       database: { condition: service_healthy }
+  bootstrap:
+    <<: *app
+    image: ${WISEN_BACKEND_IMAGE:?Configure WISEN_BACKEND_IMAGE}
+    restart: "no"
+    profiles: [tools]
+    mem_limit: 384m
+    command: node backend/src/database/bootstrap-production.js
   backend:
-    build: { context: ., target: backend }
-    init: true
-    restart: unless-stopped
-    env_file: ${ENV_FILE:-.env.production}
-    environment: *environment
-    ports: ["127.0.0.1:${BACKEND_HOST_PORT:-8080}:${PORT:-8080}"]
-    depends_on:
-      migrate: { condition: service_completed_successfully }
+    <<: *app
+    image: ${WISEN_BACKEND_IMAGE:?Configure WISEN_BACKEND_IMAGE}
+    mem_limit: 384m
+    stop_grace_period: 30s
     healthcheck:
       test:
         [
           CMD,
           node,
           -e,
-          "fetch('http://127.0.0.1:' + process.env.PORT + '/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
+          "fetch('http://127.0.0.1:8080/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
         ]
       interval: 10s
       timeout: 3s
-      retries: 10
-  prepare-model:
-    build: { context: ., target: ai }
-    user: root
-    profiles: [tools]
-    env_file: ${ENV_FILE:-.env.production}
-    environment: *environment
-    command: sh -c 'node ai/src/prepare-model.js && chown -R node:node "$$MODEL_CACHE_DIR"'
-    volumes: ["model-cache:${MODEL_CACHE_DIR:-/models}"]
-  ai:
-    mem_limit: ${AI_MEMORY_LIMIT:-1536m}
-    cpus: ${AI_CPU_LIMIT:-2}
-    build: { context: ., target: ai }
-    init: true
-    restart: unless-stopped
-    stop_grace_period: 45s
-    env_file: ${ENV_FILE:-.env.production}
-    environment: *environment
-    volumes: ["model-cache:${MODEL_CACHE_DIR:-/models}"]
+      retries: 12
     depends_on:
-      migrate: { condition: service_completed_successfully }
+      database: { condition: service_healthy }
+  prepare-model:
+    <<: *app
+    image: ${WISEN_AI_IMAGE:?Configure WISEN_AI_IMAGE}
+    user: root
+    restart: "no"
+    profiles: [tools]
+    mem_limit: 1g
+    cpus: 0.75
+    command: sh -c 'node ai/src/prepare-model.js && chown -R node:node /models'
+    volumes: [model-cache:/models]
+  ai:
+    <<: *app
+    image: ${WISEN_AI_IMAGE:?Configure WISEN_AI_IMAGE}
+    mem_limit: 1g
+    cpus: 0.75
+    stop_grace_period: 45s
+    volumes: [model-cache:/models]
+    depends_on:
+      backend: { condition: service_healthy }
     healthcheck:
       test:
         [
@@ -91,22 +83,38 @@ services:
         ]
       interval: 10s
       timeout: 3s
-      retries: 10
-      start_period: 30s
+      retries: 15
+      start_period: 45s
   frontend:
-    build:
-      context: .
-      target: frontend
     init: true
     restart: unless-stopped
+    image: ${WISEN_FRONTEND_IMAGE:?Configure WISEN_FRONTEND_IMAGE}
+    mem_limit: 512m
     environment:
-      PORT: ${FRONTEND_PORT:-3000}
-      BACKEND_INTERNAL_URL: ${BACKEND_INTERNAL_URL:?Defina BACKEND_INTERNAL_URL}
-    ports: ["127.0.0.1:${FRONTEND_HOST_PORT:-3000}:${FRONTEND_PORT:-3000}"]
+      NODE_ENV: production
+      BACKEND_INTERNAL_URL: http://backend:8080/api
+      PORT: 3000
+      NEXT_TELEMETRY_DISABLED: 1
+    networks:
+      private: { ipv4_address: 172.30.70.10 }
+    logging: { driver: json-file, options: { max-size: 10m, max-file: "3" } }
+    ports: [127.0.0.1:7170:3000]
     depends_on:
       backend: { condition: service_healthy }
+    healthcheck:
+      test:
+        [
+          CMD,
+          node,
+          -e,
+          "fetch('http://127.0.0.1:3000/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+networks:
+  private:
+    ipam: { config: [{ subnet: 172.30.70.0/24 }] }
 volumes:
   postgres-data:
-  caddy-data:
-  caddy-config:
   model-cache:

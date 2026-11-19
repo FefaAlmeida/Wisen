@@ -33,7 +33,7 @@ export default function CabecalhoConceito() {
 
       <div className="pointer-events-none absolute right-0 bottom-0 hidden h-[235px] w-[44%] lg:block">
         <Image
-          src="/foto_paginaConceito.png"
+          src="/foto_paginaConceito-v1.webp"
           alt="Ilustração de crescimento dos preços"
           fill
           sizes="(max-width: 1400px) 35vw, 450px"

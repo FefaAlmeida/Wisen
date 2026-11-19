@@ -33,7 +33,7 @@ function AdminBrand({ className = "", large = false }) {
       className={`inline-flex flex-col items-center gap-1.5 text-white ${className}`}
     >
       <Image
-        src="/logoWisen-simbolo.png"
+        src="/logoWisen-simbolo-v1.webp"
         alt="Logo Wisen"
         width={44}
         height={44}

@@ -10,11 +10,12 @@ export function HeroLanding() {
         loop
         muted
         playsInline
-        preload="auto"
+        preload="metadata"
+        poster="/globo-poster-v1.webp"
         tabIndex={-1}
         aria-hidden="true"
       >
-        <source src="/globo_video.mp4" type="video/mp4" />
+        <source src="/globo-hero-v1.mp4" type="video/mp4" />
       </video>
 
       <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_top_left,_rgba(232,225,145,0.16),transparent_22%),radial-gradient(circle_at_center,_rgba(16,26,64,0.12),transparent_45%),linear-gradient(180deg,rgba(7,13,31,0.38)_0%,rgba(7,13,31,0.24)_25%,rgba(7,13,31,0.48)_55%,rgba(7,13,31,0.74)_100%)]" />

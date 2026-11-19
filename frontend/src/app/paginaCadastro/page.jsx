@@ -8,7 +8,7 @@ function BrandMark({ size }) {
       className={`relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full ${size}`}
     >
       <Image
-        src="/logoWisen-simbolo.png"
+        src="/logoWisen-simbolo-v1.webp"
         alt=""
         width={700}
         height={700}
@@ -24,7 +24,7 @@ export default function CadastroPage() {
       <div
         aria-hidden="true"
         className="absolute inset-0 -z-20 bg-cover bg-[position:center_top] bg-no-repeat"
-        style={{ backgroundImage: "url('/globoWisen.png')" }}
+        style={{ backgroundImage: "url('/globoWisen-v1.webp')" }}
       />
       <div
         aria-hidden="true"

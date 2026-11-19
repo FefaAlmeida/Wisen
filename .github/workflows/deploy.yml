@@ -1,0 +1,137 @@
+name: Deploy
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      operation:
+        type: choice
+        options: [deploy, configure, rollback]
+        default: deploy
+      release:
+        description: Full commit SHA already deployed, for configure/rollback
+        required: false
+permissions:
+  contents: read
+  packages: read
+concurrency:
+  group: wisen-production
+  cancel-in-progress: false
+jobs:
+  resolve:
+    if: >-
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_repository.full_name == github.repository)
+    runs-on: ubuntu-latest
+    outputs:
+      sha: ${{ steps.target.outputs.sha }}
+      operation: ${{ steps.target.outputs.operation }}
+      build: ${{ steps.target.outputs.build }}
+    steps:
+      - id: target
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          OPERATION: ${{ inputs.operation || 'deploy' }}
+          RELEASE: ${{ inputs.release }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+        run: |
+          set -euo pipefail
+          case "$OPERATION" in deploy|configure|rollback) ;; *) exit 64;; esac
+          sha="$HEAD_SHA"
+          build=true
+          if [ "$OPERATION" != deploy ]; then sha="$RELEASE"; build=false; fi
+          [[ "$sha" =~ ^[0-9a-f]{40}$ ]]
+          if [ "$build" = true ] && [ "${{ github.event_name }}" = workflow_dispatch ]; then
+            passed=$(gh api "repos/$REPOSITORY/actions/workflows/ci.yml/runs?head_sha=$sha&status=success" --jq '[.workflow_runs[] | select(.event == "push" and .head_branch == "main")] | length')
+            test "$passed" -gt 0
+          fi
+          printf 'sha=%s\noperation=%s\nbuild=%s\n' "$sha" "$OPERATION" "$build" >> "$GITHUB_OUTPUT"
+  build:
+    needs: resolve
+    if: needs.resolve.outputs.build == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [frontend, backend, ai]
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ needs.resolve.outputs.sha }}
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+      - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        with:
+          context: .
+          target: ${{ matrix.service }}
+          push: true
+          platforms: linux/amd64
+          tags: ghcr.io/fefaalmeida/wisen/${{ matrix.service }}:sha-${{ needs.resolve.outputs.sha }}
+          labels: org.opencontainers.image.source=https://github.com/FefaAlmeida/Wisen
+          build-args: DEPLOYMENT_VERSION=${{ needs.resolve.outputs.sha }}
+          cache-from: type=gha,scope=wisen-${{ matrix.service }}
+          cache-to: type=gha,scope=wisen-${{ matrix.service }},mode=max
+  deploy:
+    needs: [resolve, build]
+    if: always() && needs.resolve.result == 'success' && (needs.build.result == 'success' || needs.build.result == 'skipped')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - name: Deploy through restricted SSH
+        env:
+          RELEASE: ${{ needs.resolve.outputs.sha }}
+          OPERATION: ${{ needs.resolve.outputs.operation }}
+          DEPLOY_HOST: ${{ vars.WISEN_DEPLOY_HOST }}
+          SSH_KEY: ${{ secrets.WISEN_DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.WISEN_DEPLOY_KNOWN_HOSTS }}
+          REGISTRY_USER: ${{ github.actor }}
+          REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WISEN_POSTGRES_PASSWORD: ${{ secrets.WISEN_POSTGRES_PASSWORD }}
+          WISEN_OPERATIONS_TOKEN: ${{ secrets.WISEN_OPERATIONS_TOKEN }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          WISEN_ADMIN_EMAIL: ${{ secrets.WISEN_ADMIN_EMAIL }}
+          WISEN_ADMIN_PASSWORD: ${{ secrets.WISEN_ADMIN_PASSWORD }}
+          AI_MODEL: ${{ vars.AI_MODEL }}
+          AI_MONTHLY_LIMIT_BRL: ${{ vars.AI_MONTHLY_LIMIT_BRL }}
+          AI_INPUT_USD_PER_MILLION: ${{ vars.AI_INPUT_USD_PER_MILLION }}
+          AI_OUTPUT_USD_PER_MILLION: ${{ vars.AI_OUTPUT_USD_PER_MILLION }}
+          AI_USD_BRL: ${{ vars.AI_USD_BRL }}
+          AI_COST_MARGIN: ${{ vars.AI_COST_MARGIN }}
+          AI_DAILY_USER_LIMIT: ${{ vars.AI_DAILY_USER_LIMIT }}
+          AI_MAX_OUTPUT_TOKENS: ${{ vars.AI_MAX_OUTPUT_TOKENS }}
+          COLLECTION_DAILY_LIMIT: ${{ vars.COLLECTION_DAILY_LIMIT }}
+          COLLECTION_INTERVAL_MINUTES: ${{ vars.COLLECTION_INTERVAL_MINUTES }}
+          EMAIL_DAILY_LIMIT: ${{ vars.EMAIL_DAILY_LIMIT }}
+        run: |
+          set -euo pipefail
+          umask 077
+          [[ "$RELEASE" =~ ^[0-9a-f]{40}$ ]]
+          test -n "$SSH_KEY" && test -n "$KNOWN_HOSTS" && test -n "$DEPLOY_HOST"
+          key_dir=$(mktemp -d)
+          trap 'rm -rf "$key_dir"' EXIT
+          printf '%s\n' "$SSH_KEY" > "$key_dir/key"
+          printf '%s\n' "$KNOWN_HOSTS" > "$key_dir/known_hosts"
+          python3 deploy/action-payload.py |
+            ssh -T -i "$key_dir/key" -o IdentitiesOnly=yes -o BatchMode=yes \
+              -o StrictHostKeyChecking=yes -o "UserKnownHostsFile=$key_dir/known_hosts" \
+              -o ConnectTimeout=20 -o ServerAliveInterval=15 -o ServerAliveCountMax=20 \
+              "deploy-wisen@$DEPLOY_HOST" "$OPERATION $RELEASE"
+      - name: Check public endpoints
+        run: |
+          for path in / /paginaLogin /api/health; do
+            curl --fail --silent --show-error --retry 5 --retry-all-errors --retry-delay 5 --max-time 30 "https://gowisen.app$path" -o /dev/null
+          done

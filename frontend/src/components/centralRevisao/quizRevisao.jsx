@@ -3,12 +3,21 @@
 import { Check, X } from "lucide-react";
 import styles from "./revisoes.module.css";
 
-export default function QuizRevisao({ questao, modo, resposta, revelada, onResponder, onRevelar }) {
+export default function QuizRevisao({
+  questao,
+  modo,
+  resposta,
+  revelada,
+  onResponder,
+  onRevelar,
+  live = false,
+  busy = false,
+}) {
   const respondida = resposta !== undefined;
   return (
     <div key={questao.id}>
       <div className={styles.contexto}>
-        <span>Contexto ilustrativo</span>
+        <span>{live ? "Contexto do conceito" : "Contexto ilustrativo"}</span>
         <h3>{questao.titulo}</h3>
         <p>{questao.contexto}</p>
       </div>
@@ -25,9 +34,9 @@ export default function QuizRevisao({ questao, modo, resposta, revelada, onRespo
                   key={opcao}
                   type="button"
                   aria-pressed={selecionada}
-                  aria-disabled={respondida}
+                  aria-disabled={respondida || busy}
                   onClick={() => {
-                    if (!respondida) onResponder(i);
+                    if (!respondida && !busy) onResponder(i);
                   }}
                   className={`${styles.opcao} ${correta ? styles.correta : ""} ${errada ? styles.errada : ""}`}
                 >
@@ -58,7 +67,7 @@ export default function QuizRevisao({ questao, modo, resposta, revelada, onRespo
           ) : (
             <>
               <p>Pense na resposta antes de revelar.</p>
-              <button className={styles.primario} type="button" onClick={onRevelar}>
+              <button className={styles.primario} type="button" onClick={onRevelar} disabled={busy}>
                 Revelar resposta
               </button>
             </>

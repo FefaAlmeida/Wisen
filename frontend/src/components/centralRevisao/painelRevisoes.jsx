@@ -1,7 +1,6 @@
 import { ArrowRight, BookOpen, CheckCheck, Clock3, Flame, Plus, Target } from "lucide-react";
 import Link from "next/link";
 import styles from "./revisoes.module.css";
-import { areas, questoes } from "./revisoesDemo";
 
 const semana = [
   { dia: "Sáb", total: 2 },
@@ -17,18 +16,38 @@ const historico = [
   { tema: "IA generativa", formato: "Flashcards", total: 2, quando: "Ontem, 18:45" },
   { tema: "Efeito estufa e energia", formato: "Quiz", total: 4, quando: "11 nov, 12:10" },
 ];
-const totalSemana = semana.reduce((total, d) => total + d.total, 0);
-const temas = areas.flatMap((a) => a.temas);
 
-export default function PainelRevisoes() {
+export default function PainelRevisoes({ areas = [], questoes = [], summary }) {
+  const live = !!summary;
+  const dias = summary?.week.map((d) => ({ dia: d.label, total: d.total })) ?? semana;
+  const totalSemana = dias.reduce((n, d) => n + d.total, 0);
+  const temas = areas.flatMap((a) => a.temas);
+  const quizzes = summary?.week.reduce((n, d) => n + d.quizzes, 0) ?? totalSemana;
+  const correct = summary?.week.reduce((n, d) => n + d.correct, 0) ?? 17;
+  const history =
+    summary?.history
+      .filter((s) => s.completed_at)
+      .map((s) => ({
+        id: s.id,
+        tema: s.names.join(", "),
+        formato: s.format === "quiz" ? "Quiz" : "Flashcards",
+        total: s.total,
+        quando: new Date(s.completed_at).toLocaleDateString("pt-BR"),
+      })) ?? historico;
   return (
     <div className={styles.page}>
       <header className={`${styles.header} ${styles.dashboardHeader}`}>
         <div>
           <h1>Central de revisões</h1>
           <div className={styles.meta}>
-            <span className={styles.badge}>Prévia</span>
-            <span>Dados ilustrativos · 13 nov 2026</span>
+            {live ? (
+              <span>Seu progresso de revisão</span>
+            ) : (
+              <>
+                <span className={styles.badge}>Prévia</span>
+                <span>Dados ilustrativos · 13 nov 2026</span>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -48,6 +67,13 @@ export default function PainelRevisoes() {
         </div>
         <ArrowRight className={styles.novaRevisaoSeta} size={24} aria-hidden="true" />
       </Link>
+      {summary?.history
+        .filter((s) => !s.completed_at)
+        .map((s) => (
+          <Link key={s.id} href={`/paginaSessaoRevisao?sessao=${s.id}`} className={styles.voltar}>
+            Retomar revisão em andamento <ArrowRight size={16} />
+          </Link>
+        ))}
       <section className={styles.stats} aria-label="Resumo das revisões">
         {[
           {
@@ -59,23 +85,23 @@ export default function PainelRevisoes() {
           },
           {
             titulo: "Revisadas hoje",
-            valor: semana.at(-1).total,
+            valor: dias.at(-1).total,
             unidade: "questões concluídas",
-            detalhe: "Uma sessão concluída hoje",
+            detalhe: "Atividades concluídas hoje",
             icon: CheckCheck,
           },
           {
             titulo: "Taxa de acerto",
-            valor: `${Math.round((17 / totalSemana) * 100)}%`,
+            valor: quizzes ? `${Math.round((correct / quizzes) * 100)}%` : "—",
             unidade: "nos últimos 7 dias",
-            detalhe: `17 acertos em ${totalSemana} questões de quiz`,
+            detalhe: `${correct} acertos em ${quizzes} questões de quiz`,
             icon: Target,
           },
           {
             titulo: "Constância de revisão",
-            valor: 4,
+            valor: summary?.streak ?? 4,
             unidade: "dias seguidos",
-            detalhe: "Seu recorde é de 7 dias",
+            detalhe: "Dias consecutivos de prática",
             icon: Flame,
           },
         ].map(({ titulo, valor, unidade, detalhe, icon: Icon }) => (
@@ -105,13 +131,17 @@ export default function PainelRevisoes() {
           <div
             className={styles.barras}
             role="img"
-            aria-label={semana.map((d) => `${d.dia}: ${d.total} questões`).join("; ")}
+            aria-label={dias.map((d) => `${d.dia}: ${d.total} questões`).join("; ")}
           >
-            {semana.map((d) => (
+            {dias.map((d) => (
               <div className={styles.barraColuna} key={d.dia}>
                 <strong>{d.total}</strong>
                 <div className={styles.barraTrilho}>
-                  <span style={{ height: `${(d.total / 6) * 100}%` }} />
+                  <span
+                    style={{
+                      height: `${(d.total / Math.max(1, ...dias.map((d) => d.total))) * 100}%`,
+                    }}
+                  />
                 </div>
                 <span>{d.dia}</span>
               </div>
@@ -147,8 +177,8 @@ export default function PainelRevisoes() {
             <h2 id="historico-title">Últimas revisões</h2>
           </div>
           <ul className={styles.historico}>
-            {historico.map((item) => (
-              <li key={item.tema}>
+            {history.map((item) => (
+              <li key={item.id ?? item.tema}>
                 <CheckCheck size={20} aria-hidden="true" />
                 <div>
                   <strong>{item.tema}</strong>
@@ -160,7 +190,13 @@ export default function PainelRevisoes() {
               </li>
             ))}
           </ul>
-          <p className={styles.nota}>Histórico demonstrativo de sessões concluídas.</p>
+          <p className={styles.nota}>
+            {live
+              ? history.length
+                ? "Sessões concluídas e salvas na sua conta."
+                : "Suas sessões concluídas aparecerão aqui."
+              : "Histórico demonstrativo de sessões concluídas."}
+          </p>
         </section>
         <section className={styles.panel} aria-labelledby="areas-title">
           <div className={styles.panelHeader}>

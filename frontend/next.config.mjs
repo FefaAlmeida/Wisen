@@ -2,6 +2,8 @@ import { fileURLToPath } from "node:url";
 
 export default {
   output: "standalone",
+  deploymentId: process.env.DEPLOYMENT_VERSION,
+  poweredByHeader: false,
   allowedDevOrigins: ["localhost", "127.0.0.1"],
   outputFileTracingRoot: fileURLToPath(new URL("../", import.meta.url)),
   images: {

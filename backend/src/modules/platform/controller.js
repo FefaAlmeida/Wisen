@@ -7,6 +7,7 @@ import { generationMode } from "../generation/mode.js";
 import { taskService } from "../generation/tasks.js";
 import { learningService } from "./learning.js";
 import { platformRead } from "./read.js";
+import { reviewController } from "./reviews.js";
 
 const id = z.uuid();
 const page = z.object({
@@ -22,6 +23,7 @@ export function platformController(app, pool, boss, config) {
     learning = learningService(pool),
     tasks = taskService(pool, boss, config),
     budget = budgetService(pool, config);
+  reviewController(app, pool);
   const secured = { preHandler: app.authenticateClient };
   app.get("/api/feed", { ...secured, schema: { querystring: page } }, async (req) => ({
     items: await read.feed(req.user.id, req.query),

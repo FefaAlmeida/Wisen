@@ -25,6 +25,8 @@ export function ConnectionsBackground({
     let width = 0;
     let height = 0;
     let frameId = 0;
+    let visible = true;
+    let lastFrame = 0;
 
     function resize() {
       const bounds = canvas.getBoundingClientRect();
@@ -102,7 +104,14 @@ export function ConnectionsBackground({
       context.stroke();
     }
 
-    function draw() {
+    function draw(now = 0) {
+      frameId = 0;
+      if (!visible || document.hidden) return;
+      if (now - lastFrame < 32 && !reducedMotion) {
+        frameId = requestAnimationFrame(draw);
+        return;
+      }
+      lastFrame = now;
       context.clearRect(0, 0, width, height);
 
       for (const particle of particles) {
@@ -135,11 +144,22 @@ export function ConnectionsBackground({
         context.fill();
       }
 
-      frameId = window.requestAnimationFrame(draw);
+      if (!reducedMotion) frameId = window.requestAnimationFrame(draw);
     }
 
+    function sync() {
+      cancelAnimationFrame(frameId);
+      frameId = 0;
+      if (visible && !document.hidden) draw();
+    }
     resize();
-    draw();
+    sync();
+    const visibilityObserver = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      sync();
+    });
+    visibilityObserver.observe(canvas);
+    document.addEventListener("visibilitychange", sync);
 
     const resizeObserver = new ResizeObserver(resize);
     resizeObserver.observe(canvas);
@@ -147,6 +167,8 @@ export function ConnectionsBackground({
     return () => {
       window.cancelAnimationFrame(frameId);
       resizeObserver.disconnect();
+      visibilityObserver.disconnect();
+      document.removeEventListener("visibilitychange", sync);
     };
   }, [fullSpread, particleDensity]);
 

@@ -6,7 +6,7 @@ export function BannerInicioAdm() {
       {/* Imagem de Fundo (Globo) */}
       <div className="pointer-events-none absolute top-0 right-0 hidden h-full w-1/2 md:block">
         <Image
-          src="/foto_paginaInicialCliente.png"
+          src="/foto_paginaInicialCliente-v1.webp"
           alt=""
           fill
           sizes="(max-width: 1024px) 40vw, 35vw"

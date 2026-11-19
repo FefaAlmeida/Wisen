@@ -1,12 +1,12 @@
 import { Suspense } from "react";
+import Demo from "@/components/centralRevisao/demo-route";
+import LiveReviews from "@/components/centralRevisao/live";
 import DemoPage from "@/components/demo/page";
-import Demo from "@/components/demo/paginaRevisoes";
-import { Reviews } from "@/components/platform/learning";
 
 function LivePage() {
   return (
     <Suspense fallback={<p>Carregando…</p>}>
-      <Reviews />
+      <LiveReviews key={params.sessao || "none"} view="sessao" />
     </Suspense>
   );
 }

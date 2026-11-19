@@ -8,13 +8,28 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     env:
       NEXT_TELEMETRY_DISABLED: "1"
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version-file: .nvmrc
           cache: npm
-      - run: npm ci
-      - run: npm run check
+      - run: npm install --global npm@11.13.0
+      - run: npm ci --no-audit --no-fund
+      - run: npm run lint
+      - run: npm run test:unit
+      - run: npm run test:frontend
+      - run: npm run test:integration
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      - run: npm run test:e2e
+        env:
+          E2E_PRODUCTION: "1"
+      - name: Validate deployment scripts
+        run: |
+          bash -n deploy/restricted-deploy.sh deploy/backup.sh
+          sh -n deploy/ssh-entry.sh
+          python3 -m py_compile deploy/receive-config.py deploy/action-payload.py

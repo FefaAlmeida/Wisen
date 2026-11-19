@@ -34,7 +34,7 @@ export default function Home() {
 
             <div className="relative hidden h-[350px] flex-1 md:block">
               <Image
-                src="/foto_paginaInicialCliente.png"
+                src="/foto_paginaInicialCliente-v1.webp"
                 alt="Planeta com conexões do Wisen"
                 fill
                 priority

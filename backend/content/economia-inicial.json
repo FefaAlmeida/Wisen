@@ -1,0 +1,242 @@
+{
+  "key": "economia-inicial-2026-11-v1",
+  "reviewedAt": "2026-11-19",
+  "concepts": [
+    {
+      "name": "Taxa de câmbio",
+      "description": "Preço de uma moeda expresso em outra. A alta do dólar em reais significa que é preciso mais reais para comprar um dólar.",
+      "question": {
+        "prompt": "O que significa uma alta do dólar em relação ao real?",
+        "options": [
+          "São necessários mais reais para comprar um dólar.",
+          "O real se valorizou necessariamente.",
+          "Todos os preços caem automaticamente.",
+          "A moeda deixou de variar."
+        ],
+        "correct_index": 0,
+        "explanation": "Preço de uma moeda expresso em outra. A alta do dólar em reais significa que é preciso mais reais para comprar um dólar.",
+        "rubric": "O que significa uma alta do dólar em relação ao real?"
+      }
+    },
+    {
+      "name": "Liquidez",
+      "description": "Facilidade de negociar ativos ou obter recursos para realizar pagamentos. No mercado cambial, operações do Banco Central podem ampliar a disponibilidade de moeda estrangeira.",
+      "question": {
+        "prompt": "O que uma operação para ampliar a liquidez cambial busca oferecer?",
+        "options": [
+          "Uma cotação fixa permanente.",
+          "Mais disponibilidade de moeda estrangeira no mercado.",
+          "Fim de todos os riscos.",
+          "Cancelamento dos impostos."
+        ],
+        "correct_index": 1,
+        "explanation": "Facilidade de negociar ativos ou obter recursos para realizar pagamentos. No mercado cambial, operações do Banco Central podem ampliar a disponibilidade de moeda estrangeira.",
+        "rubric": "O que uma operação para ampliar a liquidez cambial busca oferecer?"
+      }
+    },
+    {
+      "name": "Alíquota tributária",
+      "description": "Percentual ou valor usado para calcular um tributo sobre uma base. Uma alíquota de referência depende das hipóteses e regras do sistema tributário.",
+      "question": {
+        "prompt": "O que é uma alíquota tributária?",
+        "options": [
+          "Quantidade de trabalhadores empregados.",
+          "Cotação de uma moeda.",
+          "Percentual ou valor aplicado para calcular um tributo.",
+          "Lucro garantido de uma empresa."
+        ],
+        "correct_index": 2,
+        "explanation": "Percentual ou valor usado para calcular um tributo sobre uma base. Uma alíquota de referência depende das hipóteses e regras do sistema tributário.",
+        "rubric": "O que é uma alíquota tributária?"
+      }
+    },
+    {
+      "name": "Arrecadação tributária",
+      "description": "Receita obtida pelo poder público com a cobrança de tributos. Diferenças entre valores devidos e pagos afetam as estimativas de arrecadação.",
+      "question": {
+        "prompt": "Qual situação pode reduzir a arrecadação esperada?",
+        "options": [
+          "Pagamento integral de todos os tributos devidos.",
+          "Uma simples troca de nome do tributo.",
+          "Publicação de dados sem mudança nos pagamentos.",
+          "Tributos devidos que não são pagos."
+        ],
+        "correct_index": 3,
+        "explanation": "Receita obtida pelo poder público com a cobrança de tributos. Diferenças entre valores devidos e pagos afetam as estimativas de arrecadação.",
+        "rubric": "Qual situação pode reduzir a arrecadação esperada?"
+      }
+    },
+    {
+      "name": "Desemprego de longa duração",
+      "description": "Condição de quem procura trabalho por período prolongado. Na notícia selecionada, o recorte observado é a busca por dois anos ou mais.",
+      "question": {
+        "prompt": "Qual recorte a notícia utiliza para o desemprego de longa duração?",
+        "options": [
+          "Busca por trabalho há dois anos ou mais.",
+          "Férias remuneradas.",
+          "Qualquer pessoa sem carteira assinada.",
+          "Todo estudante que não procura trabalho."
+        ],
+        "correct_index": 0,
+        "explanation": "Condição de quem procura trabalho por período prolongado. Na notícia selecionada, o recorte observado é a busca por dois anos ou mais.",
+        "rubric": "Qual recorte a notícia utiliza para o desemprego de longa duração?"
+      }
+    },
+    {
+      "name": "População ocupada",
+      "description": "Conjunto de pessoas que trabalham no período de referência da pesquisa, incluindo formas de trabalho formal e informal.",
+      "question": {
+        "prompt": "Quem pode integrar a população ocupada?",
+        "options": [
+          "Somente gerentes.",
+          "Pessoas que trabalham, inclusive na informalidade.",
+          "Apenas servidores públicos.",
+          "Todas as pessoas que não procuram emprego."
+        ],
+        "correct_index": 1,
+        "explanation": "Conjunto de pessoas que trabalham no período de referência da pesquisa, incluindo formas de trabalho formal e informal.",
+        "rubric": "Quem pode integrar a população ocupada?"
+      }
+    },
+    {
+      "name": "Informalidade",
+      "description": "Inserção no trabalho sem os vínculos e proteções considerados formais pela classificação da pesquisa. Não equivale à ausência de trabalho.",
+      "question": {
+        "prompt": "Por que informalidade não é sinônimo de desemprego?",
+        "options": [
+          "Todo trabalhador informal está aposentado.",
+          "Só empresas públicas contratam.",
+          "Uma pessoa pode trabalhar sem vínculo formal.",
+          "Informalidade impede qualquer renda."
+        ],
+        "correct_index": 2,
+        "explanation": "Inserção no trabalho sem os vínculos e proteções considerados formais pela classificação da pesquisa. Não equivale à ausência de trabalho.",
+        "rubric": "Por que informalidade não é sinônimo de desemprego?"
+      }
+    },
+    {
+      "name": "Desigualdade de rendimentos",
+      "description": "Diferenças de renda entre pessoas ou grupos. Comparações exigem atenção ao período, à população e à unidade de medida usados.",
+      "question": {
+        "prompt": "Que cuidado é necessário ao comparar rendimentos?",
+        "options": [
+          "Ignorar as horas trabalhadas em qualquer comparação.",
+          "Tratar médias como renda de todas as pessoas.",
+          "Comparar valores sem identificar sua origem.",
+          "Verificar período, população e unidade de medida."
+        ],
+        "correct_index": 3,
+        "explanation": "Diferenças de renda entre pessoas ou grupos. Comparações exigem atenção ao período, à população e à unidade de medida usados.",
+        "rubric": "Que cuidado é necessário ao comparar rendimentos?"
+      }
+    },
+    {
+      "name": "Exportação",
+      "description": "Venda de bens ou serviços de um país para outros mercados. Regras técnicas e custos de adequação podem influenciar essas operações.",
+      "question": {
+        "prompt": "O que caracteriza uma exportação?",
+        "options": [
+          "Venda de um país para outro mercado.",
+          "Compra realizada apenas dentro da mesma cidade.",
+          "Cobrança de todo imposto municipal.",
+          "Qualquer transferência entre contas pessoais."
+        ],
+        "correct_index": 0,
+        "explanation": "Venda de bens ou serviços de um país para outros mercados. Regras técnicas e custos de adequação podem influenciar essas operações.",
+        "rubric": "O que caracteriza uma exportação?"
+      }
+    },
+    {
+      "name": "Barreiras não tarifárias",
+      "description": "Exigências e procedimentos que afetam o comércio sem serem tarifas de importação. Podem envolver regras técnicas, documentos e requisitos sanitários.",
+      "question": {
+        "prompt": "Qual é um exemplo de barreira não tarifária?",
+        "options": [
+          "Tarifa percentual sobre a importação.",
+          "Exigência de documentação técnica para comercialização.",
+          "Cotação diária do dólar.",
+          "Rendimento de uma aplicação."
+        ],
+        "correct_index": 1,
+        "explanation": "Exigências e procedimentos que afetam o comércio sem serem tarifas de importação. Podem envolver regras técnicas, documentos e requisitos sanitários.",
+        "rubric": "Qual é um exemplo de barreira não tarifária?"
+      }
+    },
+    {
+      "name": "Oferta e demanda",
+      "description": "Relação entre a quantidade disponível de um produto e a procura por ele. Uma queda na oferta pode pressionar preços quando os demais fatores permanecem semelhantes.",
+      "question": {
+        "prompt": "O que pode ocorrer quando a oferta cai e a demanda permanece semelhante?",
+        "options": [
+          "O preço sempre cai a zero.",
+          "A demanda desaparece obrigatoriamente.",
+          "O preço pode subir.",
+          "O produto passa a ser gratuito."
+        ],
+        "correct_index": 2,
+        "explanation": "Relação entre a quantidade disponível de um produto e a procura por ele. Uma queda na oferta pode pressionar preços quando os demais fatores permanecem semelhantes.",
+        "rubric": "O que pode ocorrer quando a oferta cai e a demanda permanece semelhante?"
+      }
+    },
+    {
+      "name": "Inflação de alimentos",
+      "description": "Variação de preços de alimentos que contribui para o custo de vida. A alta isolada de um produto não mede, por si só, toda a inflação.",
+      "question": {
+        "prompt": "O aumento do preço de um único alimento representa toda a inflação?",
+        "options": [
+          "Sim; todos os produtos sempre variam igualmente.",
+          "Sim; basta acompanhar um único supermercado.",
+          "Não existe relação entre alimentos e custo de vida.",
+          "Não; é necessário observar o conjunto de preços e seus pesos."
+        ],
+        "correct_index": 3,
+        "explanation": "Variação de preços de alimentos que contribui para o custo de vida. A alta isolada de um produto não mede, por si só, toda a inflação.",
+        "rubric": "O aumento do preço de um único alimento representa toda a inflação?"
+      }
+    }
+  ],
+  "events": [
+    {
+      "url": "https://agenciabrasil.ebc.com.br/economia/noticia/2026-11/dolar-sobe-para-r-587-com-expectativa-sobre-votacao-de-ajuste-fiscal",
+      "title": "Dólar sobe para R$ 5,87 com expectativa sobre votação de ajuste fiscal",
+      "publishedAt": "2026-11-18T22:26:00.000Z",
+      "summary": "A Agência Brasil relatou valorização do dólar e queda da bolsa em 18 de novembro de 2026, em meio a expectativas sobre medidas fiscais e movimentos do mercado internacional. A notícia permite estudar câmbio e liquidez sem atribuir a oscilação a uma causa única.",
+      "concepts": ["Taxa de câmbio", "Liquidez"]
+    },
+    {
+      "url": "https://agenciabrasil.ebc.com.br/economia/noticia/2026-11/senado-pede-explicacoes-tcu-sobre-aliquota-de-113-da-cbs",
+      "title": "Senado pede explicações a TCU sobre alíquota de 11,3% da CBS",
+      "publishedAt": "2026-11-18T20:07:00.000Z",
+      "summary": "A Comissão de Assuntos Econômicos do Senado solicitou ao TCU informações sobre os cálculos da alíquota de referência da CBS. A reportagem descreve divergências nas estimativas de cumprimento das obrigações tributárias e seus possíveis efeitos sobre a arrecadação.",
+      "concepts": ["Alíquota tributária", "Arrecadação tributária"]
+    },
+    {
+      "url": "https://agenciabrasil.ebc.com.br/economia/noticia/2026-11/numero-de-desempregados-ha-dois-anos-ou-mais-e-o-menor-ja-registrado",
+      "title": "Número de desempregados há dois anos ou mais é o menor já registrado",
+      "publishedAt": "2026-11-18T15:36:00.000Z",
+      "summary": "Dados da Pnad Contínua divulgados pelo IBGE indicaram redução do grupo que procurava trabalho há dois anos ou mais no terceiro trimestre de 2026. O recorte da notícia ajuda a distinguir duração da procura por emprego, desocupação e participação no trabalho.",
+      "concepts": ["Desemprego de longa duração", "População ocupada"]
+    },
+    {
+      "url": "https://agenciabrasil.ebc.com.br/economia/noticia/2026-11/pretos-e-pardos-ocupam-apenas-307-dos-cargos-gerenciais-mostra-ibge",
+      "title": "Pretos e pardos ocupam apenas 30,7% dos cargos gerenciais, mostra IBGE",
+      "publishedAt": "2026-11-18T13:01:00.000Z",
+      "summary": "Levantamento do IBGE apresentado pela Agência Brasil mostrou diferenças raciais na presença em cargos gerenciais, na informalidade e nos rendimentos do trabalho. A reportagem utiliza indicadores de 2025 e destaca que participação no emprego e acesso à liderança são medidas diferentes.",
+      "concepts": ["Informalidade", "Desigualdade de rendimentos"]
+    },
+    {
+      "url": "https://agenciabrasil.ebc.com.br/economia/noticia/2026-11/brasil-simplifica-exportacao-de-cosmeticos-para-america-latina",
+      "title": "Brasil simplifica exportação de cosméticos para América Latina",
+      "publishedAt": "2026-11-17T20:48:00.000Z",
+      "summary": "O Brasil internalizou acordo regional para simplificar exigências técnicas no comércio de cosméticos. Segundo a reportagem, a iniciativa busca aproximar procedimentos regulatórios e reduzir burocracia, sem modificar tarifas, oferecendo um caso para estudar comércio exterior.",
+      "concepts": ["Exportação", "Barreiras não tarifárias"]
+    },
+    {
+      "url": "https://agenciabrasil.ebc.com.br/economia/noticia/2026-11/clima-afeta-producao-e-eleva-preco-do-tomate-em-diversas-capitais",
+      "title": "Clima afeta produção e eleva preço do tomate em diversas capitais",
+      "publishedAt": "2026-11-17T20:12:00.000Z",
+      "summary": "A reportagem relaciona condições climáticas adversas à redução da produção de tomate e à alta de preços em diferentes capitais. O caso ilustra choques de oferta e seus efeitos sobre alimentos, sem confundir o preço de um produto com a inflação total.",
+      "concepts": ["Oferta e demanda", "Inflação de alimentos"]
+    }
+  ]
+}

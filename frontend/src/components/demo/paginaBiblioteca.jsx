@@ -43,7 +43,7 @@ export default function Home() {
               </div>
 
               <Image
-                src="/bibliotecaHeroCerta.png"
+                src="/bibliotecaHeroCerta-v1.webp"
                 width={1916}
                 height={821}
                 alt="Ilustração de livros representando diferentes áreas do conhecimento"

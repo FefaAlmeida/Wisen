@@ -14,12 +14,12 @@ EMAIL_DAILY_LIMIT=100
 
 Os registros de autenticação do Resend estão na zona `gowisen.app`:
 
-| Tipo | Nome | Valor |
-| --- | --- | --- |
-| TXT | `resend._domainkey` | Chave pública DKIM fornecida pelo Resend |
-| MX | `send` | `feedback-smtp.sa-east-1.amazonses.com`, prioridade 10 |
-| TXT | `send` | `v=spf1 include:amazonses.com ~all` |
-| CNAME | `rsend` | `send.forge.rmta.net`, proxy desativado |
+| Tipo  | Nome                | Valor                                                  |
+| ----- | ------------------- | ------------------------------------------------------ |
+| TXT   | `resend._domainkey` | Chave pública DKIM fornecida pelo Resend               |
+| MX    | `send`              | `feedback-smtp.sa-east-1.amazonses.com`, prioridade 10 |
+| TXT   | `send`              | `v=spf1 include:amazonses.com ~all`                    |
+| CNAME | `rsend`             | `send.forge.rmta.net`, proxy desativado                |
 
 Consulte o domínio no painel do Resend para conferir a verificação e obter a chave pública DKIM completa. A chave da Cloudflare serve para administrar DNS; ela não substitui `RESEND_API_KEY` e não precisa estar no ambiente da aplicação.
 

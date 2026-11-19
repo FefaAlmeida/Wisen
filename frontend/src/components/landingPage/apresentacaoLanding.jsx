@@ -52,7 +52,7 @@ export function ApresentacaoLanding() {
               <aside className="hidden w-[28%] shrink-0 flex-col bg-[#202D3A] px-3 py-4 text-white sm:flex lg:px-4">
                 <div className="mb-4 flex flex-col items-center gap-1.5 border-b border-white/15 pb-3">
                   <Image
-                    src="/logoWisen-simbolo.png"
+                    src="/logoWisen-simbolo-v1.webp"
                     alt=""
                     width={44}
                     height={44}
@@ -66,9 +66,7 @@ export function ApresentacaoLanding() {
                     <div
                       key={label}
                       className={`flex h-8 items-center gap-2 rounded-lg px-2 text-[9px] ${
-                        active
-                          ? "bg-[#EBDD80] font-semibold text-[#202D3A]"
-                          : "text-white/75"
+                        active ? "bg-[#EBDD80] font-semibold text-[#202D3A]" : "text-white/75"
                       }`}
                     >
                       <Icon className="h-3.5 w-3.5 shrink-0" />
@@ -115,7 +113,7 @@ export function ApresentacaoLanding() {
 
                   <div className="relative hidden h-[130px] w-[100px] sm:block">
                     <Image
-                      src="/foto_paginaInicialCliente.png"
+                      src="/foto_paginaInicialCliente-v1.webp"
                       alt=""
                       fill
                       sizes="100px"

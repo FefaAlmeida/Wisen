@@ -105,7 +105,7 @@ test("landing oferece acesso e navegação funcional em desktop e celular", asyn
     const navigation = page.getByRole("navigation", { name: "Navegação da plataforma" });
     await expect(navigation.getByRole("link", { name: "Entrar", exact: true })).toBeVisible();
     await expect(navigation.getByRole("link", { name: "Criar conta", exact: true })).toBeVisible();
-    await expect(navigation.getByRole("link", { name: "Acessar plataforma" })).toBeVisible();
+
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
     ).toBe(true);
@@ -118,11 +118,6 @@ test("landing oferece acesso e navegação funcional em desktop e celular", asyn
     await expect(page).toHaveURL(/\/paginaCadastro$/);
   }
   await page.goto("/");
-  await page
-    .getByRole("navigation", { name: "Navegação da plataforma" })
-    .getByRole("link", { name: "Acessar plataforma" })
-    .click();
-  await expect(page).toHaveURL(/\/paginaLogin\?next=%2FpaginaInicialCliente$/);
   await page.goto("/");
   await expect(page.locator('a[href="/paginaLanding"]')).toHaveCount(0);
 });

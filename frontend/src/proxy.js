@@ -73,5 +73,6 @@ export const config = {
     "/paginaGestaoFonteAdm/:path*",
     "/paginaGestaoCategoriasAdm/:path*",
     "/paginaMonitorIa/:path*",
+    "/paginaPerfilAdm/:path*",
   ],
 };

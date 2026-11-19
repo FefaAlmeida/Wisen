@@ -30,6 +30,7 @@ export default function TabelaUsuarios({
                 checked={todosSelecionados}
                 onCheckedChange={(valor) => aoSelecionarTodos(Boolean(valor))}
                 aria-label="Selecionar todos os usuários da página"
+                className="transition-colors data-checked:border-[#D7BF4D] data-checked:bg-[#EBDD80] data-checked:text-[#101A40] focus-visible:ring-[#D7BF4D]/50"
               />
             </TableHead>
 
@@ -51,7 +52,9 @@ export default function TabelaUsuarios({
           {usuarios.map((usuario) => (
             <TableRow
               key={usuario.id}
-              className="cursor-pointer border-[#E8EDF4] transition-colors hover:bg-[#FBF7E5]"
+              className={`cursor-pointer border-[#E8EDF4] transition-colors hover:bg-[#EBDD80] ${
+                selecionados.includes(usuario.id) ? "bg-[#FBF7E5]" : ""
+              }`}
               onClick={() => aoAbrirUsuario(usuario)}
             >
               <TableCell className="pl-4" onClick={(evento) => evento.stopPropagation()}>
@@ -59,6 +62,7 @@ export default function TabelaUsuarios({
                   checked={selecionados.includes(usuario.id)}
                   onCheckedChange={(valor) => aoSelecionar(usuario.id, Boolean(valor))}
                   aria-label={`Selecionar ${usuario.nome}`}
+                  className="transition-colors data-checked:border-[#D7BF4D] data-checked:bg-[#EBDD80] data-checked:text-[#101A40] focus-visible:ring-[#D7BF4D]/50"
                 />
               </TableCell>
 
@@ -119,7 +123,7 @@ export default function TabelaUsuarios({
                     aoAbrirUsuario(usuario);
                   }}
                   aria-label={`Ver informações de ${usuario.nome}`}
-                  className="rounded-lg text-[#344469] transition-colors hover:bg-[#EBDD80]"
+                  className="rounded-lg text-[#344469] transition-colors hover:bg-[#EBDD80] focus-visible:bg-[#EBDD80]"
                 >
                   <span className="text-xl">⋮</span>
                 </Button>

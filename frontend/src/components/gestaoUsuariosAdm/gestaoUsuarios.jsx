@@ -202,14 +202,14 @@ export default function GestaoUsuarios() {
         <TabsList className="mb-4 h-12 w-full justify-start gap-2 rounded-none border-b border-[#DCE4EF] bg-transparent p-0">
           <TabsTrigger
             value="usuarios"
-            className="h-full rounded-none border-b-2 border-transparent px-6 text-[15px] text-[#7183A6] shadow-none transition-colors hover:text-[#D6B92F] data-[state=active]:border-[#EBDD80] data-[state=active]:bg-transparent data-[state=active]:font-semibold data-[state=active]:text-[#101A40] data-[state=active]:shadow-none"
+            className="h-full rounded-none border-b-2 border-transparent px-6 text-[15px] text-[#7183A6] shadow-none transition-colors hover:bg-[#EBDD80] hover:text-[#101A40] data-[state=active]:border-[#EBDD80] data-[state=active]:bg-[#FBF7E5] data-[state=active]:font-semibold data-[state=active]:text-[#101A40] data-[state=active]:shadow-none"
           >
             Usuários
           </TabsTrigger>
 
           <TabsTrigger
             value="historico"
-            className="h-full rounded-none border-b-2 border-transparent px-6 text-[15px] text-[#7183A6] shadow-none transition-colors hover:text-[#D6B92F] data-[state=active]:border-[#EBDD80] data-[state=active]:bg-transparent data-[state=active]:font-semibold data-[state=active]:text-[#101A40] data-[state=active]:shadow-none"
+            className="h-full rounded-none border-b-2 border-transparent px-6 text-[15px] text-[#7183A6] shadow-none transition-colors hover:bg-[#EBDD80] hover:text-[#101A40] data-[state=active]:border-[#EBDD80] data-[state=active]:bg-[#FBF7E5] data-[state=active]:font-semibold data-[state=active]:text-[#101A40] data-[state=active]:shadow-none"
           >
             Histórico de ações
           </TabsTrigger>
@@ -226,13 +226,31 @@ export default function GestaoUsuarios() {
                     setPagina(1);
                   }}
                 >
-                  <SelectTrigger className="h-10 w-full rounded-lg border-[#DFE6F0] bg-white text-sm text-[#344469] shadow-none sm:w-[185px]">
+                  <SelectTrigger
+                    data-filtered={permissaoFiltro !== "todos"}
+                    className="h-10 w-full rounded-lg border-[#DFE6F0] bg-white text-sm text-[#344469] shadow-none transition-colors hover:bg-[#EBDD80] focus:border-[#D7BF4D] focus:bg-[#EBDD80] focus-visible:ring-[#D7BF4D]/30 data-[filtered=true]:border-[#D7BF4D] data-[filtered=true]:bg-[#FBF7E5] data-[popup-open]:bg-[#EBDD80] sm:w-[185px]"
+                  >
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="todos">Todas as permissões</SelectItem>
-                    <SelectItem value="Admin">Administrador</SelectItem>
-                    <SelectItem value="Usuário">Usuário</SelectItem>
+                    <SelectItem
+                      value="todos"
+                      className="hover:bg-[#EBDD80] focus:bg-[#EBDD80] focus:text-[#101A40] data-[highlighted]:bg-[#EBDD80]"
+                    >
+                      Todas as permissões
+                    </SelectItem>
+                    <SelectItem
+                      value="Admin"
+                      className="hover:bg-[#EBDD80] focus:bg-[#EBDD80] focus:text-[#101A40] data-[highlighted]:bg-[#EBDD80]"
+                    >
+                      Administrador
+                    </SelectItem>
+                    <SelectItem
+                      value="Usuário"
+                      className="hover:bg-[#EBDD80] focus:bg-[#EBDD80] focus:text-[#101A40] data-[highlighted]:bg-[#EBDD80]"
+                    >
+                      Usuário
+                    </SelectItem>
                   </SelectContent>
                 </Select>
 
@@ -243,25 +261,44 @@ export default function GestaoUsuarios() {
                     setPagina(1);
                   }}
                 >
-                  <SelectTrigger className="h-10 w-full rounded-lg border-[#DFE6F0] bg-white text-sm text-[#344469] shadow-none sm:w-[165px]">
+                  <SelectTrigger
+                    data-filtered={statusFiltro !== "todos"}
+                    className="h-10 w-full rounded-lg border-[#DFE6F0] bg-white text-sm text-[#344469] shadow-none transition-colors hover:bg-[#EBDD80] focus:border-[#D7BF4D] focus:bg-[#EBDD80] focus-visible:ring-[#D7BF4D]/30 data-[filtered=true]:border-[#D7BF4D] data-[filtered=true]:bg-[#FBF7E5] data-[popup-open]:bg-[#EBDD80] sm:w-[165px]"
+                  >
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="todos">Todos os status</SelectItem>
-                    <SelectItem value="Ativo">Ativo</SelectItem>
-                    <SelectItem value="Bloqueado">Bloqueado</SelectItem>
+                    <SelectItem
+                      value="todos"
+                      className="hover:bg-[#EBDD80] focus:bg-[#EBDD80] focus:text-[#101A40] data-[highlighted]:bg-[#EBDD80]"
+                    >
+                      Todos os status
+                    </SelectItem>
+                    <SelectItem
+                      value="Ativo"
+                      className="hover:bg-[#EBDD80] focus:bg-[#EBDD80] focus:text-[#101A40] data-[highlighted]:bg-[#EBDD80]"
+                    >
+                      Ativo
+                    </SelectItem>
+                    <SelectItem
+                      value="Bloqueado"
+                      className="hover:bg-[#EBDD80] focus:bg-[#EBDD80] focus:text-[#101A40] data-[highlighted]:bg-[#EBDD80]"
+                    >
+                      Bloqueado
+                    </SelectItem>
                   </SelectContent>
                 </Select>
 
                 <Input
                   type="date"
                   aria-label="Filtrar por data de cadastro"
+                  data-filtered={Boolean(dataFiltro)}
                   value={dataFiltro}
                   onChange={(evento) => {
                     setDataFiltro(evento.target.value);
                     setPagina(1);
                   }}
-                  className="h-10 w-full rounded-lg border-[#DFE6F0] bg-white text-sm text-[#344469] shadow-none sm:w-[170px]"
+                  className="h-10 w-full rounded-lg border-[#DFE6F0] bg-white text-sm text-[#344469] shadow-none transition-colors hover:bg-[#EBDD80] focus:border-[#D7BF4D] focus:bg-[#EBDD80] focus-visible:ring-3 focus-visible:ring-[#D7BF4D]/30 data-[filtered=true]:border-[#D7BF4D] data-[filtered=true]:bg-[#FBF7E5] sm:w-[170px]"
                 />
               </div>
 
@@ -291,7 +328,7 @@ export default function GestaoUsuarios() {
                     size="icon"
                     disabled={paginaAtual === 1}
                     onClick={() => setPagina(paginaAtual - 1)}
-                    className="h-9 w-9 rounded-full border-[#DFE6F0] transition-colors hover:bg-[#FBF7E5]"
+                    className="h-9 w-9 rounded-full border-[#DFE6F0] transition-colors hover:bg-[#EBDD80]"
                     aria-label="Página anterior"
                   >
                     ‹
@@ -305,7 +342,7 @@ export default function GestaoUsuarios() {
                       className={`h-9 w-9 rounded-full p-0 text-sm transition-colors ${
                         paginaAtual === numero
                           ? "bg-[#EBDD80] text-[#202D3A] hover:bg-[#EBDD80]"
-                          : "border-[#DFE6F0] bg-white text-[#7183A6] hover:bg-[#FBF7E5]"
+                          : "border-[#DFE6F0] bg-white text-[#7183A6] hover:bg-[#EBDD80]"
                       }`}
                     >
                       {numero}
@@ -317,7 +354,7 @@ export default function GestaoUsuarios() {
                     size="icon"
                     disabled={paginaAtual === totalPaginas}
                     onClick={() => setPagina(paginaAtual + 1)}
-                    className="h-9 w-9 rounded-full border-[#DFE6F0] transition-colors hover:bg-[#FBF7E5]"
+                    className="h-9 w-9 rounded-full border-[#DFE6F0] transition-colors hover:bg-[#EBDD80]"
                     aria-label="Próxima página"
                   >
                     ›

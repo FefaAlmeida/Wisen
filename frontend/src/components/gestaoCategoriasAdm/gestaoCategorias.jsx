@@ -155,6 +155,7 @@ export default function GestaoCategorias() {
                   }
                   onCheckedChange={(available) => toggleCategory(category.id, available)}
                   aria-label={`Disponibilizar ${category.name}`}
+                  className="data-checked:bg-[#EBDD80] data-unchecked:bg-[#DCE3ED] focus-visible:ring-[#EBDD80]/50"
                 />
               </div>
             ))}

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { requisitar } from "@/services/api";
 
-export default function MenuPerfil() {
+export default function MenuPerfil({ profileHref = "/paginaPerfil" }) {
   const [profile, setProfile] = useState(null);
   useEffect(() => {
     const controller = new AbortController();
@@ -73,7 +73,7 @@ export default function MenuPerfil() {
           <div className="my-2 h-px bg-[#EEF0F4]" />
 
           <Link
-            href="/paginaPerfil"
+            href={profileHref}
             className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-[#30466E] hover:bg-[#F1F3F6]"
           >
             <UserRound size={16} />

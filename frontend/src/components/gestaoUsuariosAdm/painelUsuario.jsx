@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ShieldCheck, UserRound } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -72,23 +73,30 @@ export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
         if (!valor) aoFechar();
       }}
     >
-      <DialogContent className="max-h-[90vh] w-[calc(100%-2rem)] max-w-[600px] gap-0 overflow-y-auto rounded-xl border border-[#EAE7D6] bg-white p-0 shadow-[0_20px_50px_rgba(16,26,64,0.12)] sm:max-w-[600px]">
+      <DialogContent className="max-h-[90vh] w-[calc(100%-2rem)] max-w-[680px] gap-0 overflow-y-auto rounded-xl border border-[#DDE5F0] bg-[#FBF8E9] p-0 shadow-[0_24px_70px_rgba(16,26,64,0.2)] sm:max-w-[680px] [&_[data-slot=dialog-close]]:text-white [&_[data-slot=dialog-close]]:hover:bg-white/15">
         {usuario && (
           <>
-            <DialogHeader className="bg-[#F7F3CD] px-4 pb-3 pt-4 sm:px-5">
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#101A40] text-sm font-semibold text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]">
+            <DialogHeader className="relative isolate overflow-hidden border-b border-[#314365] bg-gradient-to-r from-[#101A40] via-[#1C2D50] to-[#30466E] px-5 py-6 sm:px-7">
+              <span
+                aria-hidden="true"
+                className="absolute -top-24 -right-12 -z-10 size-64 rounded-full border-[30px] border-white/[0.06]"
+              />
+              <span
+                aria-hidden="true"
+                className="absolute -right-4 -bottom-28 -z-10 size-48 rounded-full bg-[#EBDD80]/10 blur-2xl"
+              />
+              <div className="relative flex items-center gap-4 pr-8">
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 border-white/70 bg-[#EBDD80] text-lg font-bold text-[#101A40] shadow-md">
                   {usuario.iniciais}
                 </div>
 
                 <div className="min-w-0 flex-1 text-left">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <DialogTitle className="text-[22px] font-semibold tracking-[-0.02em] text-[#101A40]">
-                      {usuario.nome}
-                    </DialogTitle>
-
+                  <div className="mb-1 flex flex-wrap items-center gap-2">
+                    <span className="text-[10px] font-semibold tracking-[0.16em] text-[#EBDD80] uppercase">
+                      PERFIL DO USUÁRIO
+                    </span>
                     <Badge
-                      className={`gap-1.5 rounded-full border-0 px-2.5 py-1 text-xs font-medium shadow-none ${
+                      className={`gap-1.5 rounded-full border border-white/20 px-2.5 py-1 text-xs font-medium shadow-none ${
                         status === "Ativo"
                           ? "bg-[#E3F7EA] text-[#1F7A4C]"
                           : "bg-[#FCEAEA] text-[#B54046]"
@@ -103,32 +111,35 @@ export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
                     </Badge>
                   </div>
 
-                  <DialogDescription className="mt-1 text-sm text-[#30466E]">
+                  <DialogTitle className="text-2xl font-semibold tracking-[-0.02em] text-white sm:text-[28px]">
+                    {usuario.nome}
+                  </DialogTitle>
+
+                  <DialogDescription className="mt-1 text-sm text-[#D7DFEC]">
                     {usuario.email}
                   </DialogDescription>
 
-                  <p className="mt-1 text-xs text-[#465C7C]">
+                  <p className="mt-1 text-xs text-[#AEBBD0]">
                     Usuário desde {usuario.dataCadastro}
                   </p>
                 </div>
               </div>
             </DialogHeader>
 
-            <Tabs defaultValue="informacoes" className="gap-0">
+            <Tabs defaultValue="informacoes" className="gap-0 bg-[#FBF8E9]">
               <TabsList
-                variant="line"
-                className="h-11 w-full justify-start rounded-none border-0 bg-white px-5 sm:px-6"
+                className="mx-5 mt-5 grid h-11 w-[calc(100%-2.5rem)] grid-cols-2 rounded-lg bg-[#E8EEF6] p-1 sm:mx-7 sm:w-[calc(100%-3.5rem)]"
               >
                 <TabsTrigger
                   value="informacoes"
-                  className="h-full rounded-none border-b-[2px] border-transparent px-4 text-sm text-[#30466E]/75 shadow-none transition-colors duration-200 hover:text-[#D6B92F] data-[state=active]:border-[#EBDD80] data-[state=active]:bg-white data-[state=active]:text-[#101A40] data-[state=active]:font-semibold"
+                  className="h-full rounded-md border-0 px-4 text-sm font-medium text-[#657A9B] shadow-none transition-colors hover:bg-[#EBDD80] hover:text-[#101A40] data-[state=active]:bg-[#FBF7E5] data-[state=active]:font-semibold data-[state=active]:text-[#101A40] data-[state=active]:shadow-sm"
                 >
                   Informações
                 </TabsTrigger>
 
                 <TabsTrigger
                   value="historico"
-                  className="h-full rounded-none border-b-[2px] border-transparent px-4 text-sm text-[#30466E]/75 shadow-none transition-colors duration-200 hover:text-[#D6B92F] data-[state=active]:border-[#EBDD80] data-[state=active]:bg-white data-[state=active]:text-[#101A40] data-[state=active]:font-semibold"
+                  className="h-full rounded-md border-0 px-4 text-sm font-medium text-[#657A9B] shadow-none transition-colors hover:bg-[#EBDD80] hover:text-[#101A40] data-[state=active]:bg-[#FBF7E5] data-[state=active]:font-semibold data-[state=active]:text-[#101A40] data-[state=active]:shadow-sm"
                 >
                   Histórico de ações
                 </TabsTrigger>
@@ -136,157 +147,200 @@ export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
 
               <TabsContent
                 value="informacoes"
-                className="space-y-6 bg-white px-5 py-5 sm:px-6 sm:py-5"
+                className="bg-[#FBF8E9] px-4 py-4 sm:px-7 sm:py-5"
               >
-                <section className="space-y-3">
-                  <div className="flex items-center gap-2.5">
-                    <span className="h-4 w-[3px] rounded-full bg-[#EBDD80]" />
-                    <h3 className="text-base font-semibold tracking-[-0.01em] text-[#101A40]">
-                      Informações pessoais
-                    </h3>
+                <div className="space-y-4">
+                  <section className="space-y-4 rounded-xl border border-[#E5EAF2] bg-white p-4 sm:p-5">
+                    <div className="flex items-center gap-3">
+                      <span className="flex size-9 items-center justify-center rounded-lg bg-[#101A40] text-[#EBDD80]">
+                        <UserRound aria-hidden="true" className="size-4" />
+                      </span>
+                      <div>
+                        <h3 className="text-sm font-semibold text-[#101A40]">
+                          Informações pessoais
+                        </h3>
+                        <p className="text-xs text-[#8192B2]">Dados cadastrais do usuário</p>
+                      </div>
+                    </div>
+
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <div className="rounded-lg border border-[#E5EAF2] bg-white p-3">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#8291AA]">
+                          Nome completo
+                        </p>
+                        <p className="mt-1 text-sm font-medium text-[#101A40]">{usuario.nome}</p>
+                      </div>
+
+                      <div className="rounded-lg border border-[#E5EAF2] bg-white p-3">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#8291AA]">
+                          Data de cadastro
+                        </p>
+                        <p className="mt-1 text-sm font-medium text-[#101A40]">
+                          {usuario.dataCadastro}
+                        </p>
+                      </div>
+
+                      <div className="rounded-lg border border-[#E5EAF2] bg-white p-3 sm:col-span-2">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#8291AA]">
+                          E-mail
+                        </p>
+                        <p className="mt-1 break-all text-sm font-medium text-[#101A40]">
+                          {usuario.email}
+                        </p>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section className="space-y-4 rounded-xl border border-[#E5EAF2] bg-white p-4 sm:p-5">
+                    <div className="flex items-center gap-3">
+                      <span className="flex size-9 items-center justify-center rounded-lg bg-[#101A40] text-[#EBDD80]">
+                        <ShieldCheck aria-hidden="true" className="size-4" />
+                      </span>
+                      <div>
+                        <h3 className="text-sm font-semibold text-[#101A40]">
+                          Configurações da conta
+                        </h3>
+                        <p className="text-xs text-[#8192B2]">Permissões e acesso</p>
+                      </div>
+                    </div>
+
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <div className="space-y-2">
+                        <label
+                          htmlFor="admin-user-role"
+                          className="text-sm font-medium text-[#30466E]"
+                        >
+                          Permissões
+                        </label>
+
+                        <Select value={permissao} onValueChange={setPermissao}>
+                          <SelectTrigger
+                            id="admin-user-role"
+                            className="h-11 w-full rounded-lg border border-[#D1DBE9] bg-[#F3F6FB] text-sm text-[#101A40] shadow-none transition-colors hover:bg-[#EBDD80] focus:border-[#D7BF4D] focus:bg-[#EBDD80] focus:ring-3 focus:ring-[#D7BF4D]/30 data-[popup-open]:bg-[#EBDD80]"
+                          >
+                            <SelectValue />
+                          </SelectTrigger>
+
+                          <SelectContent className="bg-white text-[#101A40]">
+                            <SelectItem
+                              value="Admin"
+                              className="hover:bg-[#EBDD80] focus:bg-[#EBDD80] focus:text-[#101A40] data-[highlighted]:bg-[#EBDD80]"
+                            >
+                              Administrador
+                            </SelectItem>
+                            <SelectItem
+                              value="Usuário"
+                              className="hover:bg-[#EBDD80] focus:bg-[#EBDD80] focus:text-[#101A40] data-[highlighted]:bg-[#EBDD80]"
+                            >
+                              Usuário
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label
+                          htmlFor="admin-user-status"
+                          className="text-sm font-medium text-[#30466E]"
+                        >
+                          Status da conta
+                        </label>
+
+                        <Select value={status} onValueChange={setStatus}>
+                          <SelectTrigger
+                            id="admin-user-status"
+                            className="h-11 w-full rounded-lg border border-[#D1DBE9] bg-[#F3F6FB] text-sm text-[#101A40] shadow-none transition-colors hover:bg-[#EBDD80] focus:border-[#D7BF4D] focus:bg-[#EBDD80] focus:ring-3 focus:ring-[#D7BF4D]/30 data-[popup-open]:bg-[#EBDD80]"
+                          >
+                            <SelectValue />
+                          </SelectTrigger>
+
+                          <SelectContent className="bg-white text-[#101A40]">
+                            <SelectItem
+                              value="Ativo"
+                              className="hover:bg-[#EBDD80] focus:bg-[#EBDD80] focus:text-[#101A40] data-[highlighted]:bg-[#EBDD80]"
+                            >
+                              Ativo
+                            </SelectItem>
+                            <SelectItem
+                              value="Bloqueado"
+                              className="hover:bg-[#EBDD80] focus:bg-[#EBDD80] focus:text-[#101A40] data-[highlighted]:bg-[#EBDD80]"
+                            >
+                              Bloqueado
+                            </SelectItem>
+                            <SelectItem
+                              value="Inativo"
+                              className="hover:bg-[#EBDD80] focus:bg-[#EBDD80] focus:text-[#101A40] data-[highlighted]:bg-[#EBDD80]"
+                            >
+                              Inativo
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    {mostrarAvisoBloqueio && (
+                      <div className="rounded-lg border border-[#EBDD80] bg-[#F3E69A]/35 px-3 py-2 text-sm leading-5 text-[#30466E]">
+                        Usuários bloqueados não podem acessar o sistema.
+                      </div>
+                    )}
+                  </section>
+                </div>
+              </TabsContent>
+
+              <TabsContent
+                value="historico"
+                className="bg-[#FBF8E9] px-4 py-4 sm:px-7 sm:py-5"
+              >
+                <section className="rounded-xl border border-[#E5EAF2] bg-white p-4 sm:p-5">
+                  <div className="mb-4 flex items-center gap-3">
+                    <span className="flex size-9 items-center justify-center rounded-lg bg-[#101A40] text-[#EBDD80]">
+                      <ShieldCheck aria-hidden="true" className="size-4" />
+                    </span>
+                    <div>
+                      <h3 className="text-sm font-semibold text-[#101A40]">Histórico de ações</h3>
+                      <p className="text-xs text-[#8192B2]">Atividades recentes desta conta</p>
+                    </div>
                   </div>
 
                   <div className="space-y-3">
-                    <div className="grid gap-3 sm:grid-cols-2">
-                      <div className="flex flex-col gap-1 border-b border-[#EAEFF5] pb-2.5">
-                        <p className="text-xs font-medium uppercase tracking-[0.05em] text-[#6A7A96]">
-                          Nome completo
-                        </p>
-                        <p className="text-sm font-medium text-[#101A40]">{usuario.nome}</p>
-                      </div>
-
-                      <div className="flex flex-col gap-1 border-b border-[#EAEFF5] pb-2.5">
-                        <p className="text-xs font-medium uppercase tracking-[0.05em] text-[#6A7A96]">
-                          Data de cadastro
-                        </p>
-                        <p className="text-sm font-medium text-[#101A40]">{usuario.dataCadastro}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col gap-1 border-b border-[#EAEFF5] pb-2.5">
-                      <p className="text-xs font-medium uppercase tracking-[0.05em] text-[#6A7A96]">
-                        E-mail
-                      </p>
-                      <p className="break-all text-sm font-medium text-[#101A40]">
-                        {usuario.email}
-                      </p>
-                    </div>
-                  </div>
-                </section>
-
-                <section className="space-y-4">
-                  <div className="flex items-center gap-2.5">
-                    <span className="h-4 w-[3px] rounded-full bg-[#EBDD80]" />
-                    <h3 className="text-base font-semibold tracking-[-0.01em] text-[#101A40]">
-                      Configurações da conta
-                    </h3>
-                  </div>
-
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="space-y-2">
-                      <label
-                        htmlFor="admin-user-role"
-                        className="text-sm font-medium text-[#30466E]"
+                    {historicoAcoes.map((acao, index) => (
+                      <div
+                        key={`${acao.titulo}-${acao.data}-${acao.hora}`}
+                        className="relative rounded-lg border border-[#E5EAF2] bg-white p-4"
                       >
-                        Permissões
-                      </label>
+                        <div className="flex items-start gap-3">
+                          <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-white text-[12px] font-semibold text-[#526B93] shadow-sm ring-1 ring-[#E5EAF2]">
+                            {index + 1}
+                          </div>
 
-                      <Select value={permissao} onValueChange={setPermissao}>
-                        <SelectTrigger
-                          id="admin-user-role"
-                          className="h-10 w-full rounded-lg border border-[#DCE3EA] bg-white text-sm text-[#101A40] shadow-none transition-colors focus:border-[#EBDD80] focus:ring-3 focus:ring-[#EBDD80]/25"
-                        >
-                          <SelectValue />
-                        </SelectTrigger>
-
-                        <SelectContent className="bg-white text-[#101A40]">
-                          <SelectItem value="Admin">Administrador</SelectItem>
-                          <SelectItem value="Usuário">Usuário</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label
-                        htmlFor="admin-user-status"
-                        className="text-sm font-medium text-[#30466E]"
-                      >
-                        Status da conta
-                      </label>
-
-                      <Select value={status} onValueChange={setStatus}>
-                        <SelectTrigger
-                          id="admin-user-status"
-                          className="h-10 w-full rounded-lg border border-[#DCE3EA] bg-white text-sm text-[#101A40] shadow-none transition-colors focus:border-[#EBDD80] focus:ring-3 focus:ring-[#EBDD80]/25"
-                        >
-                          <SelectValue />
-                        </SelectTrigger>
-
-                        <SelectContent className="bg-white text-[#101A40]">
-                          <SelectItem value="Ativo">Ativo</SelectItem>
-                          <SelectItem value="Bloqueado">Bloqueado</SelectItem>
-                          <SelectItem value="Inativo">Inativo</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  {mostrarAvisoBloqueio && (
-                    <div className="rounded-lg border border-[#F1EFC9] bg-[#FAF9F1] px-3 py-2 text-sm leading-5 text-[#4E5E7D]">
-                      Usuários bloqueados não podem acessar o sistema.
-                    </div>
-                  )}
-                </section>
-              </TabsContent>
-
-              <TabsContent value="historico" className="bg-white px-5 py-5 sm:px-6 sm:py-5">
-                <div className="mb-4 flex items-center gap-2.5">
-                  <span className="h-4 w-[3px] rounded-full bg-[#EBDD80]" />
-                  <h3 className="text-base font-semibold tracking-[-0.01em] text-[#101A40]">
-                    Histórico de ações
-                  </h3>
-                </div>
-
-                <div className="space-y-3">
-                  {historicoAcoes.map((acao) => (
-                    <div
-                      key={`${acao.titulo}-${acao.data}-${acao.hora}`}
-                      className="rounded-[10px] border border-[#EEF1F5] bg-[#F9FAFB] px-3 py-3"
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#F4F0C5] text-[12px] font-semibold text-[#30466E]">
-                          {acao.tipo === "perfil" && "•"}
-                          {acao.tipo === "permissao" && "↺"}
-                          {acao.tipo === "login" && "✓"}
-                        </div>
-
-                        <div className="min-w-0 flex-1">
-                          <div className="flex flex-wrap items-center justify-between gap-2">
-                            <p className="text-[13px] font-semibold text-[#101A40]">
-                              {acao.titulo}
-                            </p>
-                            <p className="text-[11px] text-[#6D7E99]">
-                              {acao.data} · {acao.hora}
+                          <div className="min-w-0 flex-1">
+                            <div className="flex flex-wrap items-center justify-between gap-2">
+                              <p className="text-[13px] font-semibold text-[#101A40]">
+                                {acao.titulo}
+                              </p>
+                              <p className="text-[11px] text-[#6D7E99]">
+                                {acao.data} · {acao.hora}
+                              </p>
+                            </div>
+                            <p className="mt-1 text-[12px] leading-5 text-[#5D6F8E]">
+                              {acao.descricao}
                             </p>
                           </div>
-                          <p className="mt-1 text-[12px] leading-5 text-[#5D6F8E]">
-                            {acao.descricao}
-                          </p>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                </section>
               </TabsContent>
             </Tabs>
 
-            <div className="border-t border-[#F0EFC9] bg-white px-5 py-3 sm:px-6">
-              <div className="flex justify-end gap-3">
+            <div className="bg-[#FBF8E9] px-5 py-4 sm:px-7">
+              <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={aoFechar}
-                  className="h-10 rounded-lg border-[#E2E8F0] bg-white text-sm font-medium text-[#30466E] shadow-none transition-colors hover:bg-[#FBF7E5]"
+                  className="h-11 rounded-xl border-[#D7DFEA] bg-white px-6 text-sm font-medium text-[#526B93] shadow-none transition-colors hover:bg-[#EBDD80] hover:text-[#101A40] focus-visible:bg-[#EBDD80] sm:min-w-[132px]"
                 >
                   Cancelar
                 </Button>
@@ -294,7 +348,7 @@ export default function PainelUsuario({ usuario, aberto, aoFechar, aoSalvar }) {
                 <Button
                   type="button"
                   onClick={salvarAlteracoes}
-                  className="h-10 rounded-lg bg-[#F3E69A] text-sm font-semibold text-[#202D3A] shadow-none transition-colors hover:bg-[#EBDD80]"
+                  className="h-11 rounded-xl bg-[#EBDD80] px-6 text-sm font-semibold text-[#101A40] shadow-sm transition-colors hover:bg-[#D7BF4D] sm:min-w-[190px]"
                 >
                   Salvar alterações
                 </Button>

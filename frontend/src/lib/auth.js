@@ -5,6 +5,7 @@ const adminRoutes = [
   "/paginaGestaoFonteAdm",
   "/paginaGestaoCategoriasAdm",
   "/paginaMonitorIa",
+  "/paginaPerfilAdm",
 ];
 const clientRoutes = [
   "/paginaInicialCliente",

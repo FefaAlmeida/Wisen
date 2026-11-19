@@ -60,7 +60,10 @@ export default function LogsColeta() {
 
             <TableBody>
               {logs.map((log) => (
-                <TableRow key={log.id}>
+                <TableRow
+                  key={log.id}
+                  className="transition-colors hover:bg-[#EBDD80]"
+                >
                   <TableCell className="text-sm text-[#617398]">{log.data}</TableCell>
 
                   <TableCell className="text-sm text-[#617398]">{log.fonte}</TableCell>

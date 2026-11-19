@@ -374,30 +374,30 @@ export default function CuradoriaEventos() {
   return (
     <div className="w-full">
       <Tabs value={aba} onValueChange={setAba} className="w-full">
-        <TabsList className="mb-4 h-auto w-full justify-start gap-7 rounded-none border-b border-[#DEE6F1] bg-transparent p-0">
+        <TabsList className="mb-5 grid h-auto w-full grid-cols-1 gap-1 rounded-xl border border-[#DEE6F1] bg-[#F1F5FA] p-1 sm:grid-cols-3">
           <TabsTrigger
             value="eventos"
-            className="relative h-12 rounded-none border-b-2 border-transparent px-2 text-sm font-medium text-[#63789B] shadow-none transition-colors hover:text-[#D6B92F] data-[state=active]:border-[#EBDD80] data-[state=active]:bg-transparent data-[state=active]:text-[#101A40] data-[state=active]:shadow-none"
+            className="relative h-10 min-w-0 rounded-lg border-0 px-3 text-sm font-medium text-[#63789B] shadow-none transition-colors hover:bg-[#FBF7E5] hover:text-[#101A40] data-active:!bg-[#EBDD80] data-active:font-semibold data-active:text-[#101A40] data-active:shadow-sm"
           >
             Eventos recentes
           </TabsTrigger>
 
           <TabsTrigger
             value="naoAssociados"
-            className="relative h-12 rounded-none border-b-2 border-transparent px-2 text-sm font-medium text-[#63789B] shadow-none transition-colors hover:text-[#D6B92F] data-[state=active]:border-[#EBDD80] data-[state=active]:bg-transparent data-[state=active]:text-[#101A40] data-[state=active]:shadow-none"
+            className="relative h-10 min-w-0 rounded-lg border-0 px-3 text-sm font-medium text-[#63789B] shadow-none transition-colors hover:bg-[#FBF7E5] hover:text-[#101A40] data-active:!bg-[#EBDD80] data-active:font-semibold data-active:text-[#101A40] data-active:shadow-sm"
           >
             Artigos não associados
-            <span className="ml-2 rounded-full bg-[#EBDD80] px-2 py-0.5 text-xs font-semibold text-[#5A4A14]">
+            <span className="ml-2 rounded-full bg-white/70 px-2 py-0.5 text-xs font-semibold text-[#5A4A14]">
               {artigosNaoAssociados.length}
             </span>
           </TabsTrigger>
 
           <TabsTrigger
             value="sugeridos"
-            className="relative h-12 rounded-none border-b-2 border-transparent px-2 text-sm font-medium text-[#63789B] shadow-none transition-colors hover:text-[#D6B92F] data-[state=active]:border-[#EBDD80] data-[state=active]:bg-transparent data-[state=active]:text-[#101A40] data-[state=active]:shadow-none"
+            className="relative h-10 min-w-0 rounded-lg border-0 px-3 text-sm font-medium text-[#63789B] shadow-none transition-colors hover:bg-[#FBF7E5] hover:text-[#101A40] data-active:!bg-[#EBDD80] data-active:font-semibold data-active:text-[#101A40] data-active:shadow-sm"
           >
             Duplicados sugeridos
-            <span className="ml-2 rounded-full bg-[#EBDD80] px-2 py-0.5 text-xs font-semibold text-[#5A4A14]">
+            <span className="ml-2 rounded-full bg-white/70 px-2 py-0.5 text-xs font-semibold text-[#5A4A14]">
               {eventos.filter((evento) => idsSugeridos.includes(evento.id)).length}
             </span>
           </TabsTrigger>

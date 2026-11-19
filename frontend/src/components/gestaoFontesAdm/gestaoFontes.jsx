@@ -3,7 +3,13 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import FormularioFonte from "./formularioFonte";
 import LogsColeta from "./logsColeta";
 import TabelaFontes from "./tabelaFontes";
@@ -53,22 +59,20 @@ const fontesIniciais = [
 
 export default function GestaoFontes() {
   const [fontes, setFontes] = useState(fontesIniciais);
-  const [busca, setBusca] = useState("");
-  const [filtro, setFiltro] = useState("todos");
+  const [filtroStatus, setFiltroStatus] = useState("todos");
+  const [filtroFrequencia, setFiltroFrequencia] = useState("todas");
   const [modalAberto, setModalAberto] = useState(false);
   const [fonteEditando, setFonteEditando] = useState(null);
 
   const fontesFiltradas = fontes.filter((fonte) => {
-    const correspondeBusca = `${fonte.nome} ${fonte.url}`
-      .toLowerCase()
-      .includes(busca.toLowerCase());
+    const correspondeStatus =
+      filtroStatus === "todos" ||
+      (filtroStatus === "ativos" && fonte.ativo) ||
+      (filtroStatus === "inativos" && !fonte.ativo);
+    const correspondeFrequencia =
+      filtroFrequencia === "todas" || fonte.frequencia === filtroFrequencia;
 
-    const correspondeFiltro =
-      filtro === "todos" ||
-      (filtro === "ativos" && fonte.ativo) ||
-      (filtro === "inativos" && !fonte.ativo);
-
-    return correspondeBusca && correspondeFiltro;
+    return correspondeStatus && correspondeFrequencia;
   });
 
   function adicionarFonte() {
@@ -119,42 +123,41 @@ export default function GestaoFontes() {
             <h2 className="text-[22px] font-semibold text-[#101A40]">Fontes cadastradas</h2>
 
             <div className="flex flex-wrap items-center gap-3">
-              <div className="relative w-full sm:w-[250px]">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                  className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[#7183A6]"
-                >
-                  <circle cx="11" cy="11" r="7" />
-                  <path d="m20 20-4-4" />
-                </svg>
-
-                <Input
-                  type="search"
-                  placeholder="Buscar fonte ou URL..."
-                  value={busca}
-                  onChange={(event) => setBusca(event.target.value)}
-                  className="h-10 rounded-lg border-[#DFE6F0] bg-white pl-10 text-sm"
-                />
+              <div className="w-full sm:w-[170px]">
+                <Select value={filtroStatus} onValueChange={setFiltroStatus}>
+                  <SelectTrigger
+                    aria-label="Filtrar fontes por status"
+                    className="h-10 w-full rounded-lg border-[#DFE6F0] bg-white text-sm text-[#101A40]"
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="todos">Todos os status</SelectItem>
+                    <SelectItem value="ativos">Ativas</SelectItem>
+                    <SelectItem value="inativos">Inativas</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() =>
-                  setFiltro((atual) =>
-                    atual === "todos" ? "ativos" : atual === "ativos" ? "inativos" : "todos",
-                  )
-                }
-                className="h-10 rounded-lg border-[#DFE6F0] bg-white px-4 text-sm text-[#101A40] transition-colors hover:bg-[#FBF7E5]"
-              >
-                {filtro === "todos" ? "Filtros" : filtro === "ativos" ? "Ativas" : "Inativas"}
-              </Button>
+              <div className="w-full sm:w-[180px]">
+                <Select value={filtroFrequencia} onValueChange={setFiltroFrequencia}>
+                  <SelectTrigger
+                    aria-label="Filtrar fontes por frequência"
+                    className="h-10 w-full rounded-lg border-[#DFE6F0] bg-white text-sm text-[#101A40]"
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="todas">Todas as frequências</SelectItem>
+                    <SelectItem value="A cada 15 min">A cada 15 minutos</SelectItem>
+                    <SelectItem value="30 minutos">A cada 30 minutos</SelectItem>
+                    <SelectItem value="1 hora">A cada 1 hora</SelectItem>
+                    <SelectItem value="6 horas">A cada 6 horas</SelectItem>
+                    <SelectItem value="12 horas">A cada 12 horas</SelectItem>
+                    <SelectItem value="24 horas">A cada 24 horas</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
               <Button
                 type="button"

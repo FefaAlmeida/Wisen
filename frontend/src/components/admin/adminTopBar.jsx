@@ -8,7 +8,7 @@ export function AdminTopBar() {
         <div className="relative min-w-0 flex-1 sm:w-[360px] sm:flex-none">
           <BarraBusca />
         </div>
-        <MenuPerfil />
+        <MenuPerfil profileHref="/paginaPerfilAdm" />
       </div>
     </header>
   );

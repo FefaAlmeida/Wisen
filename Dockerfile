@@ -1,5 +1,7 @@
 FROM node:24-bookworm-slim AS manifests
 WORKDIR /app
+# Inference uses CPU; bundled CPU binaries need no CUDA/NuGet downloads.
+ENV ONNXRUNTIME_NODE_INSTALL=skip
 COPY package.json package-lock.json ./
 COPY frontend/package.json frontend/package.json
 COPY backend/package.json backend/package.json

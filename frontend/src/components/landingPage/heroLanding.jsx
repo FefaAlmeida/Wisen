@@ -1,22 +1,11 @@
 import { ArrowRight, Play } from "lucide-react";
 import Link from "next/link";
+import HeroVideo from "./heroVideo";
 
 export function HeroLanding() {
   return (
     <section id="inicio" className="relative isolate w-full overflow-hidden bg-[#101A40]">
-      <video
-        className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover object-center brightness-105 contrast-105"
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="metadata"
-        poster="/globo-poster-v1.webp"
-        tabIndex={-1}
-        aria-hidden="true"
-      >
-        <source src="/globo-hero-v1.mp4" type="video/mp4" />
-      </video>
+      <HeroVideo />
 
       <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_top_left,_rgba(232,225,145,0.16),transparent_22%),radial-gradient(circle_at_center,_rgba(16,26,64,0.12),transparent_45%),linear-gradient(180deg,rgba(7,13,31,0.38)_0%,rgba(7,13,31,0.24)_25%,rgba(7,13,31,0.48)_55%,rgba(7,13,31,0.74)_100%)]" />
       <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(90deg,rgba(7,13,31,0.65)_0%,rgba(7,13,31,0.35)_48%,rgba(7,13,31,0.12)_100%)]" />

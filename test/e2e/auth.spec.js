@@ -111,6 +111,7 @@ test("landing oferece acesso e navegação funcional em desktop e celular", asyn
     ).toBe(true);
     await page.getByRole("link", { name: "Ver como funciona" }).click();
     await expect(page).toHaveURL(/\/#sobre$/);
+    await expect.poll(() => page.locator("video").evaluate((video) => video.paused)).toBe(true);
     await navigation.getByRole("link", { name: "Entrar", exact: true }).click();
     await expect(page).toHaveURL(/\/paginaLogin$/);
     await page.goto("/");

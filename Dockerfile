@@ -9,7 +9,10 @@ FROM manifests AS dependencies
 RUN --mount=type=cache,target=/root/.npm npm ci --no-audit --no-fund
 FROM dependencies AS development
 COPY . .
-FROM development AS web-build
+FROM manifests AS frontend-dependencies
+RUN --mount=type=cache,target=/root/.npm npm ci --workspace @wisen/frontend --no-audit --no-fund
+FROM frontend-dependencies AS web-build
+COPY . .
 ARG DEPLOYMENT_VERSION=local
 ENV NEXT_TELEMETRY_DISABLED=1 DEPLOYMENT_VERSION=$DEPLOYMENT_VERSION
 RUN npm run build -w @wisen/frontend

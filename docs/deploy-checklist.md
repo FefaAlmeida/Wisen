@@ -11,7 +11,7 @@ Atualizar esta lista com evidências, sem registrar credenciais. Marcar somente 
 - [x] Commitar os 12 arquivos locais antes da integração.
 - [x] Integrar os commits remotos sem perder trabalho local.
 - [x] Corrigir footer remoto, formatação e referências removidas.
-- [ ] Validar diff e histórico final; publicar sem force push.
+- [x] Validar diff e histórico final; publicar sem force push.
 
 ## Revisões reais
 
@@ -38,13 +38,15 @@ Atualizar esta lista com evidências, sem registrar credenciais. Marcar somente 
 
 ## Frontend e imagens
 
+- [x] Criar e publicar favicon minimalista SVG/ICO e ícone Apple, com MIME verificado.
+
 - [x] Medir build de produção antes e depois da otimização.
 - [x] Comprimir vídeo e preparar poster sem mudar o visual.
 - [x] Otimizar imagens, dimensões, carregamento e cache.
 - [x] Suspender animações invisíveis; respeitar movimento reduzido.
-- [ ] Separar código demonstrativo do carregamento real.
+- [x] Separar código demonstrativo do carregamento real.
 - [x] Manter standalone e identificar versão do deploy.
-- [ ] Verificar desktop/celular, console, rede, acessibilidade e navegação.
+- [x] Verificar desktop/celular, console, rede, acessibilidade e navegação.
 
 ## Containers e infraestrutura
 
@@ -90,10 +92,10 @@ Atualizar esta lista com evidências, sem registrar credenciais. Marcar somente 
 - [x] Testar notícias, busca semântica, curadoria, salvos e revisões reais.
 - [x] Verificar geração pausada sem chamadas externas e preparar ativação posterior.
 - [x] Executar carga controlada e observar recursos do VPS e outros serviços.
-- [ ] Medir frontend público e registrar resultados e limitações.
+- [x] Medir frontend público e registrar resultados e limitações.
 - [x] Testar caminho de atualização e rollback compatível.
 - [x] Documentar operação, secrets, OpenAI, backups e recuperação.
-- [ ] Entregar domínio, SHA, runs e riscos/pendências reais.
+- [x] Entregar domínio, SHA, runs e riscos/pendências reais.
 
 ## Evidências anteriores à implementação
 
@@ -128,7 +130,7 @@ Atualizar esta lista com evidências, sem registrar credenciais. Marcar somente 
 ## Aceite em produção
 
 - Site e API publicados em HTTPS; quatro serviços saudáveis.
-- Última release validada: e78a146b8f7ca8d0d9b2918310c35e3fd976d728.
+- Release inicial validada nos fluxos completos: e78a146b8f7ca8d0d9b2918310c35e3fd976d728.
 - CI: https://github.com/FefaAlmeida/Wisen/actions/runs/44467120137
 - Deploy: https://github.com/FefaAlmeida/Wisen/actions/runs/44467319851
 - Rollback compatível aprovado: https://github.com/FefaAlmeida/Wisen/actions/runs/44468209085
@@ -139,4 +141,33 @@ Atualizar esta lista com evidências, sem registrar credenciais. Marcar somente 
 - Restauração externa isolada aprovada: 12 migrations, seis eventos e 12 conceitos.
 - Cópia privada inicial em ~/.local/state/wisen-deploy/backups/wisen-first-production.dump.
 - Header de cache corrigido para evitar duplicação com o Next; asset retornou CF-Cache-Status HIT.
-- Pedido adicional: favicon minimalista SVG/ICO e ícone Apple criados; aguardando publicação final.
+- Pedido adicional: favicon minimalista SVG/ICO e ícone Apple publicados e verificados em HTTPS.
+
+## Fechamento técnico
+
+- 30 testes de integração aprovados; proteção de evidências compartilhada entre sessões, API legada e correção aberta.
+- Flashcards não bloqueiam a primeira avaliação objetiva; regressão coberta por teste.
+- Código demonstrativo das 13 rotas restantes passou a carregar sob demanda; build, oito E2E e 78 testes de frontend aprovados.
+- Swagger UI preservado no desenvolvimento e excluído das imagens de produção; runtime sem a dependência validado.
+- Auditoria das dependências de produção: zero vulnerabilidades após a separação.
+- Medição pública com CPU 4x e rede limitada a 1,6 Mbps/150 ms: celular LCP 1.696 ms, CLS 0,00115, bloqueio 168 ms; desktop LCP 1.708 ms, CLS 0,00097, bloqueio 150 ms.
+- São medições sintéticas de laboratório; INP de usuários reais ainda não é conhecido.
+- Sem overflow horizontal ou erros de JavaScript nos dois tamanhos testados.
+
+- Swagger UI retirado das dependências de runtime sem mudar versões; documentação de desenvolvimento preservada e imagem de produção testada sem o pacote.
+- Auditoria final das dependências de produção: zero vulnerabilidades.
+
+## Versão entregue
+
+- Aplicação: https://gowisen.app — favicon minimalista publicado e links de ícone verificados.
+- Release final: `78488c79a701e0a6beafdbac72294777689da57c`.
+- CI final aprovada: https://github.com/FefaAlmeida/Wisen/actions/runs/44470804263
+- Deploy final aprovado: https://github.com/FefaAlmeida/Wisen/actions/runs/44471182064
+- Quatro serviços saudáveis; API responde `status=ok`, `database=ok`.
+- 142 testes na suíte: 26 unitários, 78 de frontend, 30 de integração e oito E2E.
+- Validação pública final percorreu seis rotas de cliente e quatro administrativas; nenhum erro JavaScript e nenhum overflow no celular.
+- Conta temporária removida; apenas o administrador solicitado permanece; zero cobranças de geração.
+- Backup externo final privado: `~/.local/state/wisen-deploy/backups/wisen-final-production.dump`; restauração isolada aprovada.
+- Código e dependências de produção publicados por digest; documentação final registrada separadamente, sem reconstruir imagens.
+- Integração explicitamente adiada: adicionar `OPENAI_API_KEY` e executar `Deploy → configure` para a release publicada. O modelo e as taxas atuais estão documentados; o acesso da conta será validado na ativação.
+- Backups diários ficam no VPS; a cópia externa desta entrega foi manual. R2 e coleta de métricas de usuários reais ficam fora desta entrega, conforme as decisões registradas.

@@ -25,7 +25,7 @@ Para consultar logs, acrescente `logs --tail 100 backend ai frontend` ao mesmo c
 
 Depois de cadastrar ou alterar secrets, execute o workflow `Deploy`, operação `configure`, passando em `release` o SHA instalado. Isso reaplica o ambiente e recria os processos necessários sem construir imagens.
 
-Antes de ativar OpenAI, confirme o acesso ao modelo escolhido, seus preços e o orçamento. Configure `OPENAI_API_KEY` e ajuste `AI_MODEL`, taxas, câmbio e limites nas variables do environment. Depois execute `configure`. O worker retoma tarefas pausadas pelo agendador; o conteúdo editorial continua marcado como curado.
+O modelo configurado é [GPT-6 Luna](https://developers.openai.com/api/docs/models/gpt-6-luna), com suporte à Responses API e saídas estruturadas. As taxas configuradas foram conferidas na documentação em 19/11/2026. Antes de ativar OpenAI, confirme o acesso da sua conta ao modelo e o orçamento. Configure `OPENAI_API_KEY` e ajuste `AI_MODEL`, taxas, câmbio e limites nas variables do environment. Depois execute `configure`. O worker retoma tarefas pausadas pelo agendador; o conteúdo editorial continua marcado como curado.
 
 ```sh
 gh workflow run deploy.yml -R FefaAlmeida/Wisen -f operation=configure -f release=SHA_COMPLETO
@@ -62,3 +62,7 @@ Deploys são serializados. Se uma migration ou healthcheck falhar, o Actions fal
 O Caddy do host é a entrada HTTPS. Apenas o frontend publica `127.0.0.1:7170`; API e PostgreSQL ficam na rede Docker exclusiva. O backend confia apenas no IP fixo do proxy Next. O Caddy aceita este domínio através da Cloudflare, que valida o certificado Origin CA em Full Strict.
 
 Assets com nomes versionados podem ser armazenados em cache; API, sessões, páginas privadas e respostas RSC não devem entrar em cache compartilhado. Preserve os registros de e-mail do Resend ao alterar DNS. Atualizações do helper, Compose ou Caddy exigem sincronização administrativa dos arquivos em `deploy/` e validação antes de recarregar o Caddy com `caddy reload --config /etc/caddy/Caddyfile --adapter caddyfile`.
+
+## Auditoria de dependências
+
+Em 19/11/2026, a auditoria inicial identificou três avisos moderados na cadeia de dependências do Swagger UI. Esse pacote passou a ser instalado e carregado apenas no desenvolvimento, preservando a documentação local. A imagem de produção foi validada sem essa dependência e `npm audit --omit=dev` passou a reportar zero vulnerabilidades. Não houve atualização forçada de versões. Referências: [glob](https://github.com/advisories/GHSA-3g3m-2fjr-6pw4) e [minimatch](https://github.com/advisories/GHSA-g3hv-75wg-m249).

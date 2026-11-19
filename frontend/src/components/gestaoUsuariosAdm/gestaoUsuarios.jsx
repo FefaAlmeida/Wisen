@@ -112,7 +112,6 @@ const tamanhoPagina = 10;
 
 export default function GestaoUsuarios() {
   const [usuarios, setUsuarios] = useState(usuariosIniciais);
-  const [busca, setBusca] = useState("");
   const [permissaoFiltro, setPermissaoFiltro] = useState("todos");
   const [statusFiltro, setStatusFiltro] = useState("todos");
   const [dataFiltro, setDataFiltro] = useState("");
@@ -123,10 +122,6 @@ export default function GestaoUsuarios() {
   const [historico, setHistorico] = useState([]);
 
   const usuariosFiltrados = usuarios.filter((usuario) => {
-    const correspondeBusca = `${usuario.nome} ${usuario.email}`
-      .toLocaleLowerCase("pt-BR")
-      .includes(busca.toLocaleLowerCase("pt-BR"));
-
     const correspondePermissao =
       permissaoFiltro === "todos" || usuario.permissao === permissaoFiltro;
 
@@ -135,7 +130,7 @@ export default function GestaoUsuarios() {
     const correspondeData =
       !dataFiltro || usuario.dataCadastro === dataFiltro.split("-").reverse().join("/");
 
-    return correspondeBusca && correspondePermissao && correspondeStatus && correspondeData;
+    return correspondePermissao && correspondeStatus && correspondeData;
   });
 
   const totalPaginas = Math.max(1, Math.ceil(usuariosFiltrados.length / tamanhoPagina));
@@ -223,34 +218,7 @@ export default function GestaoUsuarios() {
         <TabsContent value="usuarios" className="mt-0">
           <Card className="gap-0 rounded-lg border border-[#E3E9F1] bg-white p-0 shadow-none">
             <CardContent className="p-4 md:p-5">
-              {/* Filtros */}
               <div className="mb-5 flex flex-wrap items-center gap-3">
-                <div className="relative min-w-[230px] flex-1">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    aria-hidden="true"
-                    className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[#7183A6]"
-                  >
-                    <circle cx="11" cy="11" r="7" />
-                    <path d="m20 20-4-4" />
-                  </svg>
-
-                  <Input
-                    type="search"
-                    placeholder="Buscar por nome ou e-mail..."
-                    value={busca}
-                    onChange={(evento) => {
-                      setBusca(evento.target.value);
-                      setPagina(1);
-                    }}
-                    className="h-10 rounded-lg border-[#DFE6F0] bg-white pl-10 text-sm shadow-none"
-                  />
-                </div>
-
                 <Select
                   value={permissaoFiltro}
                   onValueChange={(valor) => {

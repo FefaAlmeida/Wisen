@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { AdminSidebar } from "@/components/admin/adminSidebar";
+import { AdminTopBar } from "@/components/admin/adminTopBar";
 import { BarraBusca } from "@/components/barraBusca";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
 import MenuPerfil from "@/components/homeCliente/menuPerfil";
@@ -54,6 +55,7 @@ export function useResource(path) {
 }
 export function Frame({
   title,
+  description,
   active = "Início",
   admin = false,
   pageSearch,
@@ -63,11 +65,34 @@ export function Frame({
   return (
     <div className="min-h-screen bg-[#F0F4F9] text-[#101A40]">
       {admin ? <AdminSidebar activeItem={active} /> : <Sidebar activeItem={active} />}
-      <main className="relative isolate min-h-screen px-5 pb-16 pt-20 sm:ml-[128px] sm:px-8 sm:pt-8 lg:ml-[220px]">
+      <main
+        className={`relative isolate min-h-screen px-5 pb-16 sm:ml-[128px] sm:px-8 lg:ml-[220px] ${
+          admin ? "pt-[60px]" : "pt-20 sm:pt-8"
+        }`}
+      >
         <ConnectionsBackground fadeTop={false} />
+        {admin && <AdminTopBar />}
         <div className="relative z-10 mx-auto max-w-6xl">
           <header className="mb-8 flex items-center justify-between gap-4">
-            <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
+            <div>
+              {admin && (
+                <p className="mb-2 text-[11px] font-semibold text-[#93A3BE]">ADMINISTRADOR</p>
+              )}
+              <h1
+                className={
+                  admin
+                    ? "text-[36px] leading-[1.05] font-medium tracking-tight sm:text-[44px]"
+                    : "text-3xl font-semibold tracking-tight"
+                }
+              >
+                {title}
+              </h1>
+              {description && (
+                <p className="mt-3 max-w-[650px] text-[15px] leading-6 text-[#7183A6]">
+                  {description}
+                </p>
+              )}
+            </div>
             {!admin && (
               <div className="flex shrink-0 items-center gap-3">
                 <div className="hidden w-56 xl:block">

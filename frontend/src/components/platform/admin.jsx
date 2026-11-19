@@ -1,8 +1,10 @@
 "use client";
+import { Search } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { CartoesMetricasAdm } from "@/components/inicioAdm/cartoesMetricasAdm";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Frame, Panel, requisitar, State, useResource } from "./shared";
 
 const sections = {
@@ -23,6 +25,22 @@ export default function Admin({ initial = "sources" }) {
   const [editing, setEditing] = useState(null);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
+  const [eventSearch, setEventSearch] = useState("");
+  const isCuration = section === "events";
+  const eventQuery = eventSearch
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("pt-BR");
+  const items = resource.data?.items ?? [];
+  const visibleItems = isCuration
+    ? items.filter((item) =>
+        `${item.title ?? ""} ${item.summary ?? item.description ?? ""} ${item.category ?? ""}`
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLocaleLowerCase("pt-BR")
+          .includes(eventQuery),
+      )
+    : items;
   async function act(body) {
     setBusy(true);
     setMessage("");
@@ -40,7 +58,20 @@ export default function Admin({ initial = "sources" }) {
   }
   return (
     <Frame
-      title="Administração"
+      title={
+        isCuration ? (
+          <>
+            Curadoria de <span className="text-[#D7BF4D]">eventos e artigos.</span>
+          </>
+        ) : (
+          "Administração"
+        )
+      }
+      description={
+        isCuration
+          ? "Revise e organize os acontecimentos identificados automaticamente pela inteligência artificial."
+          : undefined
+      }
       admin
       active={
         {
@@ -52,47 +83,52 @@ export default function Admin({ initial = "sources" }) {
         }[section] ?? "Visão geral"
       }
     >
-      {overview.data?.counts && (
-        <div className="mb-6">
-          <CartoesMetricasAdm counts={overview.data.counts} />
-        </div>
-      )}
-      <Panel title="Integrações">
-        <p className="text-sm">
-          Geração de IA:{" "}
-          {overview.data?.integrations?.ai ? "configurada" : "aguardando configuração"}. E-mails:{" "}
-          {overview.data?.integrations?.email ? "configurados" : "aguardando configuração"}.
-        </p>
-      </Panel>
-      <Panel title="Validação da geração">
-        <p>
-          {overview.data?.integrations?.aiLastSuccess
-            ? `Última geração confirmada: ${new Date(overview.data.integrations.aiLastSuccess).toLocaleString("pt-BR")}`
-            : "Nenhuma geração real confirmada."}
-        </p>
-        <p>
-          {overview.data?.integrations?.aiLastFailure
-            ? `Última falha: ${overview.data.integrations.aiLastFailure.error}`
-            : "Nenhuma falha registrada."}
-        </p>
-      </Panel>
-      <Panel title="Orçamento mensal">
-        <State resource={overview}>
-          <p className="text-lg">
-            R$ {overview.data?.budget.committed.toFixed(2)} comprometidos de R${" "}
-            {overview.data?.budget.limit.toFixed(2)}
-          </p>
-          <p className="mt-2 text-sm">
-            Saldo estimado: R$ {overview.data?.budget.remaining.toFixed(2)}. Reservas de chamadas
-            pendentes estão incluídas.
-          </p>
-          {overview.data?.budget.alerts.length > 0 && (
-            <p role="status" className="mt-3">
-              Atenção: consumo atingiu {Math.max(...overview.data.budget.alerts)}% do teto.
-            </p>
+      {!isCuration && (
+        <>
+          {overview.data?.counts && (
+            <div className="mb-6">
+              <CartoesMetricasAdm counts={overview.data.counts} />
+            </div>
           )}
-        </State>
-      </Panel>
+          <Panel title="Integrações">
+            <p className="text-sm">
+              Geração de IA:{" "}
+              {overview.data?.integrations?.ai ? "configurada" : "aguardando configuração"}.
+              E-mails:{" "}
+              {overview.data?.integrations?.email ? "configurados" : "aguardando configuração"}.
+            </p>
+          </Panel>
+          <Panel title="Validação da geração">
+            <p>
+              {overview.data?.integrations?.aiLastSuccess
+                ? `Última geração confirmada: ${new Date(overview.data.integrations.aiLastSuccess).toLocaleString("pt-BR")}`
+                : "Nenhuma geração real confirmada."}
+            </p>
+            <p>
+              {overview.data?.integrations?.aiLastFailure
+                ? `Última falha: ${overview.data.integrations.aiLastFailure.error}`
+                : "Nenhuma falha registrada."}
+            </p>
+          </Panel>
+          <Panel title="Orçamento mensal">
+            <State resource={overview}>
+              <p className="text-lg">
+                R$ {overview.data?.budget.committed.toFixed(2)} comprometidos de R${" "}
+                {overview.data?.budget.limit.toFixed(2)}
+              </p>
+              <p className="mt-2 text-sm">
+                Saldo estimado: R$ {overview.data?.budget.remaining.toFixed(2)}. Reservas de
+                chamadas pendentes estão incluídas.
+              </p>
+              {overview.data?.budget.alerts.length > 0 && (
+                <p role="status" className="mt-3">
+                  Atenção: consumo atingiu {Math.max(...overview.data.budget.alerts)}% do teto.
+                </p>
+              )}
+            </State>
+          </Panel>
+        </>
+      )}
       <nav aria-label="Áreas administrativas" className="mb-5 flex flex-wrap gap-2">
         {Object.entries(sections).map(([key, label]) => (
           <Button
@@ -110,10 +146,25 @@ export default function Admin({ initial = "sources" }) {
       <p role="status" className="mb-4">
         {message}
       </p>
-      <Panel title={sections[section]}>
+      <Panel title={isCuration ? "Eventos recentes" : sections[section]}>
         <State resource={resource}>
+          {isCuration && (
+            <div className="relative mb-4 block w-full sm:max-w-[360px]">
+              <Search
+                aria-hidden="true"
+                className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-[#607092]"
+              />
+              <Input
+                aria-label="Buscar eventos"
+                value={eventSearch}
+                onChange={(event) => setEventSearch(event.target.value)}
+                placeholder="Buscar eventos..."
+                className="h-10 rounded-[10px] border-wisen-borda bg-white/85 pl-9 text-sm"
+              />
+            </div>
+          )}
           <ul className="divide-y">
-            {resource.data?.items.map((item) => (
+            {visibleItems.map((item) => (
               <li key={item.id} className="py-4">
                 <p className="font-medium">
                   {item.title ??
@@ -240,7 +291,15 @@ export default function Admin({ initial = "sources" }) {
               </li>
             ))}
           </ul>
-          {resource.data?.items.length === 0 && <p>Nenhum registro nesta área.</p>}
+          {visibleItems.length === 0 && (
+            <p className="py-2 text-sm text-[#65748B]">
+              {isCuration && items.length > 0
+                ? "Nenhum evento corresponde à busca."
+                : isCuration
+                  ? "Ainda não há eventos para revisar."
+                  : "Nenhum registro nesta área."}
+            </p>
+          )}
         </State>
       </Panel>
       <nav aria-label="Exportações do TCC" className="flex flex-wrap gap-4">

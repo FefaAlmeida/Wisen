@@ -1,20 +1,11 @@
 import { AdminLayout } from "@/components/admin/adminLayout";
-import { BarraBusca } from "@/components/barraBusca";
 import CuradoriaEventos from "@/components/cuidadoriaEventosAdm/cuidadoriaEventos";
-import MenuPerfil from "@/components/homeCliente/menuPerfil";
 
 export default function PaginaCuradoriaEventos() {
   return (
     <AdminLayout activeItem="Curadoria de eventos">
       <main className="min-h-screen w-full min-w-0 bg-transparent font-[family-name:var(--font-geist-sans)]">
         <div className="relative z-10 mx-auto w-full max-w-[1600px]">
-          <header className="sticky top-0 z-50 flex items-center justify-end gap-3 bg-[#F0F4F9]/90 px-5 py-3 backdrop-blur-sm md:px-8">
-            <div className="relative min-w-0 flex-1 sm:w-[360px] sm:flex-none">
-              <BarraBusca />
-            </div>
-            <MenuPerfil />
-          </header>
-
           <div className="w-full px-5 pt-7 pb-12 md:px-8">
             <header className="mb-6">
               <p className="text-[11px] font-semibold text-[#93A3BE]">ADMINISTRADOR</p>

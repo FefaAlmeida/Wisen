@@ -37,9 +37,11 @@ export default function Home() {
                   <span className="block text-[#D7BF4D]">Conecte ideias.</span>
                 </h1>
 
-                <p className="mt-4 max-w-[470px] text-[15px] leading-6 text-[#7182A1]">
-                  Descubra as ideias por trás das notícias e acompanhe seu progresso em cada tema.
-                </p>
+                <div className="mt-4 max-w-[470px] rounded-2xl border border-wisen-borda bg-wisen-superficie p-4 sm:p-5">
+                  <p className="text-[15px] leading-6 text-[#7182A1]">
+                    Descubra as ideias por trás das notícias e acompanhe seu progresso em cada tema.
+                  </p>
+                </div>
               </div>
 
               <Image
@@ -47,8 +49,8 @@ export default function Home() {
                 width={1916}
                 height={821}
                 alt="Ilustração de livros representando diferentes áreas do conhecimento"
-                sizes="(min-width: 1536px) 600px, (min-width: 1280px) 530px, (min-width: 1024px) 315px, 35vw"
-                className="pointer-events-none absolute top-1/2 right-0 hidden w-[42%] max-h-[260px] -translate-y-1/2 object-contain md:block"
+                sizes="(min-width: 1536px) 660px, (min-width: 1280px) 500px, (min-width: 1024px) 450px, 35vw"
+                className="pointer-events-none absolute top-1/2 right-0 hidden w-[50%] max-h-[320px] -translate-y-1/2 object-contain drop-shadow-[0_14px_20px_rgba(47,65,101,0.12)] md:block"
               />
             </section>
 

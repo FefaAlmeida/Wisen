@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Cpu, Landmark, Leaf, TrendingUp } from "lucide-react";
 import { BarraBusca } from "@/components/barraBusca";
 import { Footer } from "@/components/footer";
 import CardInteresse from "@/components/homeCliente/cardInteresse";
@@ -28,19 +29,28 @@ export default function Home() {
               <MenuPerfil />
             </div>
 
-            <div className="relative z-10 w-full md:w-[60%]">
+            <div className="relative z-10 w-full md:w-1/2">
               <HeroHome />
             </div>
 
-            <div className="relative hidden h-[350px] flex-1 md:block">
-              <Image
-                src="/foto_paginaInicialCliente-v1.webp"
-                alt="Planeta com conexões do Wisen"
-                fill
-                priority
-                sizes="(max-width: 1024px) 40vw, 35vw"
-                className="object-contain object-right"
-              />
+            <div className="relative hidden h-[400px] flex-1 md:block">
+              <div
+                className="absolute inset-0"
+                style={{
+                  maskImage: "linear-gradient(to right, transparent, black 20%, black 100%)",
+                  WebkitMaskImage:
+                    "linear-gradient(to right, transparent, black 20%, black 100%)",
+                }}
+              >
+                <Image
+                  src="/foto_paginaInicialCliente-v1.webp"
+                  alt="Planeta com conexões do Wisen"
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 40vw, 35vw"
+                  className="object-contain object-right"
+                />
+              </div>
             </div>
           </div>
 
@@ -99,12 +109,16 @@ export default function Home() {
 
             {/* O que você lê diariamente */}
             <section>
-              <div className="mb-5 flex items-center gap-4">
-                <span className="h-[2px] w-6 bg-wisen-destaque" />
-
-                <h2 className="text-[23px] font-semibold tracking-tight text-wisen-titulo">
-                  O que você lê diariamente
-                </h2>
+              <div className="mb-5 flex items-end gap-4">
+                <span className="mb-2 h-[2px] w-6 shrink-0 bg-wisen-destaque" />
+                <div>
+                  <h2 className="text-[23px] font-semibold tracking-tight text-wisen-titulo">
+                    O que você lê diariamente
+                  </h2>
+                  <p className="mt-1 text-sm text-[#7182A1]">
+                    Distribuição dos temas que fazem parte da sua rotina.
+                  </p>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -112,24 +126,32 @@ export default function Home() {
                   imagem="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=500&q=80"
                   titulo="Economia"
                   porcentagem={38}
+                  icone={TrendingUp}
+                  cor="#EBDD80"
                 />
 
                 <CardInteresse
                   imagem="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=500&q=80"
                   titulo="Meio ambiente"
                   porcentagem={27}
+                  icone={Leaf}
+                  cor="#A7E0B8"
                 />
 
                 <CardInteresse
                   imagem="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=500&q=80"
                   titulo="Tecnologia"
                   porcentagem={22}
+                  icone={Cpu}
+                  cor="#9CC8FF"
                 />
 
                 <CardInteresse
                   imagem="https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?auto=format&fit=crop&w=500&q=80"
                   titulo="Política"
                   porcentagem={13}
+                  icone={Landmark}
+                  cor="#D8BCFF"
                 />
               </div>
             </section>

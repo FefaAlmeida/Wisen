@@ -4,7 +4,7 @@ export function BannerInicioAdm() {
   return (
     <div className="relative overflow-hidden rounded-lg border border-slate-800 bg-gradient-to-r from-[#181F2A] via-[#2B333F] to-[#181F2A] p-8 text-white shadow-xl md:p-10">
       {/* Imagem de Fundo (Globo) */}
-      <div className="pointer-events-none absolute top-0 right-0 hidden h-full w-1/2 md:block">
+      <div className="pointer-events-none absolute -top-[15%] right-0 hidden h-[130%] w-[60%] md:block">
         <Image
           src="/foto_paginaInicialCliente-v1.webp"
           alt=""

@@ -105,6 +105,16 @@ export function generationWorker(pool, config, provider = generateStructured, em
         );
         return;
       }
+      if (
+        ["analysis", "questions"].includes(task.operation) &&
+        !config.AI_BACKGROUND_GENERATION_ENABLED
+      ) {
+        await pool.query(
+          "UPDATE generation_tasks SET status='paused',error='BACKGROUND_DISABLED' WHERE id=$1",
+          [id],
+        );
+        return;
+      }
       if (task.operation === "analysis") {
         Object.assign(task.input.context, await analysisCandidates(pool, task.article_id));
         await pool.query("UPDATE generation_tasks SET input=$2 WHERE id=$1", [
@@ -143,7 +153,10 @@ export function generationWorker(pool, config, provider = generateStructured, em
         await budget.settle(charge.id, response.usage);
         charge = null;
       }
-      if (!response.data) throw new Error("Resposta incompleta do modelo; tente novamente");
+      if (!response.data)
+        throw Object.assign(new Error("Resposta indisponível"), {
+          code: response.errorCode ?? "PROVIDER_INVALID_OUTPUT",
+        });
       const data =
         task.operation === "analysis"
           ? analysisValidation.parse(response.data)
@@ -245,11 +258,20 @@ export function generationWorker(pool, config, provider = generateStructured, em
         );
       });
     } catch (error) {
+      console.error(
+        JSON.stringify({
+          event: "generation-failed",
+          taskId: id,
+          code: error.code ?? "GENERATION_FAILED",
+          requestId: error.requestId,
+        }),
+      );
       if (charge) await budget.settle(charge.id, null, error.definitelyUnbilled === true);
       await pool.query(
         "UPDATE generation_tasks SET status=$2,error=$3,updated_at=now() WHERE id=$1",
         [
           id,
+          (charge && !error.definitelyUnbilled) ||
           [
             "BUDGET_EXHAUSTED",
             "PROVIDER_NOT_CONFIGURED",
@@ -258,7 +280,9 @@ export function generationWorker(pool, config, provider = generateStructured, em
           ].includes(error.code)
             ? "paused"
             : "failed",
-          error.code ?? "Não foi possível concluir a geração",
+          charge && !error.definitelyUnbilled
+            ? "PROVIDER_USAGE_UNKNOWN"
+            : (error.code ?? "Não foi possível concluir a geração"),
         ],
       );
     } finally {

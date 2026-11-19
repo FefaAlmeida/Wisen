@@ -6,7 +6,7 @@ O site e o painel usam `https://gowisen.app`. `www` redireciona para o domínio 
 
 Use a conta `FefaAlmeida` (`gh-use fefa` no shell interativo). Push na `main` executa CI; somente o commit aprovado dispara o deploy. O GitHub constrói três imagens no GHCR. O VPS recebe imagens por digest, sem construir a aplicação.
 
-O environment `production` contém as configurações operacionais. Secrets privados são `WISEN_DEPLOY_SSH_KEY`, `WISEN_DEPLOY_KNOWN_HOSTS`, `WISEN_POSTGRES_PASSWORD`, `WISEN_OPERATIONS_TOKEN`, `RESEND_API_KEY`, `WISEN_ADMIN_EMAIL` e `WISEN_ADMIN_PASSWORD`. `OPENAI_API_KEY` é opcional no primeiro deploy. O token Cloudflare é usado no provisionamento e não entra no runtime nem nas imagens.
+O environment `production` contém as variables operacionais e o secret `OPENAI_API_KEY`. Os demais secrets existentes ficam no nível do repositório. Secrets privados são `WISEN_DEPLOY_SSH_KEY`, `WISEN_DEPLOY_KNOWN_HOSTS`, `WISEN_POSTGRES_PASSWORD`, `WISEN_OPERATIONS_TOKEN`, `RESEND_API_KEY`, `WISEN_ADMIN_EMAIL` e `WISEN_ADMIN_PASSWORD`. `OPENAI_API_KEY` é opcional no primeiro deploy. O token Cloudflare é usado no provisionamento e não entra no runtime nem nas imagens.
 
 O usuário `deploy-wisen` só aceita deploy, configuração, rollback e validação de argumentos. A chave administrativa do VPS permanece fora do GitHub. Helpers e configuração são controlados por root em `/opt/wisen` e `/usr/local/lib/wisen`.
 
@@ -66,3 +66,24 @@ Assets com nomes versionados podem ser armazenados em cache; API, sessões, pág
 ## Auditoria de dependências
 
 Em 19/11/2026, a auditoria inicial identificou três avisos moderados na cadeia de dependências do Swagger UI. Esse pacote passou a ser instalado e carregado apenas no desenvolvimento, preservando a documentação local. A imagem de produção foi validada sem essa dependência e `npm audit --omit=dev` passou a reportar zero vulnerabilidades. Não houve atualização forçada de versões. Referências: [glob](https://github.com/advisories/GHSA-3g3m-2fjr-6pw4) e [minimatch](https://github.com/advisories/GHSA-g3hv-75wg-m249).
+
+
+## Geração somente por solicitação
+
+Configure `AI_BACKGROUND_GENERATION_ENABLED=false` no ambiente local e na variable
+do environment production. O padrão também é false. Notícias, embeddings e e-mails
+continuam funcionando; análises e questões automáticas ficam bloqueadas inclusive
+para jobs antigos. Quizzes usam as questões já cadastradas.
+
+Explicações, trechos, aprofundamento e correção aberta usam GPT-6 Luna. O limite
+estimado é R$ 80/mês por banco, com 30 gerações diárias por usuário. Local e produção
+podem somar R$ 160/mês; não são um teto compartilhado no projeto OpenAI.
+
+O painel separa configuração da última geração confirmada. Erros do provedor não
+são repetidos automaticamente. Consumo desconhecido conserva a reserva; confirme
+o consumo no provedor e use a reconciliação administrativa antes de repetir.
+Logs correlacionam tarefa e request ID sem registrar prompts ou credenciais.
+
+Para ativar: publique primeiro o código e sincronize receive-config.py no host;
+cadastre OPENAI_API_KEY no environment production e execute Deploy/configure com
+o SHA instalado. Configure causa uma breve parada dos serviços.

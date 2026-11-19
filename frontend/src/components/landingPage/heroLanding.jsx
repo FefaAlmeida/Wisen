@@ -1,17 +1,60 @@
-import { ArrowRight, Play } from "lucide-react";
+"use client";
+
+import { ArrowRight, Menu, Play, X } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import HeroVideo from "./heroVideo";
 
 export function HeroLanding() {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isOverLightSection, setIsOverLightSection] = useState(false);
+  const headerRef = useRef(null);
+  const heroRef = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+      const heroBottom = heroRef.current?.getBoundingClientRect().bottom ?? 0;
+      const headerHeight = headerRef.current?.getBoundingClientRect().height ?? 0;
+      setIsOverLightSection(heroBottom <= headerHeight);
+    };
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <section id="inicio" className="relative isolate w-full overflow-hidden bg-[#101A40]">
+    <section
+      ref={heroRef}
+      id="inicio"
+      className="relative w-full overflow-x-clip bg-[#101A40]"
+    >
       <HeroVideo />
 
       <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_top_left,_rgba(232,225,145,0.16),transparent_22%),radial-gradient(circle_at_center,_rgba(16,26,64,0.12),transparent_45%),linear-gradient(180deg,rgba(7,13,31,0.38)_0%,rgba(7,13,31,0.24)_25%,rgba(7,13,31,0.48)_55%,rgba(7,13,31,0.74)_100%)]" />
       <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(90deg,rgba(7,13,31,0.65)_0%,rgba(7,13,31,0.35)_48%,rgba(7,13,31,0.12)_100%)]" />
 
-      <header className="absolute inset-x-0 top-0 z-20 px-4 pt-4 sm:px-6 lg:px-8 xl:px-12">
-        <div className="mx-auto flex max-w-[1320px] flex-wrap items-center justify-between gap-4 rounded-3xl md:flex-nowrap md:rounded-full border border-white/20 bg-white/5 px-4 py-3 shadow-[0_12px_26px_-18px_rgba(7,13,31,0.75)] backdrop-blur-md sm:px-5 lg:px-6">
+      <header
+        ref={headerRef}
+        className={`fixed inset-x-0 top-0 z-20 px-4 ${
+          isScrolled ? "pt-2" : "pt-4"
+        } transition-all duration-300 sm:px-6 md:absolute md:pt-4 lg:px-8 xl:px-12`}
+      >
+        <div
+          className={`mx-auto flex max-w-[1320px] flex-wrap items-center justify-between gap-4 rounded-3xl border border-white/20 ${
+            isOverLightSection ? "bg-[#101A40]/95" : "bg-white/5"
+          } px-4 ${
+            isScrolled ? "py-2" : "py-3"
+          } shadow-[0_12px_26px_-18px_rgba(7,13,31,0.75)] backdrop-blur-md transition-all duration-300 md:flex-nowrap md:rounded-full md:bg-white/5 sm:px-5 lg:px-6`}
+        >
           <Link
             href="/"
             className="flex items-center gap-2 transition-opacity duration-200 hover:opacity-90"
@@ -26,7 +69,7 @@ export function HeroLanding() {
 
           <nav
             aria-label="Navegação da plataforma"
-            className="flex w-full flex-wrap items-center justify-between gap-1 md:w-auto md:gap-2"
+            className="hidden items-center justify-between gap-2 md:flex"
           >
             <Link
               href="/paginaLogin"
@@ -41,6 +84,61 @@ export function HeroLanding() {
               Criar conta
             </Link>
           </nav>
+
+          <Sheet>
+            <SheetTrigger
+              render={
+                <button
+                  type="button"
+                  aria-label="Abrir menu"
+                  className={`flex ${
+                    isScrolled ? "h-9 w-9" : "h-10 w-10"
+                  } items-center justify-center rounded-full border border-white/20 text-white transition-all duration-300 hover:bg-white/10 md:hidden`}
+                >
+                  <Menu className="h-5 w-5" />
+                </button>
+              }
+            />
+            <SheetContent
+              side="right"
+              showCloseButton={false}
+              style={{ width: "35vw" }}
+              className="gap-6 border-l border-white/20 bg-[#101A40] p-3 text-white sm:p-4"
+            >
+              <SheetTitle className="sr-only">Menu de navegação</SheetTitle>
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-sm font-semibold">Menu</span>
+                <SheetClose className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/10 hover:text-white">
+                  <X className="h-4 w-4" />
+                  <span className="sr-only">Fechar menu</span>
+                </SheetClose>
+              </div>
+              <nav aria-label="Navegação da plataforma" className="flex flex-col gap-3">
+                <SheetClose
+                  nativeButton={false}
+                  render={
+                    <Link
+                      href="/paginaLogin"
+                      className="rounded-lg bg-[#E8E191] px-3 py-2 text-center text-sm font-semibold text-[#101A40] transition-colors hover:bg-[#F3EB9B]"
+                    >
+                      Entrar
+                    </Link>
+                  }
+                />
+                <SheetClose
+                  nativeButton={false}
+                  render={
+                    <Link
+                      href="/paginaCadastro"
+                      className="rounded-lg px-3 py-2 text-center text-sm font-medium text-white/85 transition-colors hover:bg-white/10 hover:text-white"
+                    >
+                      Criar conta
+                    </Link>
+                  }
+                />
+              </nav>
+            </SheetContent>
+          </Sheet>
         </div>
       </header>
 

@@ -64,6 +64,18 @@ export default function Admin({ initial = "sources" }) {
           {overview.data?.integrations?.email ? "configurados" : "aguardando configuração"}.
         </p>
       </Panel>
+      <Panel title="Validação da geração">
+        <p>
+          {overview.data?.integrations?.aiLastSuccess
+            ? `Última geração confirmada: ${new Date(overview.data.integrations.aiLastSuccess).toLocaleString("pt-BR")}`
+            : "Nenhuma geração real confirmada."}
+        </p>
+        <p>
+          {overview.data?.integrations?.aiLastFailure
+            ? `Última falha: ${overview.data.integrations.aiLastFailure.error}`
+            : "Nenhuma falha registrada."}
+        </p>
+      </Panel>
       <Panel title="Orçamento mensal">
         <State resource={overview}>
           <p className="text-lg">

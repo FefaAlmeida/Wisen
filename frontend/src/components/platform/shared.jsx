@@ -15,6 +15,18 @@ const generationError = (error) =>
   ({
     "Configure OPENAI_API_KEY para habilitar geração":
       "A geração de novos conteúdos está temporariamente indisponível. Você pode continuar estudando os conteúdos já publicados.",
+    PROVIDER_AUTH: "A geração está indisponível. A administração precisa verificar a configuração.",
+    PROVIDER_PERMISSION: "A geração está indisponível. A administração precisa verificar o acesso.",
+    PROVIDER_MODEL: "O modelo está temporariamente indisponível.",
+    PROVIDER_QUOTA: "A geração está indisponível por limite de crédito do provedor.",
+    PROVIDER_RATE_LIMIT: "O serviço está ocupado. Tente novamente mais tarde.",
+    PROVIDER_ERROR: "O serviço de geração está temporariamente indisponível.",
+    PROVIDER_USAGE_UNKNOWN:
+      "A geração foi interrompida e precisa de verificação antes de uma nova tentativa.",
+    PROVIDER_REFUSAL: "Não foi possível gerar uma resposta para este conteúdo.",
+    PROVIDER_INCOMPLETE: "A resposta ficou incompleta. Tente novamente mais tarde.",
+    PROVIDER_INVALID_OUTPUT: "Não foi possível validar a resposta gerada.",
+    BACKGROUND_DISABLED: "A geração automática está desativada.",
     BUDGET_EXHAUSTED:
       "O limite mensal de IA foi atingido. Conteúdos já disponíveis continuam acessíveis.",
     DAILY_LIMIT: "Você atingiu seu limite de gerações de hoje. Tente novamente amanhã.",

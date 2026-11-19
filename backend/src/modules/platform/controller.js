@@ -217,6 +217,18 @@ export function platformController(app, pool, boss, config) {
     integrations: {
       ai: generationMode(config) === "mock" || !!config.OPENAI_API_KEY,
       aiProvider: generationMode(config),
+      aiBackgroundGeneration: config.AI_BACKGROUND_GENERATION_ENABLED,
+      aiLastSuccess: (
+        await pool.query(
+          "SELECT max(created_at) at FROM generation_charges WHERE status='completed' AND input_tokens>0",
+        )
+      ).rows[0].at,
+      aiLastFailure:
+        (
+          await pool.query(
+            "SELECT error,updated_at FROM generation_tasks WHERE status IN ('failed','paused') ORDER BY updated_at DESC LIMIT 1",
+          )
+        ).rows[0] ?? null,
       email: !!(config.RESEND_API_KEY && config.EMAIL_FROM),
     },
     counts: (

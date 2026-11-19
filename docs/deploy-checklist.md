@@ -113,3 +113,8 @@ Atualizar esta lista com evidências, sem registrar credenciais. Marcar somente 
 - Vídeo principal: 7,5 MiB → 1,5 MiB; imagens da aplicação convertidas para WebP versionado.
 - Medição local com CPU 4x e rede limitada: LCP próximo de 1,2 s, CLS zero; pequenas variações de tempo entre execuções, sem afirmar ganho de LCP.
 - Chave restrita validada por SSH; certificado instalado e Caddy recarregado.
+
+- Imagem backend construída e imports do runtime aprovados.
+- Primeiro run remoto bloqueou erro de escopo antes do deploy; correção repetida com oito E2E aprovados.
+- Comando SSH fora da lista permitida recusado com status 64.
+- Fuella web e API permanecem saudáveis na origem após inclusão do Wisen no Caddy.

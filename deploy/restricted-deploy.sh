@@ -46,6 +46,9 @@ if [[ $operation != rollback ]]; then
  "${compose[@]}" run --rm --no-deps -T prepare-model
 fi
 "${compose[@]}" up -d --wait --wait-timeout 240 backend ai frontend
+"${compose[@]}" exec -T database pg_dump -U wisen -d wisen -Fc > backups/last-healthy.dump.tmp
+test -s backups/last-healthy.dump.tmp
+mv backups/last-healthy.dump.tmp backups/last-healthy.dump
 [[ ! -f .images.env ]] || cp .images.env .images.previous.env
 cp .images.next "releases/$release.env"
 mv .images.next .images.env

@@ -27,7 +27,10 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "preset": "recommended"
+      "preset": "recommended",
+      "correctness": {
+        "noUndeclaredVariables": "error"
+      }
     },
     "domains": {
       "react": "recommended",

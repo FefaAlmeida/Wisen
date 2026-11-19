@@ -31,9 +31,9 @@ Atualizar esta lista com evidências, sem registrar credenciais. Marcar somente 
 - [x] Redigir resumos próprios e relacionar 8–12 conceitos.
 - [x] Preparar questões objetivas editoriais com explicações.
 - [x] Importar conteúdo de forma transacional e idempotente, com procedência.
-- [ ] Preservar curadoria após ativação da OpenAI.
-- [ ] Criar banco exclusivo de produção, sem importar contas locais.
-- [ ] Criar administrador com e-mail e senha atuais, conforme pedido.
+- [x] Preservar curadoria após ativação da OpenAI.
+- [x] Criar banco exclusivo de produção, sem importar contas locais.
+- [x] Criar administrador com e-mail e senha atuais, conforme pedido.
 - [x] Manter geração pausada sem chave; comunicar indisponibilidade.
 
 ## Frontend e imagens
@@ -53,46 +53,46 @@ Atualizar esta lista com evidências, sem registrar credenciais. Marcar somente 
 - [x] Configurar rede exclusiva, volumes, limites e rotação de logs.
 - [x] Expor somente frontend em localhost:7170; banco e API privados.
 - [x] Configurar healthchecks e encerramento gracioso.
-- [ ] Preparar e validar cache persistente do modelo antes do worker.
+- [x] Preparar e validar cache persistente do modelo antes do worker.
 - [x] Provisionar /opt/wisen sem alterar outros projetos.
 - [x] Criar usuário/chave de deploy restritos e helper root validado.
 - [x] Fixar host SSH e transportar configuração privada sem logs de valores.
 
 ## GitHub Actions e configuração
 
-- [ ] CI com Node 24/npm 11, lint, unidade, frontend, integração, E2E e build.
-- [ ] Build no GitHub com cache e publicação das três imagens no GHCR.
-- [ ] Actions fixadas por SHA e permissões mínimas por job.
+- [x] CI com Node 24/npm 11, lint, unidade, frontend, integração, E2E e build.
+- [x] Build no GitHub com cache e publicação das três imagens no GHCR.
+- [x] Actions fixadas por SHA e permissões mínimas por job.
 - [x] Criar environment production e variables operacionais.
 - [x] Cadastrar secrets criptografados via gh api.
 - [x] Preservar token operacional e gerar senha própria do PostgreSQL.
-- [ ] Deploy apenas do SHA validado pela CI, com exclusão mútua.
-- [ ] Configuração manual sem rebuild, incluindo futura OPENAI_API_KEY.
-- [ ] Backup antes de migrations, parada controlada e healthchecks pós-deploy.
-- [ ] Registrar versões e disponibilizar rollback manual por release.
+- [x] Deploy apenas do SHA validado pela CI, com exclusão mútua.
+- [x] Configuração manual sem rebuild, incluindo futura OPENAI_API_KEY.
+- [x] Backup antes de migrations, parada controlada e healthchecks pós-deploy.
+- [x] Registrar versões e disponibilizar rollback manual por release.
 
 ## Cloudflare e domínio
 
 - [x] Emitir Origin CA e instalar certificado/chave privados no Caddy.
 - [x] Validar configuração e recarregar Caddy preservando outros hosts.
-- [ ] Configurar Full Strict, domínio principal e redirecionamento de www.
-- [ ] Apontar DNS para VPS somente após validar a origem.
-- [ ] Retirar wildcard de estacionamento e preservar DNS do Resend.
-- [ ] Cache apenas de assets apropriados; bypass de API, páginas privadas e RSC.
-- [ ] Verificar HTTPS, cookies, headers, cache e entrega pública de assets.
+- [x] Configurar Full Strict, domínio principal e redirecionamento de www.
+- [x] Apontar DNS para VPS somente após validar a origem.
+- [x] Retirar wildcard de estacionamento e preservar DNS do Resend.
+- [x] Cache apenas de assets apropriados; bypass de API, páginas privadas e RSC.
+- [x] Verificar HTTPS, cookies, headers, cache e entrega pública de assets.
 
 ## Operação e aceite
 
-- [ ] Backup diário com retenção e cópia inicial privada nesta máquina.
-- [ ] Testar restauração isolada e registrar resultado.
-- [ ] Validar aplicação real servida pela imagem standalone.
-- [ ] Testar cadastro, verificação/recuperação, autenticação e autorização.
-- [ ] Testar notícias, busca semântica, curadoria, salvos e revisões reais.
-- [ ] Verificar geração pausada sem chamadas externas e preparar ativação posterior.
-- [ ] Executar carga controlada e observar recursos do VPS e outros serviços.
+- [x] Backup diário com retenção e cópia inicial privada nesta máquina.
+- [x] Testar restauração isolada e registrar resultado.
+- [x] Validar aplicação real servida pela imagem standalone.
+- [x] Testar cadastro, verificação/recuperação, autenticação e autorização.
+- [x] Testar notícias, busca semântica, curadoria, salvos e revisões reais.
+- [x] Verificar geração pausada sem chamadas externas e preparar ativação posterior.
+- [x] Executar carga controlada e observar recursos do VPS e outros serviços.
 - [ ] Medir frontend público e registrar resultados e limitações.
-- [ ] Testar caminho de atualização e rollback compatível.
-- [ ] Documentar operação, secrets, OpenAI, backups e recuperação.
+- [x] Testar caminho de atualização e rollback compatível.
+- [x] Documentar operação, secrets, OpenAI, backups e recuperação.
 - [ ] Entregar domínio, SHA, runs e riscos/pendências reais.
 
 ## Evidências anteriores à implementação
@@ -118,3 +118,25 @@ Atualizar esta lista com evidências, sem registrar credenciais. Marcar somente 
 - Primeiro run remoto bloqueou erro de escopo antes do deploy; correção repetida com oito E2E aprovados.
 - Comando SSH fora da lista permitida recusado com status 64.
 - Fuella web e API permanecem saudáveis na origem após inclusão do Wisen no Caddy.
+
+- A imagem de frontend foi construída separadamente e respondeu HTTP 200.
+- O vídeo agora pausa fora da tela e em aba inativa; oito E2E aprovados novamente.
+- O ONNX foi validado sem downloads CUDA: imagem do worker passou de 470 MB para 247 MB e manteve embeddings com 384 dimensões.
+- Cache do modelo transferido ao volume exclusivo no VPS; o deploy ainda fará a verificação do modelo.
+- Cache e Full Strict preparados na Cloudflare; DNS permanece no estacionamento até healthchecks da origem.
+
+## Aceite em produção
+
+- Site e API publicados em HTTPS; quatro serviços saudáveis.
+- Última release validada: e78a146b8f7ca8d0d9b2918310c35e3fd976d728.
+- CI: https://github.com/FefaAlmeida/Wisen/actions/runs/44467120137
+- Deploy: https://github.com/FefaAlmeida/Wisen/actions/runs/44467319851
+- Rollback compatível aprovado: https://github.com/FefaAlmeida/Wisen/actions/runs/44468209085
+- Reaplicação da versão mais recente: https://github.com/FefaAlmeida/Wisen/actions/runs/44468406420
+- Resend confirmou entrega ao endereço oficial de teste; conta temporária excluída.
+- Busca semântica retornou cinco resultados; geração pausada e nenhuma cobrança registrada.
+- Carga pública: 25 leituras, concorrência cinco, zero erros, p95 164 ms.
+- Restauração externa isolada aprovada: 12 migrations, seis eventos e 12 conceitos.
+- Cópia privada inicial em ~/.local/state/wisen-deploy/backups/wisen-first-production.dump.
+- Header de cache corrigido para evitar duplicação com o Next; asset retornou CF-Cache-Status HIT.
+- Pedido adicional: favicon minimalista SVG/ICO e ícone Apple criados; aguardando publicação final.

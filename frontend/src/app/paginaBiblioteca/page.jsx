@@ -1,6 +1,6 @@
 import { Suspense } from "react";
+import Demo from "@/components/demo/deferred/paginaBiblioteca";
 import DemoPage from "@/components/demo/page";
-import Demo from "@/components/demo/paginaBiblioteca";
 import { Library } from "@/components/platform/learning";
 
 function LivePage() {

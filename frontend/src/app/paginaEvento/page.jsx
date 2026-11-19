@@ -1,6 +1,6 @@
 import { Suspense } from "react";
+import Demo from "@/components/demo/deferred/paginaEvento";
 import DemoPage from "@/components/demo/page";
-import Demo from "@/components/demo/paginaEvento";
 import EventPage from "@/components/platform/event";
 
 function LivePage() {

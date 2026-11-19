@@ -1,5 +1,5 @@
+import Demo from "@/components/demo/deferred/paginaMonitorIa";
 import DemoPage from "@/components/demo/page";
-import Demo from "@/components/demo/paginaMonitorIa";
 import Admin from "@/components/platform/admin";
 
 function LivePage() {

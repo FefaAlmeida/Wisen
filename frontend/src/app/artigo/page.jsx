@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import Demo from "@/components/demo/artigo";
+import Demo from "@/components/demo/deferred/artigo";
 import DemoPage from "@/components/demo/page";
 import ArticlePage from "@/components/platform/article";
 

@@ -4,7 +4,6 @@ import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
 import rateLimit from "@fastify/rate-limit";
 import swagger from "@fastify/swagger";
-import swaggerUi from "@fastify/swagger-ui";
 import Fastify from "fastify";
 import {
   jsonSchemaTransform,
@@ -49,7 +48,10 @@ export async function buildApp({ pool, boss, config, logger = true }) {
     openapi: { info: { title: "Wisen API", version: "0.1.0" } },
     transform: jsonSchemaTransform,
   });
-  if (config.NODE_ENV !== "production") await app.register(swaggerUi, { routePrefix: "/docs" });
+  if (config.NODE_ENV !== "production") {
+    const { default: swaggerUi } = await import("@fastify/swagger-ui");
+    await app.register(swaggerUi, { routePrefix: "/docs" });
+  }
   const auth = authService(authRepository(pool));
   const accounts = accountService(pool, boss, config);
   authController(app, auth, config, accounts);

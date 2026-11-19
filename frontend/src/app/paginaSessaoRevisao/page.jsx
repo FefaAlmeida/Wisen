@@ -11,6 +11,14 @@ function LivePage() {
   );
 }
 
-export default function Page() {
-  return <DemoPage demo={<Demo />} live={<LivePage />} />;
+export default async function Page({ searchParams }) {
+  const params = await searchParams;
+  const temas = typeof params.temas === "string" ? params.temas.split(",") : [];
+  const formato = params.formato === "flashcards" ? "flashcards" : "quiz";
+  return (
+    <DemoPage
+      demo={<Demo view="sessao" initialTemas={temas} initialModo={formato} />}
+      live={<LivePage />}
+    />
+  );
 }

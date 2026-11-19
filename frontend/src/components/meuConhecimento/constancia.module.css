@@ -11,7 +11,7 @@
   flex-direction: column;
   min-width: 0;
   min-height: 270px;
-  padding: 0 20px;
+  padding: 0 var(--card-padding);
   color: var(--card-ink);
   background: var(--card-surface, #fffefa);
   border: 1.5px solid var(--card-border, #263b42);
@@ -25,7 +25,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  min-height: 50px;
+  min-height: var(--card-header-height);
   padding-block: 12px;
   flex-shrink: 0;
   border-bottom: 1px solid var(--card-rule);
@@ -34,10 +34,12 @@
 .heading h2 {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 14px;
+  gap: var(--card-title-gap);
+  min-width: 0;
+  font-size: var(--card-title-size);
   font-weight: 600;
-  line-height: 1.4;
+  line-height: var(--card-title-leading);
+  letter-spacing: -0.1px;
   margin: 0;
 }
 
@@ -340,9 +342,6 @@
   .card {
     padding-inline: 12px;
   }
-  .heading h2 {
-    font-size: 12px;
-  }
   .value {
     gap: 8px;
   }
@@ -423,9 +422,6 @@
 @container (max-width: 240px) {
   .heading {
     gap: 6px;
-  }
-  .heading h2 {
-    font-size: 12px;
   }
   .record {
     font-size: 10px;

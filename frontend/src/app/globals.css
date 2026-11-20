@@ -7,12 +7,15 @@
 @theme inline {
   --color-wisen-titulo: #101a40;
   --color-wisen-texto-forte: #253452;
-  --color-wisen-superficie: #f1f3f6;
-  --color-wisen-texto-suave: #7483a3;
-  --color-wisen-destaque: #e0c43f;
-  --color-wisen-admin-hover: #fbf7e5;
+  --color-wisen-superficie: #f0f4f9;
+  --color-wisen-card: #ffffff;
+  --color-wisen-sidebar: #172542;
+  --color-wisen-texto-suave: #607092;
+  --color-wisen-destaque: #d7bf4d;
+  --color-wisen-admin-hover: #f0f4f9;
+  --color-wisen-cliente-hover: #fff9df;
   --color-wisen-borda: #dce3ed;
-  --color-wisen-destaque-suave: #f8eda6;
+  --color-wisen-destaque-suave: #f3e69a;
   --color-wisen-texto: #192344;
   --color-wisen-selecao: #fff2bc;
   --color-wisen-texto-selecao: #25303c;
@@ -61,28 +64,28 @@
 
 :root {
   --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --foreground: #101a40;
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: #101a40;
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --popover-foreground: #192344;
+  --primary: #f3e69a;
+  --primary-foreground: #192344;
+  --secondary: #edf2f8;
+  --secondary-foreground: #253452;
+  --muted: #f0f4f9;
+  --muted-foreground: #607092;
+  --accent: #fbf7e5;
+  --accent-foreground: #192344;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  --border: #dce3ed;
+  --input: #dce3ed;
+  --ring: #30466e;
+  --chart-1: #30466e;
+  --chart-2: #d7bf4d;
+  --chart-3: #7182a1;
+  --chart-4: #a9b8cb;
+  --chart-5: #ebdd80;
   --radius: 0.625rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
@@ -229,4 +232,107 @@
   .admin-chart-segment-dark {
     animation: none;
   }
+}
+
+/* Shared application foundations: client and administration. */
+@utility wisen-container {
+  width: 100%;
+  max-width: 1600px;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 2vw, 2rem);
+}
+@utility wisen-panel {
+  min-width: 0;
+  border: 1px solid var(--color-wisen-borda);
+  border-radius: 1rem;
+  background-color: var(--color-wisen-card);
+  box-shadow: 0 2px 8px -6px rgb(16 26 64 / 18%);
+}
+@utility wisen-page-title {
+  overflow-wrap: break-word;
+  font-size: clamp(1.875rem, 2.8vw, 2.5rem);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  color: var(--color-wisen-titulo);
+}
+@utility wisen-page-description {
+  max-width: 650px;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--color-wisen-texto-suave);
+}
+@utility wisen-eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-wisen-texto-suave);
+}
+@utility wisen-control {
+  min-height: 2.5rem;
+  border: 1px solid var(--color-wisen-borda);
+  border-radius: 0.625rem;
+  background-color: var(--color-wisen-card);
+  padding-inline: 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--color-wisen-texto-forte);
+  outline: none;
+  transition:
+    border-color 160ms,
+    box-shadow 160ms;
+  &:focus-visible {
+    border-color: var(--ring);
+    box-shadow: 0 0 0 3px rgb(48 70 110 / 15%);
+  }
+}
+@layer base {
+  ::selection {
+    background: var(--color-wisen-selecao);
+    color: var(--color-wisen-texto-selecao);
+  }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
+}
+
+/* One client hover policy, including menus/dialogs rendered through portals.
+   Keep sidebar interactions and filled yellow actions in their existing palette. */
+@media (hover: hover) and (pointer: fine) {
+  body:has([data-wisen-area="cliente"])
+    :is(
+      a[href],
+      button,
+      select,
+      summary,
+      [role="button"],
+      [role="tab"],
+      [role="option"],
+      [role="menuitem"],
+      label:has(input)
+    ):not(:disabled):not([aria-disabled="true"]):not([data-disabled]):not(
+      :where(
+        [data-wisen-hover="preserve"],
+        [data-wisen-hover="preserve"] *,
+        [data-slot="card"] a[class~="after:inset-0"],
+        [class~="bg-primary"],
+        [class~="bg-wisen-destaque"],
+        [class~="bg-wisen-destaque-suave"],
+        [class~="bg-[#F3E69A]"],
+        [class~="bg-[#E8E191]"]
+      )
+    ):hover {
+    background-color: var(--color-wisen-cliente-hover);
+    color: var(--color-wisen-titulo);
+  }
+}
+
+body:has([data-wisen-area="cliente"])
+  :is([role="option"], [role="menuitem"]):not([aria-disabled="true"]):not([data-disabled]):is(
+    [data-highlighted],
+    :focus-visible
+  ) {
+  background-color: var(--color-wisen-cliente-hover);
+  color: var(--color-wisen-titulo);
 }

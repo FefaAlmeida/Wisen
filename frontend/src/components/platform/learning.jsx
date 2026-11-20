@@ -2,7 +2,11 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { ConceitosSalvos } from "@/components/biblioteca/conceitosSalvos";
 import { FiltrosBiblioteca } from "@/components/biblioteca/filtrosBiblioteca";
+import ConceptDetail, { ConceptPanel } from "@/components/conceito/conceptDetail";
+import conceptStyles from "@/components/conceito/conceptDetail.module.css";
+import newsStyles from "@/components/demo/newsDetail.module.css";
 import { Button } from "@/components/ui/button";
 import {
   Exposure,
@@ -54,6 +58,7 @@ export function Library({ knowledge = false }) {
         )}
         <div className="mt-5">
           <FiltrosBiblioteca
+            includeSaved
             filtroAtivo={filter}
             onFiltroChange={setFilter}
             items={(resource.data?.items ?? []).map((c) => ({
@@ -61,50 +66,60 @@ export function Library({ knowledge = false }) {
             }))}
           />
         </div>
-        <State resource={resource}>
-          <ul className="mt-6 divide-y">
-            {resource.data?.items
-              ?.filter(
-                (c) =>
-                  filter === "todos" ||
-                  (c.display_status ?? c.status) ===
-                    { lacunas: "gap", revisao: "review", dominados: "mastered" }[filter],
-              )
-              .map((c) => (
-                <li key={c.id} className="flex items-center justify-between gap-4 py-4">
-                  <Link
-                    href={`/paginaConceito?id=${c.concept_id ?? c.id}`}
-                    className="font-medium underline"
-                  >
-                    {c.name}
-                  </Link>
-                  <span className="text-sm text-[#65748B]">
-                    {statusText[c.display_status ?? c.status] ?? "Ainda não avaliado"}
-                  </span>
-                </li>
-              ))}
-          </ul>
-          {!knowledge && (
-            <div className="mt-5 flex justify-between">
-              <Button variant="outline" disabled={page === 1} onClick={() => setPage((v) => v - 1)}>
-                Anterior
-              </Button>
-              <span>Página {page}</span>
-              <Button
-                variant="outline"
-                disabled={(resource.data?.items?.length ?? 0) < 30}
-                onClick={() => setPage((v) => v + 1)}
-              >
-                Próxima
-              </Button>
-            </div>
-          )}
-          {!resource.data?.items?.length && (
-            <p className="mt-6">
-              Seu histórico aparecerá aqui conforme você explorar os conceitos.
-            </p>
-          )}
-        </State>
+        {filter === "salvos" ? (
+          <div className="mt-6">
+            <ConceitosSalvos />
+          </div>
+        ) : (
+          <State resource={resource}>
+            <ul className="mt-6 divide-y">
+              {resource.data?.items
+                ?.filter(
+                  (c) =>
+                    filter === "todos" ||
+                    (c.display_status ?? c.status) ===
+                      { lacunas: "gap", revisao: "review", dominados: "mastered" }[filter],
+                )
+                .map((c) => (
+                  <li key={c.id} className="flex items-center justify-between gap-4 py-4">
+                    <Link
+                      href={`/paginaConceito?id=${c.concept_id ?? c.id}`}
+                      className="font-medium underline"
+                    >
+                      {c.name}
+                    </Link>
+                    <span className="text-sm text-[#65748B]">
+                      {statusText[c.display_status ?? c.status] ?? "Ainda não avaliado"}
+                    </span>
+                  </li>
+                ))}
+            </ul>
+            {!knowledge && (
+              <div className="mt-5 flex justify-between">
+                <Button
+                  variant="outline"
+                  disabled={page === 1}
+                  onClick={() => setPage((v) => v - 1)}
+                >
+                  Anterior
+                </Button>
+                <span>Página {page}</span>
+                <Button
+                  variant="outline"
+                  disabled={(resource.data?.items?.length ?? 0) < 30}
+                  onClick={() => setPage((v) => v + 1)}
+                >
+                  Próxima
+                </Button>
+              </div>
+            )}
+            {!resource.data?.items?.length && (
+              <p className="mt-6">
+                Seu histórico aparecerá aqui conforme você explorar os conceitos.
+              </p>
+            )}
+          </State>
+        )}
       </Panel>
     </Frame>
   );
@@ -113,8 +128,10 @@ export function ConceptPage() {
   const id = useSearchParams().get("id");
   const resource = useResource(`/concepts/${id ?? "missing"}`);
   const [message, setMessage] = useState("");
+  const [busy, setBusy] = useState(false);
   const data = resource.data;
   async function gap() {
+    setBusy(true);
     try {
       await requisitar("/interactions", {
         method: "POST",
@@ -124,72 +141,93 @@ export function ConceptPage() {
       resource.reload();
     } catch (e) {
       setMessage(e.message);
+    } finally {
+      setBusy(false);
     }
   }
   return (
-    <Frame title="Conceito" active="Meu conhecimento">
+    <Frame active="Meu conhecimento">
       <State resource={resource}>
         {data && (
           <>
             <Exposure concepts={[data]} />
-            <Panel>
-              <h2 className="mb-3 text-3xl font-semibold">{data.name}</h2>
-              <p className="mb-5 text-sm">{statusText[data.status] ?? "Ainda não avaliado"}</p>
-              <p className="mb-6 max-w-prose leading-8">{data.description}</p>
-              <div className="flex flex-wrap items-center gap-4">
-                <Button onClick={gap}>Não sei</Button>
-                <SaveButton type="concept" id={id} />
-              </div>
-              <p role="status" className="mt-3">
-                {message}
-              </p>
-            </Panel>
-            <Panel title="Explicação para você">
-              <Generation target={{ conceptId: id }} operation="concept" />
-            </Panel>
-            <Panel title="Conexões">
-              {data.relations.map((r) => (
-                <p key={`${r.to_id}-${r.relation}`} className="mb-3">
-                  {r.relation === "REQUIRES"
+            <ConceptDetail
+              name={data.name}
+              description={data.description}
+              status={statusText[data.status]}
+              actions={<SaveButton type="concept" id={id} />}
+              connections={(data.relations ?? []).map((relation) => ({
+                name: relation.name,
+                href: `/paginaConceito?id=${relation.to_id}`,
+                relation:
+                  relation.relation === "REQUIRES"
                     ? "Pré-requisito"
-                    : r.relation === "PART_OF"
+                    : relation.relation === "PART_OF"
                       ? "Faz parte de"
-                      : "Relacionado"}
-                  :{" "}
-                  <Link className="underline" href={`/paginaConceito?id=${r.to_id}`}>
-                    {r.name}
-                  </Link>
-                </p>
-              ))}
-              <p className="text-sm">
-                Também chamado de: {data.aliases.map((a) => a.alias).join(", ") || data.name}
-              </p>
-            </Panel>
-            <Panel title="Acontecimentos relacionados">
-              {data.events.map((e) => (
-                <p key={e.id} className="mb-3">
-                  <Link className="underline" href={`/paginaEvento?id=${e.id}`}>
-                    {e.title}
-                  </Link>
-                </p>
-              ))}
-            </Panel>
-            <Panel title="Seu histórico">
-              {data.history.map((h) => (
-                <p key={`${h.created_at}-${h.type}`} className="mb-2 text-sm">
-                  {new Date(h.created_at).toLocaleString("pt-BR")} ·{" "}
-                  {h.type === "gap"
-                    ? "Lacuna registrada"
-                    : h.type === "correct"
-                      ? "Revisão correta"
-                      : h.type === "incorrect"
-                        ? "Revisão incorreta"
-                        : h.type === "partial"
-                          ? "Resposta parcial"
-                          : "Contato com o conceito"}
-                </p>
-              ))}
-            </Panel>
+                      : "Relacionado",
+              }))}
+              events={(data.events ?? []).map((event) => ({
+                title: event.title,
+                href: `/paginaEvento?id=${event.id}`,
+              }))}
+              sidebar={
+                <>
+                  <ConceptPanel eyebrow="Seu aprendizado" title="Aprenda no seu ritmo">
+                    <p className={conceptStyles.muted}>
+                      Se este conceito ainda não ficou claro, registre sua dúvida para retomá-lo nas
+                      revisões.
+                    </p>
+                    <div className={conceptStyles.studyActions}>
+                      <Button className={conceptStyles.secondary} disabled={busy} onClick={gap}>
+                        {busy ? "Registrando…" : "Ainda tenho dúvidas"}
+                      </Button>
+                      <Link href="/paginaRevisoes" className={conceptStyles.primary}>
+                        Ver minhas revisões
+                      </Link>
+                    </div>
+                    <p role="status" className={conceptStyles.feedback}>
+                      {message}
+                    </p>
+                  </ConceptPanel>
+                  {data.history?.length > 0 && (
+                    <ConceptPanel eyebrow="Sua trajetória" title="Últimas interações">
+                      <ol className={conceptStyles.history}>
+                        {data.history.slice(0, 5).map((item) => (
+                          <li key={`${item.created_at}-${item.type}`}>
+                            <p>
+                              {{
+                                gap: "Lacuna registrada",
+                                correct: "Revisão correta",
+                                incorrect: "Revisão incorreta",
+                                partial: "Resposta parcial",
+                              }[item.type] ?? "Contato com o conceito"}
+                            </p>
+                            <time dateTime={item.created_at}>
+                              {new Date(item.created_at).toLocaleString("pt-BR")}
+                            </time>
+                          </li>
+                        ))}
+                      </ol>
+                    </ConceptPanel>
+                  )}
+                </>
+              }
+            >
+              <section aria-labelledby="concept-explanation">
+                <div className={newsStyles.sectionHeading}>
+                  <h2 id="concept-explanation">Entenda o conceito</h2>
+                  <p>Aprofunde a definição com uma explicação para você.</p>
+                </div>
+                <div className={newsStyles.prose}>
+                  <Generation key={id} target={{ conceptId: id }} operation="concept" />
+                </div>
+                {data.aliases?.length > 0 && (
+                  <p className={`${conceptStyles.muted} mt-6`}>
+                    Também chamado de: {data.aliases.map((alias) => alias.alias).join(", ")}
+                  </p>
+                )}
+              </section>
+            </ConceptDetail>
           </>
         )}
       </State>

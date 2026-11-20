@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Feedback } from "@/components/app/feedback";
 import { requisitar } from "@/services/api";
 import { DemoContext } from "./mode";
 
@@ -25,22 +26,20 @@ export default function DemoPage({ demo, live }) {
 
   if (error)
     return (
-      <div role="alert" className="min-h-screen bg-[#F0F4F9] p-8 text-[#101A40]">
-        <p>{error}</p>
-        <button
-          type="button"
-          onClick={() => setVersion((value) => value + 1)}
-          className="mt-4 underline"
-        >
-          Tentar novamente
-        </button>
+      <div className="min-h-screen bg-wisen-superficie p-8 text-wisen-titulo">
+        <Feedback
+          tone="error"
+          title="Não foi possível carregar"
+          description={error}
+          onRetry={() => setVersion((value) => value + 1)}
+        />
       </div>
     );
   if (mode === null)
     return (
-      <p role="status" className="min-h-screen bg-[#F0F4F9] p-8 text-[#101A40]">
-        Carregando…
-      </p>
+      <div className="min-h-screen bg-wisen-superficie p-8 text-wisen-titulo">
+        <Feedback tone="loading" title="Carregando…" description="Estamos preparando seu espaço." />
+      </div>
     );
   return <DemoContext value={mode}>{mode ? demo : live}</DemoContext>;
 }

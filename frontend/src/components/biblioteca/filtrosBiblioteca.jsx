@@ -1,5 +1,6 @@
 "use client";
 
+import { Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -19,37 +20,46 @@ const filtros = [
 const itemOrdenacaoClassName =
   "data-[highlighted]:bg-[#F3E69A] data-[highlighted]:text-wisen-titulo focus:bg-[#F3E69A] focus:text-wisen-titulo";
 
-export function FiltrosBiblioteca({ filtroAtivo, onFiltroChange, items = conceitos }) {
+export function FiltrosBiblioteca({
+  filtroAtivo,
+  onFiltroChange,
+  items = conceitos,
+  includeSaved = false,
+}) {
   return (
     <div className="flex w-full flex-wrap items-center justify-between gap-4">
       {/* Filtros */}
       <fieldset className="flex flex-wrap items-center gap-2.5 border-0 p-0">
-        <legend className="sr-only">Filtrar conceitos por status</legend>
-        {filtros.map((filtro) => {
-          const quantidade = filtro.status
-            ? items.filter((conceito) => conceito.status === filtro.status).length
-            : items.length;
-          const ativo = filtro.id === filtroAtivo;
+        <legend className="sr-only">Filtrar conceitos</legend>
+        {[...filtros, ...(includeSaved ? [{ id: "salvos", rotulo: "Conceitos salvos" }] : [])].map(
+          (filtro) => {
+            const quantidade = filtro.status
+              ? items.filter((conceito) => conceito.status === filtro.status).length
+              : items.length;
+            const ativo = filtro.id === filtroAtivo;
 
-          return (
-            <Button
-              key={filtro.id}
-              type="button"
-              size="sm"
-              variant={ativo ? "default" : "outline"}
-              aria-pressed={ativo}
-              onClick={() => onFiltroChange(filtro.id)}
-              className={
-                ativo
-                  ? "h-9 rounded-[10px] border-0 bg-wisen-destaque-suave px-5 text-[13px] font-medium text-wisen-texto shadow-none hover:bg-[#F1E18A]"
-                  : "h-9 rounded-[10px] border-wisen-borda bg-white/80 px-4 text-[13px] font-normal text-[#607092] shadow-none hover:bg-white hover:text-wisen-texto"
-              }
-            >
-              {filtro.cor && <span className={`mr-2 h-2 w-2 rounded-full ${filtro.cor}`} />}
-              {filtro.rotulo} ({quantidade})
-            </Button>
-          );
-        })}
+            return (
+              <Button
+                key={filtro.id}
+                type="button"
+                size="sm"
+                variant={ativo ? "default" : "outline"}
+                aria-pressed={ativo}
+                onClick={() => onFiltroChange(filtro.id)}
+                className={
+                  ativo
+                    ? "h-9 rounded-[10px] border-0 bg-wisen-destaque-suave px-5 text-[13px] font-medium text-wisen-texto shadow-none hover:bg-[#F1E18A]"
+                    : "h-9 rounded-[10px] border-wisen-borda bg-white/80 px-4 text-[13px] font-normal text-[#607092] shadow-none hover:bg-white hover:text-wisen-texto"
+                }
+              >
+                {filtro.cor && <span className={`mr-2 h-2 w-2 rounded-full ${filtro.cor}`} />}
+                {filtro.id === "salvos" && <Bookmark size={14} aria-hidden="true" />}
+                {filtro.rotulo}
+                {filtro.id !== "salvos" && ` (${quantidade})`}
+              </Button>
+            );
+          },
+        )}
       </fieldset>
 
       <Select defaultValue="relevantes">

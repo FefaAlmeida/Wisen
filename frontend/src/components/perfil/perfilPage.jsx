@@ -2,9 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AdminPageHeader } from "@/components/admin/adminPageHeader";
+import { AppTopBar } from "@/components/app/appTopBar";
 import { Footer } from "@/components/footer";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
-import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import { InterestsCard } from "@/components/perfil/interestsCard";
 import { NotificationsCard } from "@/components/perfil/notificationsCard";
 import { PersonalDataCard } from "@/components/perfil/personalDataCard";
@@ -163,7 +163,7 @@ export default function PerfilPage({ admin = false } = {}) {
   }
 
   const profileContent = (
-    <div className={`px-4 pb-12 sm:px-5 lg:px-7 ${admin ? "space-y-7 pt-7" : "space-y-8 pt-8"}`}>
+    <div className="wisen-container space-y-7 pt-7 pb-12">
       {admin ? (
         <AdminPageHeader
           title="Meu"
@@ -187,71 +187,78 @@ export default function PerfilPage({ admin = false } = {}) {
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <PersonalDataCard
-          admin={admin}
-          name={profile.name}
-          email={profile.email}
-          avatarDataUrl={profile.avatarDataUrl}
-          onAvatarUpload={saveAvatar}
-          onNameChange={(name) => setProfile((current) => ({ ...current, name }))}
-          onEmailChange={(email) => setProfile((current) => ({ ...current, email }))}
-          onSubmit={saveProfile}
-          loading={loading || Boolean(loadError)}
-          saving={Boolean(saving.personal || saving.avatar)}
-          feedback={feedback}
-        />
-        <InterestsCard
-          admin={admin}
-          categories={interestCategories}
-          interests={profile.interests}
-          onToggle={toggleInterest}
-          onSave={saveInterests}
-          saving={Boolean(saving.interests || loading || loadError)}
-          minimumSelections={3}
-          hasChanges={interestsChanged}
-          feedback={interestsFeedback}
-        />
-        <NotificationsCard
-          admin={admin}
-          notifications={profile.notifications}
-          onChange={updateNotification}
-          onSave={saveNotifications}
-          saving={Boolean(saving.notifications || loading || loadError)}
-          hasChanges={notificationsChanged}
-          feedback={notificationsFeedback}
-        />
-        <SecurityCard admin={admin} />
+      <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+        <div className="min-w-0 space-y-6">
+          <PersonalDataCard
+            name={profile.name}
+            email={profile.email}
+            avatarDataUrl={profile.avatarDataUrl}
+            onAvatarUpload={saveAvatar}
+            onNameChange={(name) => setProfile((current) => ({ ...current, name }))}
+            onEmailChange={(email) => setProfile((current) => ({ ...current, email }))}
+            onSubmit={saveProfile}
+            loading={loading || Boolean(loadError)}
+            saving={Boolean(saving.personal || saving.avatar)}
+            feedback={feedback}
+          />
+          <SecurityCard />
+        </div>
+        <div className="min-w-0 space-y-6">
+          <InterestsCard
+            categories={interestCategories}
+            interests={profile.interests}
+            onToggle={toggleInterest}
+            onSave={saveInterests}
+            saving={Boolean(saving.interests || loading || loadError)}
+            minimumSelections={3}
+            hasChanges={interestsChanged}
+            feedback={interestsFeedback}
+            systemColors
+          />
+          <NotificationsCard
+            notifications={profile.notifications}
+            onChange={updateNotification}
+            onSave={saveNotifications}
+            saving={Boolean(saving.notifications || loading || loadError)}
+            hasChanges={notificationsChanged}
+            feedback={notificationsFeedback}
+          />
+        </div>
       </div>
+      {!admin && (
+        <div className="flex flex-col items-start justify-between gap-3 border-t border-wisen-borda pt-5 sm:flex-row sm:items-center">
+          <p className="text-xs text-wisen-texto-suave">
+            Você tem o controle da sua conta e dos seus dados.
+          </p>
+          <a
+            href="/conta?action=delete"
+            className="rounded-lg px-3 py-2 text-xs font-medium text-red-700 transition-colors hover:bg-red-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700"
+          >
+            Excluir minha conta
+          </a>
+        </div>
+      )}
     </div>
   );
 
   if (admin) {
     return (
-      <main className="relative min-h-screen min-w-0 font-[family-name:var(--font-geist-sans)]">
+      <section className="relative min-w-0 font-[family-name:var(--font-geist-sans)]">
         <div className="relative z-10 mx-auto w-full max-w-[1600px]">{profileContent}</div>
-      </main>
+      </section>
     );
   }
 
   return (
     <div className="min-h-screen">
       <Sidebar activeItem="Configurações" />
-      <main className="relative isolate min-h-screen min-w-0 bg-wisen-superficie font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
+      <main className="relative isolate min-h-screen min-w-0 pt-[156px] bg-wisen-superficie font-[family-name:var(--font-geist-sans)] sm:ml-[76px] sm:pt-[76px] lg:ml-[240px]">
         <ConnectionsBackground />
         <div className="relative z-10 mx-auto w-full max-w-[1600px]">
-          <div className="relative z-50 flex items-center justify-end gap-3 px-4 pt-3 sm:px-5 lg:px-7">
-            <MenuPerfil />
-          </div>
+          <AppTopBar />
           {profileContent}
         </div>
       </main>
-      <a
-        href="/conta?action=delete"
-        className="block p-5 text-center text-sm text-red-700 underline"
-      >
-        Excluir minha conta
-      </a>
       <Footer variant="cliente" background="bg-wisen-superficie" />
     </div>
   );

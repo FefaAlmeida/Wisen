@@ -57,7 +57,7 @@ const demoItems = [
     summary: item.descricao,
     category: item.categoria,
     type: "Conceitos",
-    href: "/paginaConceito",
+    href: `/paginaConceito?conceito=${encodeURIComponent(item.titulo)}`,
   })),
 ];
 

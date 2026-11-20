@@ -1,13 +1,11 @@
-import Image from "next/image";
 import Link from "next/link";
-import { BarraBusca } from "@/components/barraBusca";
+import { AppTopBar } from "@/components/app/appTopBar";
 import { Footer } from "@/components/footer";
 import CardInteresse from "@/components/homeCliente/cardInteresse";
 import CardNoticia from "@/components/homeCliente/cardNoticia";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
 import HeroHome from "@/components/homeCliente/heroHome";
 import { InitialInterestDialog } from "@/components/homeCliente/initialInterestDialog";
-import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import PainelRevisoes from "@/components/homeCliente/painelRevisoes";
 import Sidebar from "@/components/sidebar";
 
@@ -16,43 +14,15 @@ export default function Home() {
     <div className="min-h-screen">
       <InitialInterestDialog />
       <Sidebar activeItem="Início" />
-      <main className="relative isolate min-h-screen min-w-0 bg-[radial-gradient(ellipse_at_70%_0%,#E3EAF4_0%,#F0F4F9_55%,#F0F4F9_100%)] font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
+      <main className="relative isolate min-h-screen min-w-0 pt-[76px] bg-wisen-superficie font-[family-name:var(--font-geist-sans)] sm:ml-[76px] lg:ml-[240px]">
         <ConnectionsBackground />
         <div className="relative z-10 mx-auto w-full max-w-[1600px]">
-          {/* Hero */}
-          <div className="relative flex min-h-[410px] items-center overflow-hidden pt-14 md:min-h-[350px] md:pt-0">
-            <div className="absolute inset-x-4 top-3 z-20 flex items-center justify-end gap-3 sm:left-auto sm:right-6 md:right-10">
-              <div className="relative min-w-0 flex-1 sm:w-[360px] sm:flex-none">
-                <BarraBusca />
-              </div>
-              <MenuPerfil />
-            </div>
-
-            <div className="relative z-10 w-full md:w-1/2">
-              <HeroHome />
-            </div>
-
-            <div className="relative hidden h-[400px] flex-1 md:block">
-              <div
-                className="absolute inset-0"
-                style={{
-                  maskImage: "linear-gradient(to right, transparent, black 20%, black 100%)",
-                  WebkitMaskImage: "linear-gradient(to right, transparent, black 20%, black 100%)",
-                }}
-              >
-                <Image
-                  src="/foto_paginaInicialCliente-v1.webp"
-                  alt="Planeta com conexões do Wisen"
-                  fill
-                  priority
-                  sizes="(max-width: 1024px) 40vw, 35vw"
-                  className="object-contain object-right"
-                />
-              </div>
-            </div>
+          <AppTopBar />
+          <div className="wisen-container pt-7">
+            <HeroHome />
           </div>
 
-          <div className="space-y-9 px-5 pb-12 md:px-8">
+          <div className="wisen-container space-y-8 pt-7 pb-12">
             {/* Seu feed de hoje */}
             <section>
               <div className="mb-5 flex items-center justify-between gap-3">

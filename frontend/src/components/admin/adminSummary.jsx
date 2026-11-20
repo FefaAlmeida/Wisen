@@ -2,7 +2,7 @@
   return (
     <section
       aria-label={title}
-      className="flex min-w-0 flex-col gap-4 rounded-2xl border border-wisen-borda bg-wisen-superficie p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5"
+      className="flex min-w-0 flex-col gap-4 wisen-panel p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5"
     >
       <div className="min-w-0">
         <h2 className="text-sm font-semibold text-wisen-titulo">{title}</h2>
@@ -13,7 +13,7 @@
         {items.map((item) => (
           <span
             key={item}
-            className="rounded-full border border-[#EBDD80] bg-[#F3E69A] px-3 py-1.5 text-[11px] font-medium text-wisen-titulo"
+            className="rounded-full border border-wisen-borda bg-wisen-superficie px-3 py-1.5 text-[11px] font-medium text-wisen-titulo"
           >
             {loading ? "..." : item}
           </span>

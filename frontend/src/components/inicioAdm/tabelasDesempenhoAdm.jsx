@@ -64,7 +64,7 @@ export function TabelasDesempenhoAdm() {
     <div className="@container min-w-0">
       <div className="grid min-w-0 grid-cols-1 gap-6 @min-[40rem]:grid-cols-2">
         {/* 1. Utilizadores Mais Ativos */}
-        <div className="col-span-full min-w-0 space-y-4 rounded-lg border border-[#E3E9F1] bg-white p-5 shadow-2xs">
+        <div className="col-span-full min-w-0 space-y-4 rounded-2xl border border-wisen-borda bg-white p-5 shadow-2xs">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#E3E9F1] pb-3">
             <h3 className="text-base font-semibold text-[#9A7E14]">Usuários mais ativos</h3>
             <Link
@@ -111,7 +111,7 @@ export function TabelasDesempenhoAdm() {
         </div>
 
         {/* 2. Conteúdos Mais Acessados */}
-        <div className="min-w-0 space-y-4 rounded-lg border border-[#E3E9F1] bg-white p-5 shadow-2xs">
+        <div className="min-w-0 space-y-4 rounded-2xl border border-wisen-borda bg-white p-5 shadow-2xs">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#E3E9F1] pb-3">
             <h3 className="text-base font-semibold text-[#9A7E14]">Conteúdos mais acessados</h3>
           </div>
@@ -135,7 +135,7 @@ export function TabelasDesempenhoAdm() {
         </div>
 
         {/* 3. Conceitos Com Mais Lacunas */}
-        <div className="min-w-0 space-y-4 rounded-lg border border-[#E3E9F1] bg-white p-5 shadow-2xs">
+        <div className="min-w-0 space-y-4 rounded-2xl border border-wisen-borda bg-white p-5 shadow-2xs">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#E3E9F1] pb-3">
             <h3 className="text-base font-semibold text-[#9A7E14]">Conceitos com mais lacunas</h3>
           </div>

@@ -1,5 +1,7 @@
-import { ArrowRight, BookOpen, CheckCheck, Clock3, Flame, Plus, Target } from "lucide-react";
+import { ArrowRight, BookOpen, CheckCheck, Clock3, Plus, Target } from "lucide-react";
 import Link from "next/link";
+import { PageHeader } from "@/components/app/pageHeader";
+import { StreakFlame } from "@/components/app/streakFlame";
 import styles from "./revisoes.module.css";
 
 const semana = [
@@ -36,9 +38,9 @@ export default function PainelRevisoes({ areas = [], questoes = [], summary }) {
       })) ?? historico;
   return (
     <div className={styles.page}>
-      <header className={`${styles.header} ${styles.dashboardHeader}`}>
+      <div className={`${styles.dashboardHeader} mb-7`}>
         <div>
-          <h1>Central de revisões</h1>
+          <PageHeader eyebrow="Revisões" title="Central de" highlight="revisões." />
           <div className={styles.meta}>
             {live ? (
               <span>Seu progresso de revisão</span>
@@ -50,7 +52,7 @@ export default function PainelRevisoes({ areas = [], questoes = [], summary }) {
             )}
           </div>
         </div>
-      </header>
+      </div>
       <Link
         href="/paginaRevisoes/nova"
         className={styles.novaRevisaoCard}
@@ -58,14 +60,16 @@ export default function PainelRevisoes({ areas = [], questoes = [], summary }) {
       >
         <div className={styles.novaRevisaoConteudo}>
           <span className={styles.novaRevisaoIcone} aria-hidden="true">
-            <Plus className={styles.novaRevisaoPlus} size={44} strokeWidth={2.5} />
+            <Plus className={styles.novaRevisaoPlus} size={22} strokeWidth={2} />
           </span>
           <div className={styles.novaRevisaoTexto}>
             <h2 id="nova-revisao-title">Nova revisão</h2>
             <p>Escolha os assuntos e o formato da sua sessão.</p>
           </div>
         </div>
-        <ArrowRight className={styles.novaRevisaoSeta} size={24} aria-hidden="true" />
+        <span className={styles.novaRevisaoAcao} aria-hidden="true">
+          Começar <ArrowRight className={styles.novaRevisaoSeta} size={17} />
+        </span>
       </Link>
       {summary?.history
         .filter((s) => !s.completed_at)
@@ -102,16 +106,19 @@ export default function PainelRevisoes({ areas = [], questoes = [], summary }) {
             valor: summary?.streak ?? 4,
             unidade: "dias seguidos",
             detalhe: "Dias consecutivos de prática",
-            icon: Flame,
+            flame: true,
           },
-        ].map(({ titulo, valor, unidade, detalhe, icon: Icon }) => (
+        ].map(({ titulo, valor, unidade, detalhe, icon: Icon, flame }) => (
           <article className={styles.stat} key={titulo}>
             <div className={styles.statHeading}>
               <h2>{titulo}</h2>
-              <Icon size={17} aria-hidden="true" />
+              {Icon && <Icon size={17} aria-hidden="true" />}
             </div>
             <div className={styles.statBody}>
-              <strong>{valor}</strong>
+              <div className={styles.statValue}>
+                {flame && <StreakFlame className={styles.statFlame} />}
+                <strong>{valor}</strong>
+              </div>
               <span>{unidade}</span>
             </div>
             <p>{detalhe}</p>

@@ -109,7 +109,7 @@ export default function LiveReviews({ view = "painel" }) {
     content = (
       <div className={styles.page}>
         <h1>Prepare sua revisão primeiro</h1>
-        <Link className={styles.primario} href="/paginaRevisoes/nova">
+        <Link data-wisen-hover="preserve" className={styles.primario} href="/paginaRevisoes/nova">
           Nova revisão
         </Link>
       </div>
@@ -169,7 +169,7 @@ export default function LiveReviews({ view = "painel" }) {
                 ))}
               </div>
             </fieldset>
-            <Link className={styles.primario} href="/paginaRevisoes">
+            <Link data-wisen-hover="preserve" className={styles.primario} href="/paginaRevisoes">
               Voltar à central
             </Link>
           </section>
@@ -237,6 +237,7 @@ export default function LiveReviews({ view = "painel" }) {
                 </button>
                 <button
                   type="button"
+                  data-wisen-hover="preserve"
                   className={styles.primario}
                   disabled={busy || !item.revelada}
                   onClick={() => {

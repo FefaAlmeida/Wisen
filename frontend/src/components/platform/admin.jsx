@@ -2,6 +2,7 @@
 import { Search } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { BannerInicioAdm } from "@/components/inicioAdm/bannerInicioAdm";
 import { CartoesMetricasAdm } from "@/components/inicioAdm/cartoesMetricasAdm";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,7 +19,7 @@ const sections = {
   charges: "Consumo de IA",
   audit: "Histórico de alterações",
 };
-export default function Admin({ initial = "sources" }) {
+export default function Admin({ initial = "sources", home = false }) {
   const [section, setSection] = useState(initial);
   const resource = useResource(`/admin/${section}`);
   const overview = useResource("/admin/overview");
@@ -59,7 +60,7 @@ export default function Admin({ initial = "sources" }) {
   return (
     <Frame
       title={
-        isCuration ? (
+        home ? undefined : isCuration ? (
           <>
             Revisão de <span className="text-[#D7BF4D]">eventos</span>
           </>
@@ -74,15 +75,22 @@ export default function Admin({ initial = "sources" }) {
       }
       admin
       active={
-        {
-          sources: "Gestão de fontes",
-          events: "Revisão de eventos",
-          users: "Gestão de usuários",
-          charges: "Monitor de IA",
-          tasks: "Monitor de IA",
-        }[section] ?? "Visão geral"
+        home
+          ? "Visão geral"
+          : ({
+              sources: "Gestão de fontes",
+              events: "Revisão de eventos",
+              users: "Gestão de usuários",
+              charges: "Monitor de IA",
+              tasks: "Monitor de IA",
+            }[section] ?? "Visão geral")
       }
     >
+      {home && (
+        <div className="mb-7">
+          <BannerInicioAdm />
+        </div>
+      )}
       {!isCuration && (
         <>
           {overview.data?.counts && (
@@ -367,7 +375,7 @@ function Editor({ item, section, onSave, busy }) {
     onSave(body);
   }
   return (
-    <form className="mt-4 space-y-4 rounded-xl border bg-[#F0F4F9] p-4" onSubmit={submit}>
+    <form className="mt-4 space-y-4 rounded-xl border bg-wisen-superficie p-4" onSubmit={submit}>
       {item.mode === "reconcile" ? (
         <>
           <p className="text-sm">

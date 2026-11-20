@@ -4,10 +4,10 @@ import { ArrowDownWideNarrow, ArrowUpRight, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { BarraBusca } from "@/components/barraBusca";
+import { AppTopBar } from "@/components/app/appTopBar";
+import { PageHeader } from "@/components/app/pageHeader";
 import { Footer } from "@/components/footer";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
-import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import Sidebar from "@/components/sidebar";
 import { Button } from "@/components/ui/button";
 import {
@@ -74,26 +74,16 @@ export default function PaginaExplorar() {
   return (
     <div className="min-h-screen">
       <Sidebar activeItem="Explorar" />
-      <main className="relative isolate min-h-screen min-w-0 bg-[radial-gradient(ellipse_at_70%_0%,#E3EAF4_0%,#F0F4F9_55%,#F0F4F9_100%)] font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
+      <main className="relative isolate min-h-screen min-w-0 pt-[76px] bg-wisen-superficie font-[family-name:var(--font-geist-sans)] sm:ml-[76px] lg:ml-[240px]">
         <ConnectionsBackground fadeTop={false} />
 
         <div className="relative z-10 mx-auto w-full max-w-[1600px]">
-          <header className="relative z-50 flex items-center justify-end gap-3 px-4 pt-3 sm:px-5 lg:px-7">
-            <div className="relative min-w-0 flex-1 sm:w-[360px] sm:flex-none">
-              <BarraBusca value={search} onQueryChange={setSearch} />
-            </div>
-            <MenuPerfil />
-          </header>
+          <AppTopBar value={search} onQueryChange={setSearch} />
 
-          <div className="space-y-7 px-4 pb-12 pt-7 sm:px-5 lg:px-7">
-            <div>
-              <p className="text-[11px] font-semibold text-[#93A3BE]">DESCOBERTA</p>
-              <h1 className="mt-4 text-[36px] leading-[1.05] font-medium text-wisen-titulo sm:text-[44px]">
-                Explore <span className="text-[#D7BF4D]">notícias.</span>
-              </h1>
-            </div>
+          <div className="wisen-container space-y-7 pb-12 pt-7">
+            <PageHeader eyebrow="Descoberta" title="Explore" highlight="notícias." />
 
-            <section className="flex flex-col gap-4 rounded-2xl border border-wisen-borda bg-wisen-superficie p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
+            <section className="flex flex-col gap-4 wisen-panel p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
               <div className="min-w-0">
                 <h2 className="text-sm font-semibold text-wisen-titulo">Seus temas</h2>
                 <span
@@ -112,7 +102,7 @@ export default function PaginaExplorar() {
                 {(interests.length ? interests : topics).map((interest) => (
                   <span
                     key={interest}
-                    className="rounded-full border border-[#EBDD80] bg-[#F3E69A] px-3 py-1.5 text-[11px] font-medium text-wisen-titulo"
+                    className="rounded-full border border-wisen-borda bg-wisen-superficie px-3 py-1.5 text-[11px] font-medium text-wisen-titulo"
                   >
                     {interest}
                   </span>
@@ -216,7 +206,7 @@ export default function PaginaExplorar() {
                           {story.concepts.map((concept) => (
                             <span
                               key={concept}
-                              className="rounded-full bg-[#FBF7E5] px-2.5 py-1 text-[10px] text-[#52617E]"
+                              className="rounded-[10px] bg-[#FBF7E5] px-3 py-1 text-[11px] text-[#75683B]"
                             >
                               {concept}
                             </span>
@@ -254,9 +244,9 @@ export default function PaginaExplorar() {
               )}
             </section>
           </div>
-          <Footer variant="cliente" />
         </div>
       </main>
+      <Footer variant="cliente" />
     </div>
   );
 }

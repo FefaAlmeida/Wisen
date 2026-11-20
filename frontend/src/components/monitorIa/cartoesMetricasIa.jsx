@@ -4,7 +4,7 @@ export function CartoesMetricasIa() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
       {/* Cartão 1: Orçamento Mensal */}
-      <div className="flex flex-col justify-between space-y-4 rounded-lg border border-slate-200/80 bg-white p-5 shadow-2xs">
+      <div className="flex flex-col justify-between space-y-4 rounded-2xl border border-wisen-borda bg-white p-5 shadow-2xs">
         <div className="flex items-center gap-2.5">
           <div className="rounded-lg bg-slate-100 p-2 text-[#2B333F]">
             <Wallet className="h-5 w-5" />
@@ -34,7 +34,7 @@ export function CartoesMetricasIa() {
       </div>
 
       {/* Cartão 2: Requisições Totais */}
-      <div className="flex flex-col justify-between space-y-3 rounded-lg border border-slate-200/80 bg-white p-5 shadow-2xs">
+      <div className="flex flex-col justify-between space-y-3 rounded-2xl border border-wisen-borda bg-white p-5 shadow-2xs">
         <div className="flex items-center gap-2.5">
           <div className="rounded-lg bg-slate-100 p-2 text-[#2B333F]">
             <FileText className="h-5 w-5" />
@@ -66,7 +66,7 @@ export function CartoesMetricasIa() {
       </div>
 
       {/* Cartão 3: Processamentos Locais */}
-      <div className="flex flex-col justify-between space-y-3 rounded-lg border border-slate-200/80 bg-white p-5 shadow-2xs">
+      <div className="flex flex-col justify-between space-y-3 rounded-2xl border border-wisen-borda bg-white p-5 shadow-2xs">
         <div className="flex items-center gap-2.5">
           <div className="rounded-lg bg-slate-100 p-2 text-[#2B333F]">
             <Laptop className="h-5 w-5" />
@@ -100,7 +100,7 @@ export function CartoesMetricasIa() {
       </div>
 
       {/* Cartão 4: Chamadas a APIs Externas */}
-      <div className="flex flex-col justify-between space-y-3 rounded-lg border border-slate-200/80 bg-white p-5 shadow-2xs">
+      <div className="flex flex-col justify-between space-y-3 rounded-2xl border border-wisen-borda bg-white p-5 shadow-2xs">
         <div className="flex items-center gap-2.5">
           <div className="rounded-lg bg-slate-100 p-2 text-[#2B333F]">
             <Cloud className="h-5 w-5" />

@@ -54,7 +54,7 @@ export function CardConceito({ titulo, descricao, status, progresso = 0 }) {
   const estilos = getStatusStyles(status);
 
   return (
-    <Card className="relative flex h-full flex-col gap-0 overflow-hidden rounded-lg border border-[#E2E8F0] bg-white p-0 shadow-sm">
+    <Card className="wisen-panel relative flex h-full flex-col gap-0 overflow-hidden p-0 shadow-none transition-shadow hover:shadow-md">
       {/* Imagem do conceito */}
       <div className="relative h-32 w-full shrink-0 overflow-hidden">
         <Image
@@ -76,7 +76,10 @@ export function CardConceito({ titulo, descricao, status, progresso = 0 }) {
       {/* Informações do conceito */}
       <CardContent className="flex flex-1 flex-col p-4">
         <h3 className="text-[18px] leading-6 font-semibold tracking-tight text-wisen-titulo">
-          <Link href="/paginaConceito" className="after:absolute after:inset-0">
+          <Link
+            href={`/paginaConceito?conceito=${encodeURIComponent(titulo)}`}
+            className="after:absolute after:inset-0"
+          >
             {titulo}
           </Link>
         </h3>

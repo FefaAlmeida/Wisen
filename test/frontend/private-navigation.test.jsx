@@ -41,7 +41,7 @@ describe("navegação privada", () => {
 
     const activeLink = screen.getByRole("link", { name: "Início" });
     const inactiveLink = screen.getByRole("link", { name: "Explorar" });
-    expect(activeLink).toHaveClass("bg-[#EBDD80]", "text-[#202D3A]");
+    expect(activeLink).toHaveClass("bg-wisen-destaque-suave", "text-[#202D3A]");
     expect(inactiveLink).toHaveClass("text-white", "hover:bg-white/10");
     expect(inactiveLink.querySelector("svg")).toHaveAttribute("stroke-width", "2.2");
 
@@ -75,7 +75,7 @@ describe("navegação privada", () => {
     render(<AdminSidebar activeItem="Visão geral" />);
 
     expect(screen.getAllByRole("link", { name: "Visão geral" })[0]).toHaveClass(
-      "bg-[#EBDD80]",
+      "bg-wisen-destaque-suave",
       "text-[#202D3A]",
     );
     expect(screen.getAllByRole("link", { name: "Revisão de eventos" })[0]).toHaveAttribute(

@@ -74,7 +74,7 @@ export default function MenuPerfil({ profileHref = "/paginaPerfil" }) {
 
           <Link
             href={profileHref}
-            className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-[#30466E] hover:bg-[#F1F3F6]"
+            className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-[#30466E] hover:bg-wisen-superficie"
           >
             <UserRound size={16} />
             Meu perfil

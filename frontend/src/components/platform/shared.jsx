@@ -1,12 +1,12 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { AdminPageHeader } from "@/components/admin/adminPageHeader";
 import { AdminSidebar } from "@/components/admin/adminSidebar";
-import { AdminTopBar } from "@/components/admin/adminTopBar";
-import { BarraBusca } from "@/components/barraBusca";
+import { AppTopBar } from "@/components/app/appTopBar";
+import { Feedback } from "@/components/app/feedback";
+import { PageHeader } from "@/components/app/pageHeader";
+import { Footer } from "@/components/footer";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
-import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import Sidebar from "@/components/sidebar";
 import { Button } from "@/components/ui/button";
 import { requisitar } from "@/services/api";
@@ -64,58 +64,51 @@ export function Frame({
   children,
 }) {
   return (
-    <div
-      className={`min-h-screen text-[#101A40] ${admin ? "bg-wisen-superficie" : "bg-[#F0F4F9]"}`}
-    >
+    <div className="min-h-screen bg-wisen-superficie font-[family-name:var(--font-geist-sans)] text-wisen-titulo">
       {admin ? <AdminSidebar activeItem={active} /> : <Sidebar activeItem={active} />}
-      <main
-        className={`relative isolate min-h-screen min-w-0 sm:ml-[128px] lg:ml-[220px] ${
-          admin ? "px-4 pt-[88px] pb-12 sm:px-5 lg:px-7" : "px-5 pt-20 pb-16 sm:px-8 sm:pt-8"
-        }`}
-      >
+      <main className="relative isolate min-h-screen min-w-0 pt-[76px] sm:ml-[76px] lg:ml-[240px]">
         <ConnectionsBackground fadeTop={false} />
-        {admin && <AdminTopBar />}
-        <div className={`relative z-10 mx-auto ${admin ? "max-w-[1600px]" : "max-w-6xl"}`}>
-          {admin ? (
-            <AdminPageHeader title={title} description={description} className="mb-7" />
-          ) : (
-            <header className="mb-8 flex items-center justify-between gap-4">
-              <div className="min-w-0">
-                <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
-                {description && (
-                  <p className="mt-3 max-w-[650px] text-[15px] leading-6 text-[#7183A6]">
-                    {description}
-                  </p>
-                )}
-              </div>
-              <div className="flex shrink-0 items-center gap-3">
-                <div className="hidden w-56 xl:block">
-                  <BarraBusca value={pageSearch} onQueryChange={onPageSearchChange} />
-                </div>
-                <MenuPerfil />
-              </div>
-            </header>
+        <AppTopBar admin={admin} value={pageSearch} onQueryChange={onPageSearchChange} />
+        <div className="wisen-container relative z-10 pt-7 pb-12">
+          {title && (
+            <PageHeader
+              title={title}
+              description={description}
+              eyebrow={admin ? "Administração" : undefined}
+              className="mb-7"
+            />
           )}
           {children}
         </div>
+        <Footer variant={admin ? "admin" : "cliente"} sidebarOffset={false} />
       </main>
     </div>
   );
 }
+
 export function State({ resource, children }) {
-  if (resource.loading) return <p role="status">Carregando…</p>;
+  if (resource.loading)
+    return (
+      <Feedback
+        tone="loading"
+        title="Carregando…"
+        description="Estamos preparando suas informações."
+      />
+    );
   if (resource.error)
     return (
-      <div role="alert" className="space-y-3 rounded-xl bg-white p-5">
-        <p>{resource.error}</p>
-        <Button onClick={resource.reload}>Tentar novamente</Button>
-      </div>
+      <Feedback
+        tone="error"
+        title="Não foi possível carregar"
+        description={resource.error}
+        onRetry={resource.reload}
+      />
     );
   return children;
 }
 export function Panel({ title, children }) {
   return (
-    <section className="mb-6 rounded-2xl border border-[#DEE5ED] bg-white p-5 sm:p-7">
+    <section className="wisen-panel mb-6 p-5 sm:p-6">
       {title && <h2 className="mb-4 text-xl font-semibold">{title}</h2>}
       {children}
     </section>
@@ -140,9 +133,10 @@ export function EventList({ items = [] }) {
       ))}
     </div>
   ) : (
-    <p className="text-[#65748B]">
-      Ainda não há eventos disponíveis. Novos conteúdos aparecerão após o processamento das fontes.
-    </p>
+    <Feedback
+      title="Ainda não há eventos disponíveis"
+      description="Novos conteúdos aparecerão após o processamento das fontes."
+    />
   );
 }
 export function SaveButton({ type, id }) {
@@ -309,14 +303,14 @@ export function Generation({ target, operation = "explanation", passage, onCompl
             <Button variant="outline" disabled={busy || pending} onClick={() => generate("deepen")}>
               Aprofundar
             </Button>
-            <Feedback taskId={task.id} />
+            <GenerationFeedback taskId={task.id} />
           </div>
         </div>
       )}
     </div>
   );
 }
-function Feedback({ taskId }) {
+function GenerationFeedback({ taskId }) {
   const [message, setMessage] = useState("");
   async function send(useful) {
     try {

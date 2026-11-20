@@ -1,9 +1,8 @@
 "use client";
 
-import { ChevronRight, Lock, LogOut } from "lucide-react";
+import { ChevronRight, Lock, LogOut, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogBody,
@@ -18,6 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { requisitar } from "@/services/api";
+import { ProfileSection } from "./profileSection";
 
 export function SecurityCard() {
   const [signingOut, setSigningOut] = useState(false);
@@ -89,15 +89,12 @@ export function SecurityCard() {
   }
 
   return (
-    <Card className="border border-slate-200/80 shadow-xs bg-white rounded-2xl">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-base font-bold text-[#2B333F]">Segurança da conta</CardTitle>
-        <CardDescription className="text-xs text-slate-500">
-          Gerencie sua senha e sessão.
-        </CardDescription>
-      </CardHeader>
-
-      <CardContent className="space-y-4">
+    <ProfileSection
+      icon={ShieldCheck}
+      title="Segurança da conta"
+      description="Cuide do acesso à sua conta."
+    >
+      <div className="space-y-4">
         {/* Opção 1 */}
         <button
           type="button"
@@ -106,17 +103,17 @@ export function SecurityCard() {
             setDialogOpen(true);
           }}
           aria-haspopup="dialog"
-          className="w-full flex items-center justify-between p-2 -mx-2 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer text-left group"
+          className="group flex w-full items-center justify-between gap-3 rounded-xl border border-wisen-borda/70 p-3 text-left transition-colors hover:bg-wisen-superficie focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wisen-titulo disabled:opacity-50"
         >
           <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-[#E8E191] rounded-full text-[#2B333F] shrink-0">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-wisen-superficie text-wisen-texto-suave">
               <Lock className="w-4 h-4" />
             </div>
-            <div className="space-y-0.5">
-              <h4 className="text-xs font-semibold text-[#2B333F] group-hover:opacity-80 transition-opacity">
+            <div className="space-y-1">
+              <h4 className="text-sm font-medium text-wisen-titulo group-hover:opacity-80 transition-opacity">
                 Alterar senha
               </h4>
-              <p className="text-[11px] text-slate-500 leading-tight">
+              <p className="text-xs text-wisen-texto-suave leading-relaxed">
                 Atualize sua senha para manter sua conta segura.
               </p>
             </div>
@@ -130,24 +127,22 @@ export function SecurityCard() {
           </p>
         )}
 
-        <div className="border-t border-slate-100" />
-
         {/* Opção 2 */}
         <button
           type="button"
           onClick={signOut}
           disabled={signingOut}
-          className="w-full flex items-center justify-between p-2 -mx-2 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer text-left group"
+          className="group flex w-full items-center justify-between gap-3 rounded-xl border border-wisen-borda/70 p-3 text-left transition-colors hover:bg-wisen-superficie focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wisen-titulo disabled:opacity-50"
         >
           <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-[#E8E191] rounded-full text-[#2B333F] shrink-0">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-wisen-superficie text-wisen-texto-suave">
               <LogOut className="w-4 h-4" />
             </div>
-            <div className="space-y-0.5">
-              <h4 className="text-xs font-semibold text-[#2B333F] group-hover:opacity-80 transition-opacity">
+            <div className="space-y-1">
+              <h4 className="text-sm font-medium text-wisen-titulo group-hover:opacity-80 transition-opacity">
                 {signingOut ? "Encerrando…" : "Encerrar sessão"}
               </h4>
-              <p className="text-[11px] text-slate-500 leading-tight">
+              <p className="text-xs text-wisen-texto-suave leading-relaxed">
                 Desconecte sua conta deste dispositivo.
               </p>
             </div>
@@ -159,7 +154,7 @@ export function SecurityCard() {
             {logoutError}
           </p>
         )}
-      </CardContent>
+      </div>
 
       <Dialog open={dialogOpen} onOpenChange={handleDialogChange}>
         <DialogContent>
@@ -247,6 +242,6 @@ export function SecurityCard() {
           </DialogForm>
         </DialogContent>
       </Dialog>
-    </Card>
+    </ProfileSection>
   );
 }

@@ -1,14 +1,13 @@
 "use client";
 
-import { Camera, Loader2 } from "lucide-react";
+import { Camera, Loader2, UserRound } from "lucide-react";
 import { useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { ProfileSection, profileSaveAction } from "./profileSection";
 
 export function PersonalDataCard({
-  admin = false,
   name,
   email,
   avatarDataUrl,
@@ -76,111 +75,112 @@ export function PersonalDataCard({
   }
 
   return (
-    <Card className="border border-slate-200/80 shadow-xs bg-white rounded-2xl">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-base font-bold text-[#2B333F]">Dados pessoais</CardTitle>
-        <CardDescription className="text-xs text-slate-500">
-          Atualize suas informações de perfil.
-        </CardDescription>
-      </CardHeader>
-
-      <CardContent>
-        <form onSubmit={onSubmit} aria-label="Dados pessoais" className="space-y-4">
-          <div className="flex items-center gap-4">
-            <div className="relative shrink-0">
-              <Avatar className="w-20 h-20 border border-slate-100">
-                <AvatarImage src={avatarDataUrl || undefined} alt={name || "Foto de perfil"} />
-                <AvatarFallback className="bg-[#E8E191] text-[#2B333F] font-bold">
-                  {initials}
-                </AvatarFallback>
-              </Avatar>
-              <button
-                type="button"
-                onClick={() => photoInput.current?.click()}
-                disabled={loading || saving}
-                aria-label="Escolher foto de perfil"
-                className={`absolute bottom-0 right-0 p-1.5 bg-[#E8E191] ${admin ? "hover:bg-wisen-admin-hover" : "hover:bg-[#d8d181]"} text-[#2B333F] rounded-full border-2 border-white shadow-xs transition-colors cursor-pointer disabled:opacity-50`}
-                title="Alterar foto"
-              >
-                <Camera className="w-3.5 h-3.5" />
-              </button>
-              <input
-                ref={photoInput}
-                type="file"
-                accept="image/*"
-                className="sr-only"
-                onChange={handlePhotoChange}
-                tabIndex={-1}
-              />
-            </div>
-
-            <div className="flex-1 space-y-3">
-              <div className="space-y-1">
-                <label htmlFor="perfil-nome" className="text-xs font-medium text-[#2B333F]">
-                  Nome
-                </label>
-                <Input
-                  id="perfil-nome"
-                  value={name}
-                  onChange={(e) => onNameChange(e.target.value)}
-                  disabled={loading || saving}
-                  required
-                  className="h-9 text-xs bg-slate-50/50 border-slate-200 focus-visible:ring-[#E8E191] rounded-lg text-[#2B333F]"
-                />
-              </div>
-              <div className="space-y-1">
-                <label htmlFor="perfil-email" className="text-xs font-medium text-[#2B333F]">
-                  E-mail
-                </label>
-                <Input
-                  id="perfil-email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => onEmailChange(e.target.value)}
-                  disabled={loading || saving}
-                  required
-                  className="h-9 text-xs bg-slate-50/50 border-slate-200 focus-visible:ring-[#E8E191] rounded-lg text-[#2B333F]"
-                />
-              </div>
-            </div>
-          </div>
-
-          {feedback && (
-            <div
-              className={`text-xs p-2.5 rounded-lg pl-24 ${
-                feedback.type === "success"
-                  ? "bg-green-50 text-green-700 border border-green-200"
-                  : "bg-red-50 text-red-700 border border-red-200"
-              }`}
-            >
-              {feedback.text}
-            </div>
-          )}
-
-          {photoError && (
-            <p role="alert" className="pl-24 text-xs text-red-600">
-              {photoError}
-            </p>
-          )}
-
-          <div className="pt-2 pl-24">
-            <Button
-              type="submit"
+    <ProfileSection
+      icon={UserRound}
+      title="Dados pessoais"
+      description="Suas informações e sua identidade no Wisen."
+    >
+      <form onSubmit={onSubmit} aria-label="Dados pessoais" className="space-y-5">
+        <div className="flex flex-wrap items-center gap-4 rounded-xl border border-wisen-borda/70 bg-wisen-superficie/60 p-4">
+          <div className="relative shrink-0">
+            <Avatar className="size-16 border-4 border-white shadow-sm sm:size-20">
+              <AvatarImage src={avatarDataUrl || undefined} alt={name || "Foto de perfil"} />
+              <AvatarFallback className="bg-wisen-destaque-suave text-xl font-semibold text-wisen-titulo">
+                {initials}
+              </AvatarFallback>
+            </Avatar>
+            <button
+              type="button"
+              onClick={() => photoInput.current?.click()}
               disabled={loading || saving}
-              className={`bg-[#E8E191] ${admin ? "hover:bg-wisen-admin-hover" : "hover:bg-[#d8d181]"} text-[#2B333F] font-semibold text-xs h-9 px-5 rounded-xl border-none shadow-none transition-colors disabled:opacity-50 cursor-pointer`}
+              aria-label="Escolher foto de perfil"
+              className="absolute bottom-0 right-0 flex size-8 items-center justify-center rounded-full border-2 border-white bg-wisen-destaque-suave text-wisen-titulo shadow-xs transition-colors hover:bg-[#EBDD80] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wisen-titulo disabled:opacity-50"
+              title="Alterar foto"
             >
-              {saving ? (
-                <span className="flex items-center gap-2">
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  Salvando...
-                </span>
-              ) : (
-                "Salvar alterações"
-              )}
-            </Button>
+              <Camera className="w-3.5 h-3.5" />
+            </button>
+            <input
+              ref={photoInput}
+              type="file"
+              accept="image/*"
+              className="sr-only"
+              onChange={handlePhotoChange}
+              tabIndex={-1}
+            />
           </div>
-        </form>
-      </CardContent>
-    </Card>
+
+          <div className="min-w-0 flex-1 basis-32">
+            <p className="text-sm font-semibold text-wisen-titulo">Sua foto de perfil</p>
+            <p className="mt-1 text-xs leading-relaxed text-wisen-texto-suave">
+              Toque na câmera para escolher uma imagem de até 10 MB.
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <div className="space-y-1">
+            <label htmlFor="perfil-nome" className="text-xs font-medium text-wisen-texto-forte">
+              Nome
+            </label>
+            <Input
+              id="perfil-nome"
+              autoComplete="name"
+              value={name}
+              onChange={(e) => onNameChange(e.target.value)}
+              disabled={loading || saving}
+              required
+              className="h-11 rounded-xl border-wisen-borda bg-white text-sm text-wisen-titulo shadow-none"
+            />
+          </div>
+          <div className="space-y-1">
+            <label htmlFor="perfil-email" className="text-xs font-medium text-wisen-texto-forte">
+              E-mail
+            </label>
+            <Input
+              id="perfil-email"
+              type="email"
+              autoComplete="email"
+              value={email}
+              onChange={(e) => onEmailChange(e.target.value)}
+              disabled={loading || saving}
+              required
+              className="h-11 rounded-xl border-wisen-borda bg-white text-sm text-wisen-titulo shadow-none"
+            />
+          </div>
+        </div>
+
+        {feedback && (
+          <div
+            role={feedback.type === "error" ? "alert" : "status"}
+            className={`text-xs p-3 rounded-lg ${
+              feedback.type === "success"
+                ? "bg-green-50 text-green-700 border border-green-200"
+                : "bg-red-50 text-red-700 border border-red-200"
+            }`}
+          >
+            {feedback.text}
+          </div>
+        )}
+
+        {photoError && (
+          <p role="alert" className="text-xs text-red-600">
+            {photoError}
+          </p>
+        )}
+
+        <div className="flex justify-end border-t border-wisen-borda/70 pt-4">
+          <Button type="submit" disabled={loading || saving} className={profileSaveAction}>
+            {saving ? (
+              <span className="flex items-center gap-2">
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                Salvando...
+              </span>
+            ) : (
+              "Salvar alterações"
+            )}
+          </Button>
+        </div>
+      </form>
+    </ProfileSection>
   );
 }

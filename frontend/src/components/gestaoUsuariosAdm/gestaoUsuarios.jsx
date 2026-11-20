@@ -3,6 +3,7 @@
 import { ChevronLeft, ChevronRight, History, Search, X } from "lucide-react";
 import { useState } from "react";
 import { AdminSummary } from "@/components/admin/adminSummary";
+import { Notice } from "@/components/app/feedback";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -20,8 +21,7 @@ import PainelUsuario from "./painelUsuario";
 import TabelaUsuarios from "./tabelaUsuarios";
 
 const pageSize = 10;
-const control =
-  "h-9 w-full min-w-0 rounded-[10px] border border-wisen-borda bg-white/85 px-3 text-xs text-[#526584] outline-none transition-colors hover:bg-wisen-admin-hover focus-visible:ring-2 focus-visible:ring-[#D7BF4D]/40";
+const control = "wisen-control w-full min-w-0";
 const normalize = (value) =>
   value
     .normalize("NFD")
@@ -78,24 +78,14 @@ export default function GestaoUsuarios({ demo = true }) {
   }
   return (
     <div className="min-w-0 space-y-7">
-      {message && (
-        <p
-          role="status"
-          className="rounded-xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-800"
-        >
-          {message}
-        </p>
-      )}
+      {message && <Notice>{message}</Notice>}
       {error && !panelOpen && (
-        <div
-          role="alert"
-          className="rounded-xl border border-red-100 bg-red-50 p-4 text-sm text-red-800"
-        >
+        <Notice tone="error">
           <p>{error}</p>
           <Button onClick={() => reload()} variant="outline" className="mt-3">
             Tentar novamente
           </Button>
-        </div>
+        </Notice>
       )}
       <AdminSummary
         title="Contas cadastradas"

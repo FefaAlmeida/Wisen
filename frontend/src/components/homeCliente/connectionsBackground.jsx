@@ -3,8 +3,8 @@
 import { useEffect, useRef } from "react";
 
 export function ConnectionsBackground({
-  fadeTop = true,
-  fullSpread = false,
+  fadeTop = false,
+  fullSpread = true,
   particleDensity = 1,
 } = {}) {
   const canvasRef = useRef(null);
@@ -213,13 +213,13 @@ export function ConnectionsBackground({
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
+      className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
       style={{
         maskImage,
         WebkitMaskImage: maskImage,
       }}
     >
-      <canvas ref={canvasRef} className="h-full w-full" />
+      <canvas ref={canvasRef} className="block h-full w-full" />
     </div>
   );
 }

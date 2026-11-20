@@ -167,7 +167,7 @@ export default function PainelGuardados() {
 
   return (
     <Tabs value={aba} onValueChange={setAba} className="w-full gap-3">
-      <TabsList className="h-auto w-fit max-w-full justify-start gap-1 rounded-xl bg-[#E9EEF6] p-1">
+      <TabsList className="h-auto w-fit max-w-full flex-wrap justify-start gap-1 rounded-xl bg-[#E9EEF6] p-1">
         <TabsTrigger
           value="eventos"
           className="min-h-9 rounded-lg px-4 text-[12px] font-medium text-[#66799B] data-[state=active]:bg-[#26364D] data-[state=active]:text-white data-[state=active]:shadow-sm"

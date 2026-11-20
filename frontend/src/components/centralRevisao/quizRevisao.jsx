@@ -67,7 +67,13 @@ export default function QuizRevisao({
           ) : (
             <>
               <p>Pense na resposta antes de revelar.</p>
-              <button className={styles.primario} type="button" onClick={onRevelar} disabled={busy}>
+              <button
+                data-wisen-hover="preserve"
+                className={styles.primario}
+                type="button"
+                onClick={onRevelar}
+                disabled={busy}
+              >
                 Revelar resposta
               </button>
             </>

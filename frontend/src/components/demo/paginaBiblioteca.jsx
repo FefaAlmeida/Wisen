@@ -1,10 +1,9 @@
-import Image from "next/image";
+import { AppTopBar } from "@/components/app/appTopBar";
+import { PageHeader } from "@/components/app/pageHeader";
 
-import { BarraBusca } from "@/components/barraBusca";
 import { CatalogoConceitos } from "@/components/biblioteca/catalogoConceitos";
 import { Footer } from "@/components/footer";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
-import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import Sidebar from "@/components/sidebar";
 
 export default function Home() {
@@ -12,46 +11,29 @@ export default function Home() {
     <div className="min-h-screen">
       <Sidebar activeItem="Conceitos" />
 
-      <main className="relative isolate min-h-screen min-w-0 bg-[radial-gradient(ellipse_at_70%_0%,#E3EAF4_0%,#F0F4F9_55%,#F0F4F9_100%)] font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
+      <main className="relative isolate min-h-screen min-w-0 pt-[76px] bg-wisen-superficie font-[family-name:var(--font-geist-sans)] sm:ml-[76px] lg:ml-[240px]">
         <ConnectionsBackground />
 
         <div className="relative z-10 mx-auto w-full max-w-[1600px]">
           {/* Barra de pesquisa e perfil */}
-          <div className="relative z-50 flex items-center justify-end gap-3 px-4 pt-3 sm:px-5 lg:px-7">
-            <div className="relative min-w-0 flex-1 sm:w-[360px] sm:flex-none">
-              <BarraBusca />
-            </div>
-
-            <MenuPerfil />
-          </div>
+          <AppTopBar />
 
           {/* Conteúdo principal */}
-          <div className="px-4 pb-12 pt-3 sm:px-5 lg:px-7 lg:pt-4">
+          <div className="wisen-container pt-7 pb-12">
             {/* Apresentação da biblioteca */}
-            <section className="relative mb-7 flex min-h-[260px] items-center overflow-hidden md:min-h-[290px] lg:mb-8 lg:min-h-[320px]">
-              <div className="relative z-10 max-w-[660px] py-8 md:max-w-[58%]">
-                <p className="text-[11px] font-semibold text-[#93A3BE]">BIBLIOTECA DE CONCEITOS</p>
+            <PageHeader
+              eyebrow="Conceitos"
+              title="Biblioteca de"
+              highlight="conceitos."
+              className="mb-7"
+            />
 
-                <h1 className="mt-4 text-[36px] leading-[1.05] font-medium text-wisen-titulo sm:text-[44px] lg:text-[50px]">
-                  Explore conceitos.
-                  <span className="block text-[#D7BF4D]">Conecte ideias.</span>
-                </h1>
-
-                <div className="mt-4 max-w-[470px] rounded-2xl border border-wisen-borda bg-wisen-superficie p-4 sm:p-5">
-                  <p className="text-[15px] leading-6 text-[#7182A1]">
-                    Descubra as ideias por trás das notícias e acompanhe seu progresso em cada tema.
-                  </p>
-                </div>
-              </div>
-
-              <Image
-                src="/bibliotecaHeroCerta-v1.webp"
-                width={1916}
-                height={821}
-                alt="Ilustração de livros representando diferentes áreas do conhecimento"
-                sizes="(min-width: 1536px) 660px, (min-width: 1280px) 500px, (min-width: 1024px) 450px, 35vw"
-                className="pointer-events-none absolute top-1/2 right-0 hidden w-[50%] max-h-[320px] -translate-y-1/2 object-contain drop-shadow-[0_14px_20px_rgba(47,65,101,0.12)] md:block"
-              />
+            <section className="wisen-panel mb-7 p-4 sm:p-5">
+              <h2 className="text-sm font-semibold text-wisen-titulo">Conecte ideias</h2>
+              <span aria-hidden="true" className="mt-2 block h-0.5 w-8 rounded-full bg-[#D7BF4D]" />
+              <p className="mt-1 text-xs leading-5 text-wisen-texto-suave">
+                Descubra as ideias por trás das notícias e acompanhe seu progresso em cada tema.
+              </p>
             </section>
 
             {/* Filtros e catálogo de conceitos */}

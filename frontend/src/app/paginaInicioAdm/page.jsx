@@ -3,7 +3,7 @@ import DemoPage from "@/components/demo/page";
 import Admin from "@/components/platform/admin";
 
 function LivePage() {
-  return <Admin initial="sources" />;
+  return <Admin initial="sources" home />;
 }
 
 export default function Page() {

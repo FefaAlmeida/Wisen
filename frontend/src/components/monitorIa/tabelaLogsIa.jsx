@@ -68,7 +68,7 @@ export function TabelaLogsIa() {
   ];
 
   return (
-    <div className="space-y-5 rounded-lg border border-slate-200/80 bg-white p-6 shadow-2xs">
+    <div className="space-y-5 rounded-2xl border border-wisen-borda bg-white p-6 shadow-2xs">
       {/* Cabeçalho da Tabela com Busca e Filtros */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>

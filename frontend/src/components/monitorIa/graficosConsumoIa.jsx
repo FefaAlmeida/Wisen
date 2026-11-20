@@ -44,7 +44,7 @@ export function GraficosConsumoIa() {
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
       {/* 1. Gráfico de Barras: Requisições por tipo de processamento */}
-      <div className="space-y-5 rounded-lg border border-slate-200/80 bg-white p-5 shadow-2xs lg:col-span-7">
+      <div className="space-y-5 rounded-2xl border border-wisen-borda bg-white p-5 shadow-2xs lg:col-span-7">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <h3 className="text-base font-semibold text-[#2B333F]">
@@ -109,7 +109,7 @@ export function GraficosConsumoIa() {
       </div>
 
       {/* 2. Gráfico Donut: Distribuição de custos por modelo */}
-      <div className="space-y-5 rounded-lg border border-slate-200/80 bg-white p-5 shadow-2xs lg:col-span-5">
+      <div className="space-y-5 rounded-2xl border border-wisen-borda bg-white p-5 shadow-2xs lg:col-span-5">
         <div>
           <h3 className="text-base font-semibold text-[#2B333F]">
             Distribuição de custos por modelo

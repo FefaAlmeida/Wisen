@@ -198,7 +198,7 @@ export function InitialInterestDialog() {
               >
                 <span
                   aria-hidden="true"
-                  className={`flex size-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold ${step >= index ? "bg-[#F3E69A] text-[#526584]" : "bg-[#F1F3F6] text-[#93A3BE]"}`}
+                  className={`flex size-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold ${step >= index ? "bg-[#F3E69A] text-[#526584]" : "bg-wisen-superficie text-[#93A3BE]"}`}
                 >
                   {step > index ? <Check className="size-3" /> : index + 1}
                 </span>
@@ -290,7 +290,7 @@ export function InitialInterestDialog() {
               <Button
                 type="button"
                 variant="ghost"
-                className="h-11 px-3 text-sm text-[#7182A1] hover:bg-[#F1F3F6]"
+                className="h-11 px-3 text-sm text-[#7182A1] hover:bg-wisen-superficie"
                 disabled={saving}
                 onClick={() => {
                   setStep(0);
@@ -304,7 +304,7 @@ export function InitialInterestDialog() {
               <Button
                 type="button"
                 variant="ghost"
-                className="h-11 px-3 text-sm text-[#7182A1] hover:bg-[#F1F3F6]"
+                className="h-11 px-3 text-sm text-[#7182A1] hover:bg-wisen-superficie"
                 disabled={saving}
                 aria-label="Pular esta etapa"
                 onClick={() => completeOnboarding(true)}

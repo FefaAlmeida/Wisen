@@ -30,13 +30,13 @@
 }
 
 .control button:hover {
-  color: #263b42;
+  color: var(--color-wisen-titulo);
   background: #e8edf1;
 }
 
 .control button[aria-pressed="true"] {
-  background: #e8e191;
-  color: #3c3c25;
+  background: var(--color-wisen-destaque-suave);
+  color: var(--color-wisen-titulo);
   box-shadow: 0 1px 3px #6e64221a;
 }
 

@@ -12,7 +12,7 @@ export default function CardNoticia({
   href = "/paginaEvento",
 }) {
   return (
-    <Card className="relative flex h-full flex-col gap-0 overflow-hidden rounded-lg border-0 bg-white p-0 shadow-none">
+    <Card className="relative flex h-full flex-col gap-0 overflow-hidden wisen-panel p-0 shadow-none transition-shadow hover:shadow-md">
       <Image
         src={imagem}
         width={900}
@@ -40,7 +40,7 @@ export default function CardNoticia({
           {conceitos.map((conceito) => (
             <span
               key={conceito}
-              className="rounded-full bg-[#FBF7E5] px-3 py-1 text-[11px] text-[#52617E]"
+              className="rounded-[10px] bg-[#FBF7E5] px-3 py-1 text-[11px] text-[#75683B]"
             >
               {conceito}
             </span>

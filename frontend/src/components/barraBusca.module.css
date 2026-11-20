@@ -3,7 +3,7 @@
   align-items: center;
   gap: 11px;
   width: 100%;
-  min-height: 44px;
+  min-height: 40px;
   padding: 10px 14px;
   border: 1px solid var(--color-wisen-borda);
   border-radius: 10px;
@@ -11,11 +11,11 @@
   color: #52617e;
   cursor: pointer;
   text-align: left;
-  font-size: 12px;
+  font-size: 13px;
   transition: border-color 160ms ease;
 }
 .trigger:hover {
-  border-color: #7182a1;
+  border-color: var(--ring);
 }
 .trigger span {
   flex: 1;

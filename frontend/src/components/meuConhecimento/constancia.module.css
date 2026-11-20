@@ -4,20 +4,27 @@
 }
 
 .card {
-  --card-ink: #263b42;
-  --card-muted: #52656a;
-  --card-rule: var(--card-divider, #263b4230);
+  --card-ink: var(--color-wisen-titulo);
+  --card-muted: var(--color-wisen-texto-suave);
+  --card-rule: var(--color-wisen-borda);
   display: flex;
   flex-direction: column;
   min-width: 0;
   min-height: 270px;
   padding: 0 var(--card-padding);
   color: var(--card-ink);
-  background: var(--card-surface, #fffefa);
-  border: 1.5px solid var(--card-border, #263b42);
-  border-radius: 14px;
+  background: var(--color-wisen-card);
+  border: 1px solid var(--color-wisen-borda);
+  border-radius: 16px;
   overflow: hidden;
   container-type: inline-size;
+  transition: box-shadow 150ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    box-shadow: var(--shadow-md);
+  }
 }
 
 .heading {

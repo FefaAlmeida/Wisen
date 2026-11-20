@@ -48,7 +48,7 @@ export default function CentralRevisao({
       <div className={styles.page}>
         <h1 className={styles.pergunta}>Prepare sua revisão primeiro</h1>
         <p className={styles.descricao}>Escolha os assuntos e o formato antes de começar.</p>
-        <Link href="/paginaRevisoes/nova" className={styles.primario}>
+        <Link href="/paginaRevisoes/nova" data-wisen-hover="preserve" className={styles.primario}>
           Nova revisão
         </Link>
       </div>
@@ -108,6 +108,7 @@ export default function CentralRevisao({
             </button>
             <button
               type="button"
+              data-wisen-hover="preserve"
               className={styles.primario}
               disabled={modo === "quiz" ? respostas[atual.id] === undefined : !reveladas[atual.id]}
               onClick={() => {
@@ -160,6 +161,7 @@ export default function CentralRevisao({
           </fieldset>
           <button
             type="button"
+            data-wisen-hover="preserve"
             className={styles.primario}
             onClick={() => {
               router.push("/paginaRevisoes/nova");

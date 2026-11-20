@@ -56,7 +56,7 @@ export function CartaoFocoAtual() {
         })}
       </div>
       <div className={styles.focusAction}>
-        <Link href="/paginaRevisoes" className={styles.primaryLink}>
+        <Link href="/paginaRevisoes" data-wisen-hover="preserve" className={styles.primaryLink}>
           Ir para minhas revisões <ArrowRight size={15} aria-hidden="true" />
         </Link>
       </div>

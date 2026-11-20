@@ -1,7 +1,6 @@
-import { BarraBusca } from "@/components/barraBusca";
+import { AppTopBar } from "@/components/app/appTopBar";
 import { Footer } from "@/components/footer";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
-import MenuPerfil from "@/components/homeCliente/menuPerfil";
 import Sidebar from "@/components/sidebar";
 
 export default function RevisoesLayout({ children }) {
@@ -9,17 +8,11 @@ export default function RevisoesLayout({ children }) {
     <div className="min-h-screen">
       <Sidebar activeItem="Revisões" />
 
-      <main className="relative isolate min-h-screen min-w-0 bg-[#F0F4F8] font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
+      <main className="relative isolate min-h-screen min-w-0 pt-[76px] bg-wisen-superficie font-[family-name:var(--font-geist-sans)] sm:ml-[76px] lg:ml-[240px]">
         <ConnectionsBackground />
         <div className="relative z-10 mx-auto w-full max-w-[1600px]">
           {/* Barra de pesquisa e perfil */}
-          <div className="relative z-50 flex items-center justify-end gap-3 px-5 pt-3 md:px-8">
-            <div className="relative min-w-0 flex-1 sm:w-[360px] sm:flex-none">
-              <BarraBusca />
-            </div>
-
-            <MenuPerfil />
-          </div>
+          <AppTopBar />
 
           {children}
         </div>

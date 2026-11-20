@@ -1,48 +1,134 @@
-import { BarraBusca } from "@/components/barraBusca";
-import AcoesConceito from "@/components/conceito/acoesConceito";
-import CabecalhoConceito from "@/components/conceito/cabecalhoConceito";
-import DefinicaoConceito from "@/components/conceito/definicaoConceito";
-import NoticiasRelacionadas from "@/components/conceito/noticiasRelacionadas";
-import PainelAprendizado from "@/components/conceito/painelAprendizado";
-import { Footer } from "@/components/footer";
-import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
-import MenuPerfil from "@/components/homeCliente/menuPerfil";
-import Sidebar from "@/components/sidebar";
+"use client";
+
+import { Bookmark, Check, CircleHelp } from "lucide-react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useState } from "react";
+import ConceptDetail, { ConceptPanel } from "@/components/conceito/conceptDetail";
+import styles from "@/components/conceito/conceptDetail.module.css";
+import { Frame } from "@/components/platform/shared";
+import { conceitosDetalhados, demoConceptHref } from "@/data/conceitoDetalhes";
+import { useDemoSavedConcepts } from "@/hooks/use-demo-saved-concepts";
+import news from "./newsDetail.module.css";
 
 export default function PaginaConceito() {
+  const name = useSearchParams().get("conceito") || "Inflação";
+  const concept = conceitosDetalhados.find((item) => item.titulo === name);
   return (
-    <div className="min-h-screen">
-      <Sidebar activeItem="Meu conhecimento" />
+    <Frame active="Meu conhecimento">
+      {concept ? (
+        <DemoConcept key={name} concept={concept} />
+      ) : (
+        <ConceptPanel title="Conceito não encontrado">
+          <Link href="/paginaBiblioteca" className={styles.secondary}>
+            Voltar para a biblioteca
+          </Link>
+        </ConceptPanel>
+      )}
+    </Frame>
+  );
+}
 
-      <main className="relative isolate min-h-screen min-w-0 bg-[radial-gradient(ellipse_at_60%_0%,#E4EDF5_0%,#F0F4F9_60%,#F0F4F9_100%)] font-[family-name:var(--font-geist-sans)] sm:ml-[128px] lg:ml-[220px]">
-        <ConnectionsBackground />
-        <div className="relative z-10 mx-auto w-full max-w-[1600px]">
-          <div className="relative z-50 flex items-center justify-end gap-3 px-5 pt-3 md:px-8">
-            <div className="relative min-w-0 flex-1 sm:w-[360px] sm:flex-none">
-              <BarraBusca />
-            </div>
+function DemoConcept({ concept }) {
+  const savedConcepts = useDemoSavedConcepts();
+  const saved = savedConcepts.items.includes(concept.titulo);
+  const [gap, setGap] = useState(false);
+  const connections = conceitosDetalhados
+    .filter((item) => item.categoria === concept.categoria && item.titulo !== concept.titulo)
+    .slice(0, 3)
+    .map((item) => ({
+      name: item.titulo,
+      relation: item.categoria,
+      href: demoConceptHref(item.titulo),
+    }));
 
-            <MenuPerfil />
+  return (
+    <ConceptDetail
+      name={concept.titulo}
+      category={concept.categoria}
+      description={concept.descricao}
+      status={gap ? "Lacuna" : concept.status}
+      connections={connections}
+      actions={
+        <>
+          <button
+            type="button"
+            className={`${news.action} ${saved ? news.saved : ""}`}
+            aria-pressed={saved}
+            disabled={savedConcepts.loading || !savedConcepts.ready}
+            onClick={() => savedConcepts.toggle(concept.titulo)}
+          >
+            {saved ? (
+              <Check size={16} aria-hidden="true" />
+            ) : (
+              <Bookmark size={16} aria-hidden="true" />
+            )}
+            {saved ? "Conceito salvo" : "Salvar conceito"}
+          </button>
+          {savedConcepts.error && (
+            <p role="alert" className={styles.feedback}>
+              {savedConcepts.error}
+            </p>
+          )}
+        </>
+      }
+      sidebar={
+        <ConceptPanel eyebrow="Seu aprendizado" title="Como você está neste conceito">
+          <div className={styles.progressLabel}>
+            <span>Nível de domínio</span>
+            <strong>{concept.progresso}%</strong>
           </div>
-
-          <div className="px-5 pt-8 pb-12 md:px-8">
-            <div className="grid items-stretch gap-4 xl:grid-cols-[1.8fr_1fr]">
-              <CabecalhoConceito />
-              <PainelAprendizado />
-            </div>
-
-            <div className="mt-4 grid items-stretch gap-4 xl:grid-cols-[1.8fr_1fr]">
-              <DefinicaoConceito />
-              <AcoesConceito />
-            </div>
-
-            <section className="mt-5">
-              <NoticiasRelacionadas />
-            </section>
+          <progress
+            className={styles.progress}
+            value={concept.progresso}
+            max="100"
+            aria-label={`Nível de domínio de ${concept.titulo}`}
+          />
+          <p className={`${styles.muted} mt-3`}>Dados ilustrativos de aprendizado.</p>
+          <div className={styles.studyActions}>
+            <button
+              type="button"
+              className={styles.secondary}
+              aria-pressed={gap}
+              onClick={() => setGap((value) => !value)}
+            >
+              {gap ? (
+                <Check size={16} aria-hidden="true" />
+              ) : (
+                <CircleHelp size={16} aria-hidden="true" />
+              )}
+              {gap ? "Marcado para revisar" : "Ainda tenho dúvidas"}
+            </button>
           </div>
+          <p className={styles.feedback} role="status">
+            {gap
+              ? "Dúvida marcada nesta demonstração. Releia a explicação e o exemplo para retomar o assunto."
+              : "Identifique suas dúvidas enquanto explora o conceito."}
+          </p>
+        </ConceptPanel>
+      }
+    >
+      <section aria-labelledby="definition-title">
+        <div className={news.sectionHeading}>
+          <h2 id="definition-title">Entenda o conceito</h2>
+          <p>O que significa e como funciona.</p>
         </div>
-      </main>
-      <Footer variant="cliente" />
-    </div>
+        <div className={news.prose}>
+          {concept.explicacao.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </div>
+        <div className={news.context}>
+          <h3>Na prática</h3>
+          <p>{concept.exemplo}</p>
+        </div>
+      </section>
+      <section className="mt-8" aria-labelledby="importance-title">
+        <div className={news.sectionHeading}>
+          <h2 id="importance-title">Por que isso importa?</h2>
+        </div>
+        <p className={news.prose}>{concept.importancia}</p>
+      </section>
+    </ConceptDetail>
   );
 }

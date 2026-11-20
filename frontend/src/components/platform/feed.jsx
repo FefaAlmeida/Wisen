@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -28,26 +27,15 @@ export default function Feed({ explore = false }) {
   );
   return (
     <Frame
-      title={explore ? "Explorar economia" : "Entenda o que acontece"}
+      title={explore ? "Explorar notícias" : undefined}
       active={explore ? "Explorar" : "Início"}
       pageSearch={pageSearch}
       onPageSearchChange={setPageSearch}
     >
       {!explore && <InitialInterestDialog />}
       {!explore && (
-        <div className="relative mb-6 flex items-center">
-          <div className="min-w-0 flex-1">
-            <HeroHome />
-          </div>
-          <div className="relative hidden h-72 w-1/3 md:block">
-            <Image
-              src="/foto_paginaInicialCliente-v1.webp"
-              alt="Planeta com conexões do Wisen"
-              fill
-              sizes="33vw"
-              className="object-contain"
-            />
-          </div>
+        <div className="mb-7">
+          <HeroHome />
         </div>
       )}
       <AccountNotice />

@@ -198,6 +198,7 @@ export default function NovaRevisao({ areas = [], questoes = [], onStart, busy =
           </span>
           <button
             type="button"
+            data-wisen-hover="preserve"
             className={styles.primario}
             disabled={!selecionadas.length || busy}
             onClick={() => {

@@ -1,9 +1,9 @@
 .page {
-  --ink: #263b42;
-  --muted: #5d6d7e;
-  --surface: #fffefa;
-  --accent: #e8e191;
-  padding: 32px 32px 48px;
+  --ink: var(--color-wisen-titulo);
+  --muted: var(--color-wisen-texto-suave);
+  --surface: var(--color-wisen-card);
+  --accent: var(--color-wisen-destaque-suave);
+  padding: 28px clamp(16px, 2vw, 32px) 48px;
   color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
@@ -26,7 +26,7 @@
   margin-bottom: 28px;
 }
 .header h1 {
-  font-size: 34px;
+  font-size: clamp(30px, 2.8vw, 40px);
   font-weight: 600;
   letter-spacing: -1.2px;
   line-height: 1.2;
@@ -59,8 +59,8 @@
 }
 .panel {
   min-width: 0;
-  border: 1.5px solid var(--ink);
-  border-radius: 14px;
+  border: 1px solid var(--color-wisen-borda);
+  border-radius: 16px;
   background: var(--surface);
   padding: 0 20px 24px;
 }
@@ -530,9 +530,9 @@
   margin-bottom: 20px;
 }
 .stat {
-  border: 1.5px solid var(--ink);
-  border-radius: 14px;
-  background: var(--surface);
+  border: 1px solid #ebdd80;
+  border-radius: 16px;
+  background: #fbf7e5;
   padding: 0 20px 20px;
   min-width: 0;
 }
@@ -552,6 +552,18 @@
   color: var(--muted);
   flex-shrink: 0;
 }
+.statFlame {
+  width: 44px;
+  height: 48px;
+  flex-shrink: 0;
+  color: var(--color-wisen-titulo);
+}
+.statValue {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+}
 .statBody {
   display: flex;
   flex-direction: column;
@@ -559,6 +571,7 @@
   padding: 24px 0 16px;
 }
 .statBody strong {
+  color: #30466e;
   font-size: 38px;
   font-weight: 600;
   line-height: 1;
@@ -906,54 +919,71 @@
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  min-height: 152px;
+  min-height: 104px;
   margin-bottom: 24px;
-  padding: 32px;
+  padding: 24px;
   border-radius: 16px;
-  background: var(--ink);
-  color: var(--surface);
+  border: 1px solid var(--color-wisen-borda);
+  background: var(--surface);
+  color: var(--ink);
   text-decoration: none;
-  transition: opacity 180ms ease;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease;
 }
 .novaRevisaoConteudo {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
   min-width: 0;
 }
 .novaRevisaoIcone {
   display: grid;
   place-items: center;
-  flex: 0 0 76px;
-  width: 76px;
-  height: 76px;
-  border-radius: 50%;
-  background: var(--accent);
+  flex: 0 0 48px;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #fbf7e5;
   color: var(--ink);
 }
 .novaRevisaoPlus {
-  width: 44px;
-  height: 44px;
+  width: 22px;
+  height: 22px;
 }
 .novaRevisaoTexto {
   min-width: 0;
 }
 .novaRevisaoCard h2 {
-  font-size: 30px;
+  font-size: 20px;
   font-weight: 600;
   line-height: 1.2;
-  letter-spacing: -0.8px;
+  letter-spacing: -0.4px;
 }
 .novaRevisaoCard p {
-  margin-top: 8px;
-  color: #c8d5d8;
+  margin-top: 5px;
+  color: var(--muted);
   font-size: 14px;
   line-height: 1.6;
   max-width: 44ch;
 }
 .novaRevisaoSeta {
   flex-shrink: 0;
-  color: var(--accent);
+  color: currentColor;
+}
+.novaRevisaoAcao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  gap: 10px;
+  min-height: 40px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
 }
 .novaRevisaoCard:focus-visible {
   outline: 3px solid #587b96;
@@ -961,32 +991,34 @@
 }
 @media (hover: hover) and (pointer: fine) {
   .novaRevisaoCard:hover {
-    opacity: 0.85;
+    border-color: #d7bf4d;
+    background: #fffdf5;
   }
 }
 .novaRevisaoCard:active {
-  opacity: 0.75;
+  background: #fbf7e5;
 }
 @media (max-width: 767px) {
   .novaRevisaoCard {
-    min-height: 140px;
-    padding: 24px 20px;
+    min-height: 0;
+    flex-wrap: wrap;
+    padding: 20px;
     gap: 16px;
   }
   .novaRevisaoConteudo {
     gap: 14px;
   }
   .novaRevisaoIcone {
-    flex-basis: 56px;
-    width: 56px;
-    height: 56px;
+    flex-basis: 40px;
+    width: 40px;
+    height: 40px;
   }
   .novaRevisaoPlus {
-    width: 34px;
-    height: 34px;
+    width: 22px;
+    height: 22px;
   }
   .novaRevisaoCard h2 {
-    font-size: 24px;
+    font-size: 18px;
     letter-spacing: -0.5px;
   }
   .novaRevisaoCard p {
@@ -994,8 +1026,11 @@
     line-height: 1.5;
   }
   .novaRevisaoSeta {
-    width: 20px;
-    height: 20px;
+    width: 17px;
+    height: 17px;
+  }
+  .novaRevisaoAcao {
+    width: 100%;
   }
 }
 @media (max-width: 380px) {
@@ -1007,12 +1042,12 @@
     gap: 12px;
   }
   .novaRevisaoIcone {
-    flex-basis: 48px;
-    width: 48px;
-    height: 48px;
+    flex-basis: 40px;
+    width: 40px;
+    height: 40px;
   }
   .novaRevisaoCard h2 {
-    font-size: 21px;
+    font-size: 18px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

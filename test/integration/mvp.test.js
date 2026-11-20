@@ -307,6 +307,82 @@ test("análise estruturada cria evento, conceitos, relações e proveniência; c
   const updated = (await pool.query("SELECT * FROM events WHERE id=$1", [event.event_id])).rows[0];
   assert.equal(updated.curated, true);
   assert.equal(updated.title, "Título revisado");
+  const curation = () =>
+    app.inject({ url: "/api/admin/curation", headers: { cookie: adminCookie } });
+  const mutate = (payload) =>
+    app.inject({
+      method: "POST",
+      url: "/api/admin/actions",
+      headers: { cookie: adminCookie },
+      payload,
+    });
+  assert.equal((await app.inject({ url: "/api/admin/curation" })).statusCode, 401);
+  let queue = await curation();
+  assert.equal(queue.statusCode, 200, queue.body);
+  assert.ok(
+    queue
+      .json()
+      .events.find((item) => item.id === event.event_id)
+      .articles.some((item) => item.id === article.id),
+  );
+  const detached = await mutate({ action: "unassign", id: article.id });
+  assert.equal(detached.statusCode, 200, detached.body);
+  queue = await curation();
+  assert.ok(queue.json().unassociated.some((item) => item.id === article.id));
+  assert.equal(queue.json().events.find((item) => item.id === event.event_id).curated, false);
+  const moved = await mutate({ action: "move", id: article.id, targetId: event.event_id });
+  assert.equal(moved.statusCode, 200, moved.body);
+  queue = await curation();
+  assert.ok(!queue.json().unassociated.some((item) => item.id === article.id));
+  assert.equal(
+    queue
+      .json()
+      .events.find((item) => item.id === event.event_id)
+      .articles.filter((item) => item.id === article.id).length,
+    1,
+  );
+  await pool.query("UPDATE events SET topics=ARRAY['Juros','Política'] WHERE id=$1", [
+    event.event_id,
+  ]);
+  const edited = await mutate({
+    action: "event",
+    id: event.event_id,
+    title: "Título conferido",
+    summary: "Resumo conferido.",
+    category: "Economia",
+    reviewed: false,
+  });
+  assert.equal(edited.statusCode, 200, edited.body);
+  const pending = (
+    await pool.query("SELECT curated,topics FROM events WHERE id=$1", [event.event_id])
+  ).rows[0];
+  assert.equal(pending.curated, false);
+  assert.deepEqual(pending.topics, ["Economia", "Política"]);
+  const approved = await mutate({
+    action: "event",
+    id: event.event_id,
+    title: "Título conferido",
+    summary: "Resumo conferido.",
+    reviewed: true,
+  });
+  assert.equal(approved.statusCode, 200, approved.body);
+  assert.equal(
+    (await curation()).json().events.find((item) => item.id === event.event_id).curated,
+    true,
+  );
+  const target = (
+    await pool.query(
+      "INSERT INTO events(title,summary,status,curated) VALUES('Agrupamento de teste','Resumo de teste','processed',true) RETURNING id",
+    )
+  ).rows[0];
+  const merged = await mutate({ action: "merge", id: event.event_id, targetId: target.id });
+  assert.equal(merged.statusCode, 200, merged.body);
+  queue = await curation();
+  assert.ok(!queue.json().events.some((item) => item.id === event.event_id));
+  const combined = queue.json().events.find((item) => item.id === target.id);
+  assert.equal(combined.curated, false);
+  assert.ok(combined.articles.some((item) => item.id === article.id));
+
   const exported = await app.inject({
     url: "/api/admin/export/results?dataset=generation",
     headers: { cookie: adminCookie },

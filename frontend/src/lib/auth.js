@@ -1,6 +1,7 @@
 const adminRoutes = [
   "/paginaInicioAdm",
   "/paginaCuidadoriaEventosAdm",
+  "/paginaCuradoriaEventosAdm",
   "/paginaGestaoUsuariosAdm",
   "/paginaGestaoFonteAdm",
   "/paginaGestaoCategoriasAdm",

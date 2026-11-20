@@ -4,10 +4,12 @@ import { config, proxy } from "../../frontend/src/proxy.js";
 const adminRoutes = [
   "/paginaInicioAdm",
   "/paginaCuidadoriaEventosAdm",
+  "/paginaCuradoriaEventosAdm",
   "/paginaGestaoUsuariosAdm",
   "/paginaGestaoFonteAdm",
   "/paginaGestaoCategoriasAdm",
   "/paginaMonitorIa",
+  "/paginaPerfilAdm",
 ];
 
 function request(path) {

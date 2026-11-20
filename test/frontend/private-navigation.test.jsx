@@ -78,9 +78,9 @@ describe("navegação privada", () => {
       "bg-[#EBDD80]",
       "text-[#202D3A]",
     );
-    expect(screen.getAllByRole("link", { name: "Curadoria de eventos" })[0]).toHaveAttribute(
+    expect(screen.getAllByRole("link", { name: "Revisão de eventos" })[0]).toHaveAttribute(
       "href",
-      "/paginaCuidadoriaEventosAdm",
+      "/paginaCuradoriaEventosAdm",
     );
   });
 });

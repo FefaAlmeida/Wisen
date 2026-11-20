@@ -61,7 +61,7 @@ export default function Admin({ initial = "sources" }) {
       title={
         isCuration ? (
           <>
-            Curadoria de <span className="text-[#D7BF4D]">eventos e artigos.</span>
+            Revisão de <span className="text-[#D7BF4D]">eventos</span>
           </>
         ) : (
           "Administração"
@@ -76,7 +76,7 @@ export default function Admin({ initial = "sources" }) {
       active={
         {
           sources: "Gestão de fontes",
-          events: "Curadoria de eventos",
+          events: "Revisão de eventos",
           users: "Gestão de usuários",
           charges: "Monitor de IA",
           tasks: "Monitor de IA",

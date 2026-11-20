@@ -5,14 +5,14 @@ import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackg
 
 export function AdminLayout({ activeItem, children }) {
   return (
-    <div className="min-h-screen font-[family-name:var(--font-geist-sans)]">
+    <div className="min-h-screen bg-wisen-superficie font-[family-name:var(--font-geist-sans)]">
       <AdminSidebar activeItem={activeItem} />
-      <div className="relative isolate min-h-screen bg-[radial-gradient(ellipse_at_55%_0%,#E6EEF6_0%,#F1F3F6_65%,#F1F3F6_100%)] sm:ml-[128px] lg:ml-[220px]">
+      <div className="relative isolate min-h-screen bg-wisen-superficie sm:ml-[128px] lg:ml-[220px]">
         <ConnectionsBackground />
         <div className="relative z-10 pt-[60px]">
           <AdminTopBar />
           {children}
-          <Footer variant="admin" />
+          <Footer variant="admin" background="bg-wisen-superficie" />
         </div>
       </div>
     </div>

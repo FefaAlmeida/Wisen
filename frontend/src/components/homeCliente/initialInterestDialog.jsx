@@ -1,10 +1,12 @@
 "use client";
 
+import { ArrowRight, Check } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { InterestsCard } from "@/components/perfil/interestsCard";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogBody,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -155,29 +157,58 @@ export function InitialInterestDialog() {
         if (!nextOpen) eventDetails.cancel();
       }}
     >
-      <DialogContent
-        ref={dialogRef}
-        initialFocus={dialogRef}
-        showCloseButton={false}
-        className="flex h-[min(720px,calc(100dvh-2rem))] w-[calc(100%-2rem)] flex-col gap-0 overflow-hidden rounded-2xl bg-white p-0 text-wisen-titulo sm:max-w-3xl"
-      >
-        <DialogHeader className="shrink-0 gap-3 px-6 pt-6 pb-6 sm:px-10 sm:pt-8 [@media(max-height:600px)]:gap-2 [@media(max-height:600px)]:pt-4 [@media(max-height:600px)]:pb-3">
-          <p role="status" className="text-sm font-medium text-wisen-titulo/70">
-            Etapa {step + 1} de 2
-          </p>
-          <DialogTitle className="text-2xl leading-tight font-bold text-balance text-wisen-titulo sm:text-[28px] [@media(max-height:600px)]:text-xl">
-            {step === 0
-              ? "Quais assuntos interessam a você?"
-              : "Como você se sente ao ler sobre economia?"}
+      <DialogContent ref={dialogRef} initialFocus={dialogRef} showCloseButton={false} size="xl">
+        <DialogHeader eyebrow={null}>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-2 [@media(max-height:600px)]:mb-2">
+            <span className="text-[10px] font-semibold tracking-[0.12em] text-[#93A3BE] uppercase">
+              Wisen do seu jeito
+            </span>
+            <p
+              role="status"
+              className="rounded-full border border-[#E8DDA4] bg-[#FBF7E5] px-2.5 py-1 text-[11px] font-medium text-[#866D16]"
+            >
+              Etapa {step + 1} de 2
+            </p>
+          </div>
+          <DialogTitle className="max-w-xl">
+            {step === 0 ? (
+              <>
+                Quais assuntos <span className="text-[#B59B35]">interessam a você?</span>
+              </>
+            ) : (
+              <>
+                Como você se sente <span className="text-[#B59B35]">ao ler sobre economia?</span>
+              </>
+            )}
           </DialogTitle>
-          <DialogDescription className="max-w-prose text-sm leading-relaxed text-wisen-titulo/70">
+          <DialogDescription className="max-w-xl">
             {step === 0
-              ? "Escolha pelo menos 3 áreas para personalizar os conteúdos. Você pode alterar seus interesses depois no perfil."
-              : "Sua resposta ajusta a linguagem das explicações, sem testar seu conhecimento. Você também pode pular esta pergunta."}
+              ? "Escolha pelo menos 3 assuntos para encontrar conteúdos que combinam com você. Depois, você pode ajustar suas escolhas no perfil."
+              : "Vamos adaptar as explicações ao seu momento. Não é um teste e você pode pular esta pergunta."}
           </DialogDescription>
+          <ol
+            aria-label="Etapas da personalização"
+            className="mt-5 flex min-w-0 items-center gap-3 text-xs [@media(max-height:600px)]:mt-3"
+          >
+            {["Seus interesses", "Seu momento"].map((label, index) => (
+              <li
+                key={label}
+                aria-current={step === index ? "step" : undefined}
+                className={`flex min-w-0 flex-1 items-center gap-2 border-t-2 pt-3 ${step >= index ? "border-[#D7BF4D] text-[#526584]" : "border-[#E8EDF4] text-[#93A3BE]"}`}
+              >
+                <span
+                  aria-hidden="true"
+                  className={`flex size-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold ${step >= index ? "bg-[#F3E69A] text-[#526584]" : "bg-[#F1F3F6] text-[#93A3BE]"}`}
+                >
+                  {step > index ? <Check className="size-3" /> : index + 1}
+                </span>
+                <span className="min-w-0">{label}</span>
+              </li>
+            ))}
+          </ol>
         </DialogHeader>
 
-        <div className="min-h-0 flex-1 overflow-y-auto px-6 py-2 sm:px-10">
+        <DialogBody>
           {step === 0 ? (
             <InterestsCard
               categories={categories}
@@ -187,9 +218,11 @@ export function InitialInterestDialog() {
               showSaveControls={false}
               systemColors
               embedded
+              onboarding
+              saving={saving}
             />
           ) : (
-            <fieldset disabled={saving} className="space-y-4">
+            <fieldset disabled={saving} className="space-y-3">
               <legend className="sr-only">Sua familiaridade com economia</legend>
               {[
                 [
@@ -210,12 +243,12 @@ export function InitialInterestDialog() {
               ].map(([value, label, description]) => (
                 <label
                   key={value}
-                  className="flex min-h-24 cursor-pointer items-center gap-4 rounded-xl border border-wisen-borda px-5 py-4 text-wisen-titulo transition-colors hover:bg-wisen-superficie has-[:checked]:border-wisen-titulo has-[:checked]:bg-[#F3E69A]/25 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-wisen-titulo"
+                  className="flex min-h-20 min-w-0 cursor-pointer items-start gap-3 rounded-xl border border-wisen-borda bg-white px-4 py-4 text-wisen-titulo transition-colors hover:border-[#DCCA70] hover:bg-[#FBF7E5] has-[:checked]:border-[#DCCA70] has-[:checked]:bg-[#FBF5D9] has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-wisen-titulo"
                 >
                   <input
                     type="radio"
                     name="onboarding-familiarity"
-                    className="size-4 shrink-0 accent-wisen-titulo"
+                    className="mt-0.5 size-4 shrink-0 accent-wisen-titulo"
                     aria-label={label}
                     value={value}
                     checked={familiarity === value}
@@ -225,27 +258,28 @@ export function InitialInterestDialog() {
                     }}
                   />
                   <span className="flex flex-col gap-1">
-                    <span className="text-base font-medium">{label}</span>
-                    <span className="text-sm leading-relaxed text-wisen-titulo/70">
-                      {description}
-                    </span>
+                    <span className="text-sm font-medium">{label}</span>
+                    <span className="text-xs leading-5 text-[#7182A1]">{description}</span>
                   </span>
                 </label>
               ))}
             </fieldset>
           )}
-        </div>
+        </DialogBody>
 
         {error && (
-          <p role="alert" className="shrink-0 px-6 pt-3 text-sm text-red-600 sm:px-10">
+          <p
+            role="alert"
+            className="shrink-0 border-t border-red-100 bg-red-50 px-5 py-3 text-sm text-red-700 sm:px-8"
+          >
             {error}
           </p>
         )}
 
-        <DialogFooter className="mt-6 shrink-0 flex-row flex-wrap items-center gap-3 border-t border-wisen-borda px-6 py-5 sm:justify-between sm:px-10 sm:py-6 [@media(max-height:600px)]:mt-3 [@media(max-height:600px)]:py-3">
+        <DialogFooter className="flex-row items-center sm:justify-between">
           <p
             aria-live="polite"
-            className="w-full text-sm text-wisen-titulo/70 sm:w-auto [@media(max-height:600px)]:hidden"
+            className="w-full text-xs leading-5 text-[#7182A1] sm:w-auto [@media(max-height:600px)]:hidden"
           >
             {step === 0
               ? `${interests.length} ${interests.length === 1 ? "área selecionada" : "áreas selecionadas"} · mínimo de ${MINIMUM_INTERESTS}`
@@ -256,7 +290,7 @@ export function InitialInterestDialog() {
               <Button
                 type="button"
                 variant="ghost"
-                className="h-11 px-4 text-wisen-titulo"
+                className="h-11 px-3 text-sm text-[#7182A1] hover:bg-[#F1F3F6]"
                 disabled={saving}
                 onClick={() => {
                   setStep(0);
@@ -270,7 +304,7 @@ export function InitialInterestDialog() {
               <Button
                 type="button"
                 variant="ghost"
-                className="h-11 px-4 text-wisen-titulo"
+                className="h-11 px-3 text-sm text-[#7182A1] hover:bg-[#F1F3F6]"
                 disabled={saving}
                 aria-label="Pular esta etapa"
                 onClick={() => completeOnboarding(true)}
@@ -289,9 +323,10 @@ export function InitialInterestDialog() {
                   setError("");
                 } else completeOnboarding();
               }}
-              className="h-11 min-w-28 rounded-lg bg-[#F3E69A] px-5 font-semibold text-wisen-titulo hover:bg-[#EBDD80]"
+              className="h-11 min-w-28 rounded-xl bg-[#101A40] px-5 text-sm font-medium text-white hover:bg-[#30466E] disabled:bg-[#E8ECF3] disabled:text-[#93A3BE] disabled:opacity-100"
             >
               {saving ? "Salvando..." : step === 0 ? "Continuar" : "Concluir"}
+              {!saving && step === 0 && <ArrowRight aria-hidden="true" className="ml-1 size-4" />}
             </Button>
           </div>
         </DialogFooter>

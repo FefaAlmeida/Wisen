@@ -1,104 +1,147 @@
-import { Badge } from "@/components/ui/badge";
+﻿import { ArrowUpRight, Pause, Play, Rss } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 
-export default function TabelaFontes({ fontes, aoEditar, aoAlternarStatus }) {
+function SourceStatus({ active }) {
   return (
-    <div className="w-full overflow-x-auto">
-      <Table className="w-full min-w-[850px]">
-        <TableHeader>
-          <TableRow className="border-none bg-[#F1F5FA] hover:bg-[#F1F5FA]">
-            <TableHead className="h-12 pl-4 text-sm text-[#52617E]">Veículo</TableHead>
-            <TableHead className="text-sm text-[#52617E]">URL do feed RSS</TableHead>
-            <TableHead className="text-sm text-[#52617E]">Status</TableHead>
-            <TableHead className="text-sm text-[#52617E]">Última coleta</TableHead>
-            <TableHead className="text-sm text-[#52617E]">Frequência</TableHead>
-            <TableHead className="pr-4 text-right text-sm text-[#52617E]">Ações</TableHead>
-          </TableRow>
-        </TableHeader>
-
-        <TableBody>
-          {fontes.map((fonte) => (
-            <TableRow
-              key={fonte.id}
-              className="border-[#E8EDF4] transition-colors hover:bg-[#FBF7E5]"
-            >
-              <TableCell className="py-4 pl-4 font-semibold text-[#101A40]">{fonte.nome}</TableCell>
-
-              <TableCell className="max-w-[350px] truncate text-sm text-[#617398]">
-                {fonte.url}
-              </TableCell>
-
-              <TableCell>
-                <Badge
-                  className={`gap-2 rounded-full border-0 px-3 py-1 text-xs font-medium shadow-none ${
-                    fonte.ativo ? "bg-[#E9F8EE] text-[#217A4B]" : "bg-[#F0F3F8] text-[#607398]"
-                  }`}
-                >
-                  <span
-                    className={`h-2 w-2 rounded-full ${
-                      fonte.ativo ? "bg-[#24A65A]" : "bg-[#8494AC]"
-                    }`}
+    <span
+      className={`inline-flex items-center gap-2 text-xs font-medium ${active ? "text-emerald-700" : "text-[#8190A8]"}`}
+    >
+      <span
+        aria-hidden="true"
+        className={`size-1.5 rounded-full ${active ? "bg-emerald-500" : "bg-[#A7B3C5]"}`}
+      />
+      {active ? "Ativa" : "Pausada"}
+    </span>
+  );
+}
+function SourceName({ source, onEdit }) {
+  return (
+    <div className="flex min-w-0 items-center gap-3">
+      <span
+        aria-hidden="true"
+        className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#EEF2F8] text-[#526584]"
+      >
+        <Rss className="size-4" />
+      </span>
+      <div className="min-w-0">
+        <button
+          type="button"
+          onClick={() => onEdit(source)}
+          className="text-left text-sm font-medium text-wisen-titulo outline-none hover:underline focus-visible:underline"
+        >
+          {source.nome}
+        </button>
+        <p className="mt-1 max-w-sm break-all text-xs leading-5 text-[#7182A1]">{source.url}</p>
+      </div>
+    </div>
+  );
+}
+function SourceActions({ source, onEdit, onToggle, busy }) {
+  return (
+    <div className="flex flex-wrap items-center justify-end gap-1">
+      <Button
+        variant="ghost"
+        disabled={busy}
+        onClick={() => onEdit(source)}
+        aria-label={`Editar ${source.nome}`}
+        className="text-xs text-[#526584] hover:bg-wisen-admin-hover"
+      >
+        Gerenciar
+        <ArrowUpRight className="size-3.5" />
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon"
+        disabled={busy}
+        onClick={() => onToggle(source)}
+        aria-label={`${source.ativo ? "Pausar" : "Ativar"} ${source.nome}`}
+        className="size-8 text-[#7182A1] hover:bg-wisen-admin-hover"
+      >
+        {source.ativo ? <Pause className="size-3.5" /> : <Play className="size-3.5" />}
+      </Button>
+    </div>
+  );
+}
+export default function TabelaFontes({ fontes, aoEditar, aoAlternarStatus, busy }) {
+  if (!fontes.length)
+    return (
+      <div className="px-5 py-14 text-center">
+        <h3 className="text-sm font-medium text-wisen-titulo">Nenhuma fonte encontrada</h3>
+        <p className="mt-2 text-sm text-[#7182A1]">
+          Tente outro nome, endereço ou combinação de filtros.
+        </p>
+      </div>
+    );
+  return (
+    <div className="@container/sources min-w-0">
+      <div className="hidden overflow-x-auto @min-[48rem]/sources:block">
+        <table className="w-full text-left text-sm">
+          <caption className="sr-only">Fontes RSS cadastradas e configurações de coleta</caption>
+          <thead className="border-y border-[#E8EDF4] bg-[#FAFBFD]">
+            <tr className="text-[10px] font-semibold tracking-wider text-[#8190A8] uppercase">
+              <th scope="col" className="px-5 py-3">
+                Fonte
+              </th>
+              <th scope="col" className="px-4 py-3">
+                Status
+              </th>
+              <th scope="col" className="px-4 py-3">
+                Última coleta
+              </th>
+              <th scope="col" className="px-4 py-3">
+                Frequência
+              </th>
+              <th scope="col" className="px-5 py-3 text-right">
+                <span className="sr-only">Gerenciar fonte</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[#EDF0F5]">
+            {fontes.map((source) => (
+              <tr key={source.id} className="transition-colors hover:bg-wisen-admin-hover">
+                <td className="px-5 py-4">
+                  <SourceName source={source} onEdit={aoEditar} />
+                </td>
+                <td className="whitespace-nowrap px-4 py-4">
+                  <SourceStatus active={source.ativo} />
+                </td>
+                <td className="px-4 py-4 text-xs leading-5 tabular-nums text-[#7182A1]">
+                  {source.ultimaColeta}
+                </td>
+                <td className="px-4 py-4 text-xs text-[#7182A1]">{source.frequencia}</td>
+                <td className="px-5 py-4">
+                  <SourceActions
+                    source={source}
+                    onEdit={aoEditar}
+                    onToggle={aoAlternarStatus}
+                    busy={busy}
                   />
-                  {fonte.ativo ? "Ativo" : "Inativo"}
-                </Badge>
-              </TableCell>
-
-              <TableCell className="text-sm text-[#617398]">{fonte.ultimaColeta}</TableCell>
-
-              <TableCell className="text-sm text-[#617398]">{fonte.frequencia}</TableCell>
-
-              <TableCell>
-                <div className="flex justify-end gap-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    onClick={() => aoEditar(fonte)}
-                    aria-label={`Editar ${fonte.nome}`}
-                    className="h-9 w-9 rounded-lg border-[#DFE6F0] bg-white text-[#101A40] shadow-none transition-colors hover:bg-[#EBDD80]"
-                  >
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="h-4 w-4"
-                      aria-hidden="true"
-                    >
-                      <path d="M12 20h9M16 4l4 4-11 11-5 1 1-5L16 4Z" />
-                    </svg>
-                  </Button>
-
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    onClick={() => aoAlternarStatus(fonte.id)}
-                    aria-label={fonte.ativo ? "Pausar fonte" : "Ativar fonte"}
-                    className="h-9 w-9 rounded-lg border-[#DFE6F0] bg-white text-[#101A40] shadow-none transition-colors hover:bg-[#EBDD80]"
-                  >
-                    {fonte.ativo ? "Ⅱ" : "▶"}
-                  </Button>
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-
-      {fontes.length === 0 && (
-        <p className="py-10 text-center text-sm text-[#8392AD]">Nenhuma fonte encontrada.</p>
-      )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="divide-y divide-[#E8EDF4] border-t border-[#E8EDF4] @min-[48rem]/sources:hidden">
+        {fontes.map((source) => (
+          <article key={source.id} className="min-w-0 space-y-4 p-4 sm:p-5">
+            <SourceName source={source} onEdit={aoEditar} />
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+              <SourceStatus active={source.ativo} />
+              <span className="text-xs text-[#7182A1]">{source.frequencia}</span>
+            </div>
+            <p className="text-xs leading-5 text-[#7182A1]">Última coleta: {source.ultimaColeta}</p>
+            <div className="border-t border-[#E8EDF4] pt-3">
+              <SourceActions
+                source={source}
+                onEdit={aoEditar}
+                onToggle={aoAlternarStatus}
+                busy={busy}
+              />
+            </div>
+          </article>
+        ))}
+      </div>
     </div>
   );
 }

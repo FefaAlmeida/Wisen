@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 
 export function PersonalDataCard({
+  admin = false,
   name,
   email,
   avatarDataUrl,
@@ -98,7 +99,7 @@ export function PersonalDataCard({
                 onClick={() => photoInput.current?.click()}
                 disabled={loading || saving}
                 aria-label="Escolher foto de perfil"
-                className="absolute bottom-0 right-0 p-1.5 bg-[#E8E191] hover:bg-[#d8d181] text-[#2B333F] rounded-full border-2 border-white shadow-xs transition-colors cursor-pointer disabled:opacity-50"
+                className={`absolute bottom-0 right-0 p-1.5 bg-[#E8E191] ${admin ? "hover:bg-wisen-admin-hover" : "hover:bg-[#d8d181]"} text-[#2B333F] rounded-full border-2 border-white shadow-xs transition-colors cursor-pointer disabled:opacity-50`}
                 title="Alterar foto"
               >
                 <Camera className="w-3.5 h-3.5" />
@@ -166,7 +167,7 @@ export function PersonalDataCard({
             <Button
               type="submit"
               disabled={loading || saving}
-              className="bg-[#E8E191] hover:bg-[#d8d181] text-[#2B333F] font-semibold text-xs h-9 px-5 rounded-xl border-none shadow-none transition-colors disabled:opacity-50 cursor-pointer"
+              className={`bg-[#E8E191] ${admin ? "hover:bg-wisen-admin-hover" : "hover:bg-[#d8d181]"} text-[#2B333F] font-semibold text-xs h-9 px-5 rounded-xl border-none shadow-none transition-colors disabled:opacity-50 cursor-pointer`}
             >
               {saving ? (
                 <span className="flex items-center gap-2">

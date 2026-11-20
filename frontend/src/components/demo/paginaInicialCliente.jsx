@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Cpu, Landmark, Leaf, TrendingUp } from "lucide-react";
 import { BarraBusca } from "@/components/barraBusca";
 import { Footer } from "@/components/footer";
 import CardInteresse from "@/components/homeCliente/cardInteresse";
@@ -38,8 +37,7 @@ export default function Home() {
                 className="absolute inset-0"
                 style={{
                   maskImage: "linear-gradient(to right, transparent, black 20%, black 100%)",
-                  WebkitMaskImage:
-                    "linear-gradient(to right, transparent, black 20%, black 100%)",
+                  WebkitMaskImage: "linear-gradient(to right, transparent, black 20%, black 100%)",
                 }}
               >
                 <Image
@@ -121,12 +119,11 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              <div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 min-[56.25rem]:grid-cols-4">
                 <CardInteresse
                   imagem="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=500&q=80"
                   titulo="Economia"
                   porcentagem={38}
-                  icone={TrendingUp}
                   cor="#EBDD80"
                 />
 
@@ -134,7 +131,6 @@ export default function Home() {
                   imagem="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=500&q=80"
                   titulo="Meio ambiente"
                   porcentagem={27}
-                  icone={Leaf}
                   cor="#A7E0B8"
                 />
 
@@ -142,7 +138,6 @@ export default function Home() {
                   imagem="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=500&q=80"
                   titulo="Tecnologia"
                   porcentagem={22}
-                  icone={Cpu}
                   cor="#9CC8FF"
                 />
 
@@ -150,7 +145,6 @@ export default function Home() {
                   imagem="https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?auto=format&fit=crop&w=500&q=80"
                   titulo="Política"
                   porcentagem={13}
-                  icone={Landmark}
                   cor="#D8BCFF"
                 />
               </div>

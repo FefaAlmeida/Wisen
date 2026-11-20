@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { AdminPageHeader } from "@/components/admin/adminPageHeader";
 import { AdminSidebar } from "@/components/admin/adminSidebar";
 import { AdminTopBar } from "@/components/admin/adminTopBar";
 import { BarraBusca } from "@/components/barraBusca";
@@ -63,45 +64,38 @@ export function Frame({
   children,
 }) {
   return (
-    <div className="min-h-screen bg-[#F0F4F9] text-[#101A40]">
+    <div
+      className={`min-h-screen text-[#101A40] ${admin ? "bg-wisen-superficie" : "bg-[#F0F4F9]"}`}
+    >
       {admin ? <AdminSidebar activeItem={active} /> : <Sidebar activeItem={active} />}
       <main
-        className={`relative isolate min-h-screen px-5 pb-16 sm:ml-[128px] sm:px-8 lg:ml-[220px] ${
-          admin ? "pt-[60px]" : "pt-20 sm:pt-8"
+        className={`relative isolate min-h-screen min-w-0 sm:ml-[128px] lg:ml-[220px] ${
+          admin ? "px-4 pt-[88px] pb-12 sm:px-5 lg:px-7" : "px-5 pt-20 pb-16 sm:px-8 sm:pt-8"
         }`}
       >
         <ConnectionsBackground fadeTop={false} />
         {admin && <AdminTopBar />}
-        <div className="relative z-10 mx-auto max-w-6xl">
-          <header className="mb-8 flex items-center justify-between gap-4">
-            <div>
-              {admin && (
-                <p className="mb-2 text-[11px] font-semibold text-[#93A3BE]">ADMINISTRADOR</p>
-              )}
-              <h1
-                className={
-                  admin
-                    ? "text-[36px] leading-[1.05] font-medium tracking-tight sm:text-[44px]"
-                    : "text-3xl font-semibold tracking-tight"
-                }
-              >
-                {title}
-              </h1>
-              {description && (
-                <p className="mt-3 max-w-[650px] text-[15px] leading-6 text-[#7183A6]">
-                  {description}
-                </p>
-              )}
-            </div>
-            {!admin && (
+        <div className={`relative z-10 mx-auto ${admin ? "max-w-[1600px]" : "max-w-6xl"}`}>
+          {admin ? (
+            <AdminPageHeader title={title} description={description} className="mb-7" />
+          ) : (
+            <header className="mb-8 flex items-center justify-between gap-4">
+              <div className="min-w-0">
+                <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
+                {description && (
+                  <p className="mt-3 max-w-[650px] text-[15px] leading-6 text-[#7183A6]">
+                    {description}
+                  </p>
+                )}
+              </div>
               <div className="flex shrink-0 items-center gap-3">
                 <div className="hidden w-56 xl:block">
                   <BarraBusca value={pageSearch} onQueryChange={onPageSearchChange} />
                 </div>
                 <MenuPerfil />
               </div>
-            )}
-          </header>
+            </header>
+          )}
           {children}
         </div>
       </main>

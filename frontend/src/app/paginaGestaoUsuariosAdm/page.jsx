@@ -1,9 +1,11 @@
 import Demo from "@/components/demo/deferred/paginaGestaoUsuariosAdm";
 import DemoPage from "@/components/demo/page";
-import Admin from "@/components/platform/admin";
+import PaginaGestaoUsuarios from "@/components/demo/paginaGestaoUsuariosAdm";
+
+export const metadata = { title: "Gestão de usuários | Wisen" };
 
 function LivePage() {
-  return <Admin initial="users" />;
+  return <PaginaGestaoUsuarios demo={false} />;
 }
 
 export default function Page() {

@@ -1,9 +1,11 @@
 import Demo from "@/components/demo/deferred/paginaGestaoFonteAdm";
 import DemoPage from "@/components/demo/page";
-import Admin from "@/components/platform/admin";
+import PaginaFontes from "@/components/demo/paginaGestaoFonteAdm";
+
+export const metadata = { title: "Gestão de fontes | Wisen" };
 
 function LivePage() {
-  return <Admin initial="sources" />;
+  return <PaginaFontes demo={false} />;
 }
 
 export default function Page() {

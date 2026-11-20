@@ -7,8 +7,11 @@ import { useEffect, useRef, useState } from "react";
 import { useDemoMode } from "@/components/demo/mode";
 import {
   Dialog,
-  DialogClose,
+  DialogBody,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -164,141 +167,153 @@ export function BarraBusca({ onQueryChange, value }) {
         <span>Buscar no Wisen</span>
       </DialogTrigger>
       <DialogContent
+        size="wide"
         className={styles.dialog}
-        showCloseButton={false}
+        closeLabel="Fechar busca"
         initialFocus={inputRef}
         finalFocus={triggerRef}
       >
-        <DialogClose className={styles.close} aria-label="Fechar busca">
-          <X size={19} />
-        </DialogClose>
-        <DialogTitle className={styles.title}>O que você quer entender hoje?</DialogTitle>
-        <search>
-          <div className={styles.field}>
-            <Search size={22} aria-hidden="true" />
-            <input
-              ref={inputRef}
-              type="search"
-              aria-label="Buscar no Wisen"
-              placeholder="Qual notícia ou conceito você está procurando?"
-              value={query}
-              maxLength={200}
-              autoComplete="off"
-              spellCheck={false}
-              onChange={(event) => changeQuery(event.target.value)}
-              onKeyDown={navigateResults}
-            />
-            {query && (
-              <button
-                type="button"
-                aria-label="Limpar busca"
-                onClick={() => {
-                  changeQuery("");
-                  inputRef.current?.focus();
-                }}
-              >
-                <X size={18} />
-              </button>
-            )}
-          </div>
-          <fieldset className={styles.filters} aria-label="Tipos de conteúdo">
-            {filters.map((label) => (
-              <button
-                key={label}
-                type="button"
-                aria-pressed={filter === label}
-                onClick={() => setFilter(label)}
-              >
-                {label}
-              </button>
-            ))}
-          </fieldset>
-          <div className={styles.resultsHeading}>
-            <h3>{term ? "Resultados" : "Conteúdos recentes"}</h3>
-            <span role="status" aria-live="polite">
-              {loading
-                ? "Buscando…"
-                : error
-                  ? "Não foi possível carregar"
-                  : needsMore
-                    ? "Digite pelo menos 2 caracteres"
-                    : term
-                      ? `${items.length} ${items.length === 1 ? "resultado encontrado" : "resultados encontrados"}`
-                      : ""}
-            </span>
-          </div>
-          <div
-            ref={resultsRef}
-            className={term ? styles.results : styles.suggestions}
-            aria-busy={loading}
-          >
-            {!loading &&
-              !error &&
-              !needsMore &&
-              visibleItems.map((item) => (
-                <Link
-                  key={`${item.type}-${item.id}`}
-                  href={item.href}
-                  className={styles.result}
-                  onKeyDown={navigateResults}
-                  onClick={() => setOpen(false)}
-                >
-                  {item.image ? (
-                    <Image
-                      src={item.image}
-                      alt=""
-                      width={540}
-                      height={240}
-                      className={styles.photo}
-                    />
-                  ) : (
-                    <div className={styles.paper}>
-                      <BookOpen size={28} aria-hidden="true" />
-                      <span>{item.summary || item.title}</span>
-                    </div>
-                  )}
-                  <div className={styles.copy}>
-                    <div className={styles.meta}>
-                      <span>
-                        {item.type === "Notícias"
-                          ? "Notícia"
-                          : item.type === "Conceitos"
-                            ? "Conceito"
-                            : "Artigo"}
-                      </span>
-                      <span>
-                        {item.category ||
-                          (item.updated_at
-                            ? new Date(item.updated_at).toLocaleDateString("pt-BR")
-                            : "Wisen")}
-                      </span>
-                    </div>
-                    <h4>{item.title}</h4>
-                    {term && item.summary && <p>{item.summary}</p>}
-                  </div>
-                  <ArrowUpRight size={18} className={styles.arrow} aria-hidden="true" />
-                </Link>
-              ))}
-          </div>
-          {!loading && (error || (!visibleItems.length && !needsMore)) && (
-            <div className={styles.empty}>
-              <SearchX size={28} aria-hidden="true" />
-              <h3>{error ? "Não foi possível buscar agora." : "Nenhum conteúdo encontrado."}</h3>
-              <p>{error || "Tente outra palavra ou escolha um tipo diferente."}</p>
-              <button
-                type="button"
-                onClick={() => {
-                  if (error) setRetry((count) => count + 1);
-                  else {
+        <search className="flex min-h-0 min-w-0 flex-col overflow-hidden">
+          <DialogHeader eyebrow="Busca no Wisen">
+            <DialogTitle>
+              O que você quer <span className="text-[#B59B35]">entender hoje?</span>
+            </DialogTitle>
+            <DialogDescription>
+              Encontre notícias, artigos e conceitos para continuar aprendendo.
+            </DialogDescription>
+            <div className={styles.field}>
+              <Search size={22} aria-hidden="true" />
+              <input
+                ref={inputRef}
+                type="search"
+                aria-label="Buscar no Wisen"
+                placeholder="Qual notícia ou conceito você está procurando?"
+                value={query}
+                maxLength={200}
+                autoComplete="off"
+                spellCheck={false}
+                onChange={(event) => changeQuery(event.target.value)}
+                onKeyDown={navigateResults}
+              />
+              {query && (
+                <button
+                  type="button"
+                  aria-label="Limpar busca"
+                  onClick={() => {
                     changeQuery("");
-                    setFilter("Todos");
-                  }
-                }}
-              >
-                {error ? "Tentar novamente" : "Limpar busca e filtros"}
-              </button>
+                    inputRef.current?.focus();
+                  }}
+                >
+                  <X size={18} />
+                </button>
+              )}
             </div>
-          )}
+          </DialogHeader>
+          <DialogBody>
+            <fieldset className={styles.filters} aria-label="Tipos de conteúdo">
+              {filters.map((label) => (
+                <button
+                  key={label}
+                  type="button"
+                  aria-pressed={filter === label}
+                  onClick={() => setFilter(label)}
+                >
+                  {label}
+                </button>
+              ))}
+            </fieldset>
+            <div className={styles.resultsHeading}>
+              <h3>{term ? "Resultados" : "Conteúdos recentes"}</h3>
+              <span role="status" aria-live="polite">
+                {loading
+                  ? "Buscando…"
+                  : error
+                    ? "Não foi possível carregar"
+                    : needsMore
+                      ? "Digite pelo menos 2 caracteres"
+                      : term
+                        ? `${items.length} ${items.length === 1 ? "resultado encontrado" : "resultados encontrados"}`
+                        : ""}
+              </span>
+            </div>
+            <div
+              ref={resultsRef}
+              className={term ? styles.results : styles.suggestions}
+              aria-busy={loading}
+            >
+              {!loading &&
+                !error &&
+                !needsMore &&
+                visibleItems.map((item) => (
+                  <Link
+                    key={`${item.type}-${item.id}`}
+                    href={item.href}
+                    className={styles.result}
+                    onKeyDown={navigateResults}
+                    onClick={() => setOpen(false)}
+                  >
+                    {item.image ? (
+                      <Image
+                        src={item.image}
+                        alt=""
+                        width={540}
+                        height={240}
+                        className={styles.photo}
+                      />
+                    ) : (
+                      <div className={styles.paper}>
+                        <BookOpen size={28} aria-hidden="true" />
+                        <span>{item.summary || item.title}</span>
+                      </div>
+                    )}
+                    <div className={styles.copy}>
+                      <div className={styles.meta}>
+                        <span>
+                          {item.type === "Notícias"
+                            ? "Notícia"
+                            : item.type === "Conceitos"
+                              ? "Conceito"
+                              : "Artigo"}
+                        </span>
+                        <span>
+                          {item.category ||
+                            (item.updated_at
+                              ? new Date(item.updated_at).toLocaleDateString("pt-BR")
+                              : "Wisen")}
+                        </span>
+                      </div>
+                      <h4>{item.title}</h4>
+                      {term && item.summary && <p>{item.summary}</p>}
+                    </div>
+                    <ArrowUpRight size={18} className={styles.arrow} aria-hidden="true" />
+                  </Link>
+                ))}
+            </div>
+            {!loading && (error || (!visibleItems.length && !needsMore)) && (
+              <div className={styles.empty}>
+                <SearchX size={28} aria-hidden="true" />
+                <h3>{error ? "Não foi possível buscar agora." : "Nenhum conteúdo encontrado."}</h3>
+                <p>{error || "Tente outra palavra ou escolha um tipo diferente."}</p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (error) setRetry((count) => count + 1);
+                    else {
+                      changeQuery("");
+                      setFilter("Todos");
+                    }
+                  }}
+                >
+                  {error ? "Tentar novamente" : "Limpar busca e filtros"}
+                </button>
+              </div>
+            )}
+          </DialogBody>
+          <DialogFooter showCloseButton className="sm:justify-between">
+            <span className="text-xs leading-5 text-[#7182A1]">
+              Use ↑ ↓ para navegar e Enter para abrir.
+            </span>
+          </DialogFooter>
         </search>
       </DialogContent>
     </Dialog>

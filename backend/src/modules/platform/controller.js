@@ -237,6 +237,24 @@ export function platformController(app, pool, boss, config) {
       )
     ).rows[0],
   }));
+  app.get("/api/admin/curation", admin, async () => ({
+    events: (
+      await pool.query(`
+      SELECT e.id,e.title,e.summary,e.topics,e.curated,e.started_at,
+        COALESCE((SELECT jsonb_agg(jsonb_build_object('id',a.id,'title',a.title,'url',a.url,'published_at',a.published_at,'source',s.name) ORDER BY a.published_at DESC NULLS LAST,a.id)
+          FROM event_articles ea JOIN articles a ON a.id=ea.article_id JOIN sources s ON s.id=a.source_id WHERE ea.event_id=e.id),'[]'::jsonb) articles
+      FROM events e WHERE e.lifecycle_status='active' ORDER BY e.curated,e.updated_at DESC
+    `)
+    ).rows,
+    unassociated: (
+      await pool.query(`
+      SELECT a.id,a.title,a.url,a.published_at,s.name source
+      FROM articles a JOIN sources s ON s.id=a.source_id
+      WHERE NOT EXISTS(SELECT 1 FROM event_articles ea WHERE ea.article_id=a.id)
+      ORDER BY a.published_at DESC NULLS LAST,a.id
+    `)
+    ).rows,
+  }));
   const lists = {
     sources: "SELECT * FROM sources ORDER BY name",
     articles:
@@ -246,7 +264,7 @@ export function platformController(app, pool, boss, config) {
       "SELECT c.*,COALESCE((SELECT jsonb_agg(alias) FROM concept_aliases WHERE concept_id=c.id),'[]') aliases FROM concepts c ORDER BY name LIMIT 100",
     entities: "SELECT * FROM entities ORDER BY name LIMIT 100",
     users:
-      "SELECT id,name,email,role,active,email_verified_at,generation_limit FROM users ORDER BY created_at DESC LIMIT 100",
+      "SELECT id,name,email,role,active,email_verified_at,generation_limit,created_at FROM users ORDER BY created_at DESC LIMIT 100",
     tasks:
       "SELECT id,operation,status,error,created_at FROM generation_tasks ORDER BY created_at DESC LIMIT 100",
     charges:
@@ -281,9 +299,12 @@ export function platformController(app, pool, boss, config) {
       id,
       title: z.string().min(1).max(300),
       summary: z.string().min(1).max(10000),
+      category: z.string().trim().min(1).max(120).optional(),
+      reviewed: z.boolean().optional(),
     }),
     z.object({ action: z.literal("merge"), id, targetId: id }),
     z.object({ action: z.literal("move"), id, targetId: id.nullable() }),
+    z.object({ action: z.literal("unassign"), id }),
     z.object({
       action: z.literal("relation"),
       id,
@@ -314,6 +335,7 @@ export function platformController(app, pool, boss, config) {
         event: "events",
         merge: "events",
         move: "articles",
+        unassign: "articles",
         relation: "concepts",
         retry: "generation_tasks",
         reconcile: "generation_charges",
@@ -372,8 +394,8 @@ export function platformController(app, pool, boss, config) {
       }
       if (b.action === "event")
         await c.query(
-          "UPDATE events SET title=$2,summary=$3,curated=true,version=version+1,updated_at=now() WHERE id=$1",
-          [b.id, b.title, b.summary],
+          "UPDATE events SET title=$2,summary=$3,topics=CASE WHEN $4::text IS NULL THEN topics ELSE ARRAY[$4::text] || array_remove(topics[2:],$4::text) END,curated=COALESCE($5,true),version=version+1,updated_at=now() WHERE id=$1",
+          [b.id, b.title, b.summary, b.category ?? null, b.reviewed ?? null],
         );
       if (b.action === "merge") {
         if (b.id === b.targetId)
@@ -400,7 +422,7 @@ export function platformController(app, pool, boss, config) {
           [b.id],
         );
         await c.query(
-          "UPDATE events SET curated=true,version=version+1,updated_at=now() WHERE id=$1",
+          "UPDATE events SET curated=false,version=version+1,updated_at=now() WHERE id=$1",
           [b.targetId],
         );
       }
@@ -423,12 +445,24 @@ export function platformController(app, pool, boss, config) {
         )
           throw missing();
         await c.query(
+          "UPDATE events SET curated=false,updated_at=now() WHERE id=$1 OR id IN (SELECT event_id FROM event_articles WHERE article_id=$2)",
+          [target, b.id],
+        );
+        await c.query(
           "INSERT INTO event_articles(article_id,event_id) VALUES($1,$2) ON CONFLICT(article_id) DO UPDATE SET event_id=excluded.event_id",
           [b.id, target],
         );
         await c.query("UPDATE articles SET curated=true WHERE id=$1", [b.id]);
       }
-      if (["move", "merge", "article", "reprocess"].includes(b.action)) {
+      if (b.action === "unassign") {
+        await c.query(
+          "UPDATE events SET curated=false,updated_at=now() WHERE id IN (SELECT event_id FROM event_articles WHERE article_id=$1)",
+          [b.id],
+        );
+        await c.query("DELETE FROM event_articles WHERE article_id=$1", [b.id]);
+        await c.query("UPDATE articles SET curated=true WHERE id=$1", [b.id]);
+      }
+      if (["move", "unassign", "merge", "article", "reprocess"].includes(b.action)) {
         await c.query("DELETE FROM event_concepts WHERE method <> 'manual'");
         await c.query(
           "INSERT INTO event_concepts(event_id,concept_id,source_type,source_id,method,model,confidence) SELECT DISTINCT ON(ea.event_id,ac.concept_id) ea.event_id,ac.concept_id,ac.source_type,ac.source_id,ac.method,ac.model,ac.confidence FROM event_articles ea JOIN articles a ON a.id=ea.article_id AND a.visible JOIN article_concepts ac ON ac.article_id=a.id ORDER BY ea.event_id,ac.concept_id,ac.created_at DESC ON CONFLICT DO NOTHING",

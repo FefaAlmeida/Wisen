@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Switch } from "@/components/ui/switch";
 
 export function NotificationsCard({
+  admin = false,
   notifications,
   onChange,
   onSave,
@@ -80,7 +81,7 @@ export function NotificationsCard({
             type="button"
             onClick={onSave}
             disabled={!hasChanges || saving}
-            className="h-8 rounded-lg bg-[#E8E191] px-4 text-xs font-semibold text-[#2B333F] hover:bg-[#d8d181]"
+            className={`h-8 rounded-lg bg-[#E8E191] px-4 text-xs font-semibold text-[#2B333F] ${admin ? "hover:bg-wisen-admin-hover" : "hover:bg-[#d8d181]"}`}
           >
             {saving ? "Salvando..." : "Salvar notificações"}
           </Button>

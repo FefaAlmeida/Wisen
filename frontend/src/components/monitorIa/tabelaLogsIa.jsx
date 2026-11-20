@@ -90,7 +90,7 @@ export function TabelaLogsIa() {
 
           <button
             type="button"
-            className="flex shrink-0 cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-[#FBF7E5]"
+            className="flex shrink-0 cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-wisen-admin-hover"
           >
             <Filter className="w-3.5 h-3.5 text-slate-500" />
             <span>Filtros</span>
@@ -118,7 +118,7 @@ export function TabelaLogsIa() {
             {logs.map((item) => (
               <tr
                 key={`${item.dataHora}-${item.modelo}`}
-                className="transition-colors hover:bg-[#FBF7E5]"
+                className="transition-colors hover:bg-wisen-admin-hover"
               >
                 <td className="py-3.5 px-2 text-slate-500 font-medium whitespace-nowrap">
                   {item.dataHora}
@@ -163,7 +163,7 @@ export function TabelaLogsIa() {
                 <td className="py-3.5 px-2 text-right whitespace-nowrap">
                   <button
                     type="button"
-                    className="cursor-pointer rounded-lg p-1 text-slate-500 transition-colors hover:bg-[#EBDD80] hover:text-[#2B333F]"
+                    className="cursor-pointer rounded-lg p-1 text-slate-500 transition-colors hover:bg-wisen-admin-hover hover:text-[#2B333F]"
                   >
                     <MoreVertical className="w-4 h-4" />
                   </button>
@@ -181,38 +181,38 @@ export function TabelaLogsIa() {
         <div className="flex items-center gap-1">
           <button
             type="button"
-            className="cursor-pointer rounded-lg border border-slate-200 p-1.5 text-slate-500 transition-colors hover:bg-[#FBF7E5]"
+            className="cursor-pointer rounded-lg border border-slate-200 p-1.5 text-slate-500 transition-colors hover:bg-wisen-admin-hover"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
 
           <button
             type="button"
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-[#EBDD80] text-sm font-semibold text-[#202D3A]"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-wisen-admin-hover text-sm font-semibold text-[#202D3A]"
           >
             1
           </button>
           <button
             type="button"
-            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-sm font-medium text-slate-600 transition-colors hover:bg-[#EBDD80]"
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-sm font-medium text-slate-600 transition-colors hover:bg-wisen-admin-hover"
           >
             2
           </button>
           <button
             type="button"
-            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-sm font-medium text-slate-600 transition-colors hover:bg-[#EBDD80]"
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-sm font-medium text-slate-600 transition-colors hover:bg-wisen-admin-hover"
           >
             3
           </button>
           <button
             type="button"
-            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-sm font-medium text-slate-600 transition-colors hover:bg-[#EBDD80]"
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-sm font-medium text-slate-600 transition-colors hover:bg-wisen-admin-hover"
           >
             4
           </button>
           <button
             type="button"
-            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-sm font-medium text-slate-600 transition-colors hover:bg-[#EBDD80]"
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-sm font-medium text-slate-600 transition-colors hover:bg-wisen-admin-hover"
           >
             5
           </button>
@@ -221,14 +221,14 @@ export function TabelaLogsIa() {
 
           <button
             type="button"
-            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-sm font-medium text-slate-600 transition-colors hover:bg-[#EBDD80]"
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-sm font-medium text-slate-600 transition-colors hover:bg-wisen-admin-hover"
           >
             250
           </button>
 
           <button
             type="button"
-            className="cursor-pointer rounded-lg border border-slate-200 p-1.5 text-slate-600 transition-colors hover:bg-[#FBF7E5]"
+            className="cursor-pointer rounded-lg border border-slate-200 p-1.5 text-slate-600 transition-colors hover:bg-wisen-admin-hover"
           >
             <ChevronRight className="w-4 h-4" />
           </button>

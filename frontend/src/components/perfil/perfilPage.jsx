@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { AdminPageHeader } from "@/components/admin/adminPageHeader";
 import { Footer } from "@/components/footer";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
 import MenuPerfil from "@/components/homeCliente/menuPerfil";
@@ -162,8 +163,16 @@ export default function PerfilPage({ admin = false } = {}) {
   }
 
   const profileContent = (
-    <div className="space-y-8 px-4 pb-12 pt-8 sm:px-5 lg:px-7">
-      <ProfileHeader />
+    <div className={`px-4 pb-12 sm:px-5 lg:px-7 ${admin ? "space-y-7 pt-7" : "space-y-8 pt-8"}`}>
+      {admin ? (
+        <AdminPageHeader
+          title="Meu"
+          highlight="perfil."
+          description="Gerencie suas informações, preferências e configurações da conta."
+        />
+      ) : (
+        <ProfileHeader />
+      )}
       {loadError && (
         <div role="alert" className="rounded-lg bg-red-50 p-4 text-sm text-red-700">
           <p>{loadError}</p>
@@ -180,6 +189,7 @@ export default function PerfilPage({ admin = false } = {}) {
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <PersonalDataCard
+          admin={admin}
           name={profile.name}
           email={profile.email}
           avatarDataUrl={profile.avatarDataUrl}
@@ -192,6 +202,7 @@ export default function PerfilPage({ admin = false } = {}) {
           feedback={feedback}
         />
         <InterestsCard
+          admin={admin}
           categories={interestCategories}
           interests={profile.interests}
           onToggle={toggleInterest}
@@ -202,6 +213,7 @@ export default function PerfilPage({ admin = false } = {}) {
           feedback={interestsFeedback}
         />
         <NotificationsCard
+          admin={admin}
           notifications={profile.notifications}
           onChange={updateNotification}
           onSave={saveNotifications}
@@ -209,7 +221,7 @@ export default function PerfilPage({ admin = false } = {}) {
           hasChanges={notificationsChanged}
           feedback={notificationsFeedback}
         />
-        <SecurityCard />
+        <SecurityCard admin={admin} />
       </div>
     </div>
   );

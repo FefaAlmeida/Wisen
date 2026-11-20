@@ -73,22 +73,24 @@ export function CartoesMetricasAdm({ counts } = {}) {
       ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+    <div className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,180px),1fr))] gap-4">
       {metricas.map((item) => {
         const Icone = item.icone;
         return (
           <div
             key={item.titulo}
-            className="rounded-lg border border-[#EBDD80] bg-[#FBF7E5] p-4 shadow-xs transition-all hover:shadow-md"
+            className="min-w-0 rounded-lg border border-[#EBDD80] bg-[#FBF7E5] p-4 shadow-xs transition-all hover:shadow-md"
           >
-            <div className="flex items-center justify-between pb-3">
-              <span className="text-sm font-semibold text-[#526584]">{item.titulo}</span>
-              <div className="rounded-lg bg-[#2B333F] p-2 text-[#EBDD80]">
+            <div className="flex items-start justify-between gap-3 pb-3">
+              <span className="min-w-0 break-words text-sm font-semibold text-[#526584]">
+                {item.titulo}
+              </span>
+              <div className="shrink-0 rounded-lg bg-[#2B333F] p-2 text-[#EBDD80]">
                 <Icone className="h-5 w-5" />
               </div>
             </div>
 
-            <div className="flex items-baseline gap-2">
+            <div className="flex flex-wrap items-baseline gap-2">
               <span className="text-3xl font-bold text-wisen-titulo">{item.valor}</span>
               {item.variacao && (
                 <span className="rounded-full bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-600">

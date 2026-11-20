@@ -1,405 +1,324 @@
-"use client";
+﻿"use client";
 
+import { ChevronLeft, ChevronRight, History, Search, X } from "lucide-react";
 import { useState } from "react";
+import { AdminSummary } from "@/components/admin/adminSummary";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  dialogSecondaryAction,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { useAdminUsers } from "@/hooks/use-admin-users";
 import PainelUsuario from "./painelUsuario";
 import TabelaUsuarios from "./tabelaUsuarios";
 
-const usuariosIniciais = [
-  {
-    id: 1,
-    nome: "Mariana Costa",
-    iniciais: "MC",
-    email: "mariana.costa@email.com",
-    permissao: "Admin",
-    status: "Ativo",
-    dataCadastro: "12/08/2026",
-  },
-  {
-    id: 2,
-    nome: "João Silva",
-    iniciais: "JS",
-    email: "joao.silva@email.com",
-    permissao: "Usuário",
-    status: "Ativo",
-    dataCadastro: "10/08/2026",
-  },
-  {
-    id: 3,
-    nome: "Beatriz Almeida",
-    iniciais: "BA",
-    email: "beatriz.almeida@email.com",
-    permissao: "Usuário",
-    status: "Ativo",
-    dataCadastro: "05/08/2026",
-  },
-  {
-    id: 4,
-    nome: "Carlos Pereira",
-    iniciais: "CP",
-    email: "carlos.pereira@email.com",
-    permissao: "Usuário",
-    status: "Bloqueado",
-    dataCadastro: "28/07/2026",
-  },
-  {
-    id: 5,
-    nome: "Ana Clara Souza",
-    iniciais: "AS",
-    email: "ana.clara@email.com",
-    permissao: "Usuário",
-    status: "Ativo",
-    dataCadastro: "25/07/2026",
-  },
-  {
-    id: 6,
-    nome: "Rafael Ferreira",
-    iniciais: "RF",
-    email: "rafael.ferreira@email.com",
-    permissao: "Admin",
-    status: "Ativo",
-    dataCadastro: "18/07/2026",
-  },
-  {
-    id: 7,
-    nome: "Juliana Martins",
-    iniciais: "JM",
-    email: "juliana.martins@email.com",
-    permissao: "Usuário",
-    status: "Ativo",
-    dataCadastro: "14/07/2026",
-  },
-  {
-    id: 8,
-    nome: "Lucas Gomes",
-    iniciais: "LG",
-    email: "lucas.gomes@email.com",
-    permissao: "Usuário",
-    status: "Ativo",
-    dataCadastro: "10/07/2026",
-  },
-  {
-    id: 9,
-    nome: "Fernanda Lima",
-    iniciais: "FL",
-    email: "fernanda.lima@email.com",
-    permissao: "Usuário",
-    status: "Bloqueado",
-    dataCadastro: "05/07/2026",
-  },
-  {
-    id: 10,
-    nome: "Thiago Santos",
-    iniciais: "TS",
-    email: "thiago.santos@email.com",
-    permissao: "Usuário",
-    status: "Ativo",
-    dataCadastro: "02/07/2026",
-  },
-];
-
-const tamanhoPagina = 10;
-
-export default function GestaoUsuarios() {
-  const [usuarios, setUsuarios] = useState(usuariosIniciais);
-  const [permissaoFiltro, setPermissaoFiltro] = useState("todos");
-  const [statusFiltro, setStatusFiltro] = useState("todos");
-  const [dataFiltro, setDataFiltro] = useState("");
-  const [pagina, setPagina] = useState(1);
-  const [selecionados, setSelecionados] = useState([]);
-  const [usuarioSelecionado, setUsuarioSelecionado] = useState(null);
-  const [painelAberto, setPainelAberto] = useState(false);
-  const [historico, setHistorico] = useState([]);
-
-  const usuariosFiltrados = usuarios.filter((usuario) => {
-    const correspondePermissao =
-      permissaoFiltro === "todos" || usuario.permissao === permissaoFiltro;
-
-    const correspondeStatus = statusFiltro === "todos" || usuario.status === statusFiltro;
-
-    const correspondeData =
-      !dataFiltro || usuario.dataCadastro === dataFiltro.split("-").reverse().join("/");
-
-    return correspondePermissao && correspondeStatus && correspondeData;
-  });
-
-  const totalPaginas = Math.max(1, Math.ceil(usuariosFiltrados.length / tamanhoPagina));
-
-  const paginaAtual = Math.min(pagina, totalPaginas);
-  const inicio = (paginaAtual - 1) * tamanhoPagina;
-
-  const usuariosPagina = usuariosFiltrados.slice(inicio, inicio + tamanhoPagina);
-
-  function selecionarUsuario(id, marcado) {
-    setSelecionados((anteriores) =>
-      marcado ? [...new Set([...anteriores, id])] : anteriores.filter((item) => item !== id),
-    );
+const pageSize = 10;
+const control =
+  "h-9 w-full min-w-0 rounded-[10px] border border-wisen-borda bg-white/85 px-3 text-xs text-[#526584] outline-none transition-colors hover:bg-wisen-admin-hover focus-visible:ring-2 focus-visible:ring-[#D7BF4D]/40";
+const normalize = (value) =>
+  value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("pt-BR");
+export default function GestaoUsuarios({ demo = true }) {
+  const { users, history, loading, busy, error, reload, save } = useAdminUsers(demo);
+  const [query, setQuery] = useState("");
+  const [role, setRole] = useState("todos");
+  const [status, setStatus] = useState("todos");
+  const [date, setDate] = useState("");
+  const [page, setPage] = useState(1);
+  const [selected, setSelected] = useState(null);
+  const [panelOpen, setPanelOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [historyUser, setHistoryUser] = useState(null);
+  const [message, setMessage] = useState("");
+  const filtered = users.filter(
+    (user) =>
+      normalize(`${user.nome} ${user.email}`).includes(normalize(query)) &&
+      (role === "todos" || user.permissao === role) &&
+      (status === "todos" || user.status === status) &&
+      (!date || user.dataCadastro === date.split("-").reverse().join("/")),
+  );
+  const pages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const currentPage = Math.min(page, pages);
+  const start = (currentPage - 1) * pageSize;
+  const historyItems = historyUser
+    ? history.filter((entry) => entry.usuarioId === historyUser.id)
+    : history;
+  function openUser(user) {
+    setSelected(user);
+    setPanelOpen(true);
+    setMessage("");
   }
-
-  function selecionarTodos(marcado) {
-    const idsPagina = usuariosPagina.map((usuario) => usuario.id);
-
-    setSelecionados((anteriores) =>
-      marcado
-        ? [...new Set([...anteriores, ...idsPagina])]
-        : anteriores.filter((id) => !idsPagina.includes(id)),
-    );
+  function openHistory(user = null) {
+    setHistoryUser(user);
+    setPanelOpen(false);
+    setHistoryOpen(true);
   }
-
-  function abrirUsuario(usuario) {
-    setUsuarioSelecionado(usuario);
-    setPainelAberto(true);
+  function clearFilters() {
+    setQuery("");
+    setRole("todos");
+    setStatus("todos");
+    setDate("");
+    setPage(1);
   }
-
-  function salvarUsuario(id, alteracoes) {
-    const anterior = usuarios.find((usuario) => usuario.id === id);
-
-    if (!anterior) return;
-
-    const mudancas = [];
-
-    if (anterior.permissao !== alteracoes.permissao) {
-      mudancas.push(`Permissão: ${anterior.permissao} → ${alteracoes.permissao}`);
+  async function saveUser(id, values) {
+    if (await save(id, values)) {
+      setPanelOpen(false);
+      setSelected(null);
+      setMessage("Configurações da conta salvas.");
     }
-
-    if (anterior.status !== alteracoes.status) {
-      mudancas.push(`Status: ${anterior.status} → ${alteracoes.status}`);
-    }
-
-    setUsuarios((anteriores) =>
-      anteriores.map((usuario) => (usuario.id === id ? { ...usuario, ...alteracoes } : usuario)),
-    );
-
-    if (mudancas.length > 0) {
-      setHistorico((anteriores) => [
-        {
-          id: Date.now(),
-          usuario: anterior.nome,
-          descricao: mudancas.join(" | "),
-          data: new Date().toLocaleString("pt-BR"),
-        },
-        ...anteriores,
-      ]);
-    }
-
-    setPainelAberto(false);
-    setUsuarioSelecionado(null);
   }
-
   return (
-    <>
-      <Tabs defaultValue="usuarios" className="w-full gap-0">
-        <TabsList className="mb-4 h-12 w-full justify-start gap-2 rounded-none border-b border-[#DCE4EF] bg-transparent p-0">
-          <TabsTrigger
-            value="usuarios"
-            className="h-full rounded-none border-b-2 border-transparent px-6 text-[15px] text-[#7183A6] shadow-none transition-colors hover:bg-[#EBDD80] hover:text-[#101A40] data-[state=active]:border-[#EBDD80] data-[state=active]:bg-[#FBF7E5] data-[state=active]:font-semibold data-[state=active]:text-[#101A40] data-[state=active]:shadow-none"
+    <div className="min-w-0 space-y-7">
+      {message && (
+        <p
+          role="status"
+          className="rounded-xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-800"
+        >
+          {message}
+        </p>
+      )}
+      {error && !panelOpen && (
+        <div
+          role="alert"
+          className="rounded-xl border border-red-100 bg-red-50 p-4 text-sm text-red-800"
+        >
+          <p>{error}</p>
+          <Button onClick={() => reload()} variant="outline" className="mt-3">
+            Tentar novamente
+          </Button>
+        </div>
+      )}
+      <AdminSummary
+        title="Contas cadastradas"
+        description="Consulte os usuários da plataforma e gerencie o acesso de cada conta."
+        loading={loading}
+        items={[
+          `${users.length} contas`,
+          `${users.filter((user) => user.status === "Ativo").length} ativas`,
+          `${users.filter((user) => user.status === "Bloqueado").length} bloqueadas`,
+        ]}
+      />
+
+      <div className="min-w-0 space-y-3">
+        <div className="flex min-w-0 flex-wrap items-center gap-2">
+          <div className="relative min-w-0 w-full sm:w-[230px]">
+            <Search
+              aria-hidden="true"
+              className="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-[#8190A8]"
+            />
+            <Input
+              aria-label="Buscar usuários por nome ou e-mail"
+              placeholder="Buscar nome ou e-mail"
+              value={query}
+              onChange={(event) => {
+                setQuery(event.target.value);
+                setPage(1);
+              }}
+              className={`${control} pl-9`}
+            />
+          </div>
+          <select
+            aria-label="Filtrar por perfil"
+            className={`${control} sm:w-[170px]`}
+            value={role}
+            onChange={(event) => {
+              setRole(event.target.value);
+              setPage(1);
+            }}
           >
-            Usuários
-          </TabsTrigger>
-
-          <TabsTrigger
-            value="historico"
-            className="h-full rounded-none border-b-2 border-transparent px-6 text-[15px] text-[#7183A6] shadow-none transition-colors hover:bg-[#EBDD80] hover:text-[#101A40] data-[state=active]:border-[#EBDD80] data-[state=active]:bg-[#FBF7E5] data-[state=active]:font-semibold data-[state=active]:text-[#101A40] data-[state=active]:shadow-none"
+            <option value="todos">Todos os perfis</option>
+            <option value="Admin">Administradores</option>
+            <option value="Usuário">Usuários</option>
+          </select>
+          <select
+            aria-label="Filtrar por acesso"
+            className={`${control} sm:w-[165px]`}
+            value={status}
+            onChange={(event) => {
+              setStatus(event.target.value);
+              setPage(1);
+            }}
           >
-            Histórico de ações
-          </TabsTrigger>
-        </TabsList>
+            <option value="todos">Todos os acessos</option>
+            <option value="Ativo">Ativos</option>
+            <option value="Bloqueado">Bloqueados</option>
+          </select>
+          <Input
+            aria-label="Filtrar por data de cadastro"
+            type="date"
+            value={date}
+            onChange={(event) => {
+              setDate(event.target.value);
+              setPage(1);
+            }}
+            className={`${control} sm:w-[165px]`}
+          />
+          <Button
+            variant="outline"
+            onClick={clearFilters}
+            className="h-9 w-full gap-1.5 rounded-[10px] border-wisen-borda bg-white/85 px-3 text-xs font-normal text-[#607092] shadow-none hover:bg-wisen-admin-hover sm:w-auto"
+          >
+            <X aria-hidden="true" className="size-3.5" />
+            Limpar filtros
+          </Button>
+        </div>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p className="text-xs text-[#8290A8]">
+            {loading
+              ? "Carregando contas..."
+              : `${filtered.length} ${filtered.length === 1 ? "conta encontrada" : "contas encontradas"}`}
+          </p>
+          <Button
+            variant="outline"
+            onClick={() => openHistory()}
+            disabled={loading}
+            className="h-9 gap-1.5 rounded-[10px] border-wisen-borda bg-white/85 px-3 text-xs font-normal text-[#607092] shadow-none hover:bg-wisen-admin-hover"
+          >
+            <History aria-hidden="true" className="size-3.5" />
+            Histórico de alterações
+          </Button>
+        </div>
+      </div>
 
-        <TabsContent value="usuarios" className="mt-0">
-          <Card className="gap-0 rounded-lg border border-[#E3E9F1] bg-white p-0 shadow-none">
-            <CardContent className="p-4 md:p-5">
-              <div className="mb-5 flex flex-wrap items-center gap-3">
-                <Select
-                  value={permissaoFiltro}
-                  onValueChange={(valor) => {
-                    setPermissaoFiltro(valor);
-                    setPagina(1);
-                  }}
-                >
-                  <SelectTrigger
-                    data-filtered={permissaoFiltro !== "todos"}
-                    className="h-10 w-full rounded-lg border-[#DFE6F0] bg-white text-sm text-[#344469] shadow-none transition-colors hover:bg-[#EBDD80] focus:border-[#D7BF4D] focus:bg-[#EBDD80] focus-visible:ring-[#D7BF4D]/30 data-[filtered=true]:border-[#D7BF4D] data-[filtered=true]:bg-[#FBF7E5] data-[popup-open]:bg-[#EBDD80] sm:w-[185px]"
-                  >
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem
-                      value="todos"
-                      className="hover:bg-[#EBDD80] focus:bg-[#EBDD80] focus:text-[#101A40] data-[highlighted]:bg-[#EBDD80]"
-                    >
-                      Todas as permissões
-                    </SelectItem>
-                    <SelectItem
-                      value="Admin"
-                      className="hover:bg-[#EBDD80] focus:bg-[#EBDD80] focus:text-[#101A40] data-[highlighted]:bg-[#EBDD80]"
-                    >
-                      Administrador
-                    </SelectItem>
-                    <SelectItem
-                      value="Usuário"
-                      className="hover:bg-[#EBDD80] focus:bg-[#EBDD80] focus:text-[#101A40] data-[highlighted]:bg-[#EBDD80]"
-                    >
-                      Usuário
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-
-                <Select
-                  value={statusFiltro}
-                  onValueChange={(valor) => {
-                    setStatusFiltro(valor);
-                    setPagina(1);
-                  }}
-                >
-                  <SelectTrigger
-                    data-filtered={statusFiltro !== "todos"}
-                    className="h-10 w-full rounded-lg border-[#DFE6F0] bg-white text-sm text-[#344469] shadow-none transition-colors hover:bg-[#EBDD80] focus:border-[#D7BF4D] focus:bg-[#EBDD80] focus-visible:ring-[#D7BF4D]/30 data-[filtered=true]:border-[#D7BF4D] data-[filtered=true]:bg-[#FBF7E5] data-[popup-open]:bg-[#EBDD80] sm:w-[165px]"
-                  >
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem
-                      value="todos"
-                      className="hover:bg-[#EBDD80] focus:bg-[#EBDD80] focus:text-[#101A40] data-[highlighted]:bg-[#EBDD80]"
-                    >
-                      Todos os status
-                    </SelectItem>
-                    <SelectItem
-                      value="Ativo"
-                      className="hover:bg-[#EBDD80] focus:bg-[#EBDD80] focus:text-[#101A40] data-[highlighted]:bg-[#EBDD80]"
-                    >
-                      Ativo
-                    </SelectItem>
-                    <SelectItem
-                      value="Bloqueado"
-                      className="hover:bg-[#EBDD80] focus:bg-[#EBDD80] focus:text-[#101A40] data-[highlighted]:bg-[#EBDD80]"
-                    >
-                      Bloqueado
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-
-                <Input
-                  type="date"
-                  aria-label="Filtrar por data de cadastro"
-                  data-filtered={Boolean(dataFiltro)}
-                  value={dataFiltro}
-                  onChange={(evento) => {
-                    setDataFiltro(evento.target.value);
-                    setPagina(1);
-                  }}
-                  className="h-10 w-full rounded-lg border-[#DFE6F0] bg-white text-sm text-[#344469] shadow-none transition-colors hover:bg-[#EBDD80] focus:border-[#D7BF4D] focus:bg-[#EBDD80] focus-visible:ring-3 focus-visible:ring-[#D7BF4D]/30 data-[filtered=true]:border-[#D7BF4D] data-[filtered=true]:bg-[#FBF7E5] sm:w-[170px]"
-                />
-              </div>
-
-              {/* Tabela em largura total */}
-              <TabelaUsuarios
-                usuarios={usuariosPagina}
-                selecionados={selecionados}
-                aoSelecionar={selecionarUsuario}
-                aoSelecionarTodos={selecionarTodos}
-                aoAbrirUsuario={abrirUsuario}
-              />
-
-              {/* Paginação */}
-              <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-[#E8EDF4] pt-4">
-                <p className="text-sm text-[#7183A6]">
-                  {usuariosFiltrados.length === 0
-                    ? "Nenhum usuário encontrado"
-                    : `Mostrando ${inicio + 1}–${Math.min(
-                        inicio + tamanhoPagina,
-                        usuariosFiltrados.length,
-                      )} de ${usuariosFiltrados.length} usuários`}
-                </p>
-
-                <div className="flex items-center gap-1.5">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    disabled={paginaAtual === 1}
-                    onClick={() => setPagina(paginaAtual - 1)}
-                    className="h-9 w-9 rounded-full border-[#DFE6F0] transition-colors hover:bg-[#EBDD80]"
-                    aria-label="Página anterior"
-                  >
-                    ‹
-                  </Button>
-
-                  {Array.from({ length: totalPaginas }, (_, index) => index + 1).map((numero) => (
-                    <Button
-                      key={numero}
-                      variant={paginaAtual === numero ? "default" : "outline"}
-                      onClick={() => setPagina(numero)}
-                      className={`h-9 w-9 rounded-full p-0 text-sm transition-colors ${
-                        paginaAtual === numero
-                          ? "bg-[#EBDD80] text-[#202D3A] hover:bg-[#EBDD80]"
-                          : "border-[#DFE6F0] bg-white text-[#7183A6] hover:bg-[#EBDD80]"
-                      }`}
-                    >
-                      {numero}
-                    </Button>
-                  ))}
-
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    disabled={paginaAtual === totalPaginas}
-                    onClick={() => setPagina(paginaAtual + 1)}
-                    className="h-9 w-9 rounded-full border-[#DFE6F0] transition-colors hover:bg-[#EBDD80]"
-                    aria-label="Próxima página"
-                  >
-                    ›
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="historico" className="mt-0">
-          <Card className="gap-0 rounded-lg border border-[#E3E9F1] bg-white p-5 shadow-none">
-            <h2 className="text-[22px] font-semibold text-[#101A40]">Histórico de ações</h2>
-
-            <p className="mt-1 text-sm text-[#8192B2]">
-              Alterações realizadas nesta sessão de demonstração.
-            </p>
-
-            <div className="mt-5 divide-y divide-[#E8EDF4]">
-              {historico.length === 0 ? (
-                <p className="py-8 text-center text-sm text-[#8192B2]">
-                  Nenhuma alteração registrada nesta sessão.
-                </p>
-              ) : (
-                historico.map((registro) => (
-                  <div key={registro.id} className="flex flex-wrap justify-between gap-3 py-4">
-                    <div>
-                      <p className="text-sm font-semibold text-[#101A40]">{registro.usuario}</p>
-                      <p className="mt-1 text-sm text-[#7183A6]">{registro.descricao}</p>
+      <section
+        aria-label="Gestão de contas"
+        className="min-w-0 overflow-hidden rounded-2xl border border-wisen-borda bg-white shadow-2xs"
+      >
+        {loading ? (
+          <p
+            role="status"
+            className="border-t border-[#E8EDF4] p-8 text-center text-sm text-[#7182A1]"
+          >
+            Carregando usuários...
+          </p>
+        ) : (
+          <TabelaUsuarios
+            usuarios={filtered.slice(start, start + pageSize)}
+            aoAbrirUsuario={openUser}
+          />
+        )}
+        <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-[#E8EDF4] bg-[#FAFBFD] px-4 py-4 sm:px-5">
+          <p className="text-xs text-[#7182A1]">
+            {filtered.length
+              ? `Mostrando ${start + 1}–${Math.min(start + pageSize, filtered.length)} de ${filtered.length} contas`
+              : "Nenhuma conta nesta lista"}
+          </p>
+          <nav aria-label="Paginação de usuários" className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              aria-label="Página anterior"
+              disabled={loading || currentPage === 1}
+              onClick={() => setPage(currentPage - 1)}
+              className="size-8 border-wisen-borda text-[#526584] hover:bg-wisen-admin-hover"
+            >
+              <ChevronLeft className="size-4" />
+            </Button>
+            <span className="px-1 text-xs tabular-nums text-[#7182A1]">
+              {currentPage} de {pages}
+            </span>
+            <Button
+              variant="outline"
+              size="icon"
+              aria-label="Próxima página"
+              disabled={loading || currentPage === pages}
+              onClick={() => setPage(currentPage + 1)}
+              className="size-8 border-wisen-borda text-[#526584] hover:bg-wisen-admin-hover"
+            >
+              <ChevronRight className="size-4" />
+            </Button>
+          </nav>
+        </footer>
+      </section>
+      {demo && (
+        <p className="text-xs leading-5 text-[#7182A1]">
+          Contas fictícias de demonstração. As alterações e o histórico ficam salvos neste
+          navegador.
+        </p>
+      )}
+      <PainelUsuario
+        key={selected?.id ?? "none"}
+        usuario={selected}
+        aberto={panelOpen}
+        busy={busy}
+        error={error}
+        demo={demo}
+        aoFechar={() => {
+          if (!busy) setPanelOpen(false);
+        }}
+        aoSalvar={saveUser}
+        aoHistorico={openHistory}
+      />
+      <Dialog open={historyOpen} onOpenChange={setHistoryOpen}>
+        <DialogContent size="lg">
+          <DialogHeader eyebrow="Administração">
+            <DialogTitle>
+              {historyUser ? `Histórico de ${historyUser.nome}` : "Histórico de alterações"}
+            </DialogTitle>
+            <DialogDescription>
+              {demo
+                ? "Alterações realizadas nas contas de demonstração neste navegador."
+                : "Alterações de acesso e limites registradas pelos administradores."}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogBody>
+            <div className="min-w-0 divide-y divide-[#E8EDF4]">
+              {historyItems.length ? (
+                historyItems.map((entry) => (
+                  <article key={entry.id} className="space-y-2 py-4">
+                    <div className="flex flex-wrap items-start justify-between gap-2">
+                      <h3 className="text-sm font-medium text-wisen-titulo">{entry.usuario}</h3>
+                      <time className="text-xs text-[#8190A8]">{entry.data}</time>
                     </div>
-                    <span className="text-xs text-[#8192B2]">{registro.data}</span>
-                  </div>
+                    <p className="break-words text-sm leading-6 text-[#7182A1]">
+                      {entry.descricao}
+                    </p>
+                  </article>
                 ))
+              ) : (
+                <div className="py-9 text-center">
+                  <p className="text-sm font-medium text-wisen-titulo">
+                    Nenhuma alteração registrada
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-[#7182A1]">
+                    Ao salvar uma mudança de acesso ou configuração, ela aparecerá aqui.
+                  </p>
+                </div>
               )}
             </div>
-          </Card>
-        </TabsContent>
-      </Tabs>
-
-      <PainelUsuario
-        usuario={usuarioSelecionado}
-        aberto={painelAberto}
-        aoFechar={() => setPainelAberto(false)}
-        aoSalvar={salvarUsuario}
-      />
-    </>
+          </DialogBody>
+          <DialogFooter>
+            {historyUser && (
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setHistoryOpen(false);
+                  openUser(users.find((user) => user.id === historyUser.id) || historyUser);
+                }}
+                className={dialogSecondaryAction}
+              >
+                Voltar à conta
+              </Button>
+            )}
+            <Button
+              variant="outline"
+              onClick={() => setHistoryOpen(false)}
+              className={dialogSecondaryAction}
+            >
+              Fechar histórico
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 }

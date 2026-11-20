@@ -1,141 +1,133 @@
-import { Badge } from "@/components/ui/badge";
+﻿import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 
-export default function TabelaUsuarios({
-  usuarios,
-  selecionados,
-  aoSelecionar,
-  aoSelecionarTodos,
-  aoAbrirUsuario,
-}) {
-  const todosSelecionados =
-    usuarios.length > 0 && usuarios.every((usuario) => selecionados.includes(usuario.id));
-
+export function UserStatus({ status }) {
   return (
-    <div className="w-full overflow-x-auto">
-      <Table className="w-full min-w-[800px] text-sm">
-        <TableHeader>
-          <TableRow className="bg-[#F1F5FA] hover:bg-[#F1F5FA]">
-            <TableHead className="w-12 pl-4">
-              <Checkbox
-                checked={todosSelecionados}
-                onCheckedChange={(valor) => aoSelecionarTodos(Boolean(valor))}
-                aria-label="Selecionar todos os usuários da página"
-                className="transition-colors data-checked:border-[#D7BF4D] data-checked:bg-[#EBDD80] data-checked:text-[#101A40] focus-visible:ring-[#D7BF4D]/50"
-              />
-            </TableHead>
-
-            <TableHead className="text-sm text-[#344469]">Usuário</TableHead>
-
-            <TableHead className="text-sm text-[#344469]">E-mail</TableHead>
-
-            <TableHead className="text-sm text-[#344469]">Tipo de permissão</TableHead>
-
-            <TableHead className="text-sm text-[#344469]">Status</TableHead>
-
-            <TableHead className="text-sm text-[#344469]">Data de cadastro</TableHead>
-
-            <TableHead className="text-right text-sm text-[#344469]">Ações</TableHead>
-          </TableRow>
-        </TableHeader>
-
-        <TableBody>
-          {usuarios.map((usuario) => (
-            <TableRow
-              key={usuario.id}
-              className={`cursor-pointer border-[#E8EDF4] transition-colors hover:bg-[#EBDD80] ${
-                selecionados.includes(usuario.id) ? "bg-[#FBF7E5]" : ""
-              }`}
-              onClick={() => aoAbrirUsuario(usuario)}
-            >
-              <TableCell className="pl-4" onClick={(evento) => evento.stopPropagation()}>
-                <Checkbox
-                  checked={selecionados.includes(usuario.id)}
-                  onCheckedChange={(valor) => aoSelecionar(usuario.id, Boolean(valor))}
-                  aria-label={`Selecionar ${usuario.nome}`}
-                  className="transition-colors data-checked:border-[#D7BF4D] data-checked:bg-[#EBDD80] data-checked:text-[#101A40] focus-visible:ring-[#D7BF4D]/50"
-                />
-              </TableCell>
-
-              <TableCell>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#E7EEFB] text-sm font-semibold text-[#253B71]">
-                    {usuario.iniciais}
-                  </div>
-
-                  <span className="whitespace-nowrap text-[15px] font-semibold text-[#101A40]">
-                    {usuario.nome}
-                  </span>
-                </div>
-              </TableCell>
-
-              <TableCell className="text-sm text-[#7183A6]">{usuario.email}</TableCell>
-
-              <TableCell>
-                <Badge
-                  className={`rounded-full border-0 px-3 py-1 text-xs font-medium shadow-none ${
-                    usuario.permissao === "Admin"
-                      ? "bg-[#E7EEFC] text-[#30466E]"
-                      : "bg-[#FFF7DE] text-[#8B741D]"
-                  }`}
-                >
-                  {usuario.permissao}
-                </Badge>
-              </TableCell>
-
-              <TableCell>
-                <Badge
-                  className={`gap-2 rounded-full border-0 px-3 py-1 text-xs font-medium shadow-none ${
-                    usuario.status === "Ativo"
-                      ? "bg-[#E6F6ED] text-[#248554]"
-                      : "bg-[#FDEBED] text-[#C34048]"
-                  }`}
-                >
+    <span
+      className={`inline-flex items-center gap-2 text-xs font-medium ${status === "Ativo" ? "text-emerald-700" : "text-[#9B6266]"}`}
+    >
+      <span
+        aria-hidden="true"
+        className={`size-1.5 shrink-0 rounded-full ${status === "Ativo" ? "bg-emerald-500" : "bg-[#BF7B80]"}`}
+      />
+      {status}
+    </span>
+  );
+}
+function Account({ user, onOpen }) {
+  return (
+    <div className="flex min-w-0 items-center gap-3">
+      <span
+        aria-hidden="true"
+        className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#EEF2F8] text-xs font-medium text-[#526584]"
+      >
+        {user.iniciais}
+      </span>
+      <div className="min-w-0">
+        <button
+          type="button"
+          onClick={() => onOpen(user)}
+          className="text-left text-sm font-medium text-wisen-titulo outline-none hover:underline focus-visible:underline"
+        >
+          {user.nome}
+        </button>
+        <p className="mt-1 break-all text-xs text-[#7182A1]">{user.email}</p>
+      </div>
+    </div>
+  );
+}
+export default function TabelaUsuarios({ usuarios, aoAbrirUsuario }) {
+  if (!usuarios.length)
+    return (
+      <div className="px-5 py-14 text-center">
+        <h3 className="text-sm font-medium text-wisen-titulo">Nenhum usuário encontrado</h3>
+        <p className="mt-2 text-sm text-[#7182A1]">
+          Tente outro nome, e-mail ou combinação de filtros.
+        </p>
+      </div>
+    );
+  return (
+    <div className="@container/users min-w-0">
+      <div className="hidden overflow-x-auto @min-[48rem]/users:block">
+        <table className="w-full text-left text-sm">
+          <caption className="sr-only">Contas cadastradas e configurações de acesso</caption>
+          <thead className="border-y border-[#E8EDF4] bg-[#FAFBFD]">
+            <tr className="text-[10px] font-semibold tracking-wider text-[#8190A8] uppercase">
+              <th scope="col" className="px-5 py-3">
+                Usuário
+              </th>
+              <th scope="col" className="px-4 py-3">
+                Perfil
+              </th>
+              <th scope="col" className="px-4 py-3">
+                Acesso
+              </th>
+              <th scope="col" className="px-4 py-3">
+                Cadastro
+              </th>
+              <th scope="col" className="px-5 py-3 text-right">
+                <span className="sr-only">Gerenciar conta</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[#EDF0F5]">
+            {usuarios.map((user) => (
+              <tr key={user.id} className="transition-colors hover:bg-wisen-admin-hover">
+                <td className="px-5 py-4">
+                  <Account user={user} onOpen={aoAbrirUsuario} />
+                </td>
+                <td className="px-4 py-4">
                   <span
-                    className={`h-2 w-2 rounded-full ${
-                      usuario.status === "Ativo" ? "bg-[#35AE75]" : "bg-[#E24A55]"
-                    }`}
-                  />
-                  {usuario.status}
-                </Badge>
-              </TableCell>
-
-              <TableCell className="whitespace-nowrap text-sm text-[#7183A6]">
-                {usuario.dataCadastro}
-              </TableCell>
-
-              <TableCell className="text-right">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={(evento) => {
-                    evento.stopPropagation();
-                    aoAbrirUsuario(usuario);
-                  }}
-                  aria-label={`Ver informações de ${usuario.nome}`}
-                  className="rounded-lg text-[#344469] transition-colors hover:bg-[#EBDD80] focus-visible:bg-[#EBDD80]"
-                >
-                  <span className="text-xl">⋮</span>
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-
-      {usuarios.length === 0 && (
-        <p className="py-12 text-center text-sm text-[#8192B2]">Nenhum usuário encontrado.</p>
-      )}
+                    className={`inline-flex rounded-md px-2 py-1 text-xs ${user.permissao === "Admin" ? "bg-[#EEF2F8] text-[#526584]" : "text-[#7182A1]"}`}
+                  >
+                    {user.permissao === "Admin" ? "Administrador" : "Usuário"}
+                  </span>
+                </td>
+                <td className="px-4 py-4">
+                  <UserStatus status={user.status} />
+                </td>
+                <td className="whitespace-nowrap px-4 py-4 text-xs tabular-nums text-[#7182A1]">
+                  {user.dataCadastro}
+                </td>
+                <td className="px-5 py-4 text-right">
+                  <Button
+                    variant="ghost"
+                    onClick={() => aoAbrirUsuario(user)}
+                    aria-label={`Gerenciar ${user.nome}`}
+                    className="text-xs text-[#526584] hover:bg-wisen-admin-hover"
+                  >
+                    Gerenciar
+                    <ArrowUpRight className="size-3.5" />
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="divide-y divide-[#E8EDF4] border-t border-[#E8EDF4] @min-[48rem]/users:hidden">
+        {usuarios.map((user) => (
+          <article key={user.id} className="min-w-0 space-y-4 p-4 sm:p-5">
+            <Account user={user} onOpen={aoAbrirUsuario} />
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
+              <UserStatus status={user.status} />
+              <span className="text-[#7182A1]">
+                {user.permissao === "Admin" ? "Administrador" : "Usuário"}
+              </span>
+              <span className="text-[#7182A1]">Desde {user.dataCadastro}</span>
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => aoAbrirUsuario(user)}
+              aria-label={`Gerenciar ${user.nome}`}
+              className="h-10 w-full border-wisen-borda text-xs text-[#526584] hover:bg-wisen-admin-hover"
+            >
+              Gerenciar conta
+              <ArrowUpRight className="size-3.5" />
+            </Button>
+          </article>
+        ))}
+      </div>
     </div>
   );
 }

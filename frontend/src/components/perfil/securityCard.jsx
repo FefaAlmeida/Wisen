@@ -6,11 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
+  DialogBody,
   DialogContent,
   DialogDescription,
   DialogFooter,
+  DialogForm,
   DialogHeader,
   DialogTitle,
+  dialogPrimaryAction,
+  dialogSecondaryAction,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { requisitar } from "@/services/api";
@@ -159,89 +163,88 @@ export function SecurityCard() {
 
       <Dialog open={dialogOpen} onOpenChange={handleDialogChange}>
         <DialogContent>
-          <form onSubmit={changePassword} className="space-y-5">
-            <DialogHeader>
-              <DialogTitle>Alterar senha</DialogTitle>
-              <DialogDescription>
-                Informe sua senha atual e escolha uma nova senha com pelo menos 8 caracteres.
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="space-y-3">
-              <div className="space-y-1.5">
-                <label htmlFor="senha-atual" className="text-xs font-medium text-[#2B333F]">
-                  Senha atual
-                </label>
-                <Input
-                  id="senha-atual"
-                  type="password"
-                  autoComplete="current-password"
-                  minLength={8}
-                  maxLength={128}
-                  required
-                  value={currentPassword}
-                  onChange={(event) => setCurrentPassword(event.target.value)}
-                  disabled={saving}
-                />
+          <DialogHeader eyebrow="Segurança da conta">
+            <DialogTitle>
+              Alterar <span className="text-[#B59B35]">senha</span>
+            </DialogTitle>
+            <DialogDescription>
+              Informe sua senha atual e escolha uma nova senha com pelo menos 8 caracteres.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogForm onSubmit={changePassword}>
+            <DialogBody className="space-y-5">
+              <div className="space-y-3">
+                <div className="space-y-1.5">
+                  <label htmlFor="senha-atual" className="text-xs font-medium text-[#2B333F]">
+                    Senha atual
+                  </label>
+                  <Input
+                    id="senha-atual"
+                    type="password"
+                    autoComplete="current-password"
+                    minLength={8}
+                    maxLength={128}
+                    required
+                    value={currentPassword}
+                    onChange={(event) => setCurrentPassword(event.target.value)}
+                    disabled={saving}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label htmlFor="senha-nova" className="text-xs font-medium text-[#2B333F]">
+                    Nova senha
+                  </label>
+                  <Input
+                    id="senha-nova"
+                    type="password"
+                    autoComplete="new-password"
+                    minLength={8}
+                    maxLength={128}
+                    required
+                    value={newPassword}
+                    onChange={(event) => setNewPassword(event.target.value)}
+                    disabled={saving}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label htmlFor="confirmar-senha" className="text-xs font-medium text-[#2B333F]">
+                    Confirmar nova senha
+                  </label>
+                  <Input
+                    id="confirmar-senha"
+                    type="password"
+                    autoComplete="new-password"
+                    minLength={8}
+                    maxLength={128}
+                    required
+                    value={confirmPassword}
+                    onChange={(event) => setConfirmPassword(event.target.value)}
+                    disabled={saving}
+                  />
+                </div>
               </div>
-              <div className="space-y-1.5">
-                <label htmlFor="senha-nova" className="text-xs font-medium text-[#2B333F]">
-                  Nova senha
-                </label>
-                <Input
-                  id="senha-nova"
-                  type="password"
-                  autoComplete="new-password"
-                  minLength={8}
-                  maxLength={128}
-                  required
-                  value={newPassword}
-                  onChange={(event) => setNewPassword(event.target.value)}
-                  disabled={saving}
-                />
-              </div>
-              <div className="space-y-1.5">
-                <label htmlFor="confirmar-senha" className="text-xs font-medium text-[#2B333F]">
-                  Confirmar nova senha
-                </label>
-                <Input
-                  id="confirmar-senha"
-                  type="password"
-                  autoComplete="new-password"
-                  minLength={8}
-                  maxLength={128}
-                  required
-                  value={confirmPassword}
-                  onChange={(event) => setConfirmPassword(event.target.value)}
-                  disabled={saving}
-                />
-              </div>
-            </div>
 
-            {feedback?.type === "error" && (
-              <p role="alert" className="text-xs text-red-600">
-                {feedback.text}
-              </p>
-            )}
-
+              {feedback?.type === "error" && (
+                <p role="alert" className="text-xs text-red-600">
+                  {feedback.text}
+                </p>
+              )}
+            </DialogBody>
             <DialogFooter>
               <Button
                 type="button"
                 variant="outline"
+                className={dialogSecondaryAction}
                 onClick={() => handleDialogChange(false)}
                 disabled={saving}
               >
                 Cancelar
               </Button>
-              <Button
-                type="submit"
-                disabled={saving}
-                className="bg-[#E8E191] text-[#2B333F] hover:bg-[#d8d181]"
-              >
+              <Button type="submit" disabled={saving} className={dialogPrimaryAction}>
                 {saving ? "Salvando..." : "Salvar senha"}
               </Button>
             </DialogFooter>
-          </form>
+          </DialogForm>
         </DialogContent>
       </Dialog>
     </Card>

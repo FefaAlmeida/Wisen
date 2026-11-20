@@ -9,7 +9,7 @@ import { requisitar } from "@/services/api";
 
 const navigation = [
   { label: "Visão geral", href: "/paginaInicioAdm", icon: Gauge },
-  { label: "Curadoria de eventos", href: "/paginaCuidadoriaEventosAdm", icon: CalendarDays },
+  { label: "Revisão de eventos", href: "/paginaCuradoriaEventosAdm", icon: CalendarDays },
   { label: "Gestão de usuários", href: "/paginaGestaoUsuariosAdm", icon: UsersRound },
   { label: "Gestão de fontes", href: "/paginaGestaoFonteAdm", icon: Globe },
   { label: "Gestão de categorias", href: "/paginaGestaoCategoriasAdm", icon: Tags },

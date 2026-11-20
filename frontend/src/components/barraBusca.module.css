@@ -27,50 +27,16 @@
   outline-offset: 3px;
 }
 .dialog {
-  display: block;
-  width: min(920px, calc(100% - 64px));
-  max-width: none;
-  height: min(640px, calc(100dvh - 48px));
-  overflow-y: auto;
-  padding: 72px 32px 32px;
-  border-radius: 20px;
-  background: #fcfdff;
-  color: #101a40;
-  box-shadow: 0 24px 80px #101a4026;
-  --tw-ring-shadow: 0 0 #0000;
-  scrollbar-color: #b3bfd1 transparent;
-}
-.close {
-  position: absolute;
-  top: 16px;
-  right: 18px;
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  color: #52617e;
-  cursor: pointer;
-}
-.close:hover {
-  background: #edf1f7;
-}
-.title {
-  margin: 0 0 32px;
-  text-align: center;
-  font-size: 28px;
-  font-weight: 550;
-  line-height: 1.25;
-  letter-spacing: -0.03em;
+  scrollbar-color: #bdc7d6 transparent;
 }
 .field {
   display: flex;
   align-items: center;
   gap: 15px;
-  max-width: 710px;
-  min-height: 65px;
-  margin-inline: auto;
-  padding: 9px 15px 9px 22px;
+  width: 100%;
+  min-height: 48px;
+  margin: 16px 0 0;
+  padding: 8px 12px;
   border: 1px solid #dce3ed;
   border-radius: 13px;
   background: #fff;
@@ -83,7 +49,7 @@
 .field input {
   flex: 1;
   min-width: 0;
-  height: 44px;
+  height: 28px;
   border: 0;
   outline: none;
   background: transparent;
@@ -107,10 +73,10 @@
 }
 .filters {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 19px 0 31px;
+  margin: 0 0 20px;
 }
 .filters button {
   padding: 12px;
@@ -150,6 +116,9 @@
   gap: 14px;
 }
 .result {
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
   position: relative;
   display: flex;
   align-items: center;
@@ -264,19 +233,9 @@
   font-size: 13px;
 }
 @media (max-width: 640px) {
-  .dialog {
-    width: calc(100% - 24px);
-    height: min(640px, calc(100dvh - 24px));
-    padding: 60px 18px 24px;
-    border-radius: 16px;
-  }
-  .title {
-    font-size: 24px;
-    margin-bottom: 24px;
-  }
   .field {
     gap: 10px;
-    min-height: 58px;
+    min-height: 44px;
     padding: 6px 12px;
   }
   .field input {

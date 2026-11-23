@@ -35,7 +35,7 @@ export function SecurityCard() {
     setLogoutError("");
     try {
       await requisitar("/auth/logout", { method: "POST" });
-      window.location.assign("/paginaLogin");
+      window.location.assign("/auth");
     } catch {
       setLogoutError("Não foi possível encerrar a sessão. Tente novamente.");
       setSigningOut(false);

@@ -34,7 +34,7 @@ export function accountService(pool, boss, config) {
           "INSERT INTO account_tokens(user_id,token_hash,purpose,email,expires_at) VALUES($1,$2,$3,$4,now()+($5 * interval '1 minute'))",
           [userId, digest(token), purpose, user.email, purpose === "verify" ? 1440 : 30],
         );
-        const link = new URL("/conta", config.FRONTEND_URL);
+        const link = new URL(purpose === "reset" ? "/auth" : "/conta", config.FRONTEND_URL);
         link.searchParams.set("action", purpose);
         link.searchParams.set("token", token);
         const mail = (

@@ -54,11 +54,15 @@ test("ciclo real de leitura, lacuna, revisão e adaptação persiste no navegado
   await page.setExtraHTTPHeaders({ "x-forwarded-for": "10.51.0.1" });
   const email = `mvp-browser-${randomUUID()}@example.test`;
   await page.goto("/paginaCadastro");
-  await page.getByLabel("Nome completo").fill("Leitor de Economia");
   await page.getByLabel("E-mail").fill(email);
+  await page.getByRole("button", { name: "Continuar", exact: true }).click();
   await page.getByLabel("Senha", { exact: true }).fill("senha-do-mvp-123");
   await page.getByRole("button", { name: /criar conta/i }).click();
   await expect(page).toHaveURL(/paginaInicialCliente$/);
+  await page.getByRole("textbox", { name: "Nome Completo" }).fill("Leitor de Economia");
+  await page.getByRole("combobox", { name: "Localização" }).fill("sao paulo brasil");
+  await page.getByRole("option", { name: "São Paulo, Brasil", exact: true }).click();
+  await page.getByRole("button", { name: "Continuar", exact: true }).click();
   await page.getByRole("dialog").getByRole("button", { name: "Economia", exact: true }).click();
   await page.getByRole("dialog").getByRole("button", { name: "Juros", exact: true }).click();
   await page.getByRole("dialog").getByRole("button", { name: "Tecnologia", exact: true }).click();

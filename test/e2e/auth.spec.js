@@ -6,17 +6,59 @@ test.beforeEach(async ({ page }) => {
   await page.setExtraHTTPHeaders({ "x-forwarded-for": `10.50.0.${clientNumber++}` });
 });
 
+test("endereços antigos preservam o destino e recuperação continua disponível", async ({
+  page,
+}) => {
+  for (const path of ["/paginaLogin", "/paginaCadastro"]) {
+    await page.goto(`${path}?next=%2FpaginaGuardados`);
+    await expect(page).toHaveURL(/\/auth\?next=%2FpaginaGuardados$/);
+    await expect(page.getByLabel("Senha", { exact: true })).toHaveCount(0);
+  }
+  const email = `recovery-${Date.now()}@example.test`;
+  await page.request.post("/api/auth/register", { data: { email, password: "senha-segura-123" } });
+  await page.context().clearCookies();
+  await page.getByLabel("E-mail").fill(email);
+  await page.getByRole("button", { name: "Continuar", exact: true }).click();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Que bom te ver de novo.");
+  await page.getByRole("button", { name: "Esqueci minha senha" }).click();
+  await expect(page).toHaveURL(/\/auth\?next=%2FpaginaGuardados$/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Recupere seu acesso.");
+  await expect(page.getByLabel("E-mail")).toHaveValue(email);
+});
+
+test("onboarding retoma nome pendente e mantém nome salvo após recarregar", async ({ page }) => {
+  const email = `resume-${Date.now()}@example.test`;
+  await page.request.post("/api/auth/register", { data: { email, password: "senha-segura-123" } });
+  await page.goto("/paginaInicialCliente");
+  await expect(page.getByRole("textbox", { name: "Nome Completo" })).toBeVisible();
+  await page.reload();
+  await page.getByRole("textbox", { name: "Nome Completo" }).fill("Lia");
+  await page.getByRole("combobox", { name: "Localização" }).fill("sao paulo brasil");
+  await page.getByRole("option", { name: "São Paulo, Brasil", exact: true }).click();
+  await page.getByRole("button", { name: "Continuar", exact: true }).click();
+  await expect(page.getByRole("dialog")).toHaveAccessibleName("Quais assuntos interessam a você?");
+  await page.reload();
+  await expect(page.getByRole("dialog")).toHaveAccessibleName("Quais assuntos interessam a você?");
+  const profile = await (await page.request.get("/api/auth/profile")).json();
+  expect(profile.user.name).toBe("Lia");
+  expect(profile.preferences.onboardingCompleted).toBe(false);
+});
+
 test("cadastro, rota privada, busca, logout e login funcionam no navegador", async ({ page }) => {
   const email = `playwright-${Date.now()}@example.test`;
   const password = "senha-de-playwright-123";
 
-  await page.goto("/paginaCadastro");
-  await page.getByLabel("Nome completo").fill("Pessoa Playwright");
+  await page.goto("/auth");
   await page.getByLabel("E-mail").fill(email);
+  await page.getByRole("button", { name: "Continuar", exact: true }).click();
   await page.getByLabel("Senha", { exact: true }).fill(password);
   await page.getByRole("button", { name: /criar conta/i }).click();
-  await expect(page).toHaveURL(/\/paginaInicialCliente$/);
-  const onboarding = page.getByRole("dialog", { name: "Quais assuntos interessam a você?" });
+  await expect(page).toHaveURL(/\/onboarding$/);
+  await page.getByRole("textbox", { name: "Nome Completo" }).fill("Pessoa Playwright");
+  await page.getByRole("combobox", { name: "Localização" }).fill("sao paulo brasil");
+  await page.getByRole("option", { name: "São Paulo, Brasil", exact: true }).click();
+  await page.getByRole("button", { name: "Continuar", exact: true }).click();
+  const onboarding = page.getByRole("region", { name: "Personalize sua experiência" });
   await expect(onboarding).toBeVisible();
   await onboarding.getByRole("button", { name: "Economia", exact: true }).click();
   await onboarding.getByRole("button", { name: "Juros", exact: true }).click();
@@ -24,11 +66,12 @@ test("cadastro, rota privada, busca, logout e login funcionam no navegador", asy
   await onboarding.getByRole("button", { name: "Continuar", exact: true }).click();
   await page.getByLabel("Entendo o básico").check();
   await page.getByRole("button", { name: "Concluir", exact: true }).click();
+  await expect(page).toHaveURL(/\/paginaInicialCliente$/);
   await expect(page.getByRole("dialog")).not.toBeVisible();
   await expect(
     page
       .getByRole("navigation", { name: "Navegação principal" })
-      .getByRole("link", { name: "Meu conhecimento" }),
+      .getByRole("link", { name: "Conceitos" }),
   ).toBeVisible();
 
   const sessionCookie = (await page.context().cookies()).find(
@@ -49,20 +92,21 @@ test("cadastro, rota privada, busca, logout e login funcionam no navegador", asy
 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.getByRole("button", { name: "Abrir menu de navegação" }).click();
-  await page.getByRole("dialog").getByRole("button", { name: "Meu conhecimento" }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Conceitos" }).click();
   await expect(page).toHaveURL(/\/paginaBiblioteca$/);
   await expect(page.getByRole("heading", { name: /Biblioteca de conceitos/ })).toBeVisible();
 
   await page.getByRole("button", { name: "Abrir menu do perfil" }).click();
   await page.getByRole("button", { name: "Sair da conta" }).click();
-  await expect(page).toHaveURL(/\/paginaLogin$/);
+  await expect(page).toHaveURL(/\/auth$/);
   expect((await page.context().cookies()).some((cookie) => cookie.name === "wisen_session")).toBe(
     false,
   );
 
   await page.goto("/paginaGuardados");
-  await expect(page).toHaveURL(/\/paginaLogin\?next=/);
+  await expect(page).toHaveURL(/\/auth\?next=/);
   await page.getByLabel("E-mail").fill(email);
+  await page.getByRole("button", { name: "Continuar", exact: true }).click();
   await page.getByLabel("Senha", { exact: true }).fill(password);
   await page.getByRole("button", { name: /^entrar/i }).click();
   await expect(page).toHaveURL(/\/paginaGuardados$/);
@@ -73,29 +117,43 @@ test("cadastro, rota privada, busca, logout e login funcionam no navegador", asy
 });
 
 test("formulário impede senha curta no navegador", async ({ page }) => {
-  await page.goto("/paginaCadastro");
-  await page.getByLabel("Nome completo").fill("Pessoa");
+  await page.goto("/auth");
   await page.getByLabel("E-mail").fill(`senha-curta-${Date.now()}@example.test`);
+  await page.getByRole("button", { name: "Continuar", exact: true }).click();
   await page.getByLabel("Senha", { exact: true }).fill("1234567");
   await page.getByRole("button", { name: /criar conta/i }).click();
-  await expect(page).toHaveURL(/\/paginaCadastro$/);
+  await expect(page).toHaveURL(/\/onboarding$/);
   await expect(page.getByLabel("Senha", { exact: true })).toBeFocused();
 });
 
 test("rotas de administração exigem sessão e papel de administrador", async ({ page }) => {
-  await page.goto("/paginaCadastro");
-  await page.getByLabel("Nome completo").fill("Pessoa comum");
+  await page.goto("/auth");
   await page.getByLabel("E-mail").fill(`admin-route-${Date.now()}@example.test`);
+  await page.getByRole("button", { name: "Continuar", exact: true }).click();
   await page.getByLabel("Senha", { exact: true }).fill("senha-de-teste-123");
   await page.getByRole("button", { name: /criar conta/i }).click();
-  await expect(page).toHaveURL(/\/paginaInicialCliente$/);
+  await expect(page).toHaveURL(/\/auth$/);
+  await expect(page.getByRole("textbox", { name: "Nome Completo" })).toBeVisible();
 
   await page.goto("/paginaGestaoUsuariosAdm");
   await expect(page).toHaveURL(/\/paginaInicialCliente$/);
 
   await page.context().clearCookies();
   await page.goto("/paginaGestaoUsuariosAdm");
-  await expect(page).toHaveURL(/\/paginaLogin\?next=/);
+  await expect(page).toHaveURL(/\/auth\?next=/);
+});
+
+test("landing oferece entrada unificada em desktop e celular", async ({ page }) => {
+  for (const width of [1280, 390]) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto("/");
+    const navigation = page.getByRole("navigation", { name: "Navegação da plataforma" });
+    await expect(navigation.getByRole("link")).toHaveCount(1);
+    await expect(page.getByRole("button", { name: "Abrir menu", exact: true })).toHaveCount(0);
+    await navigation.getByRole("link", { name: "Entrar", exact: true }).click();
+    await expect(page).toHaveURL(/\/auth$/);
+    await expect(page.getByRole("button", { name: "Continuar", exact: true })).toBeVisible();
+  }
 });
 
 test("landing oferece acesso e navegação funcional em desktop e celular", async ({ page }) => {
@@ -104,19 +162,20 @@ test("landing oferece acesso e navegação funcional em desktop e celular", asyn
     await page.goto("/");
     const navigation = page.getByRole("navigation", { name: "Navegação da plataforma" });
     await expect(navigation.getByRole("link", { name: "Entrar", exact: true })).toBeVisible();
-    await expect(navigation.getByRole("link", { name: "Criar conta", exact: true })).toBeVisible();
+    await expect(navigation.getByRole("link")).toHaveCount(1);
+    await expect(page.getByRole("button", { name: "Abrir menu", exact: true })).toHaveCount(0);
 
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
     ).toBe(true);
-    await page.getByRole("link", { name: "Ver como funciona" }).click();
+    await page.getByRole("link", { name: "Veja como funciona" }).click();
     await expect(page).toHaveURL(/\/#sobre$/);
     await expect.poll(() => page.locator("video").evaluate((video) => video.paused)).toBe(true);
     await navigation.getByRole("link", { name: "Entrar", exact: true }).click();
-    await expect(page).toHaveURL(/\/paginaLogin$/);
+    await expect(page).toHaveURL(/\/auth$/);
     await page.goto("/");
-    await page.getByRole("link", { name: "Começar agora" }).click();
-    await expect(page).toHaveURL(/\/paginaCadastro$/);
+    await page.getByRole("link", { name: "Começar a usar o Wisen" }).click();
+    await expect(page).toHaveURL(/\/auth$/);
   }
   await page.goto("/");
   await page.goto("/");
@@ -127,12 +186,14 @@ test("perfil salva cartões independentemente, mantém alterações e encerra se
   page,
 }) => {
   const email = `profile-${Date.now()}@example.test`;
-  await page.goto("/paginaCadastro");
-  await page.getByLabel("Nome completo").fill("Pessoa Perfil");
+  await page.goto("/auth");
   await page.getByLabel("E-mail").fill(email);
+  await page.getByRole("button", { name: "Continuar", exact: true }).click();
   await page.getByLabel("Senha", { exact: true }).fill("senha-de-perfil-123");
   await page.getByRole("button", { name: /criar conta/i }).click();
   await expect(page).toHaveURL(/\/paginaInicialCliente$/);
+  await page.getByRole("textbox", { name: "Nome Completo" }).fill("Pessoa Perfil");
+  await page.getByRole("button", { name: "Continuar", exact: true }).click();
   await page.goto("/paginaPerfil");
   await expect(page.getByLabel("Nome", { exact: true })).toHaveValue("Pessoa Perfil");
   await page.getByLabel("Nome", { exact: true }).fill("Nome ainda não salvo");
@@ -159,9 +220,9 @@ test("perfil salva cartões independentemente, mantém alterações e encerra se
     "Tecnologia",
   ]);
   await page.getByRole("button", { name: /Encerrar sessão/ }).click();
-  await expect(page).toHaveURL(/\/paginaLogin$/);
+  await expect(page).toHaveURL(/\/auth$/);
   await page.goto("/paginaPerfil");
-  await expect(page).toHaveURL(/\/paginaLogin\?next=/);
+  await expect(page).toHaveURL(/\/auth\?next=/);
 });
 
 test("admin fica na administração e pode sair em desktop e celular", async ({ page }) => {
@@ -177,8 +238,9 @@ test("admin fica na administração e pode sair em desktop e celular", async ({ 
     await pool.query("UPDATE users SET role='admin' WHERE id=$1", [user.id]);
     for (const width of [1280, 390]) {
       await page.setViewportSize({ width, height: 844 });
-      await page.goto("/paginaLogin?next=%2FpaginaInicialCliente");
+      await page.goto("/auth?next=%2FpaginaInicialCliente");
       await page.getByLabel("E-mail").fill(email);
+      await page.getByRole("button", { name: "Continuar", exact: true }).click();
       await page.getByLabel("Senha", { exact: true }).fill(password);
       await page.getByRole("button", { name: /^entrar/i }).click();
       await expect(page).toHaveURL(/\/paginaInicioAdm$/);
@@ -193,7 +255,7 @@ test("admin fica na administração e pode sair em desktop e celular", async ({ 
         await page.getByRole("button", { name: "Abrir menu administrativo" }).click();
       }
       await page.getByRole("button", { name: "Sair da conta", exact: true }).click();
-      await expect(page).toHaveURL(/\/paginaLogin$/);
+      await expect(page).toHaveURL(/\/auth$/);
       expect((await page.request.get("/api/auth/session")).status()).toBe(401);
     }
   } finally {
@@ -214,6 +276,9 @@ test("onboarding no celular exige três interesses e permite pular só a familia
   });
   await page.goto("/paginaInicialCliente");
   await expect(page.getByRole("button", { name: "Pular esta etapa" })).toHaveCount(0);
+  await page.getByRole("combobox", { name: "Localização" }).fill("sao paulo brasil");
+  await page.getByRole("option", { name: "São Paulo, Brasil", exact: true }).click();
+  await page.getByRole("button", { name: "Continuar", exact: true }).click();
   for (const name of ["Economia", "Juros", "Tecnologia"]) {
     await page.getByRole("dialog").getByRole("button", { name, exact: true }).click();
   }
@@ -224,7 +289,7 @@ test("onboarding no celular exige três interesses e permite pular só a familia
   await page.getByRole("button", { name: "Pular esta etapa" }).click();
   await expect(page.getByRole("dialog")).not.toBeVisible();
   await page.reload();
-  await expect(page.getByRole("heading", { name: "Entenda o que acontece" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Suas notícias/ })).toBeVisible();
   await expect
     .poll(
       async () =>

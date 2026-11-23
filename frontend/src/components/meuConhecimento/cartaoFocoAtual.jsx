@@ -1,4 +1,4 @@
-import { ArrowRight, ChevronRight, Compass, Cpu, Landmark, Leaf } from "lucide-react";
+import { ArrowRight, ChevronRight, Cpu, Landmark, Leaf } from "lucide-react";
 import Link from "next/link";
 import styles from "./conhecimento.module.css";
 
@@ -32,12 +32,6 @@ export function CartaoFocoAtual() {
         </div>
       </div>
       <div className={styles.focusContent}>
-        <div className={styles.focusSummary}>
-          <Compass size={22} aria-hidden="true" />
-          <div>
-            <strong>10 conceitos para reforçar</strong>
-          </div>
-        </div>
         {topics.map((topic) => {
           const Icon = topic.icon;
           return (

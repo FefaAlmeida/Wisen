@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { loginDestination } from "@/lib/auth";
 import { requisitar } from "@/services/api";
+import styles from "./authForm.module.css";
 
 export default function FormularioLogin({ glass = false }) {
   const [mostrarSenha, setMostrarSenha] = useState(false);
@@ -46,7 +47,7 @@ export default function FormularioLogin({ glass = false }) {
           : "border-0 bg-white shadow-[0_20px_60px_rgba(37,53,77,0.14)]"
       }`}
     >
-      <CardHeader className="space-y-1 px-6 pt-8 pb-6 sm:px-10 sm:pt-10 sm:pb-7 lg:px-12">
+      <CardHeader className="space-y-1 px-6 pt-6 pb-5 sm:px-8 sm:pt-7">
         <CardTitle
           id="login-title"
           className={`text-[32px] font-semibold tracking-tight ${glass ? "text-[#F2DF73]" : "text-wisen-texto-forte"}`}
@@ -54,27 +55,21 @@ export default function FormularioLogin({ glass = false }) {
           Entrar
         </CardTitle>
 
-        <CardDescription className="space-y-1">
+        <CardDescription>
           <span
-            className={`block text-sm font-medium ${glass ? "text-white/90" : "text-[#71809C]"}`}
+            className={`block text-sm leading-relaxed ${glass ? "text-white/75" : "text-[#71809C]"}`}
           >
-            Bem-vindo de volta ao Wisen.
-          </span>
-          <span
-            className={`block text-xs leading-relaxed ${glass ? "text-white/75" : "text-[#8995AA]"}`}
-          >
-            Acesse sua conta para continuar explorando notícias, análises e aprendizado
-            personalizado.
+            Entre para continuar aprendendo.
           </span>
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="px-6 pb-8 sm:px-10 sm:pb-10 lg:px-12">
-        <form aria-labelledby="login-title" className="space-y-5" onSubmit={handleSubmit}>
+      <CardContent className="px-6 pb-6 sm:px-8 sm:pb-7">
+        <form aria-labelledby="login-title" className="space-y-4" onSubmit={handleSubmit}>
           <div className="space-y-2">
             <Label
               htmlFor="email"
-              className={`text-xs font-semibold ${glass ? "text-white/90" : "text-[#344563]"}`}
+              className={`text-sm font-semibold ${glass ? "text-white/90" : "text-[#344563]"}`}
             >
               E-mail
             </Label>
@@ -86,7 +81,7 @@ export default function FormularioLogin({ glass = false }) {
                 stroke="currentColor"
                 strokeWidth="1.7"
                 aria-hidden="true"
-                className={`absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 ${glass ? "text-[#52647D]" : "text-[#9AA7BC]"}`}
+                className={`pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 ${glass ? "text-[#A6B5CC]" : "text-[#9AA7BC]"}`}
               >
                 <rect x="3" y="5" width="18" height="14" rx="2" />
                 <path d="m3 7 9 6 9-6" />
@@ -100,7 +95,7 @@ export default function FormularioLogin({ glass = false }) {
                 autoComplete="username"
                 required
                 disabled={enviando}
-                className={`h-11 rounded-lg border-[#D9E1ED] pl-10 text-sm text-wisen-texto-forte placeholder:text-[#71809C] focus-visible:border-[#D6B947] focus-visible:ring-2 focus-visible:ring-[#EEDC84]/70 ${glass ? "bg-[#F1F5FC] text-[#17243A]" : "bg-white"}`}
+                className={`h-11 rounded-lg pl-10 text-base focus-visible:border-[#D6B947] focus-visible:ring-2 focus-visible:ring-[#EEDC84]/40 ${glass ? `${styles.darkInput} border-white/20 bg-[#25354E] text-[#F4F6FA] placeholder:text-[#A6B5CC]` : "border-[#D9E1ED] bg-white text-wisen-texto-forte placeholder:text-[#71809C]"}`}
               />
             </div>
           </div>
@@ -108,7 +103,7 @@ export default function FormularioLogin({ glass = false }) {
           <div className="space-y-2">
             <Label
               htmlFor="senha"
-              className={`text-xs font-semibold ${glass ? "text-white/90" : "text-[#344563]"}`}
+              className={`text-sm font-semibold ${glass ? "text-white/90" : "text-[#344563]"}`}
             >
               Senha
             </Label>
@@ -120,7 +115,7 @@ export default function FormularioLogin({ glass = false }) {
                 stroke="currentColor"
                 strokeWidth="1.7"
                 aria-hidden="true"
-                className={`absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 ${glass ? "text-[#52647D]" : "text-[#9AA7BC]"}`}
+                className={`pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 ${glass ? "text-[#A6B5CC]" : "text-[#9AA7BC]"}`}
               >
                 <rect x="5" y="10" width="14" height="11" rx="2" />
                 <path d="M8 10V7a4 4 0 0 1 8 0v3" />
@@ -134,7 +129,7 @@ export default function FormularioLogin({ glass = false }) {
                 autoComplete="current-password"
                 required
                 disabled={enviando}
-                className={`h-11 rounded-lg border-[#D9E1ED] pr-12 pl-10 text-sm text-wisen-texto-forte placeholder:text-[#71809C] focus-visible:border-[#D6B947] focus-visible:ring-2 focus-visible:ring-[#EEDC84]/70 [&::-ms-reveal]:hidden [&::-ms-clear]:hidden [&::-webkit-credentials-auto-fill-button]:hidden ${glass ? "bg-[#F1F5FC] text-[#17243A]" : "bg-white"}`}
+                className={`h-11 rounded-lg pr-12 pl-10 text-base focus-visible:border-[#D6B947] focus-visible:ring-2 focus-visible:ring-[#EEDC84]/40 [&::-ms-reveal]:hidden [&::-ms-clear]:hidden [&::-webkit-credentials-auto-fill-button]:hidden ${glass ? `${styles.darkInput} border-white/20 bg-[#25354E] text-[#F4F6FA] placeholder:text-[#A6B5CC]` : "border-[#D9E1ED] bg-white text-wisen-texto-forte placeholder:text-[#71809C]"}`}
               />
 
               <button
@@ -142,7 +137,7 @@ export default function FormularioLogin({ glass = false }) {
                 onClick={() => setMostrarSenha(!mostrarSenha)}
                 aria-pressed={mostrarSenha}
                 aria-label={mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
-                className={`absolute top-1/2 right-3.5 -translate-y-1/2 rounded-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D6B947] hover:text-wisen-texto-forte ${glass ? "text-[#52647D]" : "text-[#98A5BB]"}`}
+                className={`absolute top-1/2 right-3.5 -translate-y-1/2 rounded-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D6B947] ${glass ? "text-[#A6B5CC] hover:text-white" : "text-[#98A5BB] hover:text-wisen-texto-forte"}`}
               >
                 {mostrarSenha ? (
                   <svg
@@ -185,7 +180,7 @@ export default function FormularioLogin({ glass = false }) {
               />
               <Label
                 htmlFor="lembrar"
-                className={`cursor-pointer text-xs font-normal ${glass ? "text-white/85" : "text-[#71809C]"}`}
+                className={`cursor-pointer text-sm font-normal ${glass ? "text-white/85" : "text-[#71809C]"}`}
               >
                 Lembrar de mim
               </Label>
@@ -211,21 +206,21 @@ export default function FormularioLogin({ glass = false }) {
         </form>
 
         <Link
-          href="/conta?action=forgot"
-          className="mt-5 block text-center text-sm text-[#F2DF73] underline decoration-[#F2DF73] underline-offset-4 transition-colors hover:text-white focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F2DF73]"
+          href="/auth?action=forgot"
+          className="mt-4 block text-center text-sm text-[#F2DF73] underline decoration-[#F2DF73] underline-offset-4 transition-colors hover:text-white focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F2DF73]"
         >
           Esqueci minha senha
         </Link>
-        <div className="mt-7 flex items-center gap-3">
-          <div className={`h-px flex-1 ${glass ? "bg-white/30" : "bg-[#E4E9F1]"}`} />
+        <div className="mt-4 flex items-center gap-3">
+          <div className={`h-px flex-1 ${glass ? "bg-white/15" : "bg-[#E4E9F1]"}`} />
           <span className={`text-xs ${glass ? "text-white/70" : "text-[#9BA7B9]"}`}>ou</span>
-          <div className={`h-px flex-1 ${glass ? "bg-white/30" : "bg-[#E4E9F1]"}`} />
+          <div className={`h-px flex-1 ${glass ? "bg-white/15" : "bg-[#E4E9F1]"}`} />
         </div>
 
-        <p className={`mt-6 text-center text-xs ${glass ? "text-white/80" : "text-[#8390A7]"}`}>
+        <p className={`mt-4 text-center text-sm ${glass ? "text-white/80" : "text-[#8390A7]"}`}>
           Ainda não tem conta?{" "}
           <Link
-            href="/paginaCadastro"
+            href="/auth"
             className={`rounded-sm font-semibold underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F2DF73] ${glass ? "text-[#F2DF73]" : "text-[#30456D]"}`}
           >
             Criar conta

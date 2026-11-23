@@ -16,9 +16,11 @@ export default function PaginaLanding() {
       <main className="relative z-10 w-full">
         <HeroLanding />
 
-        <div className="mx-auto flex w-full max-w-[1360px] flex-col gap-24 px-4 pb-0 pt-28 sm:px-6 sm:pt-32 md:gap-32 lg:gap-36 lg:px-10 xl:px-12">
-          <ApresentacaoLanding />
-          <RecursosLanding />
+        <div className="mx-auto flex w-full max-w-[1360px] flex-col gap-24 px-4 pb-0 pt-8 sm:px-6 sm:pt-32 md:gap-32 lg:gap-36 lg:px-10 xl:px-12">
+          <div className="flex flex-col gap-12 md:gap-16 lg:gap-20">
+            <ApresentacaoLanding />
+            <RecursosLanding />
+          </div>
           <BannerImpacto />
           <DepoimentosLanding />
           <PerguntasFrequentes />

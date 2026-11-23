@@ -36,8 +36,20 @@ describe("proteção das rotas após integração", () => {
     fetch.mockResolvedValue({ ok: false, status: 401 });
     const response = await proxy(request("/paginaGestaoUsuariosAdm?pagina=2"));
     const location = new URL(response.headers.get("location"));
-    expect(location.pathname).toBe("/paginaLogin");
+    expect(location.pathname).toBe("/auth");
     expect(location.searchParams.get("next")).toBe("/paginaGestaoUsuariosAdm?pagina=2");
+  });
+
+  it("preserva o destino final ao abrir onboarding sem sessão", async () => {
+    fetch.mockResolvedValue({ ok: false, status: 401 });
+    const response = await proxy(request("/onboarding?next=%2FpaginaGuardados"));
+    const location = new URL(response.headers.get("location"));
+    expect(location.pathname).toBe("/auth");
+    expect(location.searchParams.get("next")).toBe("/paginaGuardados");
+    const defaultResponse = await proxy(request("/onboarding"));
+    expect(new URL(defaultResponse.headers.get("location")).searchParams.get("next")).toBe(
+      "/paginaInicialCliente",
+    );
   });
 
   it("retorna indisponibilidade quando não consegue validar a sessão", async () => {
@@ -80,6 +92,6 @@ describe("proteção das rotas após integração", () => {
     expect(config.matcher).toContain("/paginaSessaoRevisao/:path*");
     fetch.mockResolvedValue({ ok: false, status: 401 });
     const response = await proxy(request("/paginaSessaoRevisao"));
-    expect(new URL(response.headers.get("location")).pathname).toBe("/paginaLogin");
+    expect(new URL(response.headers.get("location")).pathname).toBe("/auth");
   });
 });

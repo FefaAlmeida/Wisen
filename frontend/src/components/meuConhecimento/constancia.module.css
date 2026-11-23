@@ -4,6 +4,11 @@
 }
 
 .card {
+  --card-title-size: 13px;
+  --card-title-leading: 20px;
+  --card-title-gap: 10px;
+  --card-header-height: 64px;
+  --card-padding: 20px;
   --card-ink: var(--color-wisen-titulo);
   --card-muted: var(--color-wisen-texto-suave);
   --card-rule: var(--color-wisen-borda);
@@ -48,14 +53,6 @@
   line-height: var(--card-title-leading);
   letter-spacing: -0.1px;
   margin: 0;
-}
-
-.heading h2::before {
-  content: "";
-  width: 24px;
-  height: 2px;
-  flex-shrink: 0;
-  background: #dfbf22;
 }
 
 .heading > svg {
@@ -161,7 +158,7 @@
 .areaTrack {
   height: 5px;
   border-radius: 3px;
-  background: #e8e9df;
+  background: var(--color-wisen-superficie);
   overflow: hidden;
 }
 
@@ -169,6 +166,7 @@
   display: block;
   height: 100%;
   border-radius: inherit;
+  background: var(--color-wisen-titulo);
 }
 
 @container (max-width: 205px) {
@@ -259,14 +257,14 @@
   height: 7px;
   overflow: hidden;
   border-radius: 3px;
-  background: #e8e9df;
+  background: var(--color-wisen-superficie);
 }
 
 .progress > span {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: #718465;
+  background: var(--color-wisen-titulo);
 }
 
 .record {

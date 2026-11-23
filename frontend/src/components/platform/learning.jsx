@@ -7,6 +7,7 @@ import { FiltrosBiblioteca } from "@/components/biblioteca/filtrosBiblioteca";
 import ConceptDetail, { ConceptPanel } from "@/components/conceito/conceptDetail";
 import conceptStyles from "@/components/conceito/conceptDetail.module.css";
 import newsStyles from "@/components/demo/newsDetail.module.css";
+import learningStyles from "@/components/meuConhecimento/conhecimento.module.css";
 import { Button } from "@/components/ui/button";
 import {
   Exposure,
@@ -20,27 +21,26 @@ import {
   useResource,
 } from "./shared";
 export function Library({ knowledge = false }) {
-  const [filter, setFilter] = useState("todos");
+  const initialFilter = useSearchParams()?.get("filtro");
+  const [filter, setFilter] = useState(
+    ["lacunas", "revisao", "dominados", "salvos"].includes(initialFilter) ? initialFilter : "todos",
+  );
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
   const resource = useResource(
     knowledge ? "/knowledge" : `/concepts?limit=30&page=${page}&q=${encodeURIComponent(query)}`,
   );
+  if (knowledge) return <LearningOverview resource={resource} />;
   return (
-    <Frame
-      title={knowledge ? "Meu conhecimento" : "Biblioteca de conceitos"}
-      active="Meu conhecimento"
-    >
+    <Frame title="Biblioteca de conceitos" active="Conceitos">
       <Panel>
+        <h2 className="mb-2 font-semibold">Os conceitos por trás das notícias</h2>
         <p className="mb-5 text-sm text-[#65748B]">
-          Seu progresso é construído durante as leituras e revisões. Conceitos ainda não avaliados
-          não representam lacunas comprovadas.
+          Consulte os conceitos que aparecem nos artigos e veja seu nível de conhecimento em cada
+          um. Conceitos ainda não avaliados não representam lacunas comprovadas.
         </p>
         <Link className="mr-5 underline" href="/paginaConhecimento">
-          Meu conhecimento
-        </Link>
-        <Link className="underline" href="/paginaBiblioteca">
-          Todos os conceitos
+          Acompanhar meu aprendizado
         </Link>
         {!knowledge && (
           <label className="mt-5 block text-sm">
@@ -81,15 +81,20 @@ export function Library({ knowledge = false }) {
                       { lacunas: "gap", revisao: "review", dominados: "mastered" }[filter],
                 )
                 .map((c) => (
-                  <li key={c.id} className="flex items-center justify-between gap-4 py-4">
-                    <Link
-                      href={`/paginaConceito?id=${c.concept_id ?? c.id}`}
-                      className="font-medium underline"
-                    >
-                      {c.name}
-                    </Link>
+                  <li key={c.id} className="flex flex-wrap items-center justify-between gap-4 py-4">
+                    <div>
+                      <Link
+                        href={`/paginaConceito?id=${c.concept_id ?? c.id}`}
+                        className="font-medium underline"
+                      >
+                        {c.name}
+                      </Link>
+                      {c.description && (
+                        <p className="mt-1 text-sm text-[#65748B]">{c.description}</p>
+                      )}
+                    </div>
                     <span className="text-sm text-[#65748B]">
-                      {statusText[c.display_status ?? c.status] ?? "Ainda não avaliado"}
+                      Seu nível: {statusText[c.display_status ?? c.status] ?? "Ainda não avaliado"}
                     </span>
                   </li>
                 ))}
@@ -124,6 +129,118 @@ export function Library({ knowledge = false }) {
     </Frame>
   );
 }
+function LearningOverview({ resource }) {
+  const items = resource.data?.items ?? [];
+  const assessed = items.filter(
+    (c) => c.last_review || ["gap", "review", "mastered"].includes(c.status),
+  );
+  const consolidated = assessed.filter((c) => c.status === "mastered");
+  const reinforce = assessed.filter((c) => c.status === "gap");
+  const average = assessed.length
+    ? Math.round(
+        (assessed.reduce((sum, c) => sum + Number(c.mastery_score ?? 0), 0) / assessed.length) *
+          100,
+      )
+    : null;
+  return (
+    <Frame
+      title={
+        <>
+          Acompanhe sua <span className="text-wisen-destaque">evolução</span>
+        </>
+      }
+      active="Aprendizado"
+    >
+      <div className={learningStyles.overview}>
+        <State resource={resource}>
+          <section className={learningStyles.stats} aria-label="Resumo do aprendizado">
+            {[
+              ["Nível estimado", average === null ? "Ainda não avaliado" : `${average}/100`],
+              ["Conceitos consolidados", consolidated.length],
+              ["Conceitos para reforçar", reinforce.length],
+            ].map(([label, value]) => (
+              <article key={label} className={learningStyles.stat}>
+                <h2 className={learningStyles.statTop}>{label}</h2>
+                <p className="text-3xl font-semibold tracking-tight text-wisen-titulo">{value}</p>
+                <span aria-hidden="true" className="h-1 w-10 rounded-full bg-wisen-destaque" />
+              </article>
+            ))}
+          </section>
+          <LearningPanel title="Seu conhecimento por conceito">
+            <p className="mb-4 text-sm text-wisen-texto-suave">
+              Este é seu retrato atual. O histórico de evolução ao longo do tempo ainda não está
+              disponível.
+            </p>
+            {items.length ? (
+              <ul className="divide-y divide-wisen-borda">
+                {items.map((c) => (
+                  <li
+                    key={c.concept_id ?? c.id}
+                    className="flex flex-wrap items-center justify-between gap-4 py-4"
+                  >
+                    <div>
+                      <Link
+                        className="rounded-md font-medium text-wisen-titulo underline-offset-4 hover:underline"
+                        href={`/paginaConceito?id=${c.concept_id ?? c.id}`}
+                      >
+                        {c.name}
+                      </Link>
+                      <p className="mt-1 text-sm text-wisen-texto-suave">
+                        {statusText[c.display_status ?? c.status] ?? "Ainda não avaliado"}
+                      </p>
+                    </div>
+                    <span className="rounded-lg bg-wisen-superficie px-3 py-2 text-sm font-semibold text-wisen-titulo">
+                      {assessed.includes(c)
+                        ? `${Math.round(Number(c.mastery_score ?? 0) * 100)}/100`
+                        : "Ainda não avaliado"}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>
+                Seu aprendizado aparecerá aqui conforme você avaliar os conceitos e praticar nas
+                revisões.
+              </p>
+            )}
+          </LearningPanel>
+          <LearningPanel title="Como estimamos seu nível">
+            <p className="text-sm text-wisen-texto-suave">
+              O nível considera respostas nas revisões e dúvidas registradas. Acertos aumentam a
+              estimativa; erros indicam necessidade de reforço. Um conceito é consolidado a partir
+              de 75 pontos e pelo menos duas respostas corretas. A taxa de acerto das sessões fica
+              em Revisões. Ler um artigo ou concluir uma sessão, por si só, não comprova domínio.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-4">
+              <Link
+                className="inline-flex min-h-10 items-center rounded-lg bg-wisen-destaque-suave px-4 text-sm font-semibold text-wisen-titulo"
+                href="/paginaRevisoes"
+              >
+                Praticar nas revisões
+              </Link>
+              <Link
+                className="inline-flex min-h-10 items-center rounded-lg border border-wisen-borda px-4 text-sm font-medium text-wisen-titulo"
+                href="/paginaBiblioteca"
+              >
+                Consultar conceitos
+              </Link>
+            </div>
+          </LearningPanel>
+        </State>
+      </div>
+    </Frame>
+  );
+}
+function LearningPanel({ title, children }) {
+  return (
+    <section className={`${learningStyles.panel} mb-5`}>
+      <div className={learningStyles.panelHeader}>
+        <h2>{title}</h2>
+      </div>
+      {children}
+    </section>
+  );
+}
 export function ConceptPage() {
   const id = useSearchParams().get("id");
   const resource = useResource(`/concepts/${id ?? "missing"}`);
@@ -146,7 +263,7 @@ export function ConceptPage() {
     }
   }
   return (
-    <Frame active="Meu conhecimento">
+    <Frame active="Conceitos">
       <State resource={resource}>
         {data && (
           <>

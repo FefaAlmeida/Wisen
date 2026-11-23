@@ -1,13 +1,14 @@
 "use client";
 
-import { ArrowDownWideNarrow, ArrowUpRight, X } from "lucide-react";
-import Image from "next/image";
+import { ArrowDownWideNarrow, X } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AppTopBar } from "@/components/app/appTopBar";
 import { PageHeader } from "@/components/app/pageHeader";
 import { Footer } from "@/components/footer";
+import CardNoticia from "@/components/homeCliente/cardNoticia";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
+import { State, useResource } from "@/components/platform/shared";
 import Sidebar from "@/components/sidebar";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,18 +19,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { stories } from "@/data/noticiasDemo";
-
 const topics = ["Economia", "Meio ambiente", "Tecnologia"];
 const filterItemClassName =
   "data-[highlighted]:bg-[#F3E69A] data-[highlighted]:text-wisen-titulo focus:bg-[#F3E69A] focus:text-wisen-titulo";
-
-function normalize(value) {
-  return value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase();
-}
 
 export default function PaginaExplorar() {
   const [interests, setInterests] = useState([]);
@@ -38,7 +30,19 @@ export default function PaginaExplorar() {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("relevantes");
 
+  const [page, setPage] = useState(1);
+  const session = useRef(null);
+  const filterKey = `${topic}|${sort}|${search}`;
+  if (session.current?.key !== filterKey) session.current = { key: filterKey, id: null };
+  const resource = useResource(
+    `/feed?order=${sort === "recentes" ? "recent" : "personalized"}&page=${page}&topic=${encodeURIComponent(topic === "Todos os assuntos" ? "" : topic)}&q=${encodeURIComponent(search)}${session.current.id ? `&sessionId=${session.current.id}` : ""}`,
+  );
+  useEffect(() => {
+    if (resource.data?.sessionId) session.current.id = resource.data.sessionId;
+  }, [resource.data]);
+  const stories = resource.data?.items ?? [];
   function clearFilters() {
+    setPage(1);
     setTopic("Todos os assuntos");
     setSearch("");
     setSort("relevantes");
@@ -60,28 +64,28 @@ export default function PaginaExplorar() {
     loadInterests();
   }, []);
 
-  const filteredStories = stories.filter((story) => {
-    const matchesTopic = topic === "Todos os assuntos" || story.category === topic;
-    const searchText = normalize(
-      `${story.title} ${story.summary} ${story.category} ${story.concepts.join(" ")}`,
-    );
-    return matchesTopic && searchText.includes(normalize(search));
-  });
-  const visibleStories = [...filteredStories].sort((first, second) =>
-    sort === "recentes" ? first.minutes - second.minutes : 0,
-  );
+  const visibleStories = stories;
 
   return (
     <div className="min-h-screen">
-      <Sidebar activeItem="Explorar" />
+      <Sidebar activeItem="Notícias" />
       <main className="relative isolate min-h-screen min-w-0 pt-[76px] bg-wisen-superficie font-[family-name:var(--font-geist-sans)] sm:ml-[76px] lg:ml-[240px]">
         <ConnectionsBackground fadeTop={false} />
 
         <div className="relative z-10 mx-auto w-full max-w-[1600px]">
-          <AppTopBar value={search} onQueryChange={setSearch} />
+          <AppTopBar
+            value={search}
+            onQueryChange={(value) => {
+              setSearch(value);
+              setPage(1);
+            }}
+          />
 
           <div className="wisen-container space-y-7 pb-12 pt-7">
-            <PageHeader eyebrow="Descoberta" title="Explore" highlight="notícias." />
+            <PageHeader eyebrow="Notícias" title="Seu feed de" highlight="notícias." />
+            <p className="mb-5 text-sm text-wisen-texto-suave">
+              Acompanhe as notícias do dia e descubra os conceitos por trás de cada assunto.
+            </p>
 
             <section className="flex flex-col gap-4 wisen-panel p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
               <div className="min-w-0">
@@ -120,7 +124,13 @@ export default function PaginaExplorar() {
 
             <section>
               <div className="mb-4 flex flex-wrap items-center gap-2">
-                <Select value={topic} onValueChange={setTopic}>
+                <Select
+                  value={topic}
+                  onValueChange={(value) => {
+                    setTopic(value);
+                    setPage(1);
+                  }}
+                >
                   <SelectTrigger
                     aria-label="Filtrar por assunto"
                     className="h-9 w-[190px] rounded-[10px] border-wisen-borda bg-white/85 text-xs text-[#344469] transition-colors hover:bg-[#F3E69A] hover:text-wisen-titulo"
@@ -138,7 +148,13 @@ export default function PaginaExplorar() {
                     ))}
                   </SelectContent>
                 </Select>
-                <Select value={sort} onValueChange={setSort}>
+                <Select
+                  value={sort}
+                  onValueChange={(value) => {
+                    setSort(value);
+                    setPage(1);
+                  }}
+                >
                   <SelectTrigger
                     aria-label="Ordenar notícias"
                     className="h-9 w-[170px] rounded-[10px] border-wisen-borda bg-white/85 text-xs text-[#344469] transition-colors hover:bg-[#F3E69A] hover:text-wisen-titulo"
@@ -172,76 +188,50 @@ export default function PaginaExplorar() {
                 <span>{visibleStories.length} notícias</span>
               </div>
 
-              {visibleStories.length ? (
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-                  {visibleStories.map((story) => (
-                    <article
-                      key={story.id}
-                      className="flex h-full flex-col overflow-hidden rounded-lg border border-[#E1E7F0] bg-white/95 shadow-sm"
+              <State resource={resource}>
+                {visibleStories.length ? (
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+                    {visibleStories.map((story) => (
+                      <CardNoticia key={story.id} item={story} onDismiss={resource.reload} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="rounded-lg border border-dashed border-[#CFD8E5] bg-white/75 px-5 py-12 text-center">
+                    <p className="text-sm font-semibold text-wisen-titulo">
+                      Nenhuma notícia encontrada
+                    </p>
+                    <p className="mt-1 text-xs text-[#7182A1]">
+                      Tente outro termo ou escolha um assunto diferente.
+                    </p>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={clearFilters}
+                      className="mt-4 cursor-pointer rounded-full transition-colors hover:bg-[#F3E69A] hover:text-wisen-titulo"
                     >
-                      <div className="relative h-40 shrink-0 overflow-hidden">
-                        <Image
-                          src={story.image}
-                          alt={story.title}
-                          fill
-                          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-                          className="object-cover"
-                        />
-                        <span className="absolute left-3 top-3 rounded-full bg-white/95 px-3 py-1 text-[10px] font-semibold text-[#30466E]">
-                          {story.category}
-                        </span>
-                      </div>
-                      <div className="flex flex-1 flex-col p-4">
-                        <div className="mb-2 flex items-center justify-between gap-3 text-[10px] text-[#94A2B9]">
-                          <span>{story.source}</span>
-                          <span>{story.age}</span>
-                        </div>
-                        <h2 className="text-base font-semibold leading-5 text-wisen-titulo">
-                          {story.title}
-                        </h2>
-                        <p className="mt-2 line-clamp-3 text-[13px] leading-[18px] text-wisen-texto-suave">
-                          {story.summary}
-                        </p>
-                        <div className="mt-auto flex flex-wrap gap-1.5 pt-4">
-                          {story.concepts.map((concept) => (
-                            <span
-                              key={concept}
-                              className="rounded-[10px] bg-[#FBF7E5] px-3 py-1 text-[11px] text-[#75683B]"
-                            >
-                              {concept}
-                            </span>
-                          ))}
-                        </div>
-                        <Link
-                          href="/paginaEvento"
-                          className="group mt-4 inline-flex cursor-pointer items-center justify-between gap-1.5 rounded-lg border-t border-[#E8ECF2] px-2 py-3 text-xs font-semibold text-[#30466E] transition-colors hover:bg-[#F3E69A] hover:text-wisen-titulo"
-                        >
-                          Ler notícia{" "}
-                          <ArrowUpRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
-                        </Link>
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              ) : (
-                <div className="rounded-lg border border-dashed border-[#CFD8E5] bg-white/75 px-5 py-12 text-center">
-                  <p className="text-sm font-semibold text-wisen-titulo">
-                    Nenhuma notícia encontrada
-                  </p>
-                  <p className="mt-1 text-xs text-[#7182A1]">
-                    Tente outro termo ou escolha um assunto diferente.
-                  </p>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={clearFilters}
-                    className="mt-4 cursor-pointer rounded-full transition-colors hover:bg-[#F3E69A] hover:text-wisen-titulo"
-                  >
-                    Limpar filtros
-                  </Button>
-                </div>
-              )}
+                      Limpar filtros
+                    </Button>
+                  </div>
+                )}
+              </State>
+              <div className="mt-6 flex items-center justify-between text-sm">
+                <button
+                  type="button"
+                  disabled={page === 1 || resource.loading}
+                  onClick={() => setPage((p) => p - 1)}
+                >
+                  Anterior
+                </button>
+                <span>Página {page}</span>
+                <button
+                  type="button"
+                  disabled={!resource.data?.hasMore || resource.loading}
+                  onClick={() => setPage((p) => p + 1)}
+                >
+                  Próxima
+                </button>
+              </div>
             </section>
           </div>
         </div>

@@ -3,6 +3,7 @@ import { readdir, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createPool } from "./index.js";
+import { seedLocations } from "./seed-locations.js";
 
 export async function migrate(pool, directory = new URL("../../migrations/", import.meta.url)) {
   const client = await pool.connect();
@@ -51,6 +52,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const pool = createPool();
   try {
     console.log({ migrations: await migrate(pool) });
+    console.log({ locations: await seedLocations(pool) });
   } finally {
     await pool.end();
   }

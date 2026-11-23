@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+import ReadingTracker from "./readingTracker";
 import {
   Exposure,
   Frame,
@@ -38,6 +39,7 @@ export default function EventPage() {
   }
   return (
     <Frame title="Acontecimento" active="Notícias">
+      <ReadingTracker eventId={data?.id} />
       <State resource={resource}>
         {data && (
           <>

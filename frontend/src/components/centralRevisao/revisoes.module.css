@@ -923,9 +923,10 @@
   margin-bottom: 24px;
   padding: 24px;
   border-radius: 16px;
-  border: 1px solid var(--color-wisen-borda);
-  background: var(--surface);
-  color: var(--ink);
+  border: 1px solid #293b5c;
+  background: #172542;
+  color: #fff;
+  box-shadow: 0 8px 24px -16px rgb(16 26 64 / 40%);
   text-decoration: none;
   transition:
     border-color 180ms ease,
@@ -944,7 +945,7 @@
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background: #fbf7e5;
+  background: #f3e69a;
   color: var(--ink);
 }
 .novaRevisaoPlus {
@@ -955,14 +956,15 @@
   min-width: 0;
 }
 .novaRevisaoCard h2 {
-  font-size: 20px;
+  color: #fff;
+  font-size: 22px;
   font-weight: 600;
   line-height: 1.2;
   letter-spacing: -0.4px;
 }
 .novaRevisaoCard p {
   margin-top: 5px;
-  color: var(--muted);
+  color: #cbd5e4;
   font-size: 14px;
   line-height: 1.6;
   max-width: 44ch;
@@ -977,12 +979,12 @@
   justify-content: center;
   flex-shrink: 0;
   gap: 10px;
-  min-height: 40px;
+  min-height: 44px;
   padding: 10px 16px;
   border-radius: 10px;
   background: var(--accent);
   color: var(--ink);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
 }
 .novaRevisaoCard:focus-visible {
@@ -992,11 +994,11 @@
 @media (hover: hover) and (pointer: fine) {
   .novaRevisaoCard:hover {
     border-color: #d7bf4d;
-    background: #fffdf5;
+    background: #213453;
   }
 }
 .novaRevisaoCard:active {
-  background: #fbf7e5;
+  background: #101a40;
 }
 @media (max-width: 767px) {
   .novaRevisaoCard {
@@ -1022,7 +1024,7 @@
     letter-spacing: -0.5px;
   }
   .novaRevisaoCard p {
-    font-size: 13px;
+    font-size: 14px;
     line-height: 1.5;
   }
   .novaRevisaoSeta {

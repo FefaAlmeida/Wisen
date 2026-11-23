@@ -73,7 +73,8 @@ export function authRepository(pool) {
       const { rows } = await pool.query(
         `SELECT ${sessionUserColumns}, users.avatar_data_url, user_preferences.interests,
                 user_preferences.interest_onboarding_completed, user_preferences.familiarity,
-                user_preferences.review_reminders, user_preferences.weekly_summary
+                user_preferences.review_reminders, user_preferences.weekly_summary,
+                users.country_code, users.state_id
            FROM users
            JOIN user_preferences ON user_preferences.user_id = users.id
           WHERE users.id = $1`,
@@ -93,9 +94,12 @@ export function authRepository(pool) {
         familiarity,
         review_reminders,
         weekly_summary,
+        country_code,
+        state_id,
       } = profile;
       return {
         user: { id, email, name, role },
+        location: country_code ? { countryCode: country_code, stateId: state_id } : null,
         avatarDataUrl: avatar_data_url,
         preferences: {
           interests,
@@ -108,9 +112,48 @@ export function authRepository(pool) {
 
     async updateProfile(
       userId,
-      { name, email, interests, notifications, onboardingCompleted, familiarity },
+      { name, email, interests, notifications, onboardingCompleted, familiarity, location },
     ) {
       return transaction(pool, async (client) => {
+        if (location !== undefined) {
+          const {
+            rows: [country],
+          } = await client.query(
+            `SELECT EXISTS (SELECT 1 FROM states WHERE country_code = countries.code) AS has_states
+             FROM countries WHERE code = $1`,
+            [location.countryCode],
+          );
+          if (!country || (country.has_states && location.stateId === null)) {
+            throw Object.assign(new Error("Selecione um país e seu estado ou região"), {
+              statusCode: 400,
+            });
+          }
+          if (location.stateId !== null) {
+            const { rowCount } = await client.query(
+              "SELECT 1 FROM states WHERE id = $1 AND country_code = $2",
+              [location.stateId, location.countryCode],
+            );
+            if (!rowCount) {
+              throw Object.assign(new Error("O estado não pertence ao país selecionado"), {
+                statusCode: 400,
+              });
+            }
+          }
+        }
+
+        if (onboardingCompleted) {
+          const {
+            rows: [current],
+          } = await client.query(
+            "SELECT country_code, state_id FROM users WHERE id = $1 FOR UPDATE",
+            [userId],
+          );
+          if (!location && !current?.country_code) {
+            throw Object.assign(new Error("Informe seu país e estado antes de concluir"), {
+              statusCode: 400,
+            });
+          }
+        }
         if (interests !== undefined) {
           const { rows } = await client.query(
             "SELECT name FROM categories WHERE available = true AND name = ANY($1::text[])",
@@ -127,10 +170,12 @@ export function authRepository(pool) {
           rows: [user],
         } = await client.query(
           `UPDATE users
-              SET name = COALESCE($1, name), email_verified_at = CASE WHEN $2::text IS NOT NULL AND lower($2::text) <> lower(email) THEN NULL ELSE email_verified_at END, email = COALESCE($2, email), updated_at = now()
+              SET name = COALESCE($1, name), email_verified_at = CASE WHEN $2::text IS NOT NULL AND lower($2::text) <> lower(email) THEN NULL ELSE email_verified_at END, email = COALESCE($2, email), updated_at = now(),
+                  country_code = CASE WHEN $4::boolean THEN $5::text ELSE country_code END,
+                  state_id = CASE WHEN $4::boolean THEN $6::integer ELSE state_id END
             WHERE id = $3
         RETURNING ${userColumns}`,
-          [name, email, userId],
+          [name, email, userId, location !== undefined, location?.countryCode, location?.stateId],
         );
 
         await client.query(

@@ -74,6 +74,47 @@ test("health, validação e proteção da sessão respondem corretamente", async
   assert.equal(anonymous.statusCode, 401);
 });
 
+test("consulta e cadastro sem nome permitem salvar nome antes do onboarding", async () => {
+  const email = `pending-${randomUUID()}@example.test`;
+  const check = (value, ip = 220) =>
+    app.inject({
+      method: "POST",
+      url: "/api/auth/check-email",
+      remoteAddress: remoteIp(ip),
+      payload: { email: value },
+    });
+  assert.deepEqual((await check(email)).json(), { exists: false });
+  assert.equal((await check("invalid")).statusCode, 400);
+  const response = await app.inject({
+    method: "POST",
+    url: "/api/auth/register",
+    remoteAddress: remoteIp(nextRegistrationIp++),
+    payload: { email, password: "senha-de-teste-segura" },
+  });
+  assert.equal(response.statusCode, 201, response.body);
+  assert.equal(response.json().user.name, "");
+  assert.deepEqual((await check(`  ${email.toUpperCase()}  `)).json(), { exists: true });
+  const cookie = cookieFrom(response);
+  const saved = await app.inject({
+    method: "PUT",
+    url: "/api/auth/profile",
+    headers: { cookie },
+    payload: { name: "  Lia  " },
+  });
+  assert.equal(saved.statusCode, 200, saved.body);
+  assert.equal(saved.json().user.name, "Lia");
+  const profile = await app.inject({
+    method: "GET",
+    url: "/api/auth/profile",
+    headers: { cookie },
+  });
+  assert.equal(profile.json().preferences.onboardingCompleted, false);
+  await pool.query("UPDATE users SET active=false WHERE id=$1", [response.json().user.id]);
+  assert.deepEqual((await check(email)).json(), { exists: true });
+  for (let i = 0; i < 5; i++) assert.equal((await check(email, 221)).statusCode, 200);
+  assert.equal((await check(email, 221)).statusCode, 429);
+});
+
 test("cadastro cria usuário, preferência, hash e sessão httpOnly no PostgreSQL", async () => {
   const email = `account-${randomUUID()}@example.test`;
   const { response, body, cookie } = await register({ email, name: "Ana Teste" });
@@ -195,6 +236,7 @@ test("perfil lê e salva dados pessoais, interesses e notificações", async () 
   assert.equal(savedProfile.statusCode, 200, savedProfile.body);
   assert.deepEqual(savedProfile.json(), {
     user: { ...body.user, name: "Perfil Atualizado" },
+    location: null,
     avatarDataUrl: null,
     preferences: {
       interests: ["Tecnologia", "Saúde", "Economia"],
@@ -467,7 +509,6 @@ test("perfil salva blocos independentes, valida entradas e não conclui onboardi
   });
   for (const payload of [
     {},
-    { name: "Só nome" },
     { email: body.user.email },
     { interests: null },
     { interests: [""] },
@@ -554,6 +595,7 @@ test("onboarding exige três interesses e permite omitir só a familiaridade", a
       payload: {
         interests: ["Tecnologia", "Saúde", "Economia"],
         onboardingCompleted: true,
+        location: { countryCode: "BR", stateId: 2021 },
         ...(familiarity ? { familiarity } : {}),
       },
     });

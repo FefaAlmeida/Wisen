@@ -1,10 +1,11 @@
 "use client";
 
 import {
+  Bookmark,
+  BookOpen,
   Bot,
   CalendarDays,
   Clock3,
-  Compass,
   Gauge,
   Globe,
   GraduationCap,
@@ -19,21 +20,16 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { useDemoMode } from "@/components/demo/mode";
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { requisitar } from "@/services/api";
 
 const navigation = [
   { label: "Início", href: "/paginaInicialCliente", icon: Home },
-  { label: "Explorar", href: "/paginaExplorar", icon: Compass },
-  { label: "Revisões", href: "/paginaRevisoes", icon: Clock3 },
-  {
-    label: "Meu conhecimento",
-    href: "/paginaBiblioteca",
-    icon: GraduationCap,
-  },
   { label: "Notícias", href: "/paginaExplorar", icon: Newspaper },
-  { label: "Salvos", href: "/paginaGuardados", icon: GraduationCap },
+  { label: "Conceitos", href: "/paginaBiblioteca", icon: BookOpen },
+  { label: "Revisões", href: "/paginaRevisoes", icon: Clock3 },
+  { label: "Aprendizado", href: "/paginaConhecimento", icon: GraduationCap },
+  { label: "Salvos", href: "/paginaGuardados", icon: Bookmark },
 ];
 
 const adminNavigation = [
@@ -49,17 +45,17 @@ function WisenBrand({ className = "", large = false, admin = false }) {
   return (
     <Link
       href={admin ? "/paginaInicioAdm" : "/paginaInicialCliente"}
-      className={`inline-flex flex-col items-center gap-1.5 text-white ${className}`}
+      className={`inline-flex items-center gap-2.5 text-white ${className}`}
     >
       <Image
-        src="/logoWisen-simbolo-v1.webp"
+        src="/logoWisen-simbolo-transparente.png"
         alt="Logo Wisen"
         width={44}
         height={44}
-        className="size-10 shrink-0 rounded-full border border-white/15 bg-[#f3f0e8] object-contain shadow-sm lg:size-11"
+        className="size-10 shrink-0 object-contain lg:size-11"
       />
       <span
-        className={`text-xl font-bold tracking-tight sm:hidden lg:block ${large ? "lg:text-2xl" : ""}`}
+        className={`text-xl font-bold leading-none tracking-[-0.06em] sm:hidden lg:block ${large ? "lg:text-[1.75rem]" : ""}`}
       >
         Wisen
       </span>
@@ -68,18 +64,7 @@ function WisenBrand({ className = "", large = false, admin = false }) {
 }
 
 function NavigationItems({ activeItem, mobile = false, admin = false }) {
-  const demo = useDemoMode();
-  const items = admin
-    ? adminNavigation
-    : demo
-      ? navigation.map((item) =>
-          item.label === "Notícias"
-            ? { ...item, href: "/paginaEvento" }
-            : item.label === "Salvos"
-              ? { ...item, label: "Aprendizado", href: "/paginaConhecimento" }
-              : item,
-        )
-      : navigation;
+  const items = admin ? adminNavigation : navigation;
   return (
     <nav
       aria-label={admin ? "Navegação administrativa" : "Navegação principal"}
@@ -89,7 +74,7 @@ function NavigationItems({ activeItem, mobile = false, admin = false }) {
         const isActive =
           label === activeItem ||
           (activeItem === "Guardados" && label === "Salvos") ||
-          (activeItem === "Conceitos" && label === "Meu conhecimento");
+          (activeItem === "Meu conhecimento" && label === "Conceitos");
         const className = mobile
           ? `flex h-11 items-center gap-3 rounded-xl px-3 text-sm transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EBDD80] ${
               isActive
@@ -150,7 +135,7 @@ function Logout() {
     setError("");
     try {
       await requisitar("/auth/logout", { method: "POST" });
-      window.location.assign("/paginaLogin");
+      window.location.assign("/auth");
     } catch {
       setError("Não foi possível sair da conta. Tente novamente.");
       setPending(false);

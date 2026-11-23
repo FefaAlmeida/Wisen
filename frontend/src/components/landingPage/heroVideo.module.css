@@ -1,0 +1,31 @@
+.backdrop {
+  position: absolute;
+  inset: 34% 0 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.65;
+  mask-image: linear-gradient(to bottom, transparent, #000 42%);
+}
+
+.approach {
+  position: absolute;
+  inset: 0;
+  transform-origin: 65% 45%;
+  animation: approach 18s ease-in-out infinite alternate;
+}
+
+@keyframes approach {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .approach {
+    animation: none;
+  }
+}

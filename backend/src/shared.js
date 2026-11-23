@@ -25,6 +25,7 @@ export const SOURCES = Object.freeze([
   },
 ]);
 export const QUEUES = Object.freeze({
+  profile: "embed-feed-profile",
   collect: "collect-source",
   article: "process-article",
   search: "semantic-search",

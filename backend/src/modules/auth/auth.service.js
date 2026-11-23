@@ -36,7 +36,11 @@ function invalidCredentials() {
 
 export function authService(repository) {
   return {
-    async register({ name, email, password }) {
+    async checkEmail(email) {
+      return { exists: Boolean(await repository.findByEmail(email)) };
+    },
+
+    async register({ name = "", email, password }) {
       const passwordHash = await hashPassword(password);
       const { token, tokenHash } = createSessionToken();
       const expiresAt = new Date(Date.now() + sessionDurationMs);

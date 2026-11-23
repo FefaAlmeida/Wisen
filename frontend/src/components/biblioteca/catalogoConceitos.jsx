@@ -1,5 +1,6 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { CardConceito } from "@/components/biblioteca/cardConceito";
 import { ConceitosSalvos } from "@/components/biblioteca/conceitosSalvos";
@@ -14,7 +15,11 @@ const filtros = {
 };
 
 export function CatalogoConceitos() {
-  const [filtroAtivo, setFiltroAtivo] = useState("todos");
+  const params = useSearchParams();
+  const initialFilter = params?.get("filtro");
+  const [filtroAtivo, setFiltroAtivo] = useState(
+    initialFilter in filtros ? initialFilter : "todos",
+  );
   const statusFiltrado = filtros[filtroAtivo];
   const conceitosFiltrados = conceitos.filter(
     (conceito) => !statusFiltrado || conceito.status === statusFiltrado,

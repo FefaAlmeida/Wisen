@@ -1,10 +1,11 @@
 import { z } from "zod";
 import { transaction } from "../../database/index.js";
 import { enqueue } from "../../queue/index.js";
-import { QUEUES, SOURCES } from "../../shared.js";
+import { MODEL_VERSION, QUEUES, SOURCES } from "../../shared.js";
 import { budgetService } from "../generation/budget.js";
 import { generationMode } from "../generation/mode.js";
 import { taskService } from "../generation/tasks.js";
+import { feedInteraction, personalizedFeed } from "./feed.js";
 import { learningService } from "./learning.js";
 import { platformRead } from "./read.js";
 import { reviewController } from "./reviews.js";
@@ -16,6 +17,7 @@ const page = z.object({
   limit: z.coerce.number().int().min(1).max(50).default(12),
   order: z.enum(["personalized", "recent"]).default("personalized"),
   topic: z.string().max(120).default(""),
+  sessionId: z.uuid().optional(),
 });
 const missing = () => Object.assign(new Error("Conteúdo não encontrado"), { statusCode: 404 });
 export function platformController(app, pool, boss, config) {
@@ -25,9 +27,32 @@ export function platformController(app, pool, boss, config) {
     budget = budgetService(pool, config);
   reviewController(app, pool);
   const secured = { preHandler: app.authenticateClient };
-  app.get("/api/feed", { ...secured, schema: { querystring: page } }, async (req) => ({
-    items: await read.feed(req.user.id, req.query),
-  }));
+  app.get("/api/feed", { ...secured, schema: { querystring: page } }, async (req) => {
+    const stale = await pool.query(
+      "SELECT 1 FROM user_preferences p LEFT JOIN feed_profiles f ON f.user_id=p.user_id WHERE p.user_id=$1 AND (f.user_id IS NULL OR f.interests<>p.interests OR f.model_version<>$2)",
+      [req.user.id, MODEL_VERSION],
+    );
+    if (stale.rowCount)
+      await boss
+        .send(QUEUES.profile, { userId: req.user.id }, { singletonKey: req.user.id })
+        .catch((error) => req.log.warn({ err: error }, "Feed profile queue unavailable"));
+    return personalizedFeed(pool, req.user.id, req.query);
+  });
+  app.post(
+    "/api/feed/interactions",
+    {
+      ...secured,
+      schema: {
+        body: z.object({
+          eventId: id,
+          requestId: id,
+          type: z.enum(["open", "progress", "dismiss"]),
+          seconds: z.number().int().min(0).max(15).default(0),
+        }),
+      },
+    },
+    (req) => feedInteraction(pool, req.user.id, req.body),
+  );
   app.get("/api/events/:id", { ...secured, schema: { params: z.object({ id }) } }, async (req) => {
     const data = await read.event(req.user.id, req.params.id);
     if (!data) throw missing();

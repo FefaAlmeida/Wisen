@@ -15,7 +15,7 @@ export default function PaginaConceito() {
   const name = useSearchParams().get("conceito") || "Inflação";
   const concept = conceitosDetalhados.find((item) => item.titulo === name);
   return (
-    <Frame active="Meu conhecimento">
+    <Frame active="Conceitos">
       {concept ? (
         <DemoConcept key={name} concept={concept} />
       ) : (

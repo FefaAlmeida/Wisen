@@ -68,7 +68,12 @@ export function Frame({
       {admin ? <AdminSidebar activeItem={active} /> : <Sidebar activeItem={active} />}
       <main className="relative isolate min-h-screen min-w-0 pt-[76px] sm:ml-[76px] lg:ml-[240px]">
         <ConnectionsBackground fadeTop={false} />
-        <AppTopBar admin={admin} value={pageSearch} onQueryChange={onPageSearchChange} />
+        <AppTopBar
+          admin={admin}
+          value={pageSearch}
+          onQueryChange={onPageSearchChange}
+          hideLabel={!admin && active === "Início"}
+        />
         <div className="wisen-container relative z-10 pt-7 pb-12">
           {title && (
             <PageHeader
@@ -115,22 +120,50 @@ export function Panel({ title, children }) {
   );
 }
 export function EventList({ items = [] }) {
+  const [hidden, setHidden] = useState([]);
+  const [error, setError] = useState("");
   return items.length ? (
     <div className="divide-y divide-[#DEE5ED]">
-      {items.map((item) => (
-        <article key={item.id} className="py-5 first:pt-0">
-          <p className="mb-2 text-xs text-[#65748B]">
-            {new Date(item.updated_at).toLocaleDateString("pt-BR")}
-            {item.source_count ? ` · ${item.source_count} fonte(s)` : ""}
-          </p>
-          <h2 className="text-xl font-semibold">
-            <Link className="hover:underline" href={`/paginaEvento?id=${item.id}`}>
-              {item.title}
-            </Link>
-          </h2>
-          <p className="mt-2 max-w-prose text-sm leading-7 text-[#65748B]">{item.summary}</p>
-        </article>
-      ))}
+      {error && <p role="alert">{error}</p>}
+      {items
+        .filter((item) => !hidden.includes(item.id))
+        .map((item) => (
+          <article key={item.id} className="py-5 first:pt-0">
+            <p className="mb-2 text-xs text-[#65748B]">
+              {new Date(item.updated_at).toLocaleDateString("pt-BR")}
+              {item.source_count ? ` · ${item.source_count} fonte(s)` : ""}
+            </p>
+            <p className="mb-2 flex flex-wrap gap-2 text-xs text-[#65748B]">
+              {item.recommendation_reason && <span>{item.recommendation_reason}</span>}
+              {item.reading_status === "read" && <span>Lido</span>}
+              {item.reading_status === "reading" && <span>Continuar lendo</span>}
+              {item.updated && <span>Atualizada</span>}
+            </p>
+            <h2 className="text-xl font-semibold">
+              <Link className="hover:underline" href={`/paginaEvento?id=${item.id}`}>
+                {item.title}
+              </Link>
+            </h2>
+            <p className="mt-2 max-w-prose text-sm leading-7 text-[#65748B]">{item.summary}</p>
+            <button
+              type="button"
+              className="mt-3 text-xs underline"
+              onClick={async () => {
+                try {
+                  await requisitar("/feed/interactions", {
+                    method: "POST",
+                    body: { eventId: item.id, type: "dismiss", requestId: crypto.randomUUID() },
+                  });
+                  setHidden((v) => [...v, item.id]);
+                } catch (e) {
+                  setError(e.message);
+                }
+              }}
+            >
+              N?o tenho interesse
+            </button>
+          </article>
+        ))}
     </div>
   ) : (
     <Feedback

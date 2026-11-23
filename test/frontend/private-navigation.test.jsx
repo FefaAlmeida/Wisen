@@ -19,11 +19,21 @@ describe("navegação privada", () => {
     fetch.mockResolvedValue({ ok: true, json: async () => ({ user: { role: "user" } }) });
     render(<Sidebar activeItem="Conceitos" />);
     expect(screen.getByRole("navigation", { name: "Navegação principal" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Meu conhecimento" })).toHaveAttribute(
-      "aria-current",
-      "page",
+    expect(
+      screen.getByRole("navigation", { name: "Navegação principal" }).querySelectorAll("a"),
+    ).toHaveLength(6);
+    expect(
+      Array.from(
+        screen.getByRole("navigation", { name: "Navegação principal" }).querySelectorAll("a"),
+        (link) => link.getAttribute("aria-label"),
+      ),
+    ).toEqual(["Início", "Notícias", "Conceitos", "Revisões", "Aprendizado", "Salvos"]);
+    expect(screen.getByRole("link", { name: "Aprendizado" })).toHaveAttribute(
+      "href",
+      "/paginaConhecimento",
     );
-    expect(screen.getByRole("link", { name: "Explorar" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Conceitos" })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: "Notícias" })).toHaveAttribute(
       "href",
       "/paginaExplorar",
     );
@@ -36,18 +46,21 @@ describe("navegação privada", () => {
     expect(screen.queryByRole("link", { name: "Configurações" })).not.toBeInTheDocument();
   });
 
-  it("usa texto branco, realce amarelo, logo acima do nome e ícones reforçados", () => {
+  it("usa texto branco, realce amarelo, logo transparente ao lado do nome e ícones reforçados", () => {
     render(<Sidebar activeItem="Início" />);
 
     const activeLink = screen.getByRole("link", { name: "Início" });
-    const inactiveLink = screen.getByRole("link", { name: "Explorar" });
+    const inactiveLink = screen.getByRole("link", { name: "Notícias" });
     expect(activeLink).toHaveClass("bg-wisen-destaque-suave", "text-[#202D3A]");
     expect(inactiveLink).toHaveClass("text-white", "hover:bg-white/10");
     expect(inactiveLink.querySelector("svg")).toHaveAttribute("stroke-width", "2.2");
 
     const logo = screen.getAllByAltText("Logo Wisen")[0];
-    expect(logo).toHaveClass("size-10", "rounded-full", "lg:size-11");
-    expect(logo.parentElement).toHaveClass("flex-col");
+    expect(logo).toHaveClass("size-10", "object-contain", "lg:size-11");
+    expect(logo.getAttribute("src")).toContain("logoWisen-simbolo-transparente.png");
+    expect(logo).not.toHaveClass("rounded-full", "bg-[#f3f0e8]");
+    expect(logo.parentElement).toHaveClass("inline-flex", "items-center", "gap-2.5");
+    expect(logo.parentElement).not.toHaveClass("flex-col");
     expect(logo.parentElement).toHaveTextContent("Wisen");
   });
 

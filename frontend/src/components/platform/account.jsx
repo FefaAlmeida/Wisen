@@ -6,10 +6,8 @@ import { Button } from "@/components/ui/button";
 import { requisitar } from "@/services/api";
 export default function Account() {
   const params = useSearchParams();
-  const action = params.get("action") ?? "forgot";
+  const action = params.get("action") === "delete" ? "delete" : "verify";
   const token = params.get("token") ?? "";
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
@@ -19,14 +17,7 @@ export default function Account() {
     try {
       const result = await requisitar(action === "delete" ? "/account" : `/account/${action}`, {
         method: action === "delete" ? "DELETE" : "POST",
-        body:
-          action === "verify"
-            ? { token }
-            : action === "reset"
-              ? { token, password }
-              : action === "delete"
-                ? { confirmation }
-                : { email },
+        body: action === "verify" ? { token } : { confirmation },
       });
       setMessage(result.message);
     } catch (err) {
@@ -42,43 +33,9 @@ export default function Account() {
           Wisen
         </Link>
         <h1 className="mb-6 mt-6 text-2xl font-semibold">
-          {action === "verify"
-            ? "Confirmar e-mail"
-            : action === "reset"
-              ? "Redefinir senha"
-              : action === "delete"
-                ? "Excluir minha conta"
-                : "Recuperar acesso"}
+          {action === "verify" ? "Confirmar e-mail" : "Excluir minha conta"}
         </h1>
         <form onSubmit={submit} className="space-y-5">
-          {action === "forgot" && (
-            <label className="block">
-              E-mail
-              <input
-                required
-                type="email"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="mt-2 w-full rounded-lg border p-3"
-              />
-            </label>
-          )}
-          {action === "reset" && (
-            <label className="block">
-              Nova senha
-              <input
-                required
-                type="password"
-                autoComplete="new-password"
-                minLength={8}
-                maxLength={128}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="mt-2 w-full rounded-lg border p-3"
-              />
-            </label>
-          )}
           {action === "delete" && (
             <label className="block">
               Isso remove sua conta, histórico e respostas. Digite EXCLUIR para confirmar.
@@ -108,7 +65,7 @@ export default function Account() {
             {message}
           </p>
         )}
-        <Link href="/paginaLogin" className="mt-6 block underline">
+        <Link href="/auth" className="mt-6 block underline">
           Voltar para login
         </Link>
       </section>

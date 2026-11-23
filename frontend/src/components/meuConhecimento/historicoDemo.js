@@ -44,9 +44,9 @@ export function formatDate(date, year = false) {
     .replaceAll(".", "");
 }
 export const categories = [
-  { name: "Economia", count: 41, color: "#A18D26" },
-  { name: "Política", count: 31, color: "#304B5B" },
-  { name: "Meio ambiente", count: 23, color: "#4C8977" },
-  { name: "Tecnologia", count: 19, color: "#558DB2" },
-  { name: "Sociedade", count: 14, color: "#8D7C9C" },
+  { name: "Economia", count: 41, color: "var(--color-wisen-destaque)" },
+  { name: "Política", count: 31, color: "var(--color-wisen-titulo)" },
+  { name: "Meio ambiente", count: 23, color: "var(--color-wisen-texto-suave)" },
+  { name: "Tecnologia", count: 19, color: "var(--color-wisen-texto-forte)" },
+  { name: "Sociedade", count: 14, color: "var(--color-wisen-destaque-suave)" },
 ];

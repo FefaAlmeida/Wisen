@@ -8,24 +8,24 @@ export function PerguntasFrequentes() {
 
   const faqs = [
     {
-      pergunta: "O Wisen é gratuito?",
+      pergunta: "Como começo a usar o Wisen?",
       resposta:
-        "Sim, você pode começar a usar o Wisen gratuitamente com acesso aos principais resumos e funcionalidades básicas.",
+        "Crie sua conta, escolha os temas que interessam a você e explore as notícias. Durante a leitura, você pode descobrir conceitos, salvar conteúdos e retomar o aprendizado nas revisões.",
     },
     {
       pergunta: "Quais tipos de conteúdo estão disponíveis?",
       resposta:
-        "Oferecemos resumos de notícias, análises de mercado, temas de tecnologia, política, economia e saúde com mapas mentais interativos.",
+        "Você encontra notícias organizadas por temas, explicações dos conceitos relacionados e perguntas de revisão para retomar o que aprendeu.",
     },
     {
-      pergunta: "Como é a curadoria dos conteúdos?",
+      pergunta: "Posso consultar as fontes das notícias?",
       resposta:
-        "Nossa equipe utiliza algoritmos avançados combinados com revisão humana para garantir fontes confiáveis e informações imparciais.",
+        "Sim. As notícias identificam suas fontes e oferecem acesso à publicação original, para você consultar o conteúdo e aprofundar a leitura.",
     },
     {
       pergunta: "Posso usar a plataforma no celular ou tablet?",
       resposta:
-        "Sim! O Wisen é inteiramente responsivo e funciona perfeitamente em qualquer dispositivo móvel, tablet ou computador.",
+        "Sim. Você pode acessar o Wisen pelo navegador do celular, tablet ou computador, sem precisar instalar um aplicativo.",
     },
   ];
 
@@ -34,64 +34,54 @@ export function PerguntasFrequentes() {
   };
 
   return (
-    <section id="faq" className="relative w-screen -mx-[calc(50vw-50%)] mt-0">
-      <div className="relative isolate overflow-hidden border-y border-[#293B5C] bg-[#172542] px-6 py-11 text-white shadow-[0_24px_65px_-42px_rgba(16,26,64,0.45)] sm:px-10 md:px-14 md:py-16">
-        {/* Iluminação suave */}
-        <div className="pointer-events-none absolute -bottom-32 -left-24 z-0 h-80 w-80 rounded-full bg-[#30466E]/30 blur-3xl" />
+    <section
+      id="faq"
+      aria-labelledby="faq-titulo"
+      className="relative w-screen -mx-[calc(50vw-50%)] mt-0 scroll-mt-24"
+    >
+      <div className="relative isolate overflow-hidden border-y border-[#293B5C] bg-[#172542] px-6 py-8 text-white sm:px-10 md:px-14 md:py-10">
 
-        <div className="relative z-10 mx-auto grid max-w-[1360px] grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-14">
+        <div className="relative z-10 mx-auto grid max-w-[1360px] grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-14">
           {/* Introdução */}
-          <div className="space-y-5 lg:col-span-5">
-            <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#E8E191]">
-              DÚVIDAS FREQUENTES
-            </span>
-
-            <h2 className="text-[clamp(2.1rem,3.5vw,3.2rem)] font-bold leading-[1.15] tracking-[-0.045em] text-white">
-              Ainda tem
-              <br />
+          <div className="space-y-4 lg:col-span-5">
+            <h2
+              id="faq-titulo"
+              className="whitespace-nowrap text-center text-[clamp(1.5rem,6.5vw,1.875rem)] font-bold leading-[1.15] tracking-[-0.045em] text-white sm:whitespace-normal sm:text-left sm:text-[clamp(1.875rem,2.8vw,2.5rem)]"
+            >
+              Ainda tem <br className="hidden sm:block" />
               perguntas<span className="text-[#E8E191]">?</span>
             </h2>
 
-            <p className="max-w-[340px] text-[14px] leading-[1.9] text-[#BDCADB]">
-              Reunimos aqui as principais dúvidas sobre o funcionamento do Wisen.
-            </p>
           </div>
 
           {/* Perguntas */}
-          <div className="space-y-1 lg:col-span-7">
+          <div className="lg:col-span-7">
             {faqs.map((item, index) => {
               const estaAberto = abertoIndex === index;
 
               return (
-                <div key={item.pergunta} className="border-b border-white/15 last:border-b-0">
+                <div key={item.pergunta} className="border-b border-white/10 last:border-b-0">
                   <button
                     type="button"
                     onClick={() => toggleFaq(index)}
                     aria-expanded={estaAberto}
                     aria-controls={`faq-resposta-${index}`}
-                    className="group flex w-full cursor-pointer items-center justify-between gap-5 py-5 text-left"
+                    className="group flex min-h-16 w-full cursor-pointer items-center justify-between gap-5 py-4 text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E8E191]"
                   >
                     <span
-                      className={`text-[14px] font-semibold leading-relaxed transition-colors duration-300 sm:text-[15px] ${
+                      className={`text-base font-semibold leading-relaxed transition-colors duration-200 ${
                         estaAberto ? "text-[#E8E191]" : "text-white group-hover:text-[#E8E191]"
                       }`}
                     >
                       {item.pergunta}
                     </span>
 
-                    <div
-                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-all duration-300 ${
-                        estaAberto
-                          ? "border-[#E8E191]/40 bg-[#E8E191]/15"
-                          : "border-white/15 bg-white/5 group-hover:border-[#E8E191]/40"
+                    <ChevronDown
+                      aria-hidden="true"
+                      className={`h-4 w-4 shrink-0 text-[#E8E191] transition-transform duration-200 motion-reduce:transition-none ${
+                        estaAberto ? "rotate-180" : ""
                       }`}
-                    >
-                      <ChevronDown
-                        className={`h-4 w-4 text-[#E8E191] transition-transform duration-300 ${
-                          estaAberto ? "rotate-180" : ""
-                        }`}
-                      />
-                    </div>
+                    />
                   </button>
 
                   {/* Resposta com abertura suave */}
@@ -103,7 +93,7 @@ export function PerguntasFrequentes() {
                     }`}
                   >
                     <div className="min-h-0 overflow-hidden">
-                      <p className="max-w-[540px] pb-6 pr-8 text-[13px] leading-[1.9] text-[#BDCADB] sm:text-[14px]">
+                      <p className="max-w-[600px] pb-6 pr-6 text-base leading-[1.8] text-[#BDCADB]">
                         {item.resposta}
                       </p>
                     </div>

@@ -34,11 +34,12 @@ export function GraficoEvolucao() {
         </div>
         <span
           className={styles.info}
-          title="O mastery score vai de 0 a 100 e representa seu domínio dos conceitos estudados."
+          title="O nível estimado vai de 0 a 100 e considera evidências das revisões. Ler uma notícia ou concluir uma sessão, por si só, não comprova domínio."
         >
           <Info size={16} aria-hidden="true" />
           <span className="sr-only">
-            O mastery score vai de 0 a 100 e representa seu domínio dos conceitos estudados.
+            O nível estimado vai de 0 a 100 e considera evidências das revisões. Ler uma notícia ou
+            concluir uma sessão, por si só, não comprova domínio.
           </span>
         </span>
       </div>
@@ -66,14 +67,14 @@ export function GraficoEvolucao() {
           </div>
           <svg
             role="img"
-            aria-label={`Mastery score nos últimos ${period} dias: de ${first.score} para ${last.score} pontos.`}
+            aria-label={`Nível estimado nos últimos ${period} dias: de ${first.score} para ${last.score} pontos.`}
             viewBox="0 0 700 220"
             preserveAspectRatio="none"
           >
             <defs>
               <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#D8C966" stopOpacity="0.28" />
-                <stop offset="100%" stopColor="#D8C966" stopOpacity="0.01" />
+                <stop offset="0%" stopColor="var(--color-wisen-destaque)" stopOpacity="0.28" />
+                <stop offset="100%" stopColor="var(--color-wisen-destaque)" stopOpacity="0.01" />
               </linearGradient>
             </defs>
             {[0, 25, 50, 75, 100].map((value) => (
@@ -83,7 +84,7 @@ export function GraficoEvolucao() {
                   x2="680"
                   y1={y(value)}
                   y2={y(value)}
-                  stroke="#E5EAF0"
+                  stroke="var(--color-wisen-borda)"
                   strokeDasharray={value === 0 ? undefined : "3 5"}
                 />
               </g>
@@ -93,7 +94,7 @@ export function GraficoEvolucao() {
               data-evolution-line
               points={points}
               fill="none"
-              stroke="#304B5B"
+              stroke="var(--color-wisen-titulo)"
               strokeWidth="2.5"
               strokeLinejoin="round"
               strokeLinecap="round"
@@ -104,15 +105,15 @@ export function GraficoEvolucao() {
               x2={x(inspection ?? samples.length - 1)}
               y1="20"
               y2="190"
-              stroke="#94A3B8"
+              stroke="var(--color-wisen-texto-suave)"
               strokeDasharray="3 4"
             />
             <circle
               cx={x(inspection ?? samples.length - 1)}
               cy={y(selected.score)}
               r="5"
-              fill="#E8E191"
-              stroke="#304B5B"
+              fill="var(--color-wisen-destaque-suave)"
+              stroke="var(--color-wisen-titulo)"
               strokeWidth="2"
             />
           </svg>

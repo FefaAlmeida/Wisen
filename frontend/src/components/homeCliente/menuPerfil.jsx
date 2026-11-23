@@ -40,7 +40,7 @@ export default function MenuPerfil({ profileHref = "/paginaPerfil" }) {
         method: "POST",
       });
 
-      window.location.assign("/paginaLogin");
+      window.location.assign("/auth");
     } catch (error) {
       console.error("Erro ao sair:", error);
       setErro("Não foi possível sair da conta.");

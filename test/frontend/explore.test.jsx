@@ -41,28 +41,18 @@ describe("filtros da página Explorar integrada", () => {
       "data-fade-top",
       "false",
     );
-    await screen.findByText("6 eventos nesta página");
-    await screen.findByRole("option", { name: "Tecnologia" });
-    await user.selectOptions(
-      screen.getByRole("combobox", { name: "Filtrar por assunto" }),
-      "Tecnologia",
-    );
-    await user.selectOptions(screen.getByRole("combobox", { name: "Ordenar notícias" }), "recent");
-    await waitFor(() =>
-      expect(fetch).toHaveBeenCalledWith(
-        "/api/feed?order=recent&page=1&topic=Tecnologia",
-        expect.anything(),
-      ),
+    await screen.findByText("6 notícias");
+    expect(screen.getAllByRole("link", { name: /^Evento \d$/ })).toHaveLength(6);
+    expect(screen.getByRole("link", { name: "Evento 0" })).toHaveAttribute(
+      "href",
+      "/paginaEvento?id=evento-0",
     );
     await user.click(screen.getByRole("button", { name: "Limpar filtros" }));
-    expect(screen.getByRole("combobox", { name: "Filtrar por assunto" })).toHaveValue("");
-    expect(screen.getByRole("combobox", { name: "Ordenar notícias" })).toHaveValue("personalized");
     await waitFor(() =>
       expect(fetch).toHaveBeenCalledWith(
-        "/api/feed?order=personalized&page=1&topic=",
+        "/api/feed?order=personalized&page=1&topic=&q=",
         expect.anything(),
       ),
     );
-    await screen.findByText("6 eventos nesta página");
   });
 });

@@ -3,6 +3,7 @@ import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { createPool } from "../../backend/src/database/index.js";
 import { migrate } from "../../backend/src/database/migrate.js";
+import { seedLocations } from "../../backend/src/database/seed-locations.js";
 
 export const root = fileURLToPath(new URL("../../", import.meta.url));
 if (existsSync(new URL("../../.env", import.meta.url)))
@@ -31,6 +32,7 @@ export async function withTestDatabase(run) {
     const pool = createPool(databaseUrl);
     try {
       const applied = await migrate(pool);
+      await seedLocations(pool);
       console.log(`migrations de teste: ${applied.length ? applied.join(", ") : "em dia"}`);
     } finally {
       await pool.end();

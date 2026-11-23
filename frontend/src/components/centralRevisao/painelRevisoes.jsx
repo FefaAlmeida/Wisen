@@ -43,7 +43,7 @@ export default function PainelRevisoes({ areas = [], questoes = [], summary }) {
           <PageHeader eyebrow="Revisões" title="Central de" highlight="revisões." />
           <div className={styles.meta}>
             {live ? (
-              <span>Seu progresso de revisão</span>
+              <span>Sua prática de revisão</span>
             ) : (
               <>
                 <span className={styles.badge}>Prévia</span>
@@ -53,8 +53,17 @@ export default function PainelRevisoes({ areas = [], questoes = [], summary }) {
           </div>
         </div>
       </div>
+      <section className="wisen-panel mb-7 p-4 sm:p-5">
+        <h2 className="text-sm font-semibold text-wisen-titulo">Reforce o que você aprendeu</h2>
+        <span aria-hidden="true" className="mt-2 block h-0.5 w-8 rounded-full bg-[#D7BF4D]" />
+        <p className="mt-1 text-xs leading-5 text-wisen-texto-suave">
+          Pratique os conceitos das notícias com quizzes e flashcards. Aqui você acompanha suas
+          sessões; em Aprendizado, a evolução do seu conhecimento.
+        </p>
+      </section>
       <Link
         href="/paginaRevisoes/nova"
+        data-wisen-hover="preserve"
         className={styles.novaRevisaoCard}
         aria-labelledby="nova-revisao-title"
       >
@@ -95,7 +104,7 @@ export default function PainelRevisoes({ areas = [], questoes = [], summary }) {
             icon: CheckCheck,
           },
           {
-            titulo: "Taxa de acerto",
+            titulo: "Acertos nas revisões",
             valor: quizzes ? `${Math.round((correct / quizzes) * 100)}%` : "—",
             unidade: "nos últimos 7 dias",
             detalhe: `${correct} acertos em ${quizzes} questões de quiz`,
@@ -224,7 +233,7 @@ export default function PainelRevisoes({ areas = [], questoes = [], summary }) {
             ))}
           </ul>
           <Link href="/paginaConhecimento" className={styles.voltar}>
-            Ver meu conhecimento <ArrowRight size={15} aria-hidden="true" />
+            Acompanhar meu aprendizado <ArrowRight size={15} aria-hidden="true" />
           </Link>
         </section>
       </div>

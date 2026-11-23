@@ -23,10 +23,18 @@ const credentialsSchema = z.object({
 
 const loginSchema = credentialsSchema.extend({ remember: z.boolean().optional().default(false) });
 
+const locationSchema = z
+  .object({
+    countryCode: z.string().regex(/^[A-Z]{2}$/),
+    stateId: z.number().int().positive().nullable(),
+  })
+  .strict();
+
 // 1. Schema para validação dos dados enviados na atualização do perfil
 const updateProfileSchema = z
   .object({
     name: z.string().trim().min(2).max(120).optional(),
+    location: locationSchema.optional(),
     email: emailSchema.optional(),
     interests: z
       .array(z.string().trim().min(1).max(120))
@@ -53,11 +61,12 @@ const updateProfileSchema = z
   )
   .refine((data) => Object.keys(data).length > 0, "Envie ao menos um bloco")
   .refine(
-    (data) => (data.name === undefined) === (data.email === undefined),
-    "Envie nome e e-mail juntos",
+    (data) => data.email === undefined || data.name !== undefined,
+    "Envie nome junto com o e-mail",
   );
 const profileSchema = z.object({
   user: userSchema,
+  location: locationSchema.nullable(),
   avatarDataUrl: z
     .string()
     .max(800_000)
@@ -110,12 +119,25 @@ export function authController(app, service, config, accounts) {
   });
 
   app.post(
+    "/api/auth/check-email",
+    {
+      config: { rateLimit: { max: 5, timeWindow: "1 minute" } },
+      schema: {
+        tags: ["Autenticação"],
+        body: z.object({ email: emailSchema }),
+        response: { 200: z.object({ exists: z.boolean() }) },
+      },
+    },
+    (request) => service.checkEmail(request.body.email),
+  );
+
+  app.post(
     "/api/auth/register",
     {
       config: { rateLimit: { max: 5, timeWindow: "1 minute" } },
       schema: {
         tags: ["Autenticação"],
-        body: credentialsSchema.extend({ name: z.string().trim().min(2).max(120) }),
+        body: credentialsSchema.extend({ name: z.string().trim().min(2).max(120).optional() }),
         response: { 201: z.object({ user: userSchema }) },
       },
     },

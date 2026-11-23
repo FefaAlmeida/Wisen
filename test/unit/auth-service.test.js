@@ -41,6 +41,17 @@ function createAuthHarness() {
   return { service: authService(repository), users, sessions };
 }
 
+test("cadastro sem nome permite consultar conta sem expor dados pessoais", async () => {
+  const { service, users } = createAuthHarness();
+  const email = "pendente@example.test";
+  assert.deepEqual(await service.checkEmail(email), { exists: false });
+  const account = await service.register({ email, password: "senha-segura-123" });
+  assert.equal(account.user.name, "");
+  assert.deepEqual(await service.checkEmail(email), { exists: true });
+  users.get(email).active = false;
+  assert.deepEqual(await service.checkEmail(email), { exists: true });
+});
+
 test("cadastro guarda hash scrypt e cria uma sessão que pode ser revogada", async () => {
   const { service, users, sessions } = createAuthHarness();
   const account = await service.register({

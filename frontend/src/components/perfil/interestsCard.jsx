@@ -28,7 +28,9 @@ export function InterestsCard({
 }) {
   const [search, setSearch] = useState("");
   const searchTerm = normalize(search);
-  const visibleTags = categories.filter((tag) => normalize(tag).includes(searchTerm));
+  const visibleTags = onboarding
+    ? categories
+    : categories.filter((tag) => normalize(tag).includes(searchTerm));
   const selectedTags = categories.filter((tag) => interests.includes(tag));
   const canSave = new Set(interests).size >= minimumSelections;
   const Container = embedded ? Card : ProfileSection;
@@ -49,30 +51,31 @@ export function InterestsCard({
       }
     >
       <CardContent className={embedded ? "gap-4" : "gap-4 px-0"}>
-        {/* Campo de Busca */}
-        <div className="relative">
-          <Search
-            className={`absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 ${
-              systemColors ? "text-wisen-texto-suave" : "text-slate-400"
-            }`}
-          />
-          <Input
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="Buscar temas..."
-            aria-label="Buscar temas de interesse"
-            className={`${embedded ? "h-11 text-sm placeholder:text-wisen-texto-suave" : "h-11 text-sm"} rounded-xl border pl-9 focus-visible:ring-wisen-destaque ${
-              systemColors
-                ? onboarding
-                  ? "border-wisen-borda bg-white text-wisen-titulo shadow-none"
-                  : "border-wisen-borda bg-wisen-superficie text-wisen-titulo"
-                : "border-slate-200 bg-slate-50 text-[#2B333F]"
-            }`}
-          />
-        </div>
+        {!onboarding && (
+          <div className="relative">
+            <Search
+              className={`absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 ${
+                systemColors ? "text-wisen-texto-suave" : "text-slate-400"
+              }`}
+            />
+            <Input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Buscar temas..."
+              aria-label="Buscar temas de interesse"
+              className={`${embedded ? "h-11 text-sm placeholder:text-wisen-texto-suave" : "h-11 text-sm"} rounded-xl border pl-9 focus-visible:ring-wisen-destaque ${
+                systemColors
+                  ? onboarding
+                    ? "border-wisen-borda bg-white text-wisen-titulo shadow-none"
+                    : "border-wisen-borda bg-wisen-superficie text-wisen-titulo"
+                  : "border-slate-200 bg-slate-50 text-[#2B333F]"
+              }`}
+            />
+          </div>
+        )}
 
         {onboarding ? (
-          <div className="grid grid-cols-2 gap-2.5 @min-[28rem]/interesses:grid-cols-3 @min-[38rem]/interesses:grid-cols-4">
+          <div className="flex flex-wrap gap-2">
             {visibleTags.map((tag) => {
               const selected = interests.includes(tag);
               return (

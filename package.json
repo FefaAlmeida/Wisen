@@ -15,11 +15,13 @@
   "packageManager": "npm@11.13.0",
   "scripts": {
     "dev": "node scripts/dev.js",
+    "dev:docker": "node scripts/dev.js --docker",
     "dev:down": "docker compose down",
     "dev:logs": "docker compose logs -f frontend backend ai",
     "dev:status": "docker compose ps",
     "setup:model": "docker compose run --build --rm --no-deps ai npm run setup:model -w @wisen/ai",
     "db:migrate": "docker compose run --build --rm migrate",
+    "db:seed:locations": "docker compose run --rm --no-deps backend node backend/src/database/seed-locations.js",
     "test:unit": "node test/scripts/run-node-tests.js unit",
     "test:integration": "node test/scripts/run-integration.js",
     "test:frontend": "vitest run --config test/vitest.config.js",

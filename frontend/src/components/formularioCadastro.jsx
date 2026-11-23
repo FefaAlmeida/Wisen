@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { requisitar } from "@/services/api";
+import styles from "./authForm.module.css";
 
 export default function FormularioCadastro({ glass = false }) {
   const [mostrarSenha, setMostrarSenha] = useState(false);
@@ -42,7 +43,7 @@ export default function FormularioCadastro({ glass = false }) {
           : "border-0 bg-white shadow-[0_20px_60px_rgba(37,53,77,0.14)]"
       }`}
     >
-      <CardHeader className="space-y-1 px-6 pt-8 pb-6 sm:px-10 sm:pt-10 sm:pb-7 lg:px-12">
+      <CardHeader className="space-y-1 px-6 pt-6 pb-5 sm:px-8 sm:pt-7">
         <CardTitle
           id="cadastro-title"
           className={`text-[32px] font-semibold tracking-tight ${glass ? "text-[#F2DF73]" : "text-wisen-texto-forte"}`}
@@ -50,28 +51,22 @@ export default function FormularioCadastro({ glass = false }) {
           Criar conta
         </CardTitle>
 
-        <CardDescription className="space-y-1">
+        <CardDescription>
           <span
-            className={`block text-sm font-medium ${glass ? "text-white/90" : "text-[#71809C]"}`}
+            className={`block text-sm leading-relaxed ${glass ? "text-white/75" : "text-[#71809C]"}`}
           >
-            Bem-vindo ao Wisen.
-          </span>
-
-          <span
-            className={`block text-xs leading-relaxed ${glass ? "text-white/75" : "text-[#8995AA]"}`}
-          >
-            Crie sua conta para explorar notícias, análises e construir seu conhecimento.
+            Crie sua conta e comece a aprender.
           </span>
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="px-6 pb-8 sm:px-10 sm:pb-10 lg:px-12">
-        <form aria-labelledby="cadastro-title" className="space-y-5" onSubmit={handleSubmit}>
+      <CardContent className="px-6 pb-6 sm:px-8 sm:pb-7">
+        <form aria-labelledby="cadastro-title" className="space-y-4" onSubmit={handleSubmit}>
           {/* Nome */}
           <div className="space-y-2">
             <Label
               htmlFor="nome"
-              className={`text-xs font-semibold ${glass ? "text-white/90" : "text-[#344563]"}`}
+              className={`text-sm font-semibold ${glass ? "text-white/90" : "text-[#344563]"}`}
             >
               Nome completo
             </Label>
@@ -83,7 +78,7 @@ export default function FormularioCadastro({ glass = false }) {
                 stroke="currentColor"
                 strokeWidth="1.7"
                 aria-hidden="true"
-                className={`absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 ${glass ? "text-[#52647D]" : "text-[#9AA7BC]"}`}
+                className={`pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 ${glass ? "text-[#A6B5CC]" : "text-[#9AA7BC]"}`}
               >
                 <circle cx="12" cy="8" r="4" />
                 <path d="M5 21a7 7 0 0 1 14 0" />
@@ -99,7 +94,7 @@ export default function FormularioCadastro({ glass = false }) {
                 minLength={2}
                 maxLength={120}
                 disabled={enviando}
-                className={`h-11 rounded-lg border-[#D9E1ED] pl-10 text-sm text-wisen-texto-forte placeholder:text-[#71809C] focus-visible:border-[#D6B947] focus-visible:ring-2 focus-visible:ring-[#EEDC84]/70 ${glass ? "bg-[#F1F5FC] text-[#17243A]" : "bg-white"}`}
+                className={`h-11 rounded-lg pl-10 text-base focus-visible:border-[#D6B947] focus-visible:ring-2 focus-visible:ring-[#EEDC84]/40 ${glass ? `${styles.darkInput} border-white/20 bg-[#25354E] text-[#F4F6FA] placeholder:text-[#A6B5CC]` : "border-[#D9E1ED] bg-white text-wisen-texto-forte placeholder:text-[#71809C]"}`}
               />
             </div>
           </div>
@@ -108,7 +103,7 @@ export default function FormularioCadastro({ glass = false }) {
           <div className="space-y-2">
             <Label
               htmlFor="emailCadastro"
-              className={`text-xs font-semibold ${glass ? "text-white/90" : "text-[#344563]"}`}
+              className={`text-sm font-semibold ${glass ? "text-white/90" : "text-[#344563]"}`}
             >
               E-mail
             </Label>
@@ -120,7 +115,7 @@ export default function FormularioCadastro({ glass = false }) {
                 stroke="currentColor"
                 strokeWidth="1.7"
                 aria-hidden="true"
-                className={`absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 ${glass ? "text-[#52647D]" : "text-[#9AA7BC]"}`}
+                className={`pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 ${glass ? "text-[#A6B5CC]" : "text-[#9AA7BC]"}`}
               >
                 <rect x="3" y="5" width="18" height="14" rx="2" />
                 <path d="m3 7 9 6 9-6" />
@@ -134,7 +129,7 @@ export default function FormularioCadastro({ glass = false }) {
                 autoComplete="email"
                 required
                 disabled={enviando}
-                className={`h-11 rounded-lg border-[#D9E1ED] pl-10 text-sm text-wisen-texto-forte placeholder:text-[#71809C] focus-visible:border-[#D6B947] focus-visible:ring-2 focus-visible:ring-[#EEDC84]/70 ${glass ? "bg-[#F1F5FC] text-[#17243A]" : "bg-white"}`}
+                className={`h-11 rounded-lg pl-10 text-base focus-visible:border-[#D6B947] focus-visible:ring-2 focus-visible:ring-[#EEDC84]/40 ${glass ? `${styles.darkInput} border-white/20 bg-[#25354E] text-[#F4F6FA] placeholder:text-[#A6B5CC]` : "border-[#D9E1ED] bg-white text-wisen-texto-forte placeholder:text-[#71809C]"}`}
               />
             </div>
           </div>
@@ -143,7 +138,7 @@ export default function FormularioCadastro({ glass = false }) {
           <div className="space-y-2">
             <Label
               htmlFor="senhaCadastro"
-              className={`text-xs font-semibold ${glass ? "text-white/90" : "text-[#344563]"}`}
+              className={`text-sm font-semibold ${glass ? "text-white/90" : "text-[#344563]"}`}
             >
               Senha
             </Label>
@@ -155,7 +150,7 @@ export default function FormularioCadastro({ glass = false }) {
                 stroke="currentColor"
                 strokeWidth="1.7"
                 aria-hidden="true"
-                className={`absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 ${glass ? "text-[#52647D]" : "text-[#9AA7BC]"}`}
+                className={`pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 ${glass ? "text-[#A6B5CC]" : "text-[#9AA7BC]"}`}
               >
                 <rect x="5" y="10" width="14" height="11" rx="2" />
                 <path d="M8 10V7a4 4 0 0 1 8 0v3" />
@@ -171,7 +166,7 @@ export default function FormularioCadastro({ glass = false }) {
                 minLength={8}
                 maxLength={128}
                 disabled={enviando}
-                className={`h-11 rounded-lg border-[#D9E1ED] pr-12 pl-10 text-sm text-wisen-texto-forte placeholder:text-[#71809C] focus-visible:border-[#D6B947] focus-visible:ring-2 focus-visible:ring-[#EEDC84]/70 [&::-ms-reveal]:hidden [&::-ms-clear]:hidden [&::-webkit-credentials-auto-fill-button]:hidden ${glass ? "bg-[#F1F5FC] text-[#17243A]" : "bg-white"}`}
+                className={`h-11 rounded-lg pr-12 pl-10 text-base focus-visible:border-[#D6B947] focus-visible:ring-2 focus-visible:ring-[#EEDC84]/40 [&::-ms-reveal]:hidden [&::-ms-clear]:hidden [&::-webkit-credentials-auto-fill-button]:hidden ${glass ? `${styles.darkInput} border-white/20 bg-[#25354E] text-[#F4F6FA] placeholder:text-[#A6B5CC]` : "border-[#D9E1ED] bg-white text-wisen-texto-forte placeholder:text-[#71809C]"}`}
               />
 
               <button
@@ -179,7 +174,7 @@ export default function FormularioCadastro({ glass = false }) {
                 onClick={() => setMostrarSenha(!mostrarSenha)}
                 aria-pressed={mostrarSenha}
                 aria-label={mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
-                className={`absolute top-1/2 right-3.5 -translate-y-1/2 rounded-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D6B947] hover:text-wisen-texto-forte ${glass ? "text-[#52647D]" : "text-[#98A5BB]"}`}
+                className={`absolute top-1/2 right-3.5 -translate-y-1/2 rounded-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D6B947] ${glass ? "text-[#A6B5CC] hover:text-white" : "text-[#98A5BB] hover:text-wisen-texto-forte"}`}
               >
                 {mostrarSenha ? (
                   <svg
@@ -231,16 +226,16 @@ export default function FormularioCadastro({ glass = false }) {
           </Button>
         </form>
 
-        <div className="mt-7 flex items-center gap-3">
-          <div className={`h-px flex-1 ${glass ? "bg-white/30" : "bg-[#E4E9F1]"}`} />
+        <div className="mt-4 flex items-center gap-3">
+          <div className={`h-px flex-1 ${glass ? "bg-white/15" : "bg-[#E4E9F1]"}`} />
           <span className={`text-xs ${glass ? "text-white/70" : "text-[#9BA7B9]"}`}>ou</span>
-          <div className={`h-px flex-1 ${glass ? "bg-white/30" : "bg-[#E4E9F1]"}`} />
+          <div className={`h-px flex-1 ${glass ? "bg-white/15" : "bg-[#E4E9F1]"}`} />
         </div>
 
-        <p className={`mt-6 text-center text-xs ${glass ? "text-white/80" : "text-[#8390A7]"}`}>
+        <p className={`mt-4 text-center text-sm ${glass ? "text-white/80" : "text-[#8390A7]"}`}>
           Já tem uma conta?{" "}
           <Link
-            href="/paginaLogin"
+            href="/auth"
             className={`rounded-sm font-semibold underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F2DF83] ${glass ? "text-[#F2DF83]" : "text-[#30456D]"}`}
           >
             Entrar

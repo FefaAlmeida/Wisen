@@ -3,7 +3,10 @@ import { loginDestination, routeRole } from "./lib/auth";
 
 const apiUrl = process.env.BACKEND_INTERNAL_URL || "http://localhost:8080/api";
 export async function proxy(request) {
-  const requiredRole = routeRole(request.nextUrl.pathname);
+  const isOnboarding =
+    request.nextUrl.pathname === "/onboarding" ||
+    request.nextUrl.pathname.startsWith("/onboarding/");
+  const requiredRole = isOnboarding ? "user" : routeRole(request.nextUrl.pathname);
   let response;
   try {
     const forwardedIp = request.headers.get("x-forwarded-for");
@@ -49,13 +52,19 @@ export async function proxy(request) {
     );
   }
 
-  const loginUrl = new URL("/paginaLogin", request.url);
-  loginUrl.searchParams.set("next", `${request.nextUrl.pathname}${request.nextUrl.search}`);
+  const loginUrl = new URL("/auth", request.url);
+  loginUrl.searchParams.set(
+    "next",
+    isOnboarding
+      ? request.nextUrl.searchParams.get("next") || "/paginaInicialCliente"
+      : `${request.nextUrl.pathname}${request.nextUrl.search}`,
+  );
   return NextResponse.redirect(loginUrl);
 }
 
 export const config = {
   matcher: [
+    "/onboarding/:path*",
     "/paginaInicialCliente/:path*",
     "/paginaBiblioteca/:path*",
     "/paginaExplorar/:path*",

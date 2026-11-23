@@ -18,7 +18,10 @@ export default function HeroHome() {
         setName("");
       }
     }
+    const onProfileUpdated = (event) => setName(event.detail.name.trim());
+    window.addEventListener("wisen:profile-updated", onProfileUpdated);
     loadName();
+    return () => window.removeEventListener("wisen:profile-updated", onProfileUpdated);
   }, []);
 
   return (

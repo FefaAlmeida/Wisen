@@ -23,7 +23,7 @@ describe("prévia do conhecimento", () => {
       await user.click(screen.getByRole("button", { name: label, exact: true }));
       expect(screen.getByRole("button", { name: label })).toHaveAttribute("aria-pressed", "true");
       expect(screen.getByRole("img")).toHaveAccessibleName(
-        `Mastery score nos últimos ${days} dias: de ${initial} para 72 pontos.`,
+        `Nível estimado nos últimos ${days} dias: de ${initial} para 72 pontos.`,
       );
       series.add(container.querySelector("[data-evolution-line]").getAttribute("points"));
       expect(screen.getByRole("slider")).toHaveAttribute(

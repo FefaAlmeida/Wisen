@@ -14,8 +14,6 @@ const activities = [
     category: "Economia",
     time: "há 2 horas",
     icon: FileText,
-    color: "#41667F",
-    bg: "#EDF3F7",
     filter: "Leituras",
     href: "/artigo",
   },
@@ -26,8 +24,6 @@ const activities = [
     category: "Economia",
     time: "há 5 horas",
     icon: HelpCircle,
-    color: "#9B5C51",
-    bg: "#FAF0EE",
     filter: "Conceitos",
     href: "/paginaConceito",
   },
@@ -37,8 +33,6 @@ const activities = [
     detail: "Política monetária — 8 de 10 acertos",
     time: "há 1 dia",
     icon: CheckCircle2,
-    color: "#38765F",
-    bg: "#EEF6F1",
     filter: "Revisões",
     href: "/paginaRevisoes",
   },
@@ -49,8 +43,6 @@ const activities = [
     category: "Meio ambiente",
     time: "há 1 dia",
     icon: BookOpen,
-    color: "#7B7136",
-    bg: "#F6F3E5",
     filter: "Conceitos",
     href: "/paginaConceito",
   },
@@ -61,8 +53,6 @@ const activities = [
     category: "Tecnologia",
     time: "há 2 dias",
     icon: FileText,
-    color: "#41667F",
-    bg: "#EDF3F7",
     filter: "Leituras",
     href: "/artigo",
   },
@@ -72,8 +62,6 @@ const activities = [
     detail: "Acordo de Paris — 6 de 8 acertos",
     time: "há 3 dias",
     icon: CheckCircle2,
-    color: "#38765F",
-    bg: "#EEF6F1",
     filter: "Revisões",
     href: "/paginaRevisoes",
   },
@@ -109,10 +97,7 @@ export function HistoricoAtividades() {
           const Icon = item.icon;
           return (
             <Link href={item.href} className={styles.activity} key={item.id}>
-              <span
-                className={styles.activityIcon}
-                style={{ color: item.color, background: item.bg }}
-              >
+              <span className={styles.activityIcon}>
                 <Icon size={16} aria-hidden="true" />
               </span>
               <div className={styles.activityText}>

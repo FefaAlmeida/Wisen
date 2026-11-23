@@ -2,7 +2,7 @@ import { unlink, writeFile } from "node:fs/promises";
 import { createPool } from "../../backend/src/database/index.js";
 import { taskService } from "../../backend/src/modules/generation/tasks.js";
 import { createQueue } from "../../backend/src/queue/index.js";
-import { configuration, QUEUES } from "../../backend/src/shared.js";
+import { configuration, MODEL_VERSION, QUEUES } from "../../backend/src/shared.js";
 import { createEmbedder } from "./embeddings.js";
 import { generationWorker } from "./generation.js";
 import { mailWorker } from "./mail.js";
@@ -51,13 +51,33 @@ try {
       async ([job]) => {
         try {
           const result =
-            kind === "generate"
-              ? await generate(job.data.id)
-              : kind === "mail"
-                ? await mail(job.data.id)
-                : kind === "collect"
-                  ? await service.collect(job.data.sourceId)
-                  : await serial(() => service[kind](job.data.articleId ?? job.data.id));
+            kind === "profile"
+              ? await serial(async () => {
+                  const p = (
+                    await pool.query("SELECT interests FROM user_preferences WHERE user_id=$1", [
+                      job.data.userId,
+                    ])
+                  ).rows[0];
+                  if (!p) return;
+                  const text = p.interests.join(", ").slice(0, 600);
+                  const vector = text ? await embedder.embed(text) : null;
+                  await pool.query(
+                    "INSERT INTO feed_profiles(user_id,embedding,model_version,interests) VALUES($1,$2::vector,$3,$4) ON CONFLICT(user_id) DO UPDATE SET embedding=excluded.embedding,model_version=excluded.model_version,interests=excluded.interests,updated_at=now()",
+                    [
+                      job.data.userId,
+                      vector ? JSON.stringify(vector) : null,
+                      MODEL_VERSION,
+                      p.interests,
+                    ],
+                  );
+                })
+              : kind === "generate"
+                ? await generate(job.data.id)
+                : kind === "mail"
+                  ? await mail(job.data.id)
+                  : kind === "collect"
+                    ? await service.collect(job.data.sourceId)
+                    : await serial(() => service[kind](job.data.articleId ?? job.data.id));
           console.log(
             JSON.stringify({
               event: "job-completed",

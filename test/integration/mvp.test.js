@@ -197,9 +197,20 @@ test("recuperação invalida sessões e token não pode ser reutilizado", async 
       user.id,
     ])
   ).rows[0];
-  const token = new URL(
-    decryptMail(mail.body, config).match(/https?:\/\/[^\s]+/)[0],
-  ).searchParams.get("token");
+  const resetUrl = new URL(decryptMail(mail.body, config).match(/https?:\/\/[^\s]+/)[0]);
+  assert.equal(resetUrl.pathname, "/auth");
+  assert.equal(resetUrl.searchParams.get("action"), "reset");
+  const token = resetUrl.searchParams.get("token");
+  assert.match(token, /^[A-Za-z0-9_-]{43}$/);
+  const stored = (
+    await pool.query(
+      "SELECT token_hash, expires_at, created_at FROM account_tokens WHERE user_id=$1 AND purpose='reset' AND used_at IS NULL",
+      [user.id],
+    )
+  ).rows[0];
+  assert.notEqual(stored.token_hash, token);
+  assert.match(stored.token_hash, /^[a-f0-9]{64}$/);
+  assert.equal(stored.expires_at - stored.created_at, 30 * 60 * 1000);
   const result = await call("/api/account/reset", "POST", { token, password: "nova-senha-segura" });
   assert.equal(result.statusCode, 200, result.body);
   assert.equal((await call("/api/auth/session")).statusCode, 401);
@@ -208,6 +219,36 @@ test("recuperação invalida sessões e token não pode ser reutilizado", async 
       .statusCode,
     400,
   );
+});
+
+test("recuperação rejeita token expirado e responde sem revelar contas", async () => {
+  const person = (
+    await pool.query(
+      "INSERT INTO users(name,email,password_hash) VALUES('Recuperação',$1,'unused') RETURNING id,email",
+      [`reset-${randomUUID()}@example.test`],
+    )
+  ).rows[0];
+  const accounts = accountService(pool, boss, config);
+  await accounts.request(person.id, "reset");
+  const mail = (await pool.query("SELECT body FROM mail_outbox WHERE user_id=$1", [person.id]))
+    .rows[0];
+  const url = new URL(decryptMail(mail.body, config).match(/https?:\/\/[^\s]+/)[0]);
+  await pool.query(
+    "UPDATE account_tokens SET expires_at=now()-interval '1 second' WHERE user_id=$1",
+    [person.id],
+  );
+  await assert.rejects(
+    accounts.consume(url.searchParams.get("token"), "reset", "senha-segura-nova"),
+    /Link inválido ou expirado/,
+  );
+  const existing = await call("/api/account/forgot", "POST", { email: person.email });
+  const unknown = await call("/api/account/forgot", "POST", {
+    email: `missing-${randomUUID()}@example.test`,
+  });
+  assert.equal(existing.statusCode, 200);
+  assert.equal(unknown.statusCode, 200);
+  assert.deepEqual(existing.json(), unknown.json());
+  await pool.query("DELETE FROM users WHERE id=$1", [person.id]);
 });
 
 test("análise estruturada cria evento, conceitos, relações e proveniência; curadoria persiste", async () => {

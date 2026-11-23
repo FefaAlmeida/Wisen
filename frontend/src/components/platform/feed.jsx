@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import HeroHome from "@/components/homeCliente/heroHome";
 import { InitialInterestDialog } from "@/components/homeCliente/initialInterestDialog";
 import SemanticResults from "./semantic";
@@ -15,6 +15,9 @@ export default function Feed({ explore = false }) {
   const [query, setQuery] = useState(initialQuery);
   const [search, setSearch] = useState(initialQuery);
   const [page, setPage] = useState(1);
+  const session = useRef(null);
+  const sessionKey = `${order}|${topic}`;
+  if (session.current?.key !== sessionKey) session.current = { key: sessionKey, id: null };
   useEffect(() => {
     setQuery(initialQuery);
     setSearch(initialQuery);
@@ -23,12 +26,15 @@ export default function Feed({ explore = false }) {
   const resource = useResource(
     search
       ? `/discover?q=${encodeURIComponent(search)}`
-      : `/feed?order=${order}&page=${page}&topic=${encodeURIComponent(topic)}`,
+      : `/feed?order=${order}&page=${page}&topic=${encodeURIComponent(topic)}${session.current.id ? `&sessionId=${session.current.id}` : ""}`,
   );
+  useEffect(() => {
+    if (resource.data?.sessionId) session.current.id = resource.data.sessionId;
+  }, [resource.data]);
   return (
     <Frame
-      title={explore ? "Explorar notícias" : undefined}
-      active={explore ? "Explorar" : "Início"}
+      title={explore ? "Notícias" : undefined}
+      active={explore ? "Notícias" : "Início"}
       pageSearch={pageSearch}
       onPageSearchChange={setPageSearch}
     >
@@ -39,6 +45,11 @@ export default function Feed({ explore = false }) {
         </div>
       )}
       <AccountNotice />
+      {explore && (
+        <p className="mb-5 text-sm text-wisen-texto-suave">
+          Acompanhe as notícias do dia e descubra os conceitos por trás de cada assunto.
+        </p>
+      )}
       <Panel>
         <form
           onSubmit={(e) => {
@@ -144,7 +155,7 @@ export default function Feed({ explore = false }) {
             <span>Página {page}</span>
             <button
               type="button"
-              disabled={(resource.data?.items?.length ?? 0) < 12}
+              disabled={!resource.data?.hasMore}
               onClick={() => setPage((v) => v + 1)}
             >
               Próxima

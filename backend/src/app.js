@@ -21,6 +21,7 @@ import { authService } from "./modules/auth/auth.service.js";
 import { categoriesController } from "./modules/categories/categories.controller.js";
 import { categoriesRepository } from "./modules/categories/categories.repository.js";
 import { categoriesService } from "./modules/categories/categories.service.js";
+import { locationsController } from "./modules/locations/locations.controller.js";
 import { platformController } from "./modules/platform/controller.js";
 import { searchController } from "./modules/search/search.controller.js";
 import { searchRepository } from "./modules/search/search.repository.js";
@@ -55,6 +56,7 @@ export async function buildApp({ pool, boss, config, logger = true }) {
   const auth = authService(authRepository(pool));
   const accounts = accountService(pool, boss, config);
   authController(app, auth, config, accounts);
+  locationsController(app, pool);
   accountController(app, pool, accounts, config);
   platformController(app, pool, boss, config);
   categoriesController(app, categoriesService(categoriesRepository(pool)));

@@ -4,6 +4,17 @@ export default {
   output: "standalone",
   deploymentId: process.env.DEPLOYMENT_VERSION,
   poweredByHeader: false,
+  async headers() {
+    return [
+      {
+        source: "/auth",
+        headers: [
+          { key: "Referrer-Policy", value: "no-referrer" },
+          { key: "Cache-Control", value: "no-store" },
+        ],
+      },
+    ];
+  },
   allowedDevOrigins: ["localhost", "127.0.0.1"],
   outputFileTracingRoot: fileURLToPath(new URL("../", import.meta.url)),
   images: {

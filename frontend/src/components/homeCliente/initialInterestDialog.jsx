@@ -1,19 +1,23 @@
 "use client";
 
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { InterestsCard } from "@/components/perfil/interestsCard";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogBody,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { requisitar } from "@/services/api";
+import styles from "../authForm.module.css";
+import { LocationPicker } from "./locationPicker";
 
 const MINIMUM_INTERESTS = 3;
 
@@ -26,9 +30,17 @@ async function readResponse(response) {
   }
 }
 
-export function InitialInterestDialog() {
+export function InitialInterestDialog({ embedded = false, onComplete, onReady }) {
   const dialogRef = useRef(null);
+  const stageRef = useRef(null);
+  const transitionRef = useRef(false);
+  const mountedRef = useRef(true);
+  const [changingStep, setChangingStep] = useState(false);
+  const [stepDirection, setStepDirection] = useState("forward");
   const [profile, setProfile] = useState(null);
+  const [name, setName] = useState("");
+  const [locations, setLocations] = useState([]);
+  const [location, setLocation] = useState(null);
   const [interests, setInterests] = useState([]);
   const [categories, setCategories] = useState([]);
   const [step, setStep] = useState(0);
@@ -37,7 +49,20 @@ export function InitialInterestDialog() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [attempt, setAttempt] = useState(0);
+  const Header = embedded ? "header" : DialogHeader;
+  const Title = embedded ? "h1" : DialogTitle;
+  const Body = embedded ? "div" : DialogBody;
+  const Footer = embedded ? "footer" : DialogFooter;
+  const locationValid = Boolean(
+    location &&
+      locations.some(
+        (option) =>
+          option.countryCode === location.countryCode && option.stateId === location.stateId,
+      ),
+  );
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: attempt explicitly retries the profile request.
   useEffect(() => {
     let active = true;
 
@@ -45,12 +70,13 @@ export function InitialInterestDialog() {
       setLoading(true);
       setError("");
       try {
-        const [response, categoryData] = await Promise.all([
+        const [response, categoryData, locationData] = await Promise.all([
           fetch("/api/auth/profile", {
             credentials: "same-origin",
             cache: "no-store",
           }),
           requisitar("/categories"),
+          requisitar("/locations/options"),
         ]);
         const data = await readResponse(response);
         if (!response.ok) {
@@ -59,6 +85,9 @@ export function InitialInterestDialog() {
         const availableCategories = categoryData.categories?.map((category) => category.name);
         if (!Array.isArray(availableCategories)) {
           throw new Error("A resposta de categorias não contém uma lista válida.");
+        }
+        if (!Array.isArray(locationData.locations) || locationData.locations.length === 0) {
+          throw new Error("Não foi possível carregar as localizações.");
         }
         const savedInterests = data.preferences?.interests;
         if (!Array.isArray(savedInterests)) {
@@ -72,14 +101,34 @@ export function InitialInterestDialog() {
             ? data.preferences.onboardingCompleted
             : selectedInterests.length >= MINIMUM_INTERESTS;
         if (active) {
+          const savedLocation = locationData.locations.find(
+            (option) =>
+              option.countryCode === data.location?.countryCode &&
+              option.stateId === data.location?.stateId,
+          );
+          const needsName = !data.user?.name?.trim() || !savedLocation;
+          setName(data.user?.name ?? "");
+          setLocations(locationData.locations);
+          setLocation(savedLocation ? data.location : null);
+          setStep(needsName ? -1 : 0);
           setProfile(data);
           setCategories(availableCategories);
           setInterests(selectedInterests);
           setFamiliarity(data.preferences.familiarity ?? "");
-          setOpen(!onboardingCompleted || selectedInterests.length < MINIMUM_INTERESTS);
+          setOpen(
+            needsName || !onboardingCompleted || selectedInterests.length < MINIMUM_INTERESTS,
+          );
+          if (!needsName && onboardingCompleted && selectedInterests.length >= MINIMUM_INTERESTS) {
+            onComplete?.();
+          } else {
+            onReady?.();
+          }
         }
       } catch (loadError) {
-        if (active) setError(loadError.message || "Não foi possível carregar seu perfil.");
+        if (active) {
+          setError(loadError.message || "Não foi possível carregar seu perfil.");
+          onReady?.();
+        }
       } finally {
         if (active) setLoading(false);
       }
@@ -89,7 +138,43 @@ export function InitialInterestDialog() {
     return () => {
       active = false;
     };
+  }, [attempt, onComplete, onReady]);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      stageRef.current?.getAnimations?.().forEach((animation) => {
+        animation.cancel();
+      });
+    };
   }, []);
+
+  async function changeStep(nextStep) {
+    if (nextStep === step || transitionRef.current) return;
+    const forward = nextStep > step;
+    setStepDirection(forward ? "forward" : "backward");
+    const stage = stageRef.current;
+    const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (stage?.animate && !reducedMotion) {
+      transitionRef.current = true;
+      setChangingStep(true);
+      const currentStyle = window.getComputedStyle(stage);
+      const animation = stage.animate(
+        [
+          { opacity: currentStyle.opacity, transform: currentStyle.transform },
+          { opacity: 0, transform: `translateX(${forward ? -8 : 8}px)` },
+        ],
+        { duration: 160, easing: "ease-in-out", fill: "forwards" },
+      );
+      await animation.finished.catch(() => {});
+      if (!mountedRef.current) return;
+      animation.cancel();
+    }
+    setStep(nextStep);
+    setChangingStep(false);
+    transitionRef.current = false;
+  }
 
   function toggleInterest(interest) {
     setInterests((current) =>
@@ -100,11 +185,38 @@ export function InitialInterestDialog() {
     setError("");
   }
 
-  async function completeOnboarding(skipFamiliarity = false) {
+  async function saveName() {
+    if (saving || !locationValid || name.trim().length < 2 || name.trim().length > 120) return;
+    setSaving(true);
+    setError("");
+    try {
+      const { user } = await requisitar("/auth/profile", {
+        method: "PUT",
+        body: {
+          name: name.trim(),
+          location,
+        },
+      });
+      setProfile((current) => ({ ...current, user }));
+      window.dispatchEvent(new CustomEvent("wisen:profile-updated", { detail: user }));
+      changeStep(0);
+    } catch (saveError) {
+      setError(saveError.message || "Não foi possível salvar seu nome.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function completeOnboarding() {
     if (!profile || saving) return;
     if (new Set(interests).size < MINIMUM_INTERESTS) {
       setError("Escolha pelo menos 3 áreas de interesse para continuar.");
-      setStep(0);
+      changeStep(0);
+      return;
+    }
+
+    if (!familiarity) {
+      setError("Escolha sua familiaridade com economia para continuar.");
       return;
     }
 
@@ -117,7 +229,7 @@ export function InitialInterestDialog() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           interests,
-          ...(!skipFamiliarity && familiarity ? { familiarity } : {}),
+          familiarity,
           onboardingCompleted: true,
         }),
       });
@@ -127,6 +239,7 @@ export function InitialInterestDialog() {
       }
 
       setOpen(false);
+      onComplete?.();
     } catch (saveError) {
       setError(saveError.message || "Não foi possível salvar suas preferências.");
     } finally {
@@ -134,203 +247,257 @@ export function InitialInterestDialog() {
     }
   }
 
-  if (loading) return null;
+  if (loading) return embedded ? <p role="status">Preparando seu próximo capítulo…</p> : null;
 
   if (error && !profile) {
     return (
       <div
         role="alert"
-        className="fixed top-4 right-4 left-4 z-50 mx-auto flex max-w-lg items-center justify-between gap-4 rounded-xl border border-red-200 bg-white p-4 text-sm text-red-700 shadow-lg"
+        className={
+          embedded
+            ? "space-y-4 text-sm text-red-200"
+            : "fixed top-4 right-4 left-4 z-50 mx-auto flex max-w-lg items-center justify-between gap-4 rounded-xl border border-red-200 bg-white p-4 text-sm text-red-700 shadow-lg"
+        }
       >
         <span>{error}</span>
-        <Button variant="outline" size="sm" onClick={() => window.location.reload()}>
+        <Button variant="outline" size="sm" onClick={() => setAttempt((current) => current + 1)}>
           Tentar novamente
         </Button>
       </div>
     );
   }
 
-  return (
-    <Dialog
-      open={open}
-      onOpenChange={(nextOpen, eventDetails) => {
-        if (!nextOpen) eventDetails.cancel();
-      }}
-    >
-      <DialogContent ref={dialogRef} initialFocus={dialogRef} showCloseButton={false} size="xl">
-        <DialogHeader eyebrow={null}>
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-2 [@media(max-height:600px)]:mb-2">
-            <span className="text-[10px] font-semibold tracking-[0.12em] text-[#93A3BE] uppercase">
-              Wisen do seu jeito
-            </span>
-            <p
-              role="status"
-              className="rounded-full border border-[#E8DDA4] bg-[#FBF7E5] px-2.5 py-1 text-[11px] font-medium text-[#866D16]"
-            >
-              Etapa {step + 1} de 2
-            </p>
-          </div>
-          <DialogTitle className="max-w-xl">
-            {step === 0 ? (
-              <>
-                Quais assuntos <span className="text-[#B59B35]">interessam a você?</span>
-              </>
-            ) : (
-              <>
-                Como você se sente <span className="text-[#B59B35]">ao ler sobre economia?</span>
-              </>
-            )}
-          </DialogTitle>
-          <DialogDescription className="max-w-xl">
-            {step === 0
-              ? "Escolha pelo menos 3 assuntos para encontrar conteúdos que combinam com você. Depois, você pode ajustar suas escolhas no perfil."
-              : "Vamos adaptar as explicações ao seu momento. Não é um teste e você pode pular esta pergunta."}
-          </DialogDescription>
-          <ol
-            aria-label="Etapas da personalização"
-            className="mt-5 flex min-w-0 items-center gap-3 text-xs [@media(max-height:600px)]:mt-3"
-          >
-            {["Seus interesses", "Seu momento"].map((label, index) => (
-              <li
-                key={label}
-                aria-current={step === index ? "step" : undefined}
-                className={`flex min-w-0 flex-1 items-center gap-2 border-t-2 pt-3 ${step >= index ? "border-[#D7BF4D] text-[#526584]" : "border-[#E8EDF4] text-[#93A3BE]"}`}
-              >
-                <span
-                  aria-hidden="true"
-                  className={`flex size-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold ${step >= index ? "bg-[#F3E69A] text-[#526584]" : "bg-wisen-superficie text-[#93A3BE]"}`}
-                >
-                  {step > index ? <Check className="size-3" /> : index + 1}
-                </span>
-                <span className="min-w-0">{label}</span>
-              </li>
-            ))}
-          </ol>
-        </DialogHeader>
+  const currentStep = step + 2;
+  const progress = open
+    ? createPortal(
+        <div className={styles.onboardingProgress} data-onboarding-progress aria-hidden="true">
+          <div style={{ width: `${(currentStep / 3) * 100}%` }} />
+        </div>,
+        document.body,
+      )
+    : null;
 
-        <DialogBody>
-          {step === 0 ? (
-            <InterestsCard
-              categories={categories}
-              interests={interests}
-              onToggle={toggleInterest}
-              minimumSelections={MINIMUM_INTERESTS}
-              showSaveControls={false}
-              systemColors
-              embedded
-              onboarding
-              saving={saving}
-            />
-          ) : (
-            <fieldset disabled={saving} className="space-y-3">
-              <legend className="sr-only">Sua familiaridade com economia</legend>
-              {[
-                [
-                  "beginner",
-                  "Estou começando",
-                  "Quero conhecer os conceitos e entender as notícias.",
-                ],
-                [
-                  "basic",
-                  "Entendo o básico",
-                  "Conheço alguns conceitos e quero conectar as ideias.",
-                ],
-                [
-                  "experienced",
-                  "Já acompanho economia",
-                  "Leio sobre o assunto e quero aprofundar meu conhecimento.",
-                ],
-              ].map(([value, label, description]) => (
-                <label
-                  key={value}
-                  className="flex min-h-20 min-w-0 cursor-pointer items-start gap-3 rounded-xl border border-wisen-borda bg-white px-4 py-4 text-wisen-titulo transition-colors hover:border-[#DCCA70] hover:bg-[#FBF7E5] has-[:checked]:border-[#DCCA70] has-[:checked]:bg-[#FBF5D9] has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-wisen-titulo"
-                >
-                  <input
-                    type="radio"
-                    name="onboarding-familiarity"
-                    className="mt-0.5 size-4 shrink-0 accent-wisen-titulo"
-                    aria-label={label}
-                    value={value}
-                    checked={familiarity === value}
-                    onChange={() => {
-                      setFamiliarity(value);
-                      setError("");
-                    }}
-                  />
-                  <span className="flex flex-col gap-1">
-                    <span className="text-sm font-medium">{label}</span>
-                    <span className="text-xs leading-5 text-[#7182A1]">{description}</span>
-                  </span>
-                </label>
-              ))}
-            </fieldset>
-          )}
-        </DialogBody>
-
-        {error && (
-          <p
-            role="alert"
-            className="shrink-0 border-t border-red-100 bg-red-50 px-5 py-3 text-sm text-red-700 sm:px-8"
-          >
-            {error}
-          </p>
+  const content = (
+    <>
+      <div
+        role="progressbar"
+        aria-label="Progresso do onboarding"
+        aria-valuemin={0}
+        aria-valuemax={3}
+        aria-valuenow={currentStep}
+        aria-valuetext={`Etapa ${currentStep} de 3`}
+        className="sr-only"
+      />
+      <div
+        key={step}
+        ref={stageRef}
+        className={styles.onboardingStage}
+        data-direction={stepDirection}
+        data-onboarding-stage
+      >
+        {step !== -1 && (
+          <Header className={styles.onboardingHeader} {...(!embedded && { eyebrow: null })}>
+            <Title className={styles.onboardingTitle}>
+              {step === 0
+                ? "Quais assuntos interessam a você?"
+                : "Como você se sente ao ler sobre economia?"}
+            </Title>
+          </Header>
         )}
 
-        <DialogFooter className="flex-row items-center sm:justify-between">
-          <p
-            aria-live="polite"
-            className="w-full text-xs leading-5 text-[#7182A1] sm:w-auto [@media(max-height:600px)]:hidden"
-          >
-            {step === 0
-              ? `${interests.length} ${interests.length === 1 ? "área selecionada" : "áreas selecionadas"} · mínimo de ${MINIMUM_INTERESTS}`
-              : "Você pode alterar sua resposta no perfil."}
-          </p>
-          <div className="ml-auto flex w-full items-center justify-end gap-2 sm:w-auto">
-            {step > 0 && (
-              <Button
-                type="button"
-                variant="ghost"
-                className="h-11 px-3 text-sm text-[#7182A1] hover:bg-wisen-superficie"
-                disabled={saving}
-                onClick={() => {
-                  setStep(0);
+        <Body
+          className={`${styles.onboardingBody} ${step === -1 ? styles.onboardingDetailsBody : step === 1 ? styles.onboardingFamiliarityBody : ""}`}
+        >
+          {step === -1 ? (
+            <form
+              id="onboarding-name-form"
+              onSubmit={(event) => {
+                event.preventDefault();
+                saveName();
+              }}
+              className={styles.onboardingNameForm}
+            >
+              <Title className={styles.onboardingTitle}>Nome Completo</Title>
+              <Label htmlFor="onboarding-name" className="sr-only">
+                Nome Completo
+              </Label>
+              <Input
+                id="onboarding-name"
+                name="name"
+                autoComplete="name"
+                placeholder="Digite seu nome completo"
+                required
+                minLength={2}
+                maxLength={120}
+                value={name}
+                disabled={saving || changingStep}
+                onChange={(event) => {
+                  setName(event.target.value);
                   setError("");
                 }}
-              >
-                Voltar
-              </Button>
-            )}
-            {step > 0 && (
-              <Button
-                type="button"
-                variant="ghost"
-                className="h-11 px-3 text-sm text-[#7182A1] hover:bg-wisen-superficie"
-                disabled={saving}
-                aria-label="Pular esta etapa"
-                onClick={() => completeOnboarding(true)}
-              >
-                Pular
-              </Button>
-            )}
+              />
+              <LocationPicker
+                locations={locations}
+                value={location}
+                disabled={saving || changingStep}
+                onChange={(nextLocation) => {
+                  setLocation(nextLocation);
+                  setError("");
+                }}
+              />
+              <p className={styles.onboardingAttribution}>
+                Dados de{" "}
+                <a
+                  href="https://github.com/dr5hn/countries-states-cities-database"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Countries States Cities Database
+                </a>{" "}
+                · ODbL 1.0
+              </p>
+            </form>
+          ) : step === 0 ? (
+            <div className={styles.onboardingInterests}>
+              <div className={styles.onboardingSelection}>
+                <p>Selecione {MINIMUM_INTERESTS} ou mais</p>
+                <p
+                  aria-live="polite"
+                  data-ready={interests.length >= MINIMUM_INTERESTS || undefined}
+                >
+                  {interests.length} {interests.length === 1 ? "selecionado" : "selecionados"}
+                </p>
+              </div>
+              <InterestsCard
+                categories={categories}
+                interests={interests}
+                onToggle={toggleInterest}
+                minimumSelections={MINIMUM_INTERESTS}
+                showSaveControls={false}
+                systemColors
+                embedded
+                onboarding
+                saving={saving || changingStep}
+              />
+            </div>
+          ) : (
+            <div className={styles.onboardingFamiliarity}>
+              <fieldset disabled={saving || changingStep}>
+                <legend className="sr-only">Sua familiaridade com economia</legend>
+                {[
+                  ["beginner", "Estou começando", "Quero entender os primeiros conceitos."],
+                  ["basic", "Entendo o básico", "Quero conectar conceitos e notícias."],
+                  ["experienced", "Já acompanho economia", "Quero aprofundar minhas análises."],
+                ].map(([value, label, description]) => (
+                  <label key={value} className={styles.onboardingOption}>
+                    <input
+                      type="radio"
+                      name="onboarding-familiarity"
+                      aria-label={label}
+                      value={value}
+                      checked={familiarity === value}
+                      onChange={() => {
+                        setFamiliarity(value);
+                        setError("");
+                      }}
+                    />
+                    <span>
+                      <span>{label}</span>
+                      <span>{description}</span>
+                    </span>
+                  </label>
+                ))}
+              </fieldset>
+            </div>
+          )}
+        </Body>
+      </div>
+
+      {error && (
+        <p
+          role="alert"
+          className="shrink-0 border-t border-red-100 bg-red-50 px-5 py-3 text-sm text-red-700 sm:px-8"
+        >
+          {error}
+        </p>
+      )}
+
+      <Footer className={styles.onboardingFooter}>
+        <div
+          className={`grid w-full items-center gap-3 ${step > -1 ? "grid-cols-[minmax(0,3fr)_minmax(0,7fr)]" : "grid-cols-1"}`}
+        >
+          {step > -1 && (
             <Button
               type="button"
-              disabled={
-                saving || (step === 0 ? new Set(interests).size < MINIMUM_INTERESTS : !familiarity)
-              }
+              variant="ghost"
+              className={styles.onboardingBack}
+              disabled={saving || changingStep}
               onClick={() => {
-                if (step === 0) {
-                  setStep(1);
-                  setError("");
-                } else completeOnboarding();
+                changeStep(step - 1);
+                setError("");
               }}
-              className="h-11 min-w-28 rounded-xl bg-[#101A40] px-5 text-sm font-medium text-white hover:bg-[#30466E] disabled:bg-[#E8ECF3] disabled:text-[#93A3BE] disabled:opacity-100"
             >
-              {saving ? "Salvando..." : step === 0 ? "Continuar" : "Concluir"}
-              {!saving && step === 0 && <ArrowRight aria-hidden="true" className="ml-1 size-4" />}
+              Voltar
             </Button>
-          </div>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          )}
+          <Button
+            type="button"
+            disabled={
+              saving ||
+              changingStep ||
+              (step === -1
+                ? !locationValid || name.trim().length < 2 || name.trim().length > 120
+                : step === 0
+                  ? new Set(interests).size < MINIMUM_INTERESTS
+                  : !familiarity)
+            }
+            onClick={() => {
+              if (step === -1) {
+                saveName();
+              } else if (step === 0) {
+                changeStep(1);
+                setError("");
+              } else completeOnboarding();
+            }}
+            className={styles.onboardingPrimaryAction}
+          >
+            {saving ? "Salvando..." : step <= 0 ? "Continuar" : "Concluir"}
+            {!saving && step <= 0 && <ArrowRight aria-hidden="true" className="ml-1 size-4" />}
+          </Button>
+        </div>
+      </Footer>
+    </>
+  );
+
+  if (embedded)
+    return open ? (
+      <>
+        {progress}
+        <section className={styles.onboarding} aria-label="Personalize sua experiência">
+          {content}
+        </section>
+      </>
+    ) : null;
+
+  return (
+    <>
+      {progress}
+      <Dialog
+        open={open}
+        onOpenChange={(nextOpen, eventDetails) => {
+          if (!nextOpen) eventDetails.cancel();
+        }}
+      >
+        <DialogContent
+          ref={dialogRef}
+          initialFocus={dialogRef}
+          showCloseButton={false}
+          size="xl"
+          className={`${styles.onboarding} ${styles.onboardingDialog}`}
+        >
+          {content}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

@@ -16,6 +16,7 @@ const platformMethods = {
 };
 const allowedRoots = new Set([
   "categories",
+  "locations",
   "articles",
   "auth",
   "health",
@@ -25,6 +26,7 @@ const allowedRoots = new Set([
 
 // 1. Incluído "profile" nas ações permitidas de auth
 const allowedAuthActions = new Set([
+  "check-email",
   "login",
   "logout",
   "register",
@@ -42,6 +44,13 @@ async function forward(request, context) {
     !allowedRoots.has(root) ||
     (root === "auth" && (segments.length !== 2 || !allowedAuthActions.has(action))) ||
     (root === "categories" && segments.length !== 1) ||
+    (root === "locations" &&
+      !(
+        (segments.length === 2 && segments[1] === "options") ||
+        (segments[1] === "countries" &&
+          (segments.length === 2 ||
+            (segments.length === 4 && /^[A-Z]{2}$/.test(segments[2]) && segments[3] === "states")))
+      )) ||
     (root === "health" && segments.length !== 1) ||
     (root === "search" && segments.length > 2) ||
     (root === "articles" && segments.length > 2)
@@ -58,9 +67,10 @@ async function forward(request, context) {
     (root === "auth" && action === "avatar" && request.method === "PUT") ||
     (root === "auth" && action === "password" && request.method === "PUT") ||
     (root === "auth" &&
-      ["login", "logout", "register"].includes(action) &&
+      ["check-email", "login", "logout", "register"].includes(action) &&
       request.method === "POST") ||
     (root === "categories" && request.method === "GET") ||
+    (root === "locations" && request.method === "GET") ||
     (root === "admin" && action === "categories" && ["GET", "PUT"].includes(request.method)) ||
     ((root === "articles" || root === "health") && request.method === "GET") ||
     (root === "search" && request.method === "GET") ||

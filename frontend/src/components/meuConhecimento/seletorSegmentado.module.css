@@ -9,9 +9,9 @@
   min-width: 0;
   margin: 0;
   padding: 4px;
-  border: 1px solid #e7ecf0;
+  border: 1px solid var(--color-wisen-borda);
   border-radius: 9px;
-  background: #f5f7f9;
+  background: var(--color-wisen-superficie);
 }
 
 .control button {
@@ -19,7 +19,7 @@
   min-height: 36px;
   padding: 6px 12px;
   border-radius: 6px;
-  color: #5d6d7e;
+  color: var(--color-wisen-texto-suave);
   font-size: 11px;
   font-weight: 500;
   white-space: nowrap;
@@ -31,17 +31,17 @@
 
 .control button:hover {
   color: var(--color-wisen-titulo);
-  background: #e8edf1;
+  background: var(--color-wisen-cliente-hover);
 }
 
 .control button[aria-pressed="true"] {
   background: var(--color-wisen-destaque-suave);
   color: var(--color-wisen-titulo);
-  box-shadow: 0 1px 3px #6e64221a;
+  box-shadow: 0 1px 3px rgb(16 26 64 / 8%);
 }
 
 .control button:focus-visible {
-  outline: 3px solid #587b96;
+  outline: 3px solid var(--ring);
   outline-offset: 2px;
 }
 

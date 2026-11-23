@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+import ReadingTracker from "./readingTracker";
 import { Frame, Generation, Panel, SaveButton, State, useResource } from "./shared";
 export default function ArticlePage() {
   const id = useSearchParams().get("id");
@@ -10,6 +11,7 @@ export default function ArticlePage() {
   const data = resource.data;
   return (
     <Frame title="Leitura" active="Notícias">
+      <ReadingTracker eventId={data?.internal_reading ? data?.event_id : null} />
       <State resource={resource}>
         {data && (
           <>

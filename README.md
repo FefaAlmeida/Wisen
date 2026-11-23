@@ -4,7 +4,7 @@ Plataforma de conhecimento baseada em notícias, com coleta, busca semântica, e
 
 ## Primeiro uso
 
-Requisitos: Node **24**, npm **11** e Docker com Compose v2. Use `nvm use` se tiver nvm instalado. Toda a aplicação roda em containers; o Node do host executa os comandos de coordenação.
+Requisitos: Node **24**, npm **11** e Docker com Compose v2. Use `nvm use` se tiver nvm instalado. No desenvolvimento padrão, o frontend roda no host e o banco, a API e o worker rodam em containers.
 
 Na raiz:
 
@@ -17,11 +17,17 @@ npm run dev
 
 `setup:model` baixa e verifica o E5 Small INT8 uma vez, em um volume persistente. Requer internet. O worker usa esse cache sem downloads durante a execução. Se a versão configurada mudar, execute a preparação novamente.
 
-`dev` constrói a imagem de desenvolvimento, para os apps deste projeto, sincroniza dependências quando o lockfile muda, verifica o modelo, sobe o PostgreSQL, aplica migrations, executa o seed do administrador, prepara os dados de demonstração quando o modo mock está ativo e inicia frontend, API e worker. Aguarda os healthchecks e retorna ao terminal. Mudanças de código são recarregadas automaticamente.
+`dev` constrói a imagem de desenvolvimento, para os apps deste projeto, sincroniza as dependências dos containers quando o lockfile muda, verifica o modelo, sobe o PostgreSQL, aplica migrations, executa o seed do administrador e prepara os dados de demonstração quando o modo mock está ativo. Após aguardar os healthchecks da API e do worker, inicia o frontend local no mesmo terminal, com atualização automática a cada alteração. O container do frontend fica parado para liberar a porta. Use `Ctrl+C` para encerrar o frontend e `npm run dev:down` para encerrar os containers sem apagar volumes.
+
+Para desenvolver com todos os serviços em containers, use `npm run dev:docker`. Esse modo aguarda os healthchecks e retorna ao terminal. Os modos são alternativos: encerre o frontend local com `Ctrl+C` antes de iniciar o modo Docker. Após mudar dependências, execute `npm install` no host; as dependências Linux dos containers continuam em um volume separado.
+
+Esses comandos são exclusivos do desenvolvimento e recusam `NODE_ENV=production`. O deploy continua usando `compose.production.yml` e as imagens de produção do Dockerfile, sem depender de `npm run dev`.
 
 O frontend usa Next.js 16.4.6 com Turbopack no desenvolvimento, mantendo a atualização automática. Os endereços `localhost` e `127.0.0.1` estão permitidos para a conexão de desenvolvimento.
 
 O seed de desenvolvimento cria o administrador com e-mail `wisenadmin@gmail.com` e senha inicial `AdminWisen@123`. Entre pela tela de login comum para acessar o painel administrativo. O seed pode rodar várias vezes: mantém uma única conta e preserva sua senha, preferências e estado de ativação. Se esse e-mail já existir, a conta recebe o perfil `admin` e mantém a senha existente. O seed não faz parte da inicialização de produção e recusa execução com `NODE_ENV=production`.
+
+As migrations também importam o catálogo local de países e estados usado no onboarding, sem consultas a serviços externos. O catálogo não inclui cidades. Fonte, licenças e instruções de atualização estão em [backend/data/locations/README.md](backend/data/locations/README.md).
 
 | Serviço          | Endereço padrão                  |
 | ---------------- | -------------------------------- |
@@ -30,9 +36,9 @@ O seed de desenvolvimento cria o administrador com e-mail `wisenadmin@gmail.com`
 | Saúde da API     | http://localhost:8080/api/health |
 | PostgreSQL local | localhost:5432                   |
 
-O `.env` da raiz centraliza a configuração de desenvolvimento: portas, URLs, credenciais do PostgreSQL, token operacional, proxies confiáveis, cache, recursos do worker e opções de testes. O Compose injeta essas variáveis nos serviços; não há um `.env` separado por aplicação. O `.env` não é versionado e `.env.example` documenta todas as chaves.
+O `.env` da raiz centraliza a configuração de desenvolvimento: portas, URLs, credenciais do PostgreSQL, token operacional, proxies confiáveis, cache, recursos do worker e opções de testes. O Compose injeta essas variáveis nos containers e o executor de desenvolvimento as repassa ao frontend local; não há um `.env` separado por aplicação. O `.env` não é versionado e `.env.example` documenta todas as chaves.
 
-Se uma porta estiver ocupada, ajuste `FRONTEND_HOST_PORT`, `BACKEND_HOST_PORT` ou `DATABASE_HOST_PORT`. O banco usa sempre 5432 dentro da rede Docker; `DATABASE_URL` aponta para `database:5432`, mesmo quando a porta do host é 5438. `PORT` e `FRONTEND_PORT` são as portas internas da API e do frontend; mantenha `BACKEND_INTERNAL_URL` e `FRONTEND_URL` coerentes com as portas que escolher. As portas de desenvolvimento são publicadas somente no localhost.
+Se uma porta estiver ocupada, ajuste `FRONTEND_HOST_PORT`, `BACKEND_HOST_PORT` ou `DATABASE_HOST_PORT`. O banco usa sempre 5432 dentro da rede Docker; `DATABASE_URL` aponta para `database:5432`, mesmo quando a porta do host é 5438. `PORT` e `FRONTEND_PORT` são as portas internas da API e do frontend em containers; mantenha `BACKEND_INTERNAL_URL` e `FRONTEND_URL` coerentes com as portas que escolher. No modo local, o executor define `BACKEND_INTERNAL_URL=http://127.0.0.1:<BACKEND_HOST_PORT>/api` apenas para o processo do frontend, sem alterar o `.env` ou as URLs dos containers. O navegador continua acessando a API por `/api`. As portas de desenvolvimento são publicadas somente no localhost.
 
 `POSTGRES_USER`, `POSTGRES_PASSWORD` e `POSTGRES_DB` inicializam o banco; `DATABASE_URL` deve usar essas mesmas credenciais. Alterar uma senha no arquivo não modifica um banco já inicializado. O token `OPERATIONS_TOKEN` deve ter ao menos 32 caracteres; substitua o valor de exemplo por um valor aleatório antes de compartilhar o ambiente. `TRUST_PROXY` fica vazio por padrão e só deve conter proxies controlados por você.
 
@@ -56,11 +62,13 @@ A busca usa os trechos já indexados e retorna até cinco artigos por padrão. O
 
 | Comando               | Uso                                 |
 | --------------------- | ----------------------------------- |
-| `npm run dev`         | Iniciar/recriar o ambiente completo |
-| `npm run dev:logs`    | Acompanhar logs                     |
-| `npm run dev:status`  | Conferir containers e saúde         |
-| `npm run dev:down`    | Parar sem apagar volumes            |
+| `npm run dev`         | Frontend local + API, worker e banco no Docker |
+| `npm run dev:docker`  | Iniciar todos os serviços no Docker |
+| `npm run dev:logs`    | Acompanhar logs dos containers       |
+| `npm run dev:status`  | Conferir containers e saúde (frontend local aparece no terminal) |
+| `npm run dev:down`    | Parar containers sem apagar volumes (frontend local: Ctrl+C) |
 | `npm run db:migrate`  | Aplicar migrations pendentes        |
+| `npm run db:seed:locations` | Reimportar países e estados sem duplicar registros |
 | `npm run setup:model` | Preparar o modelo local             |
 | `npm run check`       | Biome e build do frontend           |
 | `npm run build`       | Build de produção do frontend       |

@@ -305,6 +305,60 @@
   }
 }
 
+.onboardingLoading {
+  display: grid;
+  min-height: 280px;
+  place-content: center;
+  justify-items: center;
+  gap: 28px;
+  padding-block: 24px;
+  text-align: center;
+}
+
+.onboardingLoading p {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(24px, 4.5vw, 36px);
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.onboardingLoadingIcon {
+  position: relative;
+  display: grid;
+  width: 80px;
+  aspect-ratio: 1;
+  place-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(242 223 115 / 18%), rgb(242 223 115 / 4%));
+  color: #8a690c;
+}
+
+.glass .onboardingLoadingIcon {
+  color: #f2df73;
+  box-shadow: 0 0 40px rgb(242 223 115 / 12%);
+}
+
+.onboardingLoadingIcon::before {
+  position: absolute;
+  inset: 0;
+  border: 2px solid rgb(197 162 54 / 32%);
+  border-top-color: currentColor;
+  border-radius: inherit;
+  content: "";
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .onboardingLoadingIcon::before {
+    animation: onboarding-spin 950ms linear infinite;
+  }
+}
+
+@keyframes onboarding-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
 .onboarding {
   display: flex;
   flex-direction: column;
@@ -316,8 +370,41 @@
 .onboarding.onboardingDialog {
   height: min(560px, calc(100dvh - 2rem));
   padding: 36px;
+}
+
+.onboarding.onboardingDialog,
+.authDialog {
   border-color: rgb(255 255 255 / 14%);
   background: #101b2c;
+}
+
+.authDialog {
+  color: #f5f7fb;
+  color-scheme: dark;
+}
+
+.authDialog [data-slot="dialog-header"],
+.authDialog [data-slot="dialog-body"],
+.authDialog [data-slot="dialog-footer"] {
+  border: 0;
+  background: transparent;
+}
+
+.authDialog [data-slot="dialog-title"] {
+  color: #f5f7fb;
+}
+
+.authDialog [data-slot="dialog-description"] {
+  color: #b0bed1;
+}
+
+.authDialog [data-slot="dialog-close"] {
+  color: #b0bed1;
+}
+
+.authDialog [data-slot="dialog-close"]:hover {
+  background: rgb(255 255 255 / 8%);
+  color: #fff;
 }
 
 .onboardingDialog > [data-slot="dialog-accent"] {
@@ -456,7 +543,8 @@
   scrollbar-color: #526078 transparent;
 }
 
-.onboarding .onboardingNameForm input {
+.onboarding .onboardingNameForm input,
+.authDialog .dialogInput {
   height: 58px;
   padding-inline: 18px;
   border: 1px solid rgb(255 255 255 / 20%);
@@ -467,11 +555,18 @@
   box-shadow: none;
 }
 
-.onboarding .onboardingNameForm input::placeholder {
+.authDialog .dialogInput {
+  height: 48px;
+  padding-inline: 42px;
+}
+
+.onboarding .onboardingNameForm input::placeholder,
+.authDialog .dialogInput::placeholder {
   color: #8999af;
 }
 
-.onboarding .onboardingNameForm input:focus-visible {
+.onboarding .onboardingNameForm input:focus-visible,
+.authDialog .dialogInput:focus-visible {
   border-color: #f2df73;
   outline: 2px solid rgb(242 223 115 / 15%);
   outline-offset: 2px;
@@ -681,29 +776,36 @@
   box-shadow: none;
 }
 
-.onboarding .onboardingBack {
+.onboarding .onboardingBack,
+.authDialog .dialogSecondaryAction {
   border: 1px solid rgb(255 255 255 / 14%);
   background: transparent;
   color: #c2ccda;
 }
 
-.onboarding .onboardingBack:hover {
+.onboarding .onboardingBack:hover,
+.authDialog .dialogSecondaryAction:hover {
   border-color: rgb(255 255 255 / 28%);
   background: rgb(255 255 255 / 4%);
 }
 
-.onboarding .onboardingPrimaryAction {
+.onboarding .onboardingPrimaryAction,
+.authDialog .dialogPrimaryAction,
+.profileSaveAction {
   border: 1px solid transparent;
   background: #f2df73;
   color: #172542;
   font-weight: 600;
 }
 
-.onboarding .onboardingPrimaryAction:hover {
+.onboarding .onboardingPrimaryAction:hover,
+.authDialog .dialogPrimaryAction:hover,
+.profileSaveAction:hover {
   background: #e6d264;
 }
 
-.onboarding .onboardingPrimaryAction:disabled {
+.onboarding .onboardingPrimaryAction:disabled,
+.authDialog .dialogPrimaryAction:disabled {
   background: rgb(242 223 115 / 20%);
   color: #a7a68a;
   opacity: 1;

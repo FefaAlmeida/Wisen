@@ -1,6 +1,7 @@
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import news from "@/components/demo/newsDetail.module.css";
+import { coresStatusConceito } from "@/lib/coresStatusConceito";
 import styles from "./conceptDetail.module.css";
 
 export function ConceptPanel({ eyebrow, title, children }) {
@@ -44,7 +45,11 @@ export default function ConceptDetail({
             <h1>{name}</h1>
             <p className={news.intro}>{description}</p>
             <span className={styles.status}>
-              <span className={news.dot} aria-hidden="true" />
+              <span
+                className={news.dot}
+                style={{ backgroundColor: coresStatusConceito[status]?.indicador }}
+                aria-hidden="true"
+              />
               {status || "Ainda não avaliado"}
             </span>
           </header>

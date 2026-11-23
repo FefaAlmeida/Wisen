@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { AppTopBar } from "@/components/app/appTopBar";
-import { PageHeader } from "@/components/app/pageHeader";
+import { PageHeader, PageIntro } from "@/components/app/pageHeader";
 
 import { CatalogoConceitos } from "@/components/biblioteca/catalogoConceitos";
 import { Footer } from "@/components/footer";
@@ -29,16 +29,10 @@ export default function Home() {
               className="mb-7"
             />
 
-            <section className="wisen-panel mb-7 p-4 sm:p-5">
-              <h2 className="text-sm font-semibold text-wisen-titulo">
-                Os conceitos por trás das notícias
-              </h2>
-              <span aria-hidden="true" className="mt-2 block h-0.5 w-8 rounded-full bg-[#D7BF4D]" />
-              <p className="mt-1 text-xs leading-5 text-wisen-texto-suave">
-                Consulte os conceitos que aparecem nos artigos e veja seu nível de conhecimento em
-                cada um.
-              </p>
-            </section>
+            <PageIntro title="Os conceitos por trás das notícias">
+              Consulte os conceitos que aparecem nos artigos e veja seu nível de conhecimento em
+              cada um.
+            </PageIntro>
 
             {/* Filtros e catálogo de conceitos */}
             <Suspense fallback={<p>Carregando conceitos…</p>}>

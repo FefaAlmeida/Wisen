@@ -105,16 +105,16 @@ await withTestDatabase(async (databaseUrl) => {
       frontend = launch(
         nextBin,
         ["dev", "--turbopack", "--hostname", "127.0.0.1", "--port", frontendPort],
-        env,
+        { ...env, WISEN_E2E_DEV: "1" },
         resolve(root, "frontend"),
       );
     await waitFor(`http://127.0.0.1:${backendPort}/api/health`, backend, "backend de teste");
-    await waitFor(`${baseUrl}/paginaLogin`, frontend, "frontend de teste");
+    await waitFor(`${baseUrl}/auth`, frontend, "frontend de teste");
 
     const result = await new Promise((resolveRun, rejectRun) => {
       const runner = spawn(
         process.execPath,
-        [playwrightCli, "test", "--config=test/playwright.config.js"],
+        [playwrightCli, "test", "--config=test/playwright.config.js", ...process.argv.slice(2)],
         { cwd: root, env, stdio: "inherit" },
       );
       runner.once("error", rejectRun);

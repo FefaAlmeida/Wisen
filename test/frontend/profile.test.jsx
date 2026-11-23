@@ -99,3 +99,23 @@ it("logout do perfil apresenta falha e permite tentar novamente", async () => {
     expect(screen.getByRole("button", { name: /Encerrar sessão/ })).toBeEnabled(),
   );
 });
+
+it("mostra a senha escolhida e limpa os campos ao fechar a alteração de senha", async () => {
+  const user = userEvent.setup();
+  render(<SecurityCard />);
+
+  await user.click(screen.getByRole("button", { name: /Alterar senha/ }));
+  expect(screen.getByRole("dialog", { name: "Alterar senha" })).toBeVisible();
+  const currentPassword = screen.getByLabelText("Senha atual", { exact: true });
+  const newPassword = screen.getByLabelText("Nova senha", { exact: true });
+  await user.type(currentPassword, "senha-atual-123");
+  await user.click(screen.getByRole("button", { name: "Mostrar: Senha atual" }));
+  expect(currentPassword).toHaveAttribute("type", "text");
+  expect(newPassword).toHaveAttribute("type", "password");
+  await user.click(screen.getByRole("button", { name: "Cancelar" }));
+  await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+
+  await user.click(screen.getByRole("button", { name: /Alterar senha/ }));
+  expect(screen.getByLabelText("Senha atual", { exact: true })).toHaveValue("");
+  expect(screen.getByLabelText("Senha atual", { exact: true })).toHaveAttribute("type", "password");
+});

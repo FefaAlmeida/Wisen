@@ -9,6 +9,7 @@ import styles from "@/components/conceito/conceptDetail.module.css";
 import { Frame } from "@/components/platform/shared";
 import { conceitosDetalhados, demoConceptHref } from "@/data/conceitoDetalhes";
 import { useDemoSavedConcepts } from "@/hooks/use-demo-saved-concepts";
+import { coresNivelDominio } from "@/lib/coresStatusConceito";
 import news from "./newsDetail.module.css";
 
 export default function PaginaConceito() {
@@ -33,6 +34,7 @@ function DemoConcept({ concept }) {
   const savedConcepts = useDemoSavedConcepts();
   const saved = savedConcepts.items.includes(concept.titulo);
   const [gap, setGap] = useState(false);
+  const coresDominio = coresNivelDominio(concept.progresso);
   const connections = conceitosDetalhados
     .filter((item) => item.categoria === concept.categoria && item.titulo !== concept.titulo)
     .slice(0, 3)
@@ -74,16 +76,23 @@ function DemoConcept({ concept }) {
       }
       sidebar={
         <ConceptPanel eyebrow="Seu aprendizado" title="Como você está neste conceito">
-          <div className={styles.progressLabel}>
-            <span>Nível de domínio</span>
-            <strong>{concept.progresso}%</strong>
+          <div
+            style={{
+              "--mastery-indicator": coresDominio.indicador,
+              "--mastery-text": coresDominio.texto,
+            }}
+          >
+            <div className={styles.progressLabel}>
+              <span>Nível de domínio</span>
+              <strong>{concept.progresso}%</strong>
+            </div>
+            <progress
+              className={styles.progress}
+              value={concept.progresso}
+              max="100"
+              aria-label={`Nível de domínio de ${concept.titulo}`}
+            />
           </div>
-          <progress
-            className={styles.progress}
-            value={concept.progresso}
-            max="100"
-            aria-label={`Nível de domínio de ${concept.titulo}`}
-          />
           <p className={`${styles.muted} mt-3`}>Dados ilustrativos de aprendizado.</p>
           <div className={styles.studyActions}>
             <button

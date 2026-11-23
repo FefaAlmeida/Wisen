@@ -59,7 +59,8 @@ test("localização única mostra bandeiras, aceita busca e persiste após reloa
     await page.getByRole("button", { name, exact: true }).click();
   }
   await page.getByRole("button", { name: "Continuar", exact: true }).click();
-  await page.getByRole("button", { name: "Pular esta etapa" }).click();
+  await page.getByLabel("Estou começando").check();
+  await page.getByRole("button", { name: "Concluir", exact: true }).click();
   await expect(page).toHaveURL(/\/paginaInicialCliente$/);
   const profile = await page.request.get("/api/auth/profile");
   expect(profile.status()).toBe(200);

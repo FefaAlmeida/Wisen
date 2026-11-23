@@ -73,7 +73,7 @@ describe("autenticação unificada", () => {
     },
   );
 
-  it("mantém o cartão e o formulário enquanto prepara o onboarding", async () => {
+  it("mostra o carregamento no mesmo cartão enquanto prepara o onboarding de uma nova conta", async () => {
     window.history.replaceState(null, "", "/auth");
     const user = await continueWithEmail(false);
     const brand = screen.getByRole("link", { name: "Wisen, página inicial" });
@@ -91,8 +91,8 @@ describe("autenticação unificada", () => {
     mocks.requisitar.mockResolvedValueOnce({ categories: [{ name: "Economia" }] });
     await user.type(screen.getByLabelText("Senha"), "senha-segura-123");
     await user.click(screen.getByRole("button", { name: "Criar conta" }));
-    expect(screen.getByRole("heading", { name: "Prazer em te conhecer." })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Aguarde/ })).toBeDisabled();
+    expect(screen.getByRole("status")).toHaveTextContent("Preparando seu perfil…");
+    expect(screen.queryByLabelText("Senha")).not.toBeInTheDocument();
     expect(window.location.pathname).toBe("/auth");
     resolveProfile({
       ok: true,
@@ -103,6 +103,7 @@ describe("autenticação unificada", () => {
         }),
     });
     await screen.findByRole("heading", { name: "Nome Completo" });
+    expect(screen.queryByText("Preparando seu perfil…")).not.toBeInTheDocument();
     expect(window.location.pathname).toBe("/onboarding");
     expect(screen.getByRole("link", { name: "Wisen, página inicial" })).toBe(brand);
   });

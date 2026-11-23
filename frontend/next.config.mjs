@@ -2,6 +2,7 @@ import { fileURLToPath } from "node:url";
 
 export default {
   output: "standalone",
+  distDir: process.env.WISEN_E2E_DEV === "1" ? ".next/e2e" : ".next",
   deploymentId: process.env.DEPLOYMENT_VERSION,
   poweredByHeader: false,
   async headers() {

@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, CheckCircle2, FileText, HelpCircle } from "lucide-react";
+import { ArrowRight, BookOpen, CheckCircle2, FileText, HelpCircle } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import styles from "./conhecimento.module.css";
@@ -96,7 +96,12 @@ export function HistoricoAtividades() {
         {visible.map((item) => {
           const Icon = item.icon;
           return (
-            <Link href={item.href} className={styles.activity} key={item.id}>
+            <Link
+              href={item.href}
+              className={styles.activity}
+              data-wisen-hover="preserve"
+              key={item.id}
+            >
               <span className={styles.activityIcon}>
                 <Icon size={16} aria-hidden="true" />
               </span>
@@ -108,6 +113,7 @@ export function HistoricoAtividades() {
                 </p>
               </div>
               <span className={styles.activityTime}>{item.time}</span>
+              <ArrowRight className={styles.activityArrow} size={16} aria-hidden="true" />
             </Link>
           );
         })}
@@ -120,6 +126,7 @@ export function HistoricoAtividades() {
           <button
             type="button"
             className={styles.textButton}
+            data-wisen-hover="preserve"
             aria-expanded={expanded}
             onClick={() => setExpanded(!expanded)}
           >

@@ -19,7 +19,7 @@ export function NotificationsCard({
     >
       <div className="space-y-5">
         {/* Item 1 */}
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center justify-between gap-4 rounded-[10px] border border-wisen-borda p-3">
           <div className="flex items-start gap-3">
             <div className="flex size-10 items-center justify-center rounded-xl bg-wisen-superficie text-wisen-texto-suave shrink-0">
               <Calendar className="w-4 h-4" />
@@ -41,7 +41,7 @@ export function NotificationsCard({
         </div>
 
         {/* Item 2 */}
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center justify-between gap-4 rounded-[10px] border border-wisen-borda p-3">
           <div className="flex items-start gap-3">
             <div className="flex size-10 items-center justify-center rounded-xl bg-wisen-superficie text-wisen-texto-suave shrink-0">
               <Bell className="w-4 h-4" />

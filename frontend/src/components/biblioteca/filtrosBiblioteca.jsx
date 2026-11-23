@@ -10,12 +10,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { conceitos } from "@/data/conceitos";
+import { coresStatusConceito } from "@/lib/coresStatusConceito";
 
 const filtros = [
-  { id: "todos", rotulo: "Todas", status: null, cor: null },
-  { id: "lacunas", rotulo: "Minhas lacunas", status: "Lacuna", cor: "bg-[#FF6469]" },
-  { id: "revisao", rotulo: "Em revisão", status: "Em revisão", cor: "bg-[#FFD33D]" },
-  { id: "dominados", rotulo: "Dominados", status: "Dominado", cor: "bg-[#33B27C]" },
+  { id: "todos", rotulo: "Todas", status: null },
+  { id: "lacunas", rotulo: "Minhas lacunas", status: "Lacuna" },
+  { id: "revisao", rotulo: "Em revisão", status: "Em revisão" },
+  { id: "dominados", rotulo: "Dominados", status: "Dominado" },
 ];
 const itemOrdenacaoClassName =
   "data-[highlighted]:bg-[#F3E69A] data-[highlighted]:text-wisen-titulo focus:bg-[#F3E69A] focus:text-wisen-titulo";
@@ -52,7 +53,13 @@ export function FiltrosBiblioteca({
                     : "h-9 rounded-[10px] border-wisen-borda bg-white/80 px-4 text-[13px] font-normal text-[#607092] shadow-none hover:bg-white hover:text-wisen-texto"
                 }
               >
-                {filtro.cor && <span className={`mr-2 h-2 w-2 rounded-full ${filtro.cor}`} />}
+                {filtro.status && (
+                  <span
+                    className="mr-2 h-2 w-2 rounded-full"
+                    style={{ backgroundColor: coresStatusConceito[filtro.status].indicador }}
+                    aria-hidden="true"
+                  />
+                )}
                 {filtro.id === "salvos" && <Bookmark size={14} aria-hidden="true" />}
                 {filtro.rotulo}
                 {filtro.id !== "salvos" && ` (${quantidade})`}

@@ -1,11 +1,17 @@
 "use client";
 
-import { Camera, Loader2, UserRound } from "lucide-react";
+import { Camera, Loader2, Mail, UserRound } from "lucide-react";
 import { useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ProfileSection, profileSaveAction } from "./profileSection";
+import { Label } from "@/components/ui/label";
+import {
+  ProfileSection,
+  profileInput,
+  profileInputIcon,
+  profileSaveAction,
+} from "./profileSection";
 
 export function PersonalDataCard({
   name,
@@ -118,34 +124,49 @@ export function PersonalDataCard({
         </div>
 
         <div className="space-y-4">
-          <div className="space-y-1">
-            <label htmlFor="perfil-nome" className="text-xs font-medium text-wisen-texto-forte">
+          <div className="space-y-2">
+            <Label htmlFor="perfil-nome" className="font-semibold text-wisen-texto-forte">
               Nome
-            </label>
-            <Input
-              id="perfil-nome"
-              autoComplete="name"
-              value={name}
-              onChange={(e) => onNameChange(e.target.value)}
-              disabled={loading || saving}
-              required
-              className="h-11 rounded-xl border-wisen-borda bg-white text-sm text-wisen-titulo shadow-none"
-            />
+            </Label>
+            <div className="relative">
+              <UserRound
+                aria-hidden="true"
+                className={`${profileInputIcon} text-wisen-texto-suave`}
+              />
+              <Input
+                id="perfil-nome"
+                name="name"
+                autoComplete="name"
+                placeholder="Digite seu nome completo"
+                value={name}
+                onChange={(e) => onNameChange(e.target.value)}
+                disabled={loading || saving}
+                required
+                minLength={2}
+                maxLength={120}
+                className={profileInput}
+              />
+            </div>
           </div>
-          <div className="space-y-1">
-            <label htmlFor="perfil-email" className="text-xs font-medium text-wisen-texto-forte">
+          <div className="space-y-2">
+            <Label htmlFor="perfil-email" className="font-semibold text-wisen-texto-forte">
               E-mail
-            </label>
-            <Input
-              id="perfil-email"
-              type="email"
-              autoComplete="email"
-              value={email}
-              onChange={(e) => onEmailChange(e.target.value)}
-              disabled={loading || saving}
-              required
-              className="h-11 rounded-xl border-wisen-borda bg-white text-sm text-wisen-titulo shadow-none"
-            />
+            </Label>
+            <div className="relative">
+              <Mail aria-hidden="true" className={`${profileInputIcon} text-wisen-texto-suave`} />
+              <Input
+                id="perfil-email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                placeholder="voce@exemplo.com"
+                value={email}
+                onChange={(e) => onEmailChange(e.target.value)}
+                disabled={loading || saving}
+                required
+                className={profileInput}
+              />
+            </div>
           </div>
         </div>
 

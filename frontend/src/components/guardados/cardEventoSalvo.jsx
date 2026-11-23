@@ -1,51 +1,66 @@
+import { ArrowUpRight, Bookmark } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 
-function IconeMarcador() {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4" aria-hidden="true">
-      <path d="M6 3.5A1.5 1.5 0 0 1 7.5 2h9A1.5 1.5 0 0 1 18 3.5V22l-6-4-6 4V3.5Z" />
-    </svg>
-  );
-}
+const coresCategoria = {
+  "Meio ambiente": "bg-[#E8F4EC] text-[#28583D]",
+  Política: "bg-[#EAF0FC] text-[#354F83]",
+  Economia: "bg-[#FBF1D7] text-[#725318]",
+};
 
 export default function CardEventoSalvo({ evento }) {
   return (
-    <Card className="flex-row items-center gap-3 rounded-xl border border-[#E2E8F0] bg-white p-3 shadow-none transition-colors hover:border-[#CDD8E8]">
-      <Image
-        src={evento.imagem}
-        width={120}
-        height={85}
-        alt=""
-        sizes="(max-width: 640px) 108px, 120px"
-        className="h-[85px] w-[108px] shrink-0 rounded-lg object-cover sm:w-[120px]"
-      />
+    <Card
+      role="article"
+      className="group/evento relative grid grid-cols-[64px_minmax(0,1fr)_24px] items-center gap-2 rounded-xl bg-white p-2 transition-[border-color,box-shadow] hover:border-[#BBC9DC] hover:shadow-sm has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-2 has-[a:focus-visible]:outline-wisen-destaque sm:grid-cols-[112px_minmax(0,1fr)_28px] sm:gap-3 sm:px-3"
+    >
+      <div className="relative h-16 overflow-hidden rounded-lg bg-wisen-superficie sm:h-18">
+        <Image
+          src={evento.imagem}
+          fill
+          alt=""
+          sizes="(min-width: 640px) 112px, 64px"
+          className="object-cover motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover/evento:scale-105"
+        />
+      </div>
 
-      <div className="min-w-0 flex-1">
-        <div className="mb-1.5 flex flex-wrap items-center gap-2">
-          <Badge className="rounded-md border-0 bg-[#EEF3FA] px-2 py-0.5 text-[10px] font-medium text-[#607398] shadow-none">
+      <div className="min-w-0">
+        <div className="mb-1 flex flex-wrap items-center gap-x-2 gap-y-1">
+          <Badge
+            className={`h-auto px-2 py-0 text-[11px] leading-4 font-semibold ${coresCategoria[evento.categoria] ?? "bg-wisen-superficie text-wisen-texto-forte"}`}
+          >
             {evento.categoria}
           </Badge>
-          <span className="text-[10px] text-[#97A5BB]">{evento.data}</span>
+          <span className="text-xs text-wisen-texto-suave">{evento.data}</span>
+          <Bookmark
+            className="size-3.5 shrink-0 fill-current text-wisen-texto-forte"
+            role="img"
+            aria-label="Evento salvo"
+          />
         </div>
 
-        <h3 className="text-[13px] leading-[17px] font-semibold text-wisen-titulo">
-          <Link href="/paginaEvento">{evento.titulo}</Link>
+        <h3 className="text-sm leading-snug font-semibold text-wisen-titulo">
+          <Link
+            href="/paginaEvento"
+            className="outline-none after:absolute after:inset-0 group-hover/evento:underline group-hover/evento:underline-offset-4"
+          >
+            {evento.titulo}
+          </Link>
         </h3>
 
-        <p className="mt-1 line-clamp-2 text-[11px] leading-4 text-[#8392AD]">{evento.descricao}</p>
+        <p className="mt-1 line-clamp-2 text-xs leading-4 text-wisen-texto-suave">
+          {evento.descricao}
+        </p>
       </div>
 
-      <div className="flex shrink-0 items-start self-start gap-2 pt-1 text-[#344469]">
-        <span title="Evento salvo">
-          <IconeMarcador />
-        </span>
-        <span aria-hidden="true" className="text-lg leading-none">
-          ···
-        </span>
-      </div>
+      <span
+        aria-hidden="true"
+        className="grid size-6 place-items-center justify-self-center rounded-full border border-wisen-borda bg-wisen-superficie text-wisen-texto-forte transition-colors group-hover/evento:border-wisen-destaque-suave group-hover/evento:bg-wisen-cliente-hover group-focus-within/evento:bg-wisen-cliente-hover sm:size-7"
+      >
+        <ArrowUpRight className="size-3.5" />
+      </span>
     </Card>
   );
 }

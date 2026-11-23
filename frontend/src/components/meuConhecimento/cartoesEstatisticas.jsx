@@ -11,8 +11,9 @@ export function CartoesEstatisticas() {
   return (
     <section className={`${styles.stats} ${cards.group}`} aria-label="Resumo do aprendizado">
       <div className={cards.card}>
-        <div className={cards.heading}>
-          <h2>Nível estimado</h2>
+        <div className={`${cards.heading} ${cards.scoreHeading}`}>
+          <h2>Domínio dos seus temas</h2>
+          <span>Demonstração</span>
         </div>
         <div className={`${cards.body} ${cards.scoreBody}`}>
           <DominioAreas />

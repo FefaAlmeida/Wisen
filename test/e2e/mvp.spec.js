@@ -53,23 +53,24 @@ test("ciclo real de leitura, lacuna, revisão e adaptação persiste no navegado
 }) => {
   await page.setExtraHTTPHeaders({ "x-forwarded-for": "10.51.0.1" });
   const email = `mvp-browser-${randomUUID()}@example.test`;
-  await page.goto("/paginaCadastro");
+  await page.goto("/auth");
   await page.getByLabel("E-mail").fill(email);
   await page.getByRole("button", { name: "Continuar", exact: true }).click();
   await page.getByLabel("Senha", { exact: true }).fill("senha-do-mvp-123");
   await page.getByRole("button", { name: /criar conta/i }).click();
-  await expect(page).toHaveURL(/paginaInicialCliente$/);
+  await expect(page).toHaveURL(/\/onboarding$/);
   await page.getByRole("textbox", { name: "Nome Completo" }).fill("Leitor de Economia");
   await page.getByRole("combobox", { name: "Localização" }).fill("sao paulo brasil");
   await page.getByRole("option", { name: "São Paulo, Brasil", exact: true }).click();
   await page.getByRole("button", { name: "Continuar", exact: true }).click();
-  await page.getByRole("dialog").getByRole("button", { name: "Economia", exact: true }).click();
-  await page.getByRole("dialog").getByRole("button", { name: "Juros", exact: true }).click();
-  await page.getByRole("dialog").getByRole("button", { name: "Tecnologia", exact: true }).click();
-  await page.getByRole("dialog").getByRole("button", { name: "Continuar", exact: true }).click();
+  const onboarding = page.getByRole("region", { name: "Personalize sua experiência" });
+  await onboarding.getByRole("button", { name: "Economia", exact: true }).click();
+  await onboarding.getByRole("button", { name: "Juros", exact: true }).click();
+  await onboarding.getByRole("button", { name: "Tecnologia", exact: true }).click();
+  await onboarding.getByRole("button", { name: "Continuar", exact: true }).click();
   await page.getByLabel("Estou começando").check();
   await page.getByRole("button", { name: "Concluir", exact: true }).click();
-  await expect(page.getByRole("dialog")).not.toBeVisible();
+  await expect(page).toHaveURL(/\/paginaInicialCliente$/);
   const user = (await pool.query("SELECT * FROM users WHERE email=$1", [email])).rows[0];
   const mail = (await pool.query("SELECT body FROM mail_outbox WHERE user_id=$1", [user.id]))
     .rows[0];

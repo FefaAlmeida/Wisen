@@ -1,10 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import {
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { requisitar } from "@/services/api";
 import cards from "./constancia.module.css";
 import { categories } from "./historicoDemo";
 import { ScoreRing, scoreColor } from "./scoreRing";
+
+const previewLimit = 3;
 
 // Illustrative scores for the explicitly labelled knowledge preview.
 const demoScores = {
@@ -44,28 +55,55 @@ export function DominioAreas() {
   const score = Math.round(areas.reduce((sum, area) => sum + area.value, 0) / areas.length);
 
   return (
-    <div className={cards.areaLayout}>
-      <ScoreRing value={score} />
-      <ul className={cards.areaList} aria-label="Domínio por área de interesse">
-        {areas.map(({ name, value }) => (
-          <li key={name}>
-            <div className={cards.areaLabel}>
-              <span>{name}</span>
-              <strong>{value}%</strong>
-            </div>
-            <div
-              className={cards.areaTrack}
-              role="progressbar"
-              aria-label={name}
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-valuenow={value}
-            >
-              <span style={{ width: `${value}%`, background: scoreColor(value) }} />
-            </div>
-          </li>
-        ))}
-      </ul>
+    <div className={cards.areaSummary}>
+      <div className={cards.areaLayout}>
+        <div className={cards.areaAverage}>
+          <ScoreRing value={score} />
+          <span>Média geral</span>
+        </div>
+        <ListaAreas areas={areas.slice(0, previewLimit)} className={cards.areaList} />
+      </div>
+      {areas.length > previewLimit && (
+        <Dialog>
+          <DialogTrigger className={cards.allAreasTrigger}>
+            Ver todos os {areas.length} temas
+          </DialogTrigger>
+          <DialogContent size="sm">
+            <DialogHeader eyebrow={false}>
+              <DialogTitle>Domínio por tema</DialogTitle>
+              <DialogDescription>Pontuações de demonstração dos seus temas.</DialogDescription>
+            </DialogHeader>
+            <DialogBody>
+              <ListaAreas areas={areas} className={cards.dialogAreaList} />
+            </DialogBody>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
+  );
+}
+
+function ListaAreas({ areas, className }) {
+  return (
+    <ul className={className} aria-label="Domínio por área de interesse">
+      {areas.map(({ name, value }) => (
+        <li key={name}>
+          <div className={cards.areaLabel}>
+            <span>{name}</span>
+            <strong>{value}%</strong>
+          </div>
+          <div
+            className={cards.areaTrack}
+            role="progressbar"
+            aria-label={name}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={value}
+          >
+            <span style={{ width: `${value}%`, background: scoreColor(value) }} />
+          </div>
+        </li>
+      ))}
+    </ul>
   );
 }

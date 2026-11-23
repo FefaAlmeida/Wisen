@@ -232,8 +232,13 @@ export default function PainelRevisoes({ areas = [], questoes = [], summary }) {
               </li>
             ))}
           </ul>
-          <Link href="/paginaConhecimento" className={styles.voltar}>
-            Acompanhar meu aprendizado <ArrowRight size={15} aria-hidden="true" />
+          <Link
+            href="/paginaConhecimento"
+            data-wisen-hover="preserve"
+            className={styles.voltar}
+          >
+            <span>Acompanhar meu aprendizado</span>
+            <ArrowRight size={15} aria-hidden="true" />
           </Link>
         </section>
       </div>

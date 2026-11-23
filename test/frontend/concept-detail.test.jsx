@@ -45,6 +45,21 @@ describe("detalhe de conceito", () => {
     );
   });
 
+  it.each([
+    ["Inflação", "Dominado", 85, "#33B27C", "#16734D"],
+    ["Taxa Selic", "Em revisão", 60, "#FFD33D", "#8A6500"],
+    ["Política monetária", "Lacuna", 25, "#FF6469", "#B4232B"],
+  ])("colore o domínio e o status de %s", (name, status, score, indicator, color) => {
+    navigation.name = name;
+    render(<PaginaConceito />);
+
+    const progress = screen.getByRole("progressbar", { name: `Nível de domínio de ${name}` });
+    expect(progress).toHaveValue(score);
+    expect(progress.parentElement.style.getPropertyValue("--mastery-indicator")).toBe(indicator);
+    expect(progress.parentElement.style.getPropertyValue("--mastery-text")).toBe(color);
+    expect(screen.getByText(status).firstElementChild).toHaveStyle({ backgroundColor: indicator });
+  });
+
   it("reinicia as marcações locais ao navegar para outro conceito", async () => {
     const user = userEvent.setup();
     const { rerender } = render(<PaginaConceito />);

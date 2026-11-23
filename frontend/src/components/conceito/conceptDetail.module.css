@@ -14,7 +14,7 @@
   font-weight: 500;
 }
 .status > span {
-  background: var(--color-wisen-destaque);
+  background: var(--color-wisen-texto-suave);
 }
 .panelContent {
   margin-top: 18px;
@@ -34,7 +34,7 @@
   font-size: 12px;
 }
 .progressLabel strong {
-  color: #30466e;
+  color: var(--mastery-text);
   font-size: 24px;
   font-weight: 600;
   letter-spacing: -0.04em;
@@ -47,18 +47,18 @@
   border: 0;
   border-radius: 10px;
   background: var(--color-wisen-superficie);
-  accent-color: #30466e;
+  accent-color: var(--mastery-indicator);
 }
 .progress::-webkit-progress-bar {
   background: var(--color-wisen-superficie);
 }
 .progress::-webkit-progress-value {
   border-radius: 10px;
-  background: #30466e;
+  background: var(--mastery-indicator);
 }
 .progress::-moz-progress-bar {
   border-radius: 10px;
-  background: #30466e;
+  background: var(--mastery-indicator);
 }
 .studyActions {
   display: grid;

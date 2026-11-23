@@ -1,12 +1,16 @@
 import { Card, CardContent } from "@/components/ui/card";
+import styles from "../authForm.module.css";
 
-export const profileSaveAction =
-  "h-10 w-full rounded-xl bg-wisen-destaque-suave px-5 text-xs font-semibold text-wisen-titulo shadow-none hover:bg-[#EBDD80] sm:w-auto";
+export const profileSaveAction = `h-11 w-full rounded-[10px] px-5 shadow-none sm:w-auto ${styles.profileSaveAction}`;
+export const profileInput =
+  "h-12 rounded-[10px] border-wisen-borda bg-wisen-superficie pl-10 text-base text-wisen-titulo shadow-none placeholder:text-wisen-texto-suave focus-visible:border-[#D6B947] focus-visible:ring-2 focus-visible:ring-[#D6B947]/25";
+export const profileInputIcon =
+  "pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2";
 
 export function ProfileSection({ icon: Icon, title, description, className = "", children }) {
   return (
     <Card
-      className={`min-w-0 gap-5 border-wisen-borda bg-wisen-card [--card-spacing:--spacing(5)] sm:[--card-spacing:--spacing(6)] ${className}`}
+      className={`min-w-0 gap-5 rounded-2xl border-wisen-borda bg-wisen-card [--card-spacing:--spacing(5)] sm:[--card-spacing:--spacing(6)] ${className}`}
     >
       <div className="flex items-start gap-3 px-(--card-spacing)">
         <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-wisen-superficie text-wisen-titulo">

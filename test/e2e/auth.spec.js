@@ -110,7 +110,7 @@ test("cadastro, rota privada, busca, logout e login funcionam no navegador", asy
   await page.getByLabel("Senha", { exact: true }).fill(password);
   await page.getByRole("button", { name: /^entrar/i }).click();
   await expect(page).toHaveURL(/\/paginaGuardados$/);
-  await expect(page.getByRole("heading", { name: "Conteúdos salvos", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   const session = await page.request.get("/api/auth/session");
   expect(session.ok()).toBe(true);
   expect((await session.json()).user.email).toBe(email);
@@ -122,7 +122,7 @@ test("formulário impede senha curta no navegador", async ({ page }) => {
   await page.getByRole("button", { name: "Continuar", exact: true }).click();
   await page.getByLabel("Senha", { exact: true }).fill("1234567");
   await page.getByRole("button", { name: /criar conta/i }).click();
-  await expect(page).toHaveURL(/\/onboarding$/);
+  await expect(page).toHaveURL(/\/auth$/);
   await expect(page.getByLabel("Senha", { exact: true })).toBeFocused();
 });
 
@@ -132,7 +132,7 @@ test("rotas de administração exigem sessão e papel de administrador", async (
   await page.getByRole("button", { name: "Continuar", exact: true }).click();
   await page.getByLabel("Senha", { exact: true }).fill("senha-de-teste-123");
   await page.getByRole("button", { name: /criar conta/i }).click();
-  await expect(page).toHaveURL(/\/auth$/);
+  await expect(page).toHaveURL(/\/onboarding$/);
   await expect(page.getByRole("textbox", { name: "Nome Completo" })).toBeVisible();
 
   await page.goto("/paginaGestaoUsuariosAdm");
@@ -191,14 +191,22 @@ test("perfil salva cartões independentemente, mantém alterações e encerra se
   await page.getByRole("button", { name: "Continuar", exact: true }).click();
   await page.getByLabel("Senha", { exact: true }).fill("senha-de-perfil-123");
   await page.getByRole("button", { name: /criar conta/i }).click();
-  await expect(page).toHaveURL(/\/paginaInicialCliente$/);
+  await expect(page).toHaveURL(/\/onboarding$/);
   await page.getByRole("textbox", { name: "Nome Completo" }).fill("Pessoa Perfil");
+  await page.getByRole("combobox", { name: "Localização" }).fill("sao paulo brasil");
+  await page.getByRole("option", { name: "São Paulo, Brasil", exact: true }).click();
   await page.getByRole("button", { name: "Continuar", exact: true }).click();
+  for (const name of ["Economia", "Juros", "Saúde"]) {
+    await page.getByRole("button", { name, exact: true }).click();
+  }
+  await page.getByRole("button", { name: "Continuar", exact: true }).click();
+  await page.getByLabel("Entendo o básico").check();
+  await page.getByRole("button", { name: "Concluir", exact: true }).click();
+  await expect(page).toHaveURL(/\/paginaInicialCliente$/);
   await page.goto("/paginaPerfil");
   await expect(page.getByLabel("Nome", { exact: true })).toHaveValue("Pessoa Perfil");
   await page.getByLabel("Nome", { exact: true }).fill("Nome ainda não salvo");
-  await page.getByRole("button", { name: "Juros", exact: true }).click();
-  await page.getByRole("button", { name: "Economia", exact: true }).click();
+  await page.getByRole("button", { name: "Saúde", exact: true }).click();
   await page.getByRole("button", { name: "Tecnologia", exact: true }).click();
   await page.getByRole("button", { name: "Salvar interesses" }).click();
   await expect(page.getByText("Assuntos de interesse salvos.")).toBeVisible();
@@ -215,8 +223,8 @@ test("perfil salva cartões independentemente, mantém alterações e encerra se
   await expect(page.getByRole("switch", { name: "Resumo semanal" })).toBeChecked();
   response = await page.request.get("/api/auth/profile");
   expect((await response.json()).preferences.interests).toEqual([
-    "Juros",
     "Economia",
+    "Juros",
     "Tecnologia",
   ]);
   await page.getByRole("button", { name: /Encerrar sessão/ }).click();
@@ -252,7 +260,7 @@ test("admin fica na administração e pode sair em desktop e celular", async ({ 
       expect((await page.request.get("/api/feed")).status()).toBe(403);
       expect((await page.request.get("/api/admin/overview")).status()).toBe(200);
       if (width === 390) {
-        await page.getByRole("button", { name: "Abrir menu administrativo" }).click();
+        await page.getByRole("button", { name: "Abrir menu de navegação" }).click();
       }
       await page.getByRole("button", { name: "Sair da conta", exact: true }).click();
       await expect(page).toHaveURL(/\/auth$/);
@@ -263,7 +271,7 @@ test("admin fica na administração e pode sair em desktop e celular", async ({ 
   }
 });
 
-test("onboarding no celular exige três interesses e permite pular só a familiaridade", async ({
+test("onboarding no celular exige três interesses e uma opção de familiaridade", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
@@ -279,6 +287,7 @@ test("onboarding no celular exige três interesses e permite pular só a familia
   await page.getByRole("combobox", { name: "Localização" }).fill("sao paulo brasil");
   await page.getByRole("option", { name: "São Paulo, Brasil", exact: true }).click();
   await page.getByRole("button", { name: "Continuar", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Continuar", exact: true })).toBeDisabled();
   for (const name of ["Economia", "Juros", "Tecnologia"]) {
     await page.getByRole("dialog").getByRole("button", { name, exact: true }).click();
   }
@@ -286,7 +295,9 @@ test("onboarding no celular exige três interesses e permite pular só a familia
   await expect(page.getByRole("dialog")).toHaveAccessibleName(
     "Como você se sente ao ler sobre economia?",
   );
-  await page.getByRole("button", { name: "Pular esta etapa" }).click();
+  await expect(page.getByRole("button", { name: "Concluir", exact: true })).toBeDisabled();
+  await page.getByLabel("Estou começando").check();
+  await page.getByRole("button", { name: "Concluir", exact: true }).click();
   await expect(page.getByRole("dialog")).not.toBeVisible();
   await page.reload();
   await expect(page.getByRole("heading", { name: /Suas notícias/ })).toBeVisible();

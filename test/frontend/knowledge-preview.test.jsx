@@ -1,6 +1,7 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import { DominioAreas } from "../../frontend/src/components/meuConhecimento/dominioAreas.jsx";
 import { GraficoEvolucao } from "../../frontend/src/components/meuConhecimento/graficoEvolucao.jsx";
 import { HistoricoAtividades } from "../../frontend/src/components/meuConhecimento/historicoAtividades.jsx";
 import {
@@ -8,8 +9,65 @@ import {
   evolutionHistory,
   getEvolution,
 } from "../../frontend/src/components/meuConhecimento/historicoDemo.js";
+import { requisitar } from "../../frontend/src/services/api";
+
+vi.mock("@/services/api", () => ({ requisitar: vi.fn() }));
 
 describe("prévia do conhecimento", () => {
+  it("mostra três temas no card e calcula a média com os dez temas do perfil", async () => {
+    const user = userEvent.setup();
+    const interests = [
+      "Economia",
+      "Política",
+      "Meio ambiente",
+      "Tecnologia",
+      "Sociedade",
+      "Ciência",
+      "Comércio",
+      "Contas públicas",
+      "Educação",
+      "Saúde",
+    ];
+    vi.mocked(requisitar).mockResolvedValueOnce({ preferences: { interests } });
+    render(<DominioAreas />);
+
+    const trigger = await screen.findByRole("button", { name: "Ver todos os 10 temas" });
+    const summary = screen.getByRole("list", { name: "Domínio por área de interesse" });
+    expect(
+      within(summary)
+        .getAllByRole("progressbar")
+        .map((bar) => bar.ariaLabel),
+    ).toEqual(interests.slice(0, 3));
+    expect(screen.getByRole("progressbar", { name: "Domínio geral" })).toHaveAttribute(
+      "aria-valuenow",
+      "68",
+    );
+
+    await user.click(trigger);
+    const dialog = screen.getByRole("dialog", { name: "Domínio por tema" });
+    expect(
+      within(dialog)
+        .getAllByRole("progressbar")
+        .map((bar) => bar.ariaLabel),
+    ).toEqual(interests);
+    await user.click(within(dialog).getByRole("button", { name: "Fechar" }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("dispensa o botão quando todos os temas já cabem no card", async () => {
+    vi.mocked(requisitar).mockResolvedValueOnce({
+      preferences: { interests: ["Comércio", "Contas públicas", "Educação"] },
+    });
+    render(<DominioAreas />);
+
+    await screen.findByRole("progressbar", { name: "Educação" });
+    expect(screen.queryByRole("button", { name: /Ver todos/ })).not.toBeInTheDocument();
+    expect(screen.getByRole("progressbar", { name: "Domínio geral" })).toHaveAttribute(
+      "aria-valuenow",
+      "59",
+    );
+  });
+
   it("altera a série e o intervalo de datas em cada período", async () => {
     const user = userEvent.setup();
     const { container } = render(<GraficoEvolucao />);

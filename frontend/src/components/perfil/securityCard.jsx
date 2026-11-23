@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronRight, Lock, LogOut, ShieldCheck } from "lucide-react";
+import { ChevronRight, Eye, EyeOff, Lock, LogOut, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,12 +12,12 @@ import {
   DialogForm,
   DialogHeader,
   DialogTitle,
-  dialogPrimaryAction,
-  dialogSecondaryAction,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { requisitar } from "@/services/api";
-import { ProfileSection } from "./profileSection";
+import styles from "../authForm.module.css";
+import { ProfileSection, profileInputIcon } from "./profileSection";
 
 export function SecurityCard() {
   const [signingOut, setSigningOut] = useState(false);
@@ -26,6 +26,7 @@ export function SecurityCard() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [visiblePassword, setVisiblePassword] = useState(null);
   const [saving, setSaving] = useState(false);
   const [feedback, setFeedback] = useState(null);
 
@@ -48,6 +49,7 @@ export function SecurityCard() {
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
+      setVisiblePassword(null);
     }
   }
 
@@ -157,85 +159,88 @@ export function SecurityCard() {
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={handleDialogChange}>
-        <DialogContent>
-          <DialogHeader eyebrow="Segurança da conta">
-            <DialogTitle>
-              Alterar <span className="text-[#B59B35]">senha</span>
-            </DialogTitle>
+        <DialogContent className={styles.authDialog} size="sm">
+          <DialogHeader eyebrow={null} className="pr-14 pb-1">
+            <DialogTitle>Alterar senha</DialogTitle>
             <DialogDescription>
               Informe sua senha atual e escolha uma nova senha com pelo menos 8 caracteres.
             </DialogDescription>
           </DialogHeader>
           <DialogForm onSubmit={changePassword}>
             <DialogBody className="space-y-5">
-              <div className="space-y-3">
-                <div className="space-y-1.5">
-                  <label htmlFor="senha-atual" className="text-xs font-medium text-[#2B333F]">
-                    Senha atual
-                  </label>
-                  <Input
-                    id="senha-atual"
-                    type="password"
-                    autoComplete="current-password"
-                    minLength={8}
-                    maxLength={128}
-                    required
-                    value={currentPassword}
-                    onChange={(event) => setCurrentPassword(event.target.value)}
-                    disabled={saving}
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label htmlFor="senha-nova" className="text-xs font-medium text-[#2B333F]">
-                    Nova senha
-                  </label>
-                  <Input
-                    id="senha-nova"
-                    type="password"
-                    autoComplete="new-password"
-                    minLength={8}
-                    maxLength={128}
-                    required
-                    value={newPassword}
-                    onChange={(event) => setNewPassword(event.target.value)}
-                    disabled={saving}
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label htmlFor="confirmar-senha" className="text-xs font-medium text-[#2B333F]">
-                    Confirmar nova senha
-                  </label>
-                  <Input
-                    id="confirmar-senha"
-                    type="password"
-                    autoComplete="new-password"
-                    minLength={8}
-                    maxLength={128}
-                    required
-                    value={confirmPassword}
-                    onChange={(event) => setConfirmPassword(event.target.value)}
-                    disabled={saving}
-                  />
-                </div>
-              </div>
+              {[
+                [
+                  "senha-atual",
+                  "Senha atual",
+                  "current-password",
+                  currentPassword,
+                  setCurrentPassword,
+                ],
+                ["senha-nova", "Nova senha", "new-password", newPassword, setNewPassword],
+                [
+                  "confirmar-senha",
+                  "Confirmar nova senha",
+                  "new-password",
+                  confirmPassword,
+                  setConfirmPassword,
+                ],
+              ].map(([id, label, autoComplete, value, setValue]) => {
+                const visible = visiblePassword === id;
+                const VisibilityIcon = visible ? EyeOff : Eye;
+                return (
+                  <div className="space-y-2" key={id}>
+                    <Label htmlFor={id}>{label}</Label>
+                    <div className="relative">
+                      <Lock aria-hidden="true" className={`${profileInputIcon} text-[#B0BED1]`} />
+                      <Input
+                        id={id}
+                        name={id}
+                        type={visible ? "text" : "password"}
+                        autoComplete={autoComplete}
+                        minLength={8}
+                        maxLength={128}
+                        required
+                        value={value}
+                        onChange={(event) => setValue(event.target.value)}
+                        disabled={saving}
+                        className={`${styles.dialogInput} ${styles.darkInput} [&::-ms-reveal]:hidden`}
+                      />
+                      <button
+                        type="button"
+                        aria-label={visible ? `Ocultar: ${label}` : `Mostrar: ${label}`}
+                        aria-pressed={visible}
+                        disabled={saving}
+                        onClick={() => setVisiblePassword(visible ? null : id)}
+                        className="absolute top-1/2 right-2 flex size-8 -translate-y-1/2 cursor-pointer items-center justify-center rounded-md text-[#B0BED1] hover:text-white focus-visible:outline-2 focus-visible:outline-[#F2DF73]"
+                      >
+                        <VisibilityIcon aria-hidden="true" className="size-4" />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
 
               {feedback?.type === "error" && (
-                <p role="alert" className="text-xs text-red-600">
+                <p role="alert" className="rounded-md bg-red-950/55 px-3 py-2 text-sm text-red-200">
                   {feedback.text}
                 </p>
               )}
             </DialogBody>
-            <DialogFooter>
+            <DialogFooter className="grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
               <Button
                 type="button"
                 variant="outline"
-                className={dialogSecondaryAction}
+                className={`h-11 min-w-0 rounded-[10px] ${styles.dialogSecondaryAction}`}
                 onClick={() => handleDialogChange(false)}
                 disabled={saving}
               >
                 Cancelar
               </Button>
-              <Button type="submit" disabled={saving} className={dialogPrimaryAction}>
+              <Button
+                type="submit"
+                disabled={saving}
+                className={`h-11 min-w-0 rounded-[10px] ${styles.dialogPrimaryAction}`}
+              >
                 {saving ? "Salvando..." : "Salvar senha"}
               </Button>
             </DialogFooter>

@@ -1,7 +1,6 @@
 "use client";
 
-import { ArrowDownWideNarrow, X } from "lucide-react";
-import Link from "next/link";
+import { ArrowDownWideNarrow, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { AppTopBar } from "@/components/app/appTopBar";
 import { PageHeader } from "@/components/app/pageHeader";
@@ -18,14 +17,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { NewsInterests } from "./newsInterests";
 
 const topics = ["Economia", "Meio ambiente", "Tecnologia"];
 const filterItemClassName =
   "data-[highlighted]:bg-[#F3E69A] data-[highlighted]:text-wisen-titulo focus:bg-[#F3E69A] focus:text-wisen-titulo";
+const paginationButtonClassName =
+  "cursor-pointer rounded-lg text-xs text-wisen-titulo hover:bg-wisen-superficie hover:text-wisen-titulo disabled:text-wisen-texto-suave disabled:opacity-60";
 
 export default function PaginaExplorar() {
-  const [interests, setInterests] = useState([]);
-  const [loadingInterests, setLoadingInterests] = useState(true);
   const [topic, setTopic] = useState("Todos os assuntos");
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("relevantes");
@@ -48,21 +48,11 @@ export default function PaginaExplorar() {
     setSort("relevantes");
   }
 
-  useEffect(() => {
-    async function loadInterests() {
-      try {
-        const response = await fetch("/api/auth/profile");
-        if (!response.ok) return;
-        const profile = await response.json();
-        setInterests(profile.preferences?.interests ?? []);
-      } catch {
-        setInterests([]);
-      } finally {
-        setLoadingInterests(false);
-      }
-    }
-    loadInterests();
-  }, []);
+  function refreshFeed() {
+    session.current.id = null;
+    setPage(1);
+    resource.reload();
+  }
 
   const visibleStories = stories;
 
@@ -83,44 +73,8 @@ export default function PaginaExplorar() {
 
           <div className="wisen-container space-y-7 pb-12 pt-7">
             <PageHeader eyebrow="Notícias" title="Seu feed de" highlight="notícias." />
-            <p className="mb-5 text-sm text-wisen-texto-suave">
-              Acompanhe as notícias do dia e descubra os conceitos por trás de cada assunto.
-            </p>
 
-            <section className="flex flex-col gap-4 wisen-panel p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
-              <div className="min-w-0">
-                <h2 className="text-sm font-semibold text-wisen-titulo">Seus temas</h2>
-                <span
-                  aria-hidden="true"
-                  className="mt-2 block h-0.5 w-8 rounded-full bg-[#D7BF4D]"
-                />
-                <p className="mt-1 text-xs leading-5 text-wisen-texto-suave">
-                  {loadingInterests
-                    ? "Carregando seus interesses..."
-                    : interests.length
-                      ? "Seus assuntos e conceitos de interesse, definidos no perfil."
-                      : "Adicione assuntos de interesse no perfil para personalizar sua experiência."}
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2 sm:justify-end">
-                {(interests.length ? interests : topics).map((interest) => (
-                  <span
-                    key={interest}
-                    className="rounded-full border border-wisen-borda bg-wisen-superficie px-3 py-1.5 text-[11px] font-medium text-wisen-titulo"
-                  >
-                    {interest}
-                  </span>
-                ))}
-                {!interests.length && !loadingInterests && (
-                  <Link
-                    href="/paginaPerfil"
-                    className="text-[11px] font-medium text-[#30466E] underline underline-offset-2"
-                  >
-                    Ajustar perfil
-                  </Link>
-                )}
-              </div>
-            </section>
+            <NewsInterests onSaved={refreshFeed} />
 
             <section>
               <div className="mb-4 flex flex-wrap items-center gap-2">
@@ -215,23 +169,39 @@ export default function PaginaExplorar() {
                   </div>
                 )}
               </State>
-              <div className="mt-6 flex items-center justify-between text-sm">
-                <button
-                  type="button"
-                  disabled={page === 1 || resource.loading}
-                  onClick={() => setPage((p) => p - 1)}
-                >
-                  Anterior
-                </button>
-                <span>Página {page}</span>
-                <button
-                  type="button"
-                  disabled={!resource.data?.hasMore || resource.loading}
-                  onClick={() => setPage((p) => p + 1)}
-                >
-                  Próxima
-                </button>
-              </div>
+              <nav aria-label="Paginação de notícias" className="mt-8 flex justify-center">
+                <div className="inline-grid grid-cols-[1fr_auto_1fr] items-center gap-1 rounded-[10px] border border-wisen-borda bg-white p-0.5 shadow-sm">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className={paginationButtonClassName}
+                    disabled={page === 1 || resource.loading}
+                    onClick={() => setPage((p) => p - 1)}
+                  >
+                    <ChevronLeft aria-hidden="true" className="size-3.5" />
+                    Anterior
+                  </Button>
+                  <span
+                    aria-current="page"
+                    aria-live="polite"
+                    className="inline-flex h-8 items-center rounded-lg bg-[#F3E69A] px-2.5 text-xs font-semibold whitespace-nowrap text-wisen-titulo tabular-nums"
+                  >
+                    Página {page}
+                  </span>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className={paginationButtonClassName}
+                    disabled={!resource.data?.hasMore || resource.loading}
+                    onClick={() => setPage((p) => p + 1)}
+                  >
+                    Próxima
+                    <ChevronRight aria-hidden="true" className="size-3.5" />
+                  </Button>
+                </div>
+              </nav>
             </section>
           </div>
         </div>

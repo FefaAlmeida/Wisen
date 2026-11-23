@@ -8,6 +8,7 @@ export function SeletorSegmentado({ label, options, value, onChange, className =
           key={option.value}
           type="button"
           aria-pressed={value === option.value}
+          data-wisen-hover={value === option.value ? "preserve" : undefined}
           onClick={() => onChange(option.value)}
         >
           {option.label}

@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { PageIntro } from "@/components/app/pageHeader";
 import { ConceitosSalvos } from "@/components/biblioteca/conceitosSalvos";
 import { FiltrosBiblioteca } from "@/components/biblioteca/filtrosBiblioteca";
 import ConceptDetail, { ConceptPanel } from "@/components/conceito/conceptDetail";
@@ -363,15 +364,25 @@ export function Saved() {
     }
   }
   return (
-    <Frame title="Conteúdos salvos" active="Salvos">
+    <Frame
+      title={
+        <>
+          Meus <span className="text-wisen-destaque">salvos</span>
+        </>
+      }
+      active="Salvos"
+    >
+      <PageIntro title="Notícias e conceitos salvos">
+        Acesse os conteúdos que você salvou para ler ou revisar quando quiser.
+      </PageIntro>
       <Panel>
         <State resource={resource}>
           {resource.data?.items?.length ? (
             <ul className="divide-y">
               {resource.data.items.map((s) => (
-                <li key={s.id} className="flex flex-wrap items-center justify-between gap-3 py-4">
+                <li key={s.id} className="flex items-center justify-between gap-3 py-2">
                   <Link
-                    className="underline"
+                    className="min-w-0 text-sm break-words underline"
                     href={
                       s.article_id
                         ? `/artigo?id=${s.article_id}`
@@ -382,14 +393,19 @@ export function Saved() {
                   >
                     {s.title}
                   </Link>
-                  <Button variant="outline" onClick={() => remove(s.id)}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-xs"
+                    onClick={() => remove(s.id)}
+                  >
                     Remover
                   </Button>
                 </li>
               ))}
             </ul>
           ) : (
-            <p>Salve artigos, eventos ou conceitos para voltar a eles depois.</p>
+            <p className="text-sm text-wisen-texto-suave">Você ainda não tem conteúdos salvos.</p>
           )}
         </State>
         {error && <p role="alert">{error}</p>}

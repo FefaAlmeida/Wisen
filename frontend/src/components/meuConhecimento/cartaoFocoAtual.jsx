@@ -36,7 +36,7 @@ export function CartaoFocoAtual() {
           const Icon = topic.icon;
           return (
             <details className={styles.topic} key={topic.name}>
-              <summary>
+              <summary data-wisen-hover="preserve">
                 <Icon size={17} aria-hidden="true" />
                 <span>
                   <strong>{topic.name}</strong>

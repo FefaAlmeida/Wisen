@@ -213,6 +213,7 @@ export default function PerfilPage({ admin = false } = {}) {
             minimumSelections={3}
             hasChanges={interestsChanged}
             feedback={interestsFeedback}
+            selectionTiles
             systemColors
           />
           <NotificationsCard
@@ -226,16 +227,15 @@ export default function PerfilPage({ admin = false } = {}) {
         </div>
       </div>
       {!admin && (
-        <div className="flex flex-col items-start justify-between gap-3 border-t border-wisen-borda pt-5 sm:flex-row sm:items-center">
-          <p className="text-xs text-wisen-texto-suave">
-            Você tem o controle da sua conta e dos seus dados.
-          </p>
-          <a
-            href="/conta?action=delete"
-            className="rounded-lg px-3 py-2 text-xs font-medium text-red-700 transition-colors hover:bg-red-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700"
+        <div className="flex border-t border-wisen-borda pt-5 sm:justify-end">
+          <Button
+            type="button"
+            variant="destructive"
+            className="cursor-pointer border-destructive/30"
+            onClick={() => window.location.assign("/conta?action=delete")}
           >
             Excluir minha conta
-          </a>
+          </Button>
         </div>
       )}
     </div>

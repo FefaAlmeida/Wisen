@@ -1,5 +1,6 @@
 "use client";
 
+import { Bookmark, BookOpen, ListFilter, Search } from "lucide-react";
 import { useState } from "react";
 
 import { Card } from "@/components/ui/card";
@@ -95,21 +96,21 @@ const conceitosIniciais = [
   },
 ];
 
+const estiloAba =
+  "h-8 gap-1.5 rounded-md px-2 text-xs font-semibold text-wisen-texto-suave hover:not-data-active:bg-wisen-superficie data-active:bg-wisen-cliente-hover data-active:text-wisen-titulo sm:px-3";
+
+const opcoesOrdenacao = [
+  { value: "recentes", label: "Mais recentes" },
+  { value: "alfabetica", label: "Ordem alfabética" },
+];
+
 function CampoBusca({ valor, aoAlterar, placeholder }) {
   return (
-    <div className="relative w-full">
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[#8A9BB5]"
+    <div className="relative min-w-0 flex-1">
+      <Search
+        className="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-wisen-texto-suave"
         aria-hidden="true"
-      >
-        <circle cx="11" cy="11" r="7" />
-        <path d="m20 20-4-4" />
-      </svg>
+      />
 
       <Input
         type="search"
@@ -117,7 +118,7 @@ function CampoBusca({ valor, aoAlterar, placeholder }) {
         placeholder={placeholder}
         value={valor}
         onChange={(event) => aoAlterar(event.target.value)}
-        className="h-9 rounded-lg border-[#E2E8F0] bg-white pl-9 text-[12px] text-wisen-titulo shadow-none placeholder:text-[#98A5BA] focus-visible:ring-[#EEDC84]"
+        className="h-9 border-wisen-borda pl-8 text-wisen-titulo placeholder:text-wisen-texto-suave focus-visible:border-wisen-destaque focus-visible:ring-wisen-destaque/25 md:text-xs"
       />
     </div>
   );
@@ -125,16 +126,45 @@ function CampoBusca({ valor, aoAlterar, placeholder }) {
 
 function Ordenacao({ valor, aoAlterar }) {
   return (
-    <Select value={valor} onValueChange={aoAlterar}>
-      <SelectTrigger className="h-9 w-[145px] shrink-0 rounded-lg border-[#E2E8F0] bg-white px-3 text-[11px] text-[#607398] shadow-none">
+    <Select items={opcoesOrdenacao} value={valor} onValueChange={aoAlterar}>
+      <SelectTrigger
+        aria-label="Ordenar resultados"
+        className="w-full cursor-pointer border-wisen-borda text-xs font-medium text-wisen-texto-forte select-none hover:bg-wisen-superficie focus-visible:border-wisen-destaque focus-visible:ring-wisen-destaque/25 data-[size=default]:h-9 sm:w-[165px]"
+      >
+        <ListFilter className="size-3.5 text-wisen-texto-suave" aria-hidden="true" />
         <SelectValue />
       </SelectTrigger>
 
-      <SelectContent>
-        <SelectItem value="recentes">Mais recentes</SelectItem>
-        <SelectItem value="alfabetica">Ordem alfabética</SelectItem>
+      <SelectContent align="end" alignItemWithTrigger={false} className="rounded-lg p-1">
+        {opcoesOrdenacao.map(({ value, label }) => (
+          <SelectItem key={value} value={value} className="text-xs">
+            {label}
+          </SelectItem>
+        ))}
       </SelectContent>
     </Select>
+  );
+}
+
+function SecaoGuardados({ titulo, descricao, busca, ordenacao, children }) {
+  return (
+    <Card className="gap-0 rounded-xl border-wisen-borda bg-white p-0">
+      <div className="flex flex-wrap items-center justify-between gap-3 p-3 sm:p-4">
+        <div>
+          <h2 className="text-base font-semibold text-wisen-titulo">{titulo}</h2>
+          <p className="mt-0.5 text-xs leading-5 text-wisen-texto-suave">{descricao}</p>
+        </div>
+
+        <div className="flex w-full flex-col gap-2 sm:flex-row sm:w-96">
+          <CampoBusca {...busca} />
+          <Ordenacao {...ordenacao} />
+        </div>
+      </div>
+
+      <div className="space-y-2 border-t border-wisen-borda bg-wisen-superficie/60 p-2 sm:p-3">
+        {children}
+      </div>
+    </Card>
   );
 }
 
@@ -167,96 +197,64 @@ export default function PainelGuardados() {
 
   return (
     <Tabs value={aba} onValueChange={setAba} className="w-full gap-3">
-      <TabsList className="h-auto w-fit max-w-full flex-wrap justify-start gap-1 rounded-xl bg-[#E9EEF6] p-1">
-        <TabsTrigger
-          value="eventos"
-          className="min-h-9 rounded-lg px-4 text-[12px] font-medium text-[#66799B] data-[state=active]:bg-[#26364D] data-[state=active]:text-white data-[state=active]:shadow-sm"
-        >
+      <TabsList className="max-w-full flex-wrap justify-start gap-1 border border-wisen-borda bg-white group-data-horizontal/tabs:h-auto">
+        <TabsTrigger value="eventos" className={estiloAba}>
+          <Bookmark className="hidden size-3.5 sm:block" aria-hidden="true" />
           Eventos salvos
-          <span className="ml-2 rounded-full bg-black/10 px-2 py-0.5 text-[10px]">
+          <span className="rounded-full bg-wisen-superficie px-1.5 py-0.5 text-[11px] text-wisen-texto-forte">
             {eventosIniciais.length}
           </span>
         </TabsTrigger>
 
-        <TabsTrigger
-          value="conceitos"
-          className="min-h-9 rounded-lg px-4 text-[12px] font-medium text-[#66799B] data-[state=active]:bg-[#26364D] data-[state=active]:text-white data-[state=active]:shadow-sm"
-        >
+        <TabsTrigger value="conceitos" className={estiloAba}>
+          <BookOpen className="hidden size-3.5 sm:block" aria-hidden="true" />
           Conceitos marcados
-          <span className="ml-2 rounded-full bg-black/10 px-2 py-0.5 text-[10px]">
+          <span className="rounded-full bg-wisen-superficie px-1.5 py-0.5 text-[11px] text-wisen-texto-forte">
             {conceitosIniciais.length}
           </span>
         </TabsTrigger>
       </TabsList>
 
       <TabsContent value="eventos" className="mt-0">
-        <Card className="gap-0 rounded-xl border-0 bg-white p-4 shadow-none md:p-5">
-          <div className="mb-4 flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <h2 className="text-[19px] font-semibold text-wisen-titulo">Eventos salvos</h2>
-              <p className="text-[12px] text-[#8A99B3]">
-                Notícias que você salvou para ler ou revisar mais tarde.
-              </p>
-            </div>
+        <SecaoGuardados
+          titulo="Eventos salvos"
+          descricao="Notícias que você salvou para ler ou revisar mais tarde."
+          busca={{ valor: buscaEventos, aoAlterar: setBuscaEventos, placeholder: "Buscar eventos" }}
+          ordenacao={{ valor: ordemEventos, aoAlterar: setOrdemEventos }}
+        >
+          {eventosFiltrados.map((evento) => (
+            <CardEventoSalvo key={evento.id} evento={evento} />
+          ))}
 
-            <div className="flex w-full flex-wrap gap-2 sm:w-auto">
-              <div className="min-w-[180px] flex-1 sm:w-[250px]">
-                <CampoBusca
-                  valor={buscaEventos}
-                  aoAlterar={setBuscaEventos}
-                  placeholder="Buscar nos seus eventos..."
-                />
-              </div>
-              <Ordenacao valor={ordemEventos} aoAlterar={setOrdemEventos} />
-            </div>
-          </div>
-
-          <div className="space-y-2.5">
-            {eventosFiltrados.map((evento) => (
-              <CardEventoSalvo key={evento.id} evento={evento} />
-            ))}
-
-            {eventosFiltrados.length === 0 && (
-              <p className="py-10 text-center text-sm text-[#8392AD]">Nenhum evento encontrado.</p>
-            )}
-          </div>
-        </Card>
+          {eventosFiltrados.length === 0 && (
+            <p role="status" className="py-6 text-center text-xs text-wisen-texto-suave">
+              Nenhum evento encontrado.
+            </p>
+          )}
+        </SecaoGuardados>
       </TabsContent>
 
       <TabsContent value="conceitos" className="mt-0">
-        <Card className="gap-0 rounded-xl border-0 bg-white p-4 shadow-none md:p-5">
-          <div className="mb-4 flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <h2 className="text-[19px] font-semibold text-wisen-titulo">Conceitos marcados</h2>
-              <p className="text-[12px] text-[#8A99B3]">
-                Temas que você marcou para estudar depois.
-              </p>
-            </div>
+        <SecaoGuardados
+          titulo="Conceitos marcados"
+          descricao="Temas que você marcou para estudar depois."
+          busca={{
+            valor: buscaConceitos,
+            aoAlterar: setBuscaConceitos,
+            placeholder: "Buscar conceitos",
+          }}
+          ordenacao={{ valor: ordemConceitos, aoAlterar: setOrdemConceitos }}
+        >
+          {conceitosFiltrados.map((conceito) => (
+            <CardConceitoMarcado key={conceito.id} conceito={conceito} />
+          ))}
 
-            <div className="flex w-full flex-wrap gap-2 sm:w-auto">
-              <div className="min-w-[180px] flex-1 sm:w-[250px]">
-                <CampoBusca
-                  valor={buscaConceitos}
-                  aoAlterar={setBuscaConceitos}
-                  placeholder="Buscar nos seus conceitos..."
-                />
-              </div>
-              <Ordenacao valor={ordemConceitos} aoAlterar={setOrdemConceitos} />
-            </div>
-          </div>
-
-          <div className="space-y-2.5">
-            {conceitosFiltrados.map((conceito) => (
-              <CardConceitoMarcado key={conceito.id} conceito={conceito} />
-            ))}
-
-            {conceitosFiltrados.length === 0 && (
-              <p className="py-10 text-center text-sm text-[#8392AD]">
-                Nenhum conceito encontrado.
-              </p>
-            )}
-          </div>
-        </Card>
+          {conceitosFiltrados.length === 0 && (
+            <p role="status" className="py-6 text-center text-xs text-wisen-texto-suave">
+              Nenhum conceito encontrado.
+            </p>
+          )}
+        </SecaoGuardados>
       </TabsContent>
     </Tabs>
   );

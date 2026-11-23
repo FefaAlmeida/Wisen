@@ -654,10 +654,12 @@
 }
 .sessaoDados dd {
   margin-left: auto;
+  color: #30466e;
   font-weight: 600;
   white-space: nowrap;
 }
 .sessaoDados svg {
+  color: var(--color-wisen-destaque);
   flex-shrink: 0;
 }
 
@@ -732,6 +734,11 @@
   margin: 16px 0 0;
   color: #365d73;
   font-weight: 600;
+}
+@media (hover: hover) and (pointer: fine) {
+  .listaAreas + .voltar:hover > span {
+    color: var(--color-wisen-destaque);
+  }
 }
 .wizard {
   max-width: 960px;
@@ -945,8 +952,8 @@
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background: #f3e69a;
-  color: var(--ink);
+  background: rgb(243 230 154 / 12%);
+  color: var(--accent);
 }
 .novaRevisaoPlus {
   width: 22px;
@@ -978,23 +985,34 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  gap: 10px;
-  min-height: 44px;
-  padding: 10px 16px;
-  border-radius: 10px;
-  background: var(--accent);
-  color: var(--ink);
+  gap: 8px;
+  min-height: 38px;
+  padding: 7px 14px;
+  border: 1px solid rgb(243 230 154 / 44%);
+  border-radius: 999px;
+  color: var(--accent);
   font-size: 14px;
   font-weight: 600;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease;
 }
 .novaRevisaoCard:focus-visible {
   outline: 3px solid #587b96;
   outline-offset: 4px;
 }
+.novaRevisaoCard:focus-visible .novaRevisaoAcao {
+  border-color: var(--accent);
+  background: rgb(243 230 154 / 12%);
+}
 @media (hover: hover) and (pointer: fine) {
   .novaRevisaoCard:hover {
-    border-color: #d7bf4d;
+    border-color: #506183;
     background: #213453;
+  }
+  .novaRevisaoCard:hover .novaRevisaoAcao {
+    border-color: var(--accent);
+    background: rgb(243 230 154 / 12%);
   }
 }
 .novaRevisaoCard:active {
@@ -1032,7 +1050,7 @@
     height: 17px;
   }
   .novaRevisaoAcao {
-    width: 100%;
+    margin-inline-start: auto;
   }
 }
 @media (max-width: 380px) {
@@ -1053,7 +1071,8 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .novaRevisaoCard {
+  .novaRevisaoCard,
+  .novaRevisaoAcao {
     transition: none;
   }
 }

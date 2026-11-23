@@ -35,7 +35,7 @@
 }
 
 .control button[aria-pressed="true"] {
-  background: var(--color-wisen-destaque-suave);
+  background: var(--color-wisen-destaque);
   color: var(--color-wisen-titulo);
   box-shadow: 0 1px 3px rgb(16 26 64 / 8%);
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, UserRound } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { InterestsCard } from "@/components/perfil/interestsCard";
@@ -247,7 +247,16 @@ export function InitialInterestDialog({ embedded = false, onComplete, onReady })
     }
   }
 
-  if (loading) return embedded ? <p role="status">Preparando seu próximo capítulo…</p> : null;
+  if (loading) {
+    return embedded ? (
+      <div role="status" className={styles.onboardingLoading}>
+        <div aria-hidden="true" className={styles.onboardingLoadingIcon}>
+          <UserRound size={30} strokeWidth={1.5} />
+        </div>
+        <p>Preparando seu perfil…</p>
+      </div>
+    ) : null;
+  }
 
   if (error && !profile) {
     return (
@@ -376,7 +385,8 @@ export function InitialInterestDialog({ embedded = false, onComplete, onReady })
                 showSaveControls={false}
                 systemColors
                 embedded
-                onboarding
+                selectionTiles
+                showSearch={false}
                 saving={saving || changingStep}
               />
             </div>

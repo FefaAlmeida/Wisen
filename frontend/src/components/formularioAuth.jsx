@@ -1,5 +1,6 @@
 "use client";
 
+import { LoaderCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useRef, useState } from "react";
@@ -34,7 +35,8 @@ export default function FormularioAuth({
     initialOnboarding ? { role: "user" } : null,
   );
   const [onboardingReady, setOnboardingReady] = useState(initialOnboarding);
-  const showOnboarding = authenticatedUser && onboardingReady;
+  const showOnboarding = authenticatedUser && (onboardingReady || mode === "register");
+  const waiting = enviando || Boolean(authenticatedUser);
   const startOnboarding = useCallback(() => {
     const url = new URL("/onboarding", window.location.origin);
     const requestedPath = new URLSearchParams(window.location.search).get("next");
@@ -393,19 +395,23 @@ export default function FormularioAuth({
 
                 <Button
                   type="submit"
-                  disabled={enviando || Boolean(authenticatedUser)}
+                  disabled={waiting}
                   className="mt-1 h-11 w-full rounded-md bg-[#F3E69A] font-semibold text-[#273651] shadow-none transition-colors hover:bg-[#EBDD80]"
                 >
-                  {enviando || authenticatedUser
+                  {waiting
                     ? "Aguarde…"
                     : mode === null
                       ? "Continuar"
                       : mode === "login"
                         ? "Entrar"
                         : "Criar conta"}
-                  <span aria-hidden="true" className="ml-2 text-lg">
-                    {glass ? "↗" : "→"}
-                  </span>
+                  {waiting ? (
+                    <LoaderCircle aria-hidden="true" className="ml-2 motion-safe:animate-spin" />
+                  ) : (
+                    <span aria-hidden="true" className="ml-2 text-lg">
+                      {glass ? "↗" : "→"}
+                    </span>
+                  )}
                 </Button>
               </form>
             )}

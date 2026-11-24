@@ -15,6 +15,7 @@ import { useResource } from "@/components/platform/shared";
 import { Button } from "@/components/ui/button";
 import { conceitosDetalhados, demoConceptHref } from "@/data/conceitoDetalhes";
 import { useDemoSavedConcepts } from "@/hooks/use-demo-saved-concepts";
+import { toast } from "@/lib/toast";
 import { requisitar } from "@/services/api";
 
 export function ConceitosSalvos({ onExplore }) {
@@ -41,14 +42,12 @@ function DemoSaved({ onExplore }) {
 
 function LiveSaved({ onExplore }) {
   const resource = useResource("/saved");
-  const [error, setError] = useState("");
   async function remove(id) {
     try {
       await requisitar(`/saved/${id}`, { method: "DELETE" });
-      setError("");
       resource.reload();
     } catch {
-      setError("Não foi possível remover o conceito. Tente novamente.");
+      toast.error("Não foi possível remover o conceito. Tente novamente.");
     }
   }
   return (
@@ -61,7 +60,7 @@ function LiveSaved({ onExplore }) {
           href: `/paginaConceito?id=${item.concept_id}`,
         }))}
       onRemove={remove}
-      error={resource.error || error}
+      error={resource.error}
       loading={resource.loading}
       onRetry={resource.error ? resource.reload : undefined}
       onExplore={onExplore}

@@ -1,18 +1,17 @@
-import styles from "./seletorSegmentado.module.css";
+import { cn } from "cn";
+import { SegmentedButton, segmentListStyle } from "@/components/ui/segmented-control";
 
 export function SeletorSegmentado({ label, options, value, onChange, className = "" }) {
   return (
-    <fieldset className={`${styles.control} ${className}`} aria-label={label}>
+    <fieldset className={cn(segmentListStyle, className)} aria-label={label}>
       {options.map((option) => (
-        <button
+        <SegmentedButton
           key={option.value}
-          type="button"
           aria-pressed={value === option.value}
-          data-wisen-hover={value === option.value ? "preserve" : undefined}
           onClick={() => onChange(option.value)}
         >
           {option.label}
-        </button>
+        </SegmentedButton>
       ))}
     </fieldset>
   );

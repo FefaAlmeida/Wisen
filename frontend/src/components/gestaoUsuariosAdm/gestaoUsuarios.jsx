@@ -1,34 +1,38 @@
 ﻿"use client";
 
-import { ChevronLeft, ChevronRight, History, Search, X } from "lucide-react";
-import { useState } from "react";
+import { History, Search, UsersRound, X } from "lucide-react";
+import { useRef, useState } from "react";
 import { AdminSummary } from "@/components/admin/adminSummary";
+import {
+  AdminTableFilter,
+  adminFilterControl,
+  adminFilterHover,
+} from "@/components/admin/adminTableFilter";
+import { AdminTableFooter } from "@/components/admin/adminTableFooter";
 import { Notice } from "@/components/app/feedback";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogBody,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  dialogSecondaryAction,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { segmentCountStyle } from "@/components/ui/segmented-control";
+import { SegmentedTab, Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import { useAdminUsers } from "@/hooks/use-admin-users";
+import { toast } from "@/lib/toast";
+import FiltroDataCadastro from "./filtroDataCadastro";
+import HistoricoUsuarios from "./historicoUsuarios";
 import PainelUsuario from "./painelUsuario";
 import TabelaUsuarios from "./tabelaUsuarios";
 
 const pageSize = 10;
-const control = "wisen-control w-full min-w-0";
+const roleOptions = { todos: "Todos os perfis", Admin: "Administradores", Usuário: "Usuários" };
+const accessOptions = { todos: "Todos os acessos", Ativo: "Ativos", Bloqueado: "Bloqueados" };
 const normalize = (value) =>
   value
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLocaleLowerCase("pt-BR");
+
 export default function GestaoUsuarios({ demo = true }) {
-  const { users, history, loading, busy, error, reload, save } = useAdminUsers(demo);
+  const { users, history, loading, historyLoading, busy, error, historyError, reload, save } =
+    useAdminUsers(demo);
   const [query, setQuery] = useState("");
   const [role, setRole] = useState("todos");
   const [status, setStatus] = useState("todos");
@@ -36,9 +40,10 @@ export default function GestaoUsuarios({ demo = true }) {
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState(null);
   const [panelOpen, setPanelOpen] = useState(false);
-  const [historyOpen, setHistoryOpen] = useState(false);
+  const [tab, setTab] = useState("contas");
+  const currentError = tab === "contas" ? error : historyError;
   const [historyUser, setHistoryUser] = useState(null);
-  const [message, setMessage] = useState("");
+  const historyTab = useRef(null);
   const filtered = users.filter(
     (user) =>
       normalize(`${user.nome} ${user.email}`).includes(normalize(query)) &&
@@ -55,12 +60,19 @@ export default function GestaoUsuarios({ demo = true }) {
   function openUser(user) {
     setSelected(user);
     setPanelOpen(true);
-    setMessage("");
   }
-  function openHistory(user = null) {
+  function openHistory(user) {
     setHistoryUser(user);
     setPanelOpen(false);
-    setHistoryOpen(true);
+    setTab("historico");
+  }
+  function selectTab(value) {
+    setHistoryUser(null);
+    setTab(value);
+  }
+  function returnToAccount() {
+    selectTab("contas");
+    openUser(users.find((user) => user.id === historyUser.id) || historyUser);
   }
   function clearFilters() {
     setQuery("");
@@ -73,15 +85,14 @@ export default function GestaoUsuarios({ demo = true }) {
     if (await save(id, values)) {
       setPanelOpen(false);
       setSelected(null);
-      setMessage("Configurações da conta salvas.");
+      toast.success("Configurações da conta salvas.");
     }
   }
   return (
     <div className="min-w-0 space-y-7">
-      {message && <Notice>{message}</Notice>}
-      {error && !panelOpen && (
+      {currentError && !panelOpen && (
         <Notice tone="error">
-          <p>{error}</p>
+          <p>{currentError}</p>
           <Button onClick={() => reload()} variant="outline" className="mt-3">
             Tentar novamente
           </Button>
@@ -89,226 +100,142 @@ export default function GestaoUsuarios({ demo = true }) {
       )}
       <AdminSummary
         title="Contas cadastradas"
-        description="Consulte os usuários da plataforma e gerencie o acesso de cada conta."
+        description="Consulte as contas, bloqueie ou restabeleça o acesso e ajuste o limite diário de gerações por IA. Abra Histórico de alterações para conferir as mudanças registradas."
         loading={loading}
+        itemColors="border-transparent bg-[#FBF7E5]"
         items={[
           `${users.length} contas`,
           `${users.filter((user) => user.status === "Ativo").length} ativas`,
           `${users.filter((user) => user.status === "Bloqueado").length} bloqueadas`,
         ]}
       />
+      <Tabs value={tab} onValueChange={selectTab} className="w-full gap-3">
+        <TabsList aria-label="Gestão de usuários">
+          <SegmentedTab value="contas">
+            <UsersRound aria-hidden="true" className="size-[18px]" />
+            Contas cadastradas{" "}
+            {!loading && <span className={segmentCountStyle}>{users.length}</span>}
+          </SegmentedTab>
+          <SegmentedTab ref={historyTab} value="historico">
+            <History aria-hidden="true" className="size-[18px]" />
+            Histórico de alterações{" "}
+            {!historyLoading && !historyError && history.length > 0 && (
+              <span className={segmentCountStyle}>{history.length}</span>
+            )}
+          </SegmentedTab>
+        </TabsList>
 
-      <div className="min-w-0 space-y-3">
-        <div className="flex min-w-0 flex-wrap items-center gap-2">
-          <div className="relative min-w-0 w-full sm:w-[230px]">
-            <Search
-              aria-hidden="true"
-              className="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-[#8190A8]"
+        <TabsContent value="contas" className="min-w-0">
+          <section
+            aria-label="Gestão de contas"
+            className="min-w-0 overflow-hidden rounded-2xl border border-wisen-borda bg-white shadow-2xs"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">
+              <div className="flex w-full min-w-0 flex-wrap items-center gap-2 sm:w-auto">
+                <div className="relative min-w-0 w-full sm:w-[230px]">
+                  <Search
+                    aria-hidden="true"
+                    className="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-[#8190A8]"
+                  />
+                  <Input
+                    aria-label="Buscar usuários por nome ou e-mail"
+                    placeholder="Buscar nome ou e-mail"
+                    value={query}
+                    onChange={(event) => {
+                      setQuery(event.target.value);
+                      setPage(1);
+                    }}
+                    className={`${adminFilterControl} pl-9`}
+                  />
+                </div>
+                <AdminTableFilter
+                  label="Filtrar por perfil"
+                  options={roleOptions}
+                  width="sm:w-[170px]"
+                  value={role}
+                  onChange={(value) => {
+                    setRole(value);
+                    setPage(1);
+                  }}
+                />
+                <AdminTableFilter
+                  label="Filtrar por acesso"
+                  options={accessOptions}
+                  width="sm:w-[165px]"
+                  value={status}
+                  onChange={(value) => {
+                    setStatus(value);
+                    setPage(1);
+                  }}
+                />
+                <FiltroDataCadastro
+                  value={date}
+                  onChange={(value) => {
+                    setDate(value);
+                    setPage(1);
+                  }}
+                />
+                <Button
+                  variant="outline"
+                  onClick={clearFilters}
+                  className={`h-9 w-full gap-1.5 rounded-[10px] border-wisen-borda bg-white/85 px-3 text-xs font-normal text-[#607092] shadow-none sm:w-auto ${adminFilterHover}`}
+                >
+                  <X aria-hidden="true" className="size-3.5" />
+                  Limpar filtros
+                </Button>
+              </div>
+            </div>
+            {loading ? (
+              <p
+                role="status"
+                className="border-t border-[#E8EDF4] p-8 text-center text-sm text-[#7182A1]"
+              >
+                Carregando usuários...
+              </p>
+            ) : (
+              <TabelaUsuarios
+                usuarios={filtered.slice(start, start + pageSize)}
+                aoAbrirUsuario={openUser}
+              />
+            )}
+            <AdminTableFooter
+              countLabel={`${filtered.length} ${filtered.length === 1 ? "conta encontrada" : "contas encontradas"}`}
+              paginationLabel="Paginação de usuários"
+              loading={loading}
+              page={currentPage}
+              pages={pages}
+              onPageChange={setPage}
             />
-            <Input
-              aria-label="Buscar usuários por nome ou e-mail"
-              placeholder="Buscar nome ou e-mail"
-              value={query}
-              onChange={(event) => {
-                setQuery(event.target.value);
-                setPage(1);
-              }}
-              className={`${control} pl-9`}
-            />
-          </div>
-          <select
-            aria-label="Filtrar por perfil"
-            className={`${control} sm:w-[170px]`}
-            value={role}
-            onChange={(event) => {
-              setRole(event.target.value);
-              setPage(1);
+          </section>
+        </TabsContent>
+        <TabsContent value="historico" className="min-w-0">
+          <HistoricoUsuarios
+            items={historyItems}
+            user={historyUser}
+            demo={demo}
+            loading={historyLoading}
+            error={historyError}
+            onShowAll={() => {
+              setHistoryUser(null);
+              historyTab.current?.focus();
             }}
-          >
-            <option value="todos">Todos os perfis</option>
-            <option value="Admin">Administradores</option>
-            <option value="Usuário">Usuários</option>
-          </select>
-          <select
-            aria-label="Filtrar por acesso"
-            className={`${control} sm:w-[165px]`}
-            value={status}
-            onChange={(event) => {
-              setStatus(event.target.value);
-              setPage(1);
-            }}
-          >
-            <option value="todos">Todos os acessos</option>
-            <option value="Ativo">Ativos</option>
-            <option value="Bloqueado">Bloqueados</option>
-          </select>
-          <Input
-            aria-label="Filtrar por data de cadastro"
-            type="date"
-            value={date}
-            onChange={(event) => {
-              setDate(event.target.value);
-              setPage(1);
-            }}
-            className={`${control} sm:w-[165px]`}
+            onReturnToAccount={returnToAccount}
           />
-          <Button
-            variant="outline"
-            onClick={clearFilters}
-            className="h-9 w-full gap-1.5 rounded-[10px] border-wisen-borda bg-white/85 px-3 text-xs font-normal text-[#607092] shadow-none hover:bg-wisen-admin-hover sm:w-auto"
-          >
-            <X aria-hidden="true" className="size-3.5" />
-            Limpar filtros
-          </Button>
-        </div>
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="text-xs text-[#8290A8]">
-            {loading
-              ? "Carregando contas..."
-              : `${filtered.length} ${filtered.length === 1 ? "conta encontrada" : "contas encontradas"}`}
-          </p>
-          <Button
-            variant="outline"
-            onClick={() => openHistory()}
-            disabled={loading}
-            className="h-9 gap-1.5 rounded-[10px] border-wisen-borda bg-white/85 px-3 text-xs font-normal text-[#607092] shadow-none hover:bg-wisen-admin-hover"
-          >
-            <History aria-hidden="true" className="size-3.5" />
-            Histórico de alterações
-          </Button>
-        </div>
-      </div>
-
-      <section
-        aria-label="Gestão de contas"
-        className="min-w-0 overflow-hidden rounded-2xl border border-wisen-borda bg-white shadow-2xs"
-      >
-        {loading ? (
-          <p
-            role="status"
-            className="border-t border-[#E8EDF4] p-8 text-center text-sm text-[#7182A1]"
-          >
-            Carregando usuários...
-          </p>
-        ) : (
-          <TabelaUsuarios
-            usuarios={filtered.slice(start, start + pageSize)}
-            aoAbrirUsuario={openUser}
-          />
-        )}
-        <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-[#E8EDF4] bg-[#FAFBFD] px-4 py-4 sm:px-5">
-          <p className="text-xs text-[#7182A1]">
-            {filtered.length
-              ? `Mostrando ${start + 1}–${Math.min(start + pageSize, filtered.length)} de ${filtered.length} contas`
-              : "Nenhuma conta nesta lista"}
-          </p>
-          <nav aria-label="Paginação de usuários" className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="icon"
-              aria-label="Página anterior"
-              disabled={loading || currentPage === 1}
-              onClick={() => setPage(currentPage - 1)}
-              className="size-8 border-wisen-borda text-[#526584] hover:bg-wisen-admin-hover"
-            >
-              <ChevronLeft className="size-4" />
-            </Button>
-            <span className="px-1 text-xs tabular-nums text-[#7182A1]">
-              {currentPage} de {pages}
-            </span>
-            <Button
-              variant="outline"
-              size="icon"
-              aria-label="Próxima página"
-              disabled={loading || currentPage === pages}
-              onClick={() => setPage(currentPage + 1)}
-              className="size-8 border-wisen-borda text-[#526584] hover:bg-wisen-admin-hover"
-            >
-              <ChevronRight className="size-4" />
-            </Button>
-          </nav>
-        </footer>
-      </section>
-      {demo && (
-        <p className="text-xs leading-5 text-[#7182A1]">
-          Contas fictícias de demonstração. As alterações e o histórico ficam salvos neste
-          navegador.
-        </p>
-      )}
+        </TabsContent>
+      </Tabs>
       <PainelUsuario
         key={selected?.id ?? "none"}
         usuario={selected}
         aberto={panelOpen}
         busy={busy}
-        error={error}
         demo={demo}
         aoFechar={() => {
           if (!busy) setPanelOpen(false);
         }}
         aoSalvar={saveUser}
         aoHistorico={openHistory}
+        focoAoFechar={() => (tab === "historico" ? historyTab.current : true)}
       />
-      <Dialog open={historyOpen} onOpenChange={setHistoryOpen}>
-        <DialogContent size="lg">
-          <DialogHeader eyebrow="Administração">
-            <DialogTitle>
-              {historyUser ? `Histórico de ${historyUser.nome}` : "Histórico de alterações"}
-            </DialogTitle>
-            <DialogDescription>
-              {demo
-                ? "Alterações realizadas nas contas de demonstração neste navegador."
-                : "Alterações de acesso e limites registradas pelos administradores."}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogBody>
-            <div className="min-w-0 divide-y divide-[#E8EDF4]">
-              {historyItems.length ? (
-                historyItems.map((entry) => (
-                  <article key={entry.id} className="space-y-2 py-4">
-                    <div className="flex flex-wrap items-start justify-between gap-2">
-                      <h3 className="text-sm font-medium text-wisen-titulo">{entry.usuario}</h3>
-                      <time className="text-xs text-[#8190A8]">{entry.data}</time>
-                    </div>
-                    <p className="break-words text-sm leading-6 text-[#7182A1]">
-                      {entry.descricao}
-                    </p>
-                  </article>
-                ))
-              ) : (
-                <div className="py-9 text-center">
-                  <p className="text-sm font-medium text-wisen-titulo">
-                    Nenhuma alteração registrada
-                  </p>
-                  <p className="mt-2 text-sm leading-6 text-[#7182A1]">
-                    Ao salvar uma mudança de acesso ou configuração, ela aparecerá aqui.
-                  </p>
-                </div>
-              )}
-            </div>
-          </DialogBody>
-          <DialogFooter>
-            {historyUser && (
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setHistoryOpen(false);
-                  openUser(users.find((user) => user.id === historyUser.id) || historyUser);
-                }}
-                className={dialogSecondaryAction}
-              >
-                Voltar à conta
-              </Button>
-            )}
-            <Button
-              variant="outline"
-              onClick={() => setHistoryOpen(false)}
-              className={dialogSecondaryAction}
-            >
-              Fechar histórico
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

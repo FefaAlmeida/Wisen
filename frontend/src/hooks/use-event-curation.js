@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { artigosNaoAssociadosIniciais, eventosIniciais } from "@/data/curadoriaDemo";
 import { applyCurationAction } from "@/lib/event-curation";
+import { toast } from "@/lib/toast";
 import { requisitar } from "@/services/api";
 
 const storageKey = "wisen:curadoria:v2";
@@ -118,10 +119,10 @@ export function useEventCuration(demo) {
       }
       return true;
     } catch (failure) {
-      setError(
+      toast.error(
         demo
           ? "Não foi possível salvar a alteração neste navegador. Verifique se o armazenamento está disponível e tente novamente."
-          : failure.message,
+          : failure.message || "Não foi possível salvar a alteração.",
       );
       return false;
     } finally {

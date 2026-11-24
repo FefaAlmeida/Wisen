@@ -23,7 +23,6 @@ export function PersonalDataCard({
   onSubmit,
   loading,
   saving,
-  feedback,
 }) {
   const photoInput = useRef(null);
   const [photoError, setPhotoError] = useState("");
@@ -169,19 +168,6 @@ export function PersonalDataCard({
             </div>
           </div>
         </div>
-
-        {feedback && (
-          <div
-            role={feedback.type === "error" ? "alert" : "status"}
-            className={`text-xs p-3 rounded-lg ${
-              feedback.type === "success"
-                ? "bg-green-50 text-green-700 border border-green-200"
-                : "bg-red-50 text-red-700 border border-red-200"
-            }`}
-          >
-            {feedback.text}
-          </div>
-        )}
 
         {photoError && (
           <p role="alert" className="text-xs text-red-600">

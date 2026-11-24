@@ -9,6 +9,7 @@ import { Footer } from "@/components/footer";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
 import Sidebar from "@/components/sidebar";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/lib/toast";
 import { requisitar } from "@/services/api";
 
 export { requisitar };
@@ -68,12 +69,7 @@ export function Frame({
       {admin ? <AdminSidebar activeItem={active} /> : <Sidebar activeItem={active} />}
       <main className="relative isolate min-h-screen min-w-0 pt-[76px] sm:ml-[76px] lg:ml-[240px]">
         <ConnectionsBackground fadeTop={false} />
-        <AppTopBar
-          admin={admin}
-          value={pageSearch}
-          onQueryChange={onPageSearchChange}
-          hideLabel={!admin && active === "Início"}
-        />
+        <AppTopBar admin={admin} value={pageSearch} onQueryChange={onPageSearchChange} />
         <div className="wisen-container relative z-10 pt-7 pb-12">
           {title && (
             <PageHeader
@@ -121,10 +117,8 @@ export function Panel({ title, children }) {
 }
 export function EventList({ items = [] }) {
   const [hidden, setHidden] = useState([]);
-  const [error, setError] = useState("");
   return items.length ? (
     <div className="divide-y divide-[#DEE5ED]">
-      {error && <p role="alert">{error}</p>}
       {items
         .filter((item) => !hidden.includes(item.id))
         .map((item) => (
@@ -156,7 +150,7 @@ export function EventList({ items = [] }) {
                   });
                   setHidden((v) => [...v, item.id]);
                 } catch (e) {
-                  setError(e.message);
+                  toast.error(e.message);
                 }
               }}
             >
@@ -173,33 +167,26 @@ export function EventList({ items = [] }) {
   );
 }
 export function SaveButton({ type, id }) {
-  const [feedback, setFeedback] = useState("");
   const [busy, setBusy] = useState(false);
   async function save() {
     setBusy(true);
     try {
       await requisitar("/saved", { method: "POST", body: { type, id } });
-      setFeedback("Salvo na sua biblioteca");
+      toast.success("Salvo na sua biblioteca");
     } catch (e) {
-      setFeedback(e.message);
+      toast.error(e.message);
     } finally {
       setBusy(false);
     }
   }
   return (
-    <span className="inline-flex flex-wrap items-center gap-3">
-      <Button variant="outline" disabled={busy} onClick={save}>
-        Salvar
-      </Button>
-      <span role="status" className="text-sm">
-        {feedback}
-      </span>
-    </span>
+    <Button variant="outline" disabled={busy} onClick={save}>
+      Salvar
+    </Button>
   );
 }
 export function Familiarity() {
   const resource = useResource("/preferences/familiarity");
-  const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   async function select(value) {
     setBusy(true);
@@ -208,10 +195,10 @@ export function Familiarity() {
         method: "PUT",
         body: { familiarity: value || null },
       });
-      setMessage("Familiaridade salva. Seu conhecimento será acompanhado durante o uso.");
+      toast.success("Familiaridade salva.");
       resource.reload();
     } catch (e) {
-      setMessage(e.message);
+      toast.error(e.message);
     } finally {
       setBusy(false);
     }
@@ -234,15 +221,16 @@ export function Familiarity() {
         <option value="basic">Entendo o básico</option>
         <option value="experienced">Já acompanho economia</option>
       </select>
-      <p role="status" className="mt-3 text-sm">
-        {message || resource.error}
-      </p>
+      {resource.error && (
+        <p role="alert" className="mt-3 text-sm">
+          {resource.error}
+        </p>
+      )}
     </Panel>
   );
 }
 export function AccountNotice() {
   const resource = useResource("/account/status");
-  const [message, setMessage] = useState("");
   if (resource.data?.aiProvider === "mock")
     return (
       <Panel title="Modo de demonstração">
@@ -262,17 +250,15 @@ export function AccountNotice() {
         variant="outline"
         onClick={async () => {
           try {
-            setMessage((await requisitar("/account/verification", { method: "POST" })).message);
+            const result = await requisitar("/account/verification", { method: "POST" });
+            toast.success(result.message);
           } catch (e) {
-            setMessage(e.message);
+            toast.error(e.message);
           }
         }}
       >
         Reenviar confirmação
       </Button>
-      <p role="status" className="mt-3 text-sm">
-        {message}
-      </p>
     </Panel>
   );
 }
@@ -344,16 +330,15 @@ export function Generation({ target, operation = "explanation", passage, onCompl
   );
 }
 function GenerationFeedback({ taskId }) {
-  const [message, setMessage] = useState("");
   async function send(useful) {
     try {
       await requisitar(`/generations/${taskId}/feedback`, {
         method: "POST",
         body: { useful, clear: useful, unnecessary: !useful },
       });
-      setMessage("Feedback registrado");
+      toast.success("Feedback registrado");
     } catch (e) {
-      setMessage(e.message);
+      toast.error(e.message);
     }
   }
   return (
@@ -364,9 +349,6 @@ function GenerationFeedback({ taskId }) {
       <Button variant="outline" onClick={() => send(false)}>
         Preciso de outra explicação
       </Button>
-      <span role="status" className="text-sm">
-        {message}
-      </span>
     </>
   );
 }

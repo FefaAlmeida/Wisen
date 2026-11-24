@@ -1,6 +1,6 @@
 import { createHash, randomBytes } from "node:crypto";
 import { z } from "zod";
-import { transaction } from "../../database/index.js";
+import { ADMIN_ACTION_LOCK, transaction } from "../../database/index.js";
 import { enqueue } from "../../queue/index.js";
 import { QUEUES } from "../../shared.js";
 import { hashPassword } from "../auth/auth.service.js";
@@ -8,6 +8,19 @@ import { generationMode } from "../generation/mode.js";
 import { encryptMail } from "./mail-crypto.js";
 
 const digest = (token) => createHash("sha256").update(token).digest("hex");
+
+async function accountStatus(db, userId) {
+  const { rows } = await db.query(
+    `SELECT email_verified_at,generation_limit,
+            (role <> 'admin' OR EXISTS (
+              SELECT 1 FROM users other WHERE other.id<>u.id AND other.role='admin' AND other.active
+            )) AS can_delete_account
+     FROM users u WHERE u.id=$1 AND u.active`,
+    [userId],
+  );
+  return rows[0];
+}
+
 export function accountService(pool, boss, config) {
   return {
     async request(userId, purpose) {
@@ -120,11 +133,7 @@ export function accountController(app, pool, accounts, config) {
   );
   app.get("/api/account/status", { preHandler: app.authenticate }, async (req) => ({
     aiProvider: generationMode(config),
-    user: (
-      await pool.query("SELECT email_verified_at,generation_limit FROM users WHERE id=$1", [
-        req.user.id,
-      ])
-    ).rows[0],
+    user: await accountStatus(pool, req.user.id),
   }));
   app.delete(
     "/api/account",
@@ -134,6 +143,15 @@ export function accountController(app, pool, accounts, config) {
     },
     async (req) => {
       await transaction(pool, async (c) => {
+        // Serialize deletion with changes to administrators and their access.
+        await c.query("SELECT pg_advisory_xact_lock($1)", [ADMIN_ACTION_LOCK]);
+        const user = await accountStatus(c, req.user.id);
+        if (!user) throw Object.assign(new Error("Conta indisponível"), { statusCode: 404 });
+        if (!user.can_delete_account)
+          throw Object.assign(
+            new Error("Para excluir sua conta, é preciso ter outro administrador ativo."),
+            { statusCode: 409 },
+          );
         await c.query(
           "DELETE FROM pgboss.job WHERE (name=$1 AND data->>'id' IN (SELECT id::text FROM mail_outbox WHERE user_id=$2)) OR (name=$3 AND data->>'id' IN (SELECT id::text FROM generation_tasks WHERE user_id=$2))",
           [QUEUES.mail, req.user.id, QUEUES.generate],

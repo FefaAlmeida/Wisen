@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { fontesIniciais, logsIniciais } from "@/data/fontesDemo";
+import { toast } from "@/lib/toast";
 import { requisitar } from "@/services/api";
 
 const storageKey = "wisen:fontes:v1";
@@ -109,10 +110,10 @@ export function useAdminSources(demo) {
       }
       return true;
     } catch (failure) {
-      setError(
+      toast.error(
         demo
           ? "Não foi possível salvar as fontes neste navegador. Tente novamente."
-          : failure.message,
+          : failure.message || "Não foi possível atualizar a fonte.",
       );
       return false;
     } finally {

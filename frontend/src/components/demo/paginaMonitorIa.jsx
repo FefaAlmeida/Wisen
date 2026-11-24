@@ -6,7 +6,7 @@ import { TopoMonitorIa } from "@/components/monitorIa/topoMonitorIa";
 
 export default function PaginaMonitorIa() {
   return (
-    <AdminLayout activeItem="Monitor de IA">
+    <AdminLayout activeItem="Monitor de IA" backgroundParticleDensity={0.35}>
       <div className="wisen-container min-w-0 space-y-7 pt-7 pb-12 font-[family-name:var(--font-geist-sans)] text-[#2B333F] selection:bg-[#EBDD80]">
         {/* Etapa 1: Topo do Monitor */}
         <TopoMonitorIa />

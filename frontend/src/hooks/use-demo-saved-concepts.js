@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { toast } from "@/lib/toast";
 import { requisitar } from "@/services/api";
 
 const changed = "wisen:saved-concepts";
@@ -66,7 +67,7 @@ export function useDemoSavedConcepts() {
       setError("");
       window.dispatchEvent(new Event(changed));
     } catch {
-      setError("Não foi possível atualizar seus conceitos salvos. Tente novamente.");
+      toast.error("Não foi possível atualizar seus conceitos salvos. Tente novamente.");
     }
   }
 

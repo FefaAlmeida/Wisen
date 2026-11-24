@@ -11,6 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { loginDestination } from "@/lib/auth";
+import { toast } from "@/lib/toast";
 import { requisitar } from "@/services/api";
 import styles from "./authForm.module.css";
 import FormularioRecuperacao from "./formularioRecuperacao";
@@ -29,7 +30,6 @@ export default function FormularioAuth({
   const passwordRef = useRef(null);
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [lembrar, setLembrar] = useState(false);
-  const [erro, setErro] = useState("");
   const [enviando, setEnviando] = useState(false);
   const [authenticatedUser, setAuthenticatedUser] = useState(
     initialOnboarding ? { role: "user" } : null,
@@ -57,7 +57,6 @@ export default function FormularioAuth({
     event.preventDefault();
     if (busy.current) return;
     busy.current = true;
-    setErro("");
     setEnviando(true);
     const normalizedEmail = email.trim().toLowerCase();
     try {
@@ -90,10 +89,10 @@ export default function FormularioAuth({
       if (mode === "register" && error.status === 409) {
         setMode("login");
         setPassword("");
-        setErro("Este e-mail já está cadastrado. Entre com sua senha.");
+        toast.error("Este e-mail já está cadastrado. Entre com sua senha.");
         requestAnimationFrame(() => passwordRef.current?.focus());
       } else {
-        setErro(error.message || "Não foi possível continuar. Tente novamente.");
+        toast.error(error.message || "Não foi possível continuar. Tente novamente.");
       }
     } finally {
       busy.current = false;
@@ -193,7 +192,6 @@ export default function FormularioAuth({
                   setMode(nextMode);
                   setPassword("");
                   setMostrarSenha(false);
-                  setErro("");
                   const url = new URL(window.location.href);
                   url.searchParams.delete("token");
                   url.searchParams.delete("action");
@@ -235,7 +233,6 @@ export default function FormularioAuth({
                         setMode(null);
                         setPassword("");
                         setMostrarSenha(false);
-                        setErro("");
                       }}
                       type="email"
                       placeholder={glass ? "voce@exemplo.com" : "seu@email.com"}
@@ -254,7 +251,6 @@ export default function FormularioAuth({
                           setPassword("");
                           setMostrarSenha(false);
                           setLembrar(false);
-                          setErro("");
                           requestAnimationFrame(() => {
                             emailRef.current?.focus();
                             emailRef.current?.select();
@@ -376,7 +372,6 @@ export default function FormularioAuth({
                           onClick={() => {
                             setPassword("");
                             setMostrarSenha(false);
-                            setErro("");
                             setMode("forgot");
                           }}
                         >
@@ -385,12 +380,6 @@ export default function FormularioAuth({
                       </div>
                     )}
                   </>
-                )}
-
-                {erro && (
-                  <p role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
-                    {erro}
-                  </p>
                 )}
 
                 <Button

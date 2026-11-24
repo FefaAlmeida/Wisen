@@ -4,6 +4,28 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@utility admin-dialog-panel {
+  @apply min-w-0 rounded-xl border border-wisen-borda bg-white p-4;
+}
+
+[data-wisen-area="admin"]:where([data-slot="dialog-content"]) :where([data-slot="dialog-header"]) {
+  border-color: #e8dfba;
+  background-color: #fbf7e5;
+}
+
+[data-wisen-area="admin"]:where([data-slot="dialog-content"]) :where([data-slot="dialog-body"]) {
+  background-color: #eff3f8;
+}
+
+[data-wisen-area="admin"]:where([data-slot="dialog-content"]) :where([data-slot="dialog-footer"]) {
+  border-color: #dce3ed;
+}
+
+[data-wisen-area="admin"]:where([data-slot="dialog-content"])
+  :where([data-slot="dialog-description"]) {
+  color: #526584;
+}
+
 @theme inline {
   --color-wisen-titulo: #101a40;
   --color-wisen-texto-forte: #253452;

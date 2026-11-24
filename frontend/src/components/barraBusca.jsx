@@ -15,6 +15,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { SegmentedButton, segmentListStyle } from "@/components/ui/segmented-control";
 import { conceitos } from "@/data/conceitos";
 import { stories } from "@/data/noticiasDemo";
 import { requisitar } from "@/services/api";
@@ -61,7 +62,7 @@ const demoItems = [
   })),
 ];
 
-export function BarraBusca({ onQueryChange, value }) {
+export function BarraBusca({ admin = false, onQueryChange, value }) {
   const demo = useDemoMode();
   const [open, setOpen] = useState(false);
   const [internalQuery, setInternalQuery] = useState("");
@@ -169,6 +170,7 @@ export function BarraBusca({ onQueryChange, value }) {
       <DialogContent
         size="wide"
         className={styles.dialog}
+        data-wisen-area={admin ? "admin" : undefined}
         closeLabel="Fechar busca"
         initialFocus={inputRef}
         finalFocus={triggerRef}
@@ -210,16 +212,15 @@ export function BarraBusca({ onQueryChange, value }) {
             </div>
           </DialogHeader>
           <DialogBody>
-            <fieldset className={styles.filters} aria-label="Tipos de conteúdo">
+            <fieldset className={`${segmentListStyle} mb-5 md:mb-6`} aria-label="Tipos de conteúdo">
               {filters.map((label) => (
-                <button
+                <SegmentedButton
                   key={label}
-                  type="button"
                   aria-pressed={filter === label}
                   onClick={() => setFilter(label)}
                 >
                   {label}
-                </button>
+                </SegmentedButton>
               ))}
             </fieldset>
             <div className={styles.resultsHeading}>

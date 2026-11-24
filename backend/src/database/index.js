@@ -1,5 +1,7 @@
 import pg from "pg";
 
+export const ADMIN_ACTION_LOCK = 891723;
+
 export function createPool(connectionString = process.env.DATABASE_URL) {
   if (!connectionString) throw new Error("DATABASE_URL não definida");
   return new pg.Pool({

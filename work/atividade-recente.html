@@ -1,0 +1,56 @@
+<style>
+  #atividade-recente-preview { padding: 16px; }
+  #atividade-recente-preview .atividade-painel {
+    --atividade-fundo: #243040;
+    --atividade-texto: #f7f9fc;
+    --atividade-secundario: #becada;
+    --atividade-divisor: #3c495a;
+    --atividade-destaque: #f4e59a;
+    padding: 16px 20px 6px;
+    background: var(--atividade-fundo);
+    color: var(--atividade-texto);
+    border-radius: 16px;
+    font: 400 14px/1.45 system-ui, sans-serif;
+  }
+  #atividade-recente-preview h2 { margin: 0 0 8px; color: inherit; font: 650 18px/1.4 system-ui, sans-serif; }
+  #atividade-recente-preview ol { list-style: none; padding: 0; margin: 0; }
+  #atividade-recente-preview li {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    min-height: 46px;
+    padding-block: 5px;
+  }
+  #atividade-recente-preview li + li { border-top: 1px solid var(--atividade-divisor); }
+  #atividade-recente-preview .atividade-icone {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    color: var(--atividade-destaque);
+    background: color-mix(in srgb, var(--atividade-destaque) 12%, var(--atividade-fundo));
+    border-radius: 8px;
+  }
+  #atividade-recente-preview .atividade-icone svg { width: 16px; height: 16px; }
+  #atividade-recente-preview .atividade-titulo { font-weight: 550; }
+  #atividade-recente-preview .atividade-tempo { color: var(--atividade-secundario); font-size: 12px; white-space: nowrap; text-align: end; }
+  @media (max-width: 430px) {
+    #atividade-recente-preview .atividade-painel { padding-inline: 14px; }
+    #atividade-recente-preview li { grid-template-columns: 30px minmax(0, 1fr); gap: 1px 10px; min-height: 50px; }
+    #atividade-recente-preview .atividade-icone { grid-row: span 2; }
+    #atividade-recente-preview .atividade-tempo { grid-column: 2; text-align: start; }
+  }
+</style>
+<div id="atividade-recente-preview" class="viz-dotted-background" lang="pt-BR">
+  <section class="atividade-painel" aria-labelledby="atividade-recente-titulo">
+    <h2 id="atividade-recente-titulo">Atividade recente</h2>
+    <ol role="list">
+      <li><span class="atividade-icone" aria-hidden="true"><i data-lucide="user-plus"></i></span><span class="atividade-titulo">Novo usuário cadastrado</span><span class="atividade-tempo">há 5 minutos</span></li>
+      <li><span class="atividade-icone" aria-hidden="true"><i data-lucide="file-text"></i></span><span class="atividade-titulo">Conteúdo publicado</span><span class="atividade-tempo">há 32 minutos</span></li>
+      <li><span class="atividade-icone" aria-hidden="true"><i data-lucide="calendar-days"></i></span><span class="atividade-titulo">Evento atualizado</span><span class="atividade-tempo">há 1 hora</span></li>
+      <li><span class="atividade-icone" aria-hidden="true"><i data-lucide="lightbulb"></i></span><span class="atividade-titulo">Conceito adicionado</span><span class="atividade-tempo">há 2 horas</span></li>
+      <li><span class="atividade-icone" aria-hidden="true"><i data-lucide="chart-no-axes-column"></i></span><span class="atividade-titulo">Relatório gerado</span><span class="atividade-tempo">há 3 horas</span></li>
+    </ol>
+  </section>
+</div>

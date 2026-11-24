@@ -2,10 +2,12 @@
 import { Search } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { AdminSummary } from "@/components/admin/adminSummary";
 import { BannerInicioAdm } from "@/components/inicioAdm/bannerInicioAdm";
 import { CartoesMetricasAdm } from "@/components/inicioAdm/cartoesMetricasAdm";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { SegmentedButton, segmentListStyle } from "@/components/ui/segmented-control";
 import { Frame, Panel, requisitar, State, useResource } from "./shared";
 
 const sections = {
@@ -28,6 +30,7 @@ export default function Admin({ initial = "sources", home = false }) {
   const [busy, setBusy] = useState(false);
   const [eventSearch, setEventSearch] = useState("");
   const isCuration = section === "events";
+  const isMonitor = initial === "charges" && !home;
   const eventQuery = eventSearch
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
@@ -60,7 +63,11 @@ export default function Admin({ initial = "sources", home = false }) {
   return (
     <Frame
       title={
-        home ? undefined : isCuration ? (
+        home ? undefined : isMonitor ? (
+          <>
+            Monitor de <span className="text-wisen-destaque">IA.</span>
+          </>
+        ) : isCuration ? (
           <>
             Revisão de <span className="text-[#D7BF4D]">eventos</span>
           </>
@@ -69,7 +76,7 @@ export default function Admin({ initial = "sources", home = false }) {
         )
       }
       description={
-        isCuration
+        isCuration && !isMonitor
           ? "Revise e organize os acontecimentos identificados automaticamente pela inteligência artificial."
           : undefined
       }
@@ -89,6 +96,14 @@ export default function Admin({ initial = "sources", home = false }) {
       {home && (
         <div className="mb-7">
           <BannerInicioAdm />
+        </div>
+      )}
+      {isMonitor && (
+        <div className="mb-7">
+          <AdminSummary
+            title="Consumo e orçamento de IA"
+            description="Acompanhe o orçamento mensal e compare os valores reservados com os custos estimados de cada chamada. Em Processamento, consulte as tarefas e tente novamente as que falharam ou foram pausadas."
+          />
         </div>
       )}
       {!isCuration && (
@@ -137,18 +152,18 @@ export default function Admin({ initial = "sources", home = false }) {
           </Panel>
         </>
       )}
-      <nav aria-label="Áreas administrativas" className="mb-5 flex flex-wrap gap-2">
+      <nav aria-label="Áreas administrativas" className={`${segmentListStyle} mb-5`}>
         {Object.entries(sections).map(([key, label]) => (
-          <Button
+          <SegmentedButton
             key={key}
-            variant={section === key ? "default" : "outline"}
+            aria-pressed={section === key}
             onClick={() => {
               setSection(key);
               setEditing(null);
             }}
           >
             {label}
-          </Button>
+          </SegmentedButton>
         ))}
       </nav>
       <p role="status" className="mb-4">

@@ -1,8 +1,9 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, expect, it, vi } from "vitest";
 import PerfilPage from "../../frontend/src/app/paginaPerfil/page.jsx";
 import { SecurityCard } from "../../frontend/src/components/perfil/securityCard.jsx";
+import { renderWithToasts } from "./render-with-toasts";
 
 const mocks = vi.hoisted(() => ({ requisitar: vi.fn() }));
 vi.mock("@/services/api", () => ({ requisitar: mocks.requisitar }));
@@ -24,6 +25,22 @@ beforeEach(() => {
   mocks.requisitar.mockReset();
 });
 
+it.each([true, false])(
+  "exibe a exclusão do administrador conforme a permissão (%s)",
+  async (allowed) => {
+    mocks.requisitar.mockResolvedValue({ user: { can_delete_account: allowed } });
+    renderWithToasts(<SecurityCard admin />);
+
+    if (allowed) {
+      expect(await screen.findByRole("button", { name: "Excluir minha conta" })).toBeEnabled();
+    } else {
+      expect(await screen.findByText(/é preciso ter outro administrador ativo/)).toBeVisible();
+      expect(screen.queryByRole("button", { name: "Excluir minha conta" })).not.toBeInTheDocument();
+    }
+    expect(mocks.requisitar).toHaveBeenCalledWith("/account/status", expect.any(Object));
+  },
+);
+
 it("salva cada cartão sem enviar ou substituir rascunhos dos outros", async () => {
   mocks.requisitar.mockImplementation(async (path, options) => {
     if (path === "/auth/profile" && options?.method === "PUT") return { user: profile.user };
@@ -32,7 +49,7 @@ it("salva cada cartão sem enviar ou substituir rascunhos dos outros", async () 
     return { user: profile.user };
   });
   const user = userEvent.setup();
-  render(<PerfilPage />);
+  renderWithToasts(<PerfilPage />);
   await screen.findByDisplayValue("Ana Original");
   fireEvent.change(screen.getByLabelText("Nome"), { target: { value: "Nome pendente" } });
   await user.click(screen.getByRole("button", { name: "Tecnologia" }));
@@ -73,7 +90,7 @@ it("não permite salvar valores vazios após falha ao carregar e oferece retenta
     return { user: profile.user };
   });
   const user = userEvent.setup();
-  render(<PerfilPage />);
+  renderWithToasts(<PerfilPage />);
   await screen.findByText("Servidor indisponível");
   expect(screen.getByLabelText("Nome")).toBeDisabled();
   expect(screen.getByRole("button", { name: "Salvar alterações" })).toBeDisabled();
@@ -91,7 +108,7 @@ it("logout do perfil apresenta falha e permite tentar novamente", async () => {
     throw new Error("offline");
   });
   const user = userEvent.setup();
-  render(<SecurityCard />);
+  renderWithToasts(<SecurityCard />);
   await user.click(screen.getByRole("button", { name: /Encerrar sessão/ }));
   expect(await screen.findByRole("alert")).toHaveTextContent("Não foi possível encerrar a sessão");
   expect(mocks.requisitar.mock.calls).toContainEqual(["/auth/logout", { method: "POST" }]);
@@ -102,7 +119,7 @@ it("logout do perfil apresenta falha e permite tentar novamente", async () => {
 
 it("mostra a senha escolhida e limpa os campos ao fechar a alteração de senha", async () => {
   const user = userEvent.setup();
-  render(<SecurityCard />);
+  renderWithToasts(<SecurityCard />);
 
   await user.click(screen.getByRole("button", { name: /Alterar senha/ }));
   expect(screen.getByRole("dialog", { name: "Alterar senha" })).toBeVisible();

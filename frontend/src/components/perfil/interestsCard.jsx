@@ -25,7 +25,6 @@ export function InterestsCard({
   saving,
   hasChanges,
   minimumSelections = 3,
-  feedback,
   showSaveControls = true,
   systemColors = false,
   embedded = false,
@@ -167,27 +166,16 @@ export function InterestsCard({
 
         {showSaveControls && (
           <div className="flex flex-wrap items-center justify-between gap-3 border-t border-wisen-borda/70 pt-4">
-            {feedback ? (
-              <p
-                role={feedback.type === "error" ? "alert" : "status"}
-                className={`text-xs ${feedback.type === "error" ? "text-red-600" : "text-green-700"}`}
-              >
-                {feedback.text}
-              </p>
-            ) : (
+            {!canSave && (
               <p className="text-xs text-wisen-texto-suave">
-                {!canSave
-                  ? `Selecione pelo menos ${minimumSelections} interesses (${interests.length}/${minimumSelections}).`
-                  : hasChanges
-                    ? "Você tem alterações pendentes."
-                    : "Seus assuntos estão salvos."}
+                {`Selecione pelo menos ${minimumSelections} interesses (${interests.length}/${minimumSelections}).`}
               </p>
             )}
             <Button
               type="button"
               onClick={onSave}
               disabled={!hasChanges || saving || !canSave}
-              className={profileSaveAction}
+              className={`ml-auto ${profileSaveAction}`}
               data-wisen-hover="preserve"
             >
               {saving ? "Salvando..." : "Salvar interesses"}

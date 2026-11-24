@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { TituloCartaoAdm } from "./tituloCartaoAdm";
 
 export function TabelasDesempenhoAdm() {
   const usuarios = [
@@ -66,7 +67,7 @@ export function TabelasDesempenhoAdm() {
         {/* 1. Utilizadores Mais Ativos */}
         <div className="col-span-full min-w-0 space-y-4 rounded-2xl border border-wisen-borda bg-white p-5 shadow-2xs">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#E3E9F1] pb-3">
-            <h3 className="text-base font-semibold text-[#9A7E14]">Usuários mais ativos</h3>
+            <TituloCartaoAdm titulo="Usuários mais ativos" />
             <Link
               href="/paginaGestaoUsuariosAdm"
               className="text-sm font-semibold text-[#30466E] transition-colors hover:text-[#D6B92F]"
@@ -77,7 +78,7 @@ export function TabelasDesempenhoAdm() {
 
           <div className="max-w-full overflow-x-auto overscroll-x-contain pt-3">
             <table className="w-full min-w-[540px] text-left text-sm [&_td]:pr-4 [&_th]:pr-4 [&_td:last-child]:pr-0 [&_th:last-child]:pr-0">
-              <thead>
+              <thead className="bg-[#E8EFFA]">
                 <tr className="border-b border-[#E3E9F1] text-xs font-semibold text-[#7182A1] uppercase">
                   <th className="pb-2">Usuário</th>
                   <th className="pb-2">Revisões</th>
@@ -113,7 +114,7 @@ export function TabelasDesempenhoAdm() {
         {/* 2. Conteúdos Mais Acessados */}
         <div className="min-w-0 space-y-4 rounded-2xl border border-wisen-borda bg-white p-5 shadow-2xs">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#E3E9F1] pb-3">
-            <h3 className="text-base font-semibold text-[#9A7E14]">Conteúdos mais acessados</h3>
+            <TituloCartaoAdm titulo="Conteúdos mais acessados" />
           </div>
 
           <div className="space-y-3 pt-3 text-sm">
@@ -137,7 +138,7 @@ export function TabelasDesempenhoAdm() {
         {/* 3. Conceitos Com Mais Lacunas */}
         <div className="min-w-0 space-y-4 rounded-2xl border border-wisen-borda bg-white p-5 shadow-2xs">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#E3E9F1] pb-3">
-            <h3 className="text-base font-semibold text-[#9A7E14]">Conceitos com mais lacunas</h3>
+            <TituloCartaoAdm titulo="Conceitos com mais lacunas" />
           </div>
 
           <div className="space-y-3 pt-3 text-sm">

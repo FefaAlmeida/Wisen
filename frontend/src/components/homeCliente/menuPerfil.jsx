@@ -4,6 +4,7 @@ import { LogOut, UserRound } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { toast } from "@/lib/toast";
 import { requisitar } from "@/services/api";
 
 export default function MenuPerfil({ profileHref = "/paginaPerfil" }) {
@@ -27,7 +28,6 @@ export default function MenuPerfil({ profileHref = "/paginaPerfil" }) {
       .toLocaleUpperCase("pt-BR") || "?";
   const [aberto, setAberto] = useState(false);
   const [saindo, setSaindo] = useState(false);
-  const [erro, setErro] = useState("");
   const menuRef = useRef(null);
 
   useEffect(() => {
@@ -45,7 +45,6 @@ export default function MenuPerfil({ profileHref = "/paginaPerfil" }) {
     if (saindo) return;
 
     setSaindo(true);
-    setErro("");
 
     try {
       await requisitar("/auth/logout", {
@@ -55,7 +54,7 @@ export default function MenuPerfil({ profileHref = "/paginaPerfil" }) {
       window.location.assign("/auth");
     } catch (error) {
       console.error("Erro ao sair:", error);
-      setErro("Não foi possível sair da conta.");
+      toast.error("Não foi possível sair da conta.");
       setSaindo(false);
     }
   }
@@ -103,12 +102,6 @@ export default function MenuPerfil({ profileHref = "/paginaPerfil" }) {
             <LogOut size={16} />
             {saindo ? "Saindo..." : "Sair da conta"}
           </button>
-
-          {erro && (
-            <p role="alert" className="px-3 py-2 text-xs text-red-600">
-              {erro}
-            </p>
-          )}
         </div>
       )}
     </div>

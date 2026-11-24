@@ -1,7 +1,8 @@
-﻿import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import GestaoFontes from "../../frontend/src/components/gestaoFontesAdm/gestaoFontes.jsx";
+import { renderWithToasts } from "./render-with-toasts";
 
 beforeEach(() => localStorage.clear());
 afterEach(() => vi.unstubAllGlobals());
@@ -11,37 +12,75 @@ async function editSource(user, name) {
   return screen.findByRole("dialog", { name: "Gerenciar fonte" });
 }
 describe("gestão de fontes", () => {
+  it("pagina as fontes e retorna à primeira página ao filtrar", async () => {
+    localStorage.setItem(
+      "wisen:fontes:v1",
+      JSON.stringify({
+        sources: Array.from({ length: 11 }, (_, index) => ({
+          id: index + 1,
+          nome: `Fonte ${index + 1}`,
+          url: `https://example.test/rss/${index + 1}`,
+          ativo: true,
+          ultimaColeta: "Ainda não realizada",
+          frequencia: "1 hora",
+        })),
+        logs: [],
+      }),
+    );
+    const user = userEvent.setup();
+    renderWithToasts(<GestaoFontes />);
+    expect(await screen.findByText("11 fontes encontradas")).toBeInTheDocument();
+    const pagination = within(screen.getByRole("navigation", { name: "Paginação de fontes" }));
+    expect(pagination.getByRole("button", { name: "Página anterior" })).toBeDisabled();
+    expect(screen.queryByRole("button", { name: "Editar Fonte 11" })).not.toBeInTheDocument();
+
+    await user.click(pagination.getByRole("button", { name: "Próxima página" }));
+    expect(pagination.getByText("2 de 2")).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: "Editar Fonte 11" }).length).toBeGreaterThan(0);
+    expect(pagination.getByRole("button", { name: "Próxima página" })).toBeDisabled();
+
+    await user.type(screen.getByLabelText("Buscar fontes por nome ou endereço"), "Fonte 1");
+    expect(pagination.getByText("1 de 1")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Limpar filtros" }));
+    expect(pagination.getByText("1 de 2")).toBeInTheDocument();
+  });
+
   it("filtra por nome, status e frequência e limpa os filtros", async () => {
     const user = userEvent.setup();
-    render(<GestaoFontes />);
+    renderWithToasts(<GestaoFontes />);
     await screen.findAllByRole("button", { name: "Editar G1" });
     await user.type(screen.getByLabelText("Buscar fontes por nome ou endereço"), "g1");
     expect(
       screen.queryByRole("button", { name: "Editar Valor Econômico" }),
     ).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Limpar filtros" }));
-    await user.selectOptions(screen.getByLabelText("Filtrar fontes por status"), "pausadas");
-    await user.selectOptions(screen.getByLabelText("Filtrar fontes por frequência"), "6 horas");
+    await user.click(screen.getByRole("combobox", { name: "Filtrar fontes por status" }));
+    await user.click(await screen.findByRole("option", { name: "Pausadas" }));
+    await user.click(screen.getByRole("combobox", { name: "Filtrar fontes por frequência" }));
+    await user.click(await screen.findByRole("option", { name: "6 horas" }));
     expect(screen.getAllByRole("button", { name: "Editar Agência Brasil" }).length).toBeGreaterThan(
       0,
     );
     expect(screen.queryByRole("button", { name: "Editar G1" })).not.toBeInTheDocument();
   });
-  it("abre os registros em uma janela própria", async () => {
+  it("exibe os registros de coleta em uma aba com contador", async () => {
     const user = userEvent.setup();
-    render(<GestaoFontes />);
+    renderWithToasts(<GestaoFontes />);
     await screen.findAllByRole("button", { name: "Editar G1" });
     expect(screen.queryByText("Timeout na conexão com o feed RSS (30s)")).not.toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Registros de coleta" }));
-    expect(await screen.findByRole("dialog", { name: "Registros de coleta" })).toHaveTextContent(
+    const logsTab = screen.getByRole("tab", { name: "Registros de coleta 4" });
+    await user.click(logsTab);
+    expect(logsTab).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByRole("tabpanel", { name: "Registros de coleta 4" })).toHaveTextContent(
       "Timeout na conexão",
     );
-    await user.click(screen.getByRole("button", { name: "Fechar registros" }));
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Editar G1" })).not.toBeInTheDocument();
+    await user.click(screen.getByRole("tab", { name: "Fontes cadastradas 5" }));
+    expect(await screen.findAllByRole("button", { name: "Editar G1" })).not.toHaveLength(0);
   });
   it("adiciona, edita e preserva a fonte ao recarregar", async () => {
     const user = userEvent.setup();
-    const view = render(<GestaoFontes />);
+    const view = renderWithToasts(<GestaoFontes />);
     await screen.findAllByRole("button", { name: "Editar G1" });
     await user.click(screen.getByRole("button", { name: "Adicionar fonte", exact: true }));
     const dialog = screen.getByRole("dialog", { name: "Adicionar fonte" });
@@ -59,20 +98,22 @@ describe("gestão de fontes", () => {
     await user.click(screen.getByRole("button", { name: "Salvar alterações" }));
     await screen.findByText("Configurações da fonte salvas.");
     view.unmount();
-    render(<GestaoFontes />);
+    renderWithToasts(<GestaoFontes />);
     await editSource(user, "Nome atualizado");
     expect(screen.getByLabelText("URL do feed RSS")).toHaveValue("https://example.test/rss");
     expect(screen.getByLabelText("Frequência de coleta")).toHaveValue("24 horas");
   });
   it("pausa uma fonte e mantém os filtros coerentes", async () => {
     const user = userEvent.setup();
-    render(<GestaoFontes />);
+    renderWithToasts(<GestaoFontes />);
     const pause = await screen.findAllByRole("button", { name: "Pausar G1" });
     await user.click(pause[0]);
     await screen.findByText("Fonte pausada.");
-    await user.selectOptions(screen.getByLabelText("Filtrar fontes por status"), "ativas");
+    await user.click(screen.getByRole("combobox", { name: "Filtrar fontes por status" }));
+    await user.click(await screen.findByRole("option", { name: "Ativas" }));
     expect(screen.queryByRole("button", { name: "Editar G1" })).not.toBeInTheDocument();
-    await user.selectOptions(screen.getByLabelText("Filtrar fontes por status"), "pausadas");
+    await user.click(screen.getByRole("combobox", { name: "Filtrar fontes por status" }));
+    await user.click(await screen.findByRole("option", { name: "Pausadas" }));
     expect(screen.getAllByRole("button", { name: "Ativar G1" }).length).toBeGreaterThan(0);
   });
   it("usa as ações existentes da API para fontes reais", async () => {
@@ -101,7 +142,7 @@ describe("gestão de fontes", () => {
     });
     vi.stubGlobal("fetch", fetchMock);
     const user = userEvent.setup();
-    render(<GestaoFontes demo={false} />);
+    renderWithToasts(<GestaoFontes demo={false} />);
     await editSource(user, "Fonte real");
     expect(screen.getByLabelText("Nome do veículo")).toHaveAttribute("readonly");
     await user.click(screen.getByRole("switch", { name: "Fonte ativa" }));

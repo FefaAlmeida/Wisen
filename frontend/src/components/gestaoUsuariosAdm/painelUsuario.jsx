@@ -25,8 +25,8 @@ export default function PainelUsuario({
   aoFechar,
   aoSalvar,
   aoHistorico,
+  focoAoFechar,
   busy,
-  error,
   demo,
 }) {
   const [permissao, setPermissao] = useState("Usuário");
@@ -46,7 +46,7 @@ export default function PainelUsuario({
         if (!open && !busy) aoFechar();
       }}
     >
-      <DialogContent>
+      <DialogContent data-wisen-area="admin" finalFocus={focoAoFechar}>
         {usuario && (
           <>
             <DialogHeader eyebrow="Conta de usuário">
@@ -60,30 +60,26 @@ export default function PainelUsuario({
               }}
             >
               <DialogBody className="space-y-5">
-                {error && (
-                  <p
-                    role="alert"
-                    className="rounded-lg bg-red-50 p-3 text-sm leading-6 text-red-800"
-                  >
-                    {error}
-                  </p>
-                )}
-                <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-[#F8FAFD] p-3">
+                <div className="admin-dialog-panel flex flex-wrap items-center justify-between gap-3">
                   <span className="text-xs text-[#7182A1]">
                     Cadastrado em {usuario.dataCadastro}
                   </span>
                   <UserStatus status={usuario.status} />
                 </div>
-                <section className="space-y-4" aria-label="Configurações de acesso">
+                <section
+                  className="admin-dialog-panel space-y-4"
+                  aria-label="Configurações de acesso"
+                >
                   <h3 className="text-sm font-medium text-wisen-titulo">Configurações de acesso</h3>
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    {demo ? (
+                    {demo || usuario.permissao !== "Admin" ? (
                       <label className="text-xs font-medium text-[#7182A1]">
                         Perfil
                         <select
                           aria-label="Perfil da conta"
                           value={permissao}
                           onChange={(event) => setPermissao(event.target.value)}
+                          disabled={busy}
                           className={control}
                         >
                           <option value="Admin">Administrador</option>
@@ -126,7 +122,7 @@ export default function PainelUsuario({
                   </label>
                 </section>
                 {status === "Bloqueado" && (
-                  <p className="rounded-lg border border-[#E8DDA4] bg-wisen-admin-hover p-3 text-sm leading-6 text-[#866D16]">
+                  <p className="rounded-lg border border-[#E8DDA4] bg-[#FBF7E5] p-3 text-sm leading-6 text-[#866D16]">
                     Bloquear impede o acesso à plataforma e encerra as sessões ativas desta conta.
                   </p>
                 )}

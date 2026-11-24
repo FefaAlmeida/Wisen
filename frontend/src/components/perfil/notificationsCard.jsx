@@ -3,14 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { ProfileSection, profileSaveAction } from "./profileSection";
 
-export function NotificationsCard({
-  notifications,
-  onChange,
-  onSave,
-  saving,
-  hasChanges,
-  feedback,
-}) {
+export function NotificationsCard({ notifications, onChange, onSave, saving, hasChanges }) {
   return (
     <ProfileSection
       icon={Bell}
@@ -32,7 +25,7 @@ export function NotificationsCard({
             </div>
           </div>
           <Switch
-            className="data-checked:bg-wisen-titulo"
+            className="data-checked:bg-wisen-destaque"
             disabled={saving}
             checked={notifications.reviewReminders}
             aria-label="Lembretes de revisão"
@@ -55,7 +48,7 @@ export function NotificationsCard({
             </div>
           </div>
           <Switch
-            className="data-checked:bg-wisen-titulo"
+            className="data-checked:bg-wisen-destaque"
             disabled={saving}
             checked={notifications.weeklySummary}
             data-wisen-hover="preserve"
@@ -63,19 +56,7 @@ export function NotificationsCard({
             onCheckedChange={(checked) => onChange("weeklySummary", checked)}
           />
         </div>
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-wisen-borda/70 pt-4">
-          {feedback ? (
-            <p
-              role={feedback.type === "error" ? "alert" : "status"}
-              className={`text-xs ${feedback.type === "error" ? "text-red-600" : "text-green-700"}`}
-            >
-              {feedback.text}
-            </p>
-          ) : (
-            <p className="text-xs text-wisen-texto-suave">
-              {hasChanges ? "Você tem alterações pendentes." : "Suas preferências estão salvas."}
-            </p>
-          )}
+        <div className="flex justify-end border-t border-wisen-borda/70 pt-4">
           <Button
             type="button"
             onClick={onSave}

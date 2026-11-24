@@ -1,4 +1,5 @@
 import { BarChart2, CalendarDays, FileText, Lightbulb, UserPlus } from "lucide-react";
+import { TituloCartaoAdm } from "./tituloCartaoAdm";
 
 export function GraficosAtividadeAdm() {
   const temas = [
@@ -23,13 +24,10 @@ export function GraficosAtividadeAdm() {
       {/* Evolucao de usuarios */}
       <section className="admin-chart-card flex min-w-0 flex-col overflow-hidden rounded-2xl border border-[#E3E9F1] bg-white shadow-2xs">
         <header className="flex min-h-24 items-center border-b border-[#E8EDF4] px-5 py-5 sm:px-6">
-          <div className="min-w-0 space-y-1">
-            <h3 className="text-lg font-medium leading-snug tracking-tight text-wisen-titulo sm:text-xl">
-              Evolução dos usuários
-            </h3>
-            <span aria-hidden="true" className="block h-0.5 w-8 rounded-full bg-[#D7BF4D]" />
-            <p className="text-xs leading-5 text-[#7182A1]">Ativos e novos nos últimos 6 meses</p>
-          </div>
+          <TituloCartaoAdm
+            titulo="Evolução dos usuários"
+            descricao="Ativos e novos nos últimos 6 meses"
+          />
         </header>
 
         <div className="flex flex-1 flex-col p-4 sm:p-5">
@@ -99,13 +97,10 @@ export function GraficosAtividadeAdm() {
       {/* Distribuicao dos temas */}
       <section className="admin-chart-card admin-chart-card-delayed @container/chart flex min-w-0 flex-col overflow-hidden rounded-2xl border border-[#E3E9F1] bg-white shadow-2xs">
         <header className="flex min-h-24 items-center border-b border-[#E8EDF4] px-5 py-5 sm:px-6">
-          <div className="min-w-0 space-y-1">
-            <h3 className="text-lg font-medium leading-snug tracking-tight text-wisen-titulo sm:text-xl">
-              Temas mais acessados
-            </h3>
-            <span aria-hidden="true" className="block h-0.5 w-8 rounded-full bg-[#D7BF4D]" />
-            <p className="text-xs leading-5 text-[#7182A1]">Distribuição das leituras e revisões</p>
-          </div>
+          <TituloCartaoAdm
+            titulo="Temas mais acessados"
+            descricao="Distribuição das leituras e revisões"
+          />
         </header>
 
         <div className="grid flex-1 grid-cols-1 gap-5 p-4 sm:p-5 @min-[28rem]/chart:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
@@ -167,34 +162,33 @@ export function GraficosAtividadeAdm() {
         </div>
       </section>
 
-      {/* 3. Atividade Recente */}
-      <div className="col-span-full min-w-0 space-y-4 rounded-lg border border-[#263343] bg-[#263343] p-5 shadow-2xs">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <h3 className="text-base font-semibold text-white">Atividade recente</h3>
-        </div>
+      <section className="@container/atividade col-span-full min-w-0 rounded-2xl bg-[#263343] px-4 pt-4 pb-2 shadow-2xs sm:px-5">
+        <h3 className="mb-2 text-lg font-semibold text-white">Atividade recente</h3>
 
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,180px),1fr))] gap-3">
+        <ol>
           {atividades.map((item) => {
             const Icone = item.icone;
             return (
-              <div
+              <li
                 key={item.texto}
-                className="flex h-auto min-h-24 min-w-0 items-start gap-3 rounded-lg border border-white/10 bg-white/[0.065] px-3 py-4 text-sm transition-colors hover:bg-white/[0.1]"
+                className="relative flex min-h-12 items-center gap-3 py-1.5 before:absolute before:inset-y-0 before:start-[calc(1rem-0.5px)] before:w-px before:bg-white/20 first:before:top-1/2 last:before:bottom-1/2 only:before:hidden"
               >
-                <div className="mt-0.5 shrink-0 rounded-lg bg-[#F3E69A] p-1.5 text-[#263343]">
-                  <Icone className="h-4 w-4" />
-                </div>
-                <div className="min-w-0 flex-1 space-y-1">
-                  <h4 className="whitespace-normal break-words font-semibold leading-5 text-white">
+                <span className="relative grid size-8 shrink-0 place-items-center rounded-lg bg-[#3F484D] text-[#F3E69A]">
+                  <Icone aria-hidden="true" className="size-4" />
+                </span>
+                <div className="grid min-w-0 flex-1 items-center gap-x-4 gap-y-0.5 @min-[24rem]/atividade:grid-cols-[minmax(0,1fr)_auto]">
+                  <span className="wrap-break-word text-sm leading-5 font-medium text-white">
                     {item.texto}
-                  </h4>
-                  <p className="text-xs text-[#C6D0DD]">{item.tempo}</p>
+                  </span>
+                  <span className="text-xs text-[#C6D0DD] @min-[24rem]/atividade:text-right">
+                    {item.tempo}
+                  </span>
                 </div>
-              </div>
+              </li>
             );
           })}
-        </div>
-      </div>
+        </ol>
+      </section>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast } from "@/lib/toast";
 import { requisitar } from "@/services/api";
 import styles from "./authForm.module.css";
 
@@ -44,7 +45,7 @@ export default function FormularioRecuperacao({ action, token, initialEmail, onB
       }
     } catch (err) {
       if (reset && err.status === 400) setInvalidLink(true);
-      else setError(err.message || "Não foi possível continuar. Tente novamente.");
+      else toast.error(err.message || "Não foi possível continuar. Tente novamente.");
     } finally {
       submitting.current = false;
       setBusy(false);

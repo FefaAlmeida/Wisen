@@ -1,6 +1,10 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import {
+  SegmentedButton,
+  segmentCountStyle,
+  segmentListStyle,
+} from "@/components/ui/segmented-control";
 import {
   Select,
   SelectContent,
@@ -24,7 +28,7 @@ export function FiltrosBiblioteca({ filtroAtivo, onFiltroChange, items = conceit
   return (
     <div className="flex w-full flex-wrap items-center justify-between gap-4">
       {/* Filtros */}
-      <fieldset className="flex flex-wrap items-center gap-2.5 border-0 p-0">
+      <fieldset className={segmentListStyle}>
         <legend className="sr-only">Filtrar conceitos</legend>
         {filtros.map((filtro) => {
           const quantidade = filtro.status
@@ -33,29 +37,20 @@ export function FiltrosBiblioteca({ filtroAtivo, onFiltroChange, items = conceit
           const ativo = filtro.id === filtroAtivo;
 
           return (
-            <Button
+            <SegmentedButton
               key={filtro.id}
-              type="button"
-              size="sm"
-              variant={ativo ? "default" : "outline"}
               aria-pressed={ativo}
               onClick={() => onFiltroChange(filtro.id)}
-              className={
-                ativo
-                  ? "h-9 rounded-[10px] border-0 bg-wisen-destaque-suave px-5 text-[13px] font-medium text-wisen-texto shadow-none hover:bg-[#F1E18A]"
-                  : "h-9 rounded-[10px] border-wisen-borda bg-white/80 px-4 text-[13px] font-normal text-[#607092] shadow-none hover:bg-white hover:text-wisen-texto"
-              }
             >
               {filtro.status && (
                 <span
-                  className="mr-2 h-2 w-2 rounded-full"
+                  className="size-2 rounded-full"
                   style={{ backgroundColor: coresStatusConceito[filtro.status].indicador }}
                   aria-hidden="true"
                 />
               )}
-              {filtro.rotulo}
-              {` (${quantidade})`}
-            </Button>
+              {filtro.rotulo} <span className={segmentCountStyle}>{quantidade}</span>
+            </SegmentedButton>
           );
         })}
       </fieldset>

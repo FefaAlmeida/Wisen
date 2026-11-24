@@ -35,7 +35,6 @@ export default function FormularioFonte({
   aoSalvar,
   aoColetar,
   busy,
-  error,
   demo = true,
 }) {
   const [dados, setDados] = useState(vazio);
@@ -52,7 +51,7 @@ export default function FormularioFonte({
         if (!open && !busy) aoFechar();
       }}
     >
-      <DialogContent>
+      <DialogContent data-wisen-area="admin">
         <DialogHeader eyebrow="Fontes de notícias">
           <DialogTitle>{fonte ? "Gerenciar fonte" : "Adicionar fonte"}</DialogTitle>
           <DialogDescription>
@@ -70,46 +69,43 @@ export default function FormularioFonte({
         >
           <DialogBody>
             <fieldset disabled={busy} className="min-w-0 space-y-5">
-              {error && (
-                <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm leading-6 text-red-800">
-                  {error}
-                </p>
-              )}
-              <div>
-                <label htmlFor="nomeFonte" className="text-xs font-medium text-[#7182A1]">
-                  Nome do veículo
-                </label>
-                <Input
-                  id="nomeFonte"
-                  required
-                  readOnly={!demo}
-                  maxLength={150}
-                  value={dados.nome}
-                  onChange={(event) => update("nome", event.target.value)}
-                  placeholder="Ex.: Agência Brasil"
-                  className={control}
-                />
-              </div>
-              <div>
-                <label htmlFor="urlFonte" className="text-xs font-medium text-[#7182A1]">
-                  URL do feed RSS
-                </label>
-                <Input
-                  id="urlFonte"
-                  required
-                  type="url"
-                  readOnly={!demo}
-                  value={dados.url}
-                  onChange={(event) => update("url", event.target.value)}
-                  placeholder="https://exemplo.com/feed.xml"
-                  className={control}
-                />
-                <p className="mt-2 text-xs leading-5 text-[#8190A8]">
-                  Endereço que disponibiliza as notícias em formato RSS ou Atom.
-                </p>
+              <div className="admin-dialog-panel space-y-4">
+                <div>
+                  <label htmlFor="nomeFonte" className="text-xs font-medium text-[#7182A1]">
+                    Nome do veículo
+                  </label>
+                  <Input
+                    id="nomeFonte"
+                    required
+                    readOnly={!demo}
+                    maxLength={150}
+                    value={dados.nome}
+                    onChange={(event) => update("nome", event.target.value)}
+                    placeholder="Ex.: Agência Brasil"
+                    className={control}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="urlFonte" className="text-xs font-medium text-[#7182A1]">
+                    URL do feed RSS
+                  </label>
+                  <Input
+                    id="urlFonte"
+                    required
+                    type="url"
+                    readOnly={!demo}
+                    value={dados.url}
+                    onChange={(event) => update("url", event.target.value)}
+                    placeholder="https://exemplo.com/feed.xml"
+                    className={control}
+                  />
+                  <p className="mt-2 text-xs leading-5 text-wisen-texto-suave">
+                    Endereço que disponibiliza as notícias em formato RSS ou Atom.
+                  </p>
+                </div>
               </div>
               {demo ? (
-                <div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="admin-dialog-panel grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
                     <label htmlFor="categoriaFonte" className="text-xs font-medium text-[#7182A1]">
                       Categoria principal
@@ -150,7 +146,7 @@ export default function FormularioFonte({
                   </div>
                 </div>
               ) : (
-                <div className="rounded-lg bg-[#F8FAFD] p-3">
+                <div className="admin-dialog-panel">
                   <p className="text-xs leading-5 text-[#7182A1]">
                     Frequência: {dados.frequencia}
                     <br />
@@ -158,7 +154,7 @@ export default function FormularioFonte({
                   </p>
                 </div>
               )}
-              <div className="flex items-center justify-between gap-3 rounded-lg border border-[#E8EDF4] bg-[#F8FAFD] p-4">
+              <div className="admin-dialog-panel flex items-center justify-between gap-3">
                 <div className="min-w-0">
                   <label htmlFor="statusFonte" className="text-sm font-medium text-wisen-titulo">
                     Fonte ativa
@@ -177,7 +173,7 @@ export default function FormularioFonte({
                 />
               </div>
               {demo && (
-                <p className="text-xs leading-5 text-[#8190A8]">
+                <p className="rounded-lg border border-[#E8DFBA] bg-[#FBF7E5] px-3 py-2 text-xs leading-5 text-[#526584]">
                   Configurações de demonstração, salvas neste navegador.
                 </p>
               )}

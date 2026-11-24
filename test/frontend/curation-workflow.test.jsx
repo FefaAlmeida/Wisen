@@ -1,7 +1,8 @@
-﻿import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import CuradoriaEventos from "../../frontend/src/components/cuidadoriaEventosAdm/cuidadoriaEventos.jsx";
+import { renderWithToasts } from "./render-with-toasts";
 
 const saved = () => JSON.parse(localStorage.getItem("wisen:curadoria:v2"));
 async function openFirst(user) {
@@ -53,7 +54,7 @@ describe("fila de revisão de eventos", () => {
     });
     vi.stubGlobal("fetch", fetchMock);
     const user = userEvent.setup();
-    render(<CuradoriaEventos demo={false} />);
+    renderWithToasts(<CuradoriaEventos demo={false} />);
     await openFirst(user);
     await user.click(screen.getByRole("button", { name: "Confirmar agrupamento" }));
     await screen.findByText("Agrupamento confirmado. O evento foi movido para os revisados.");
@@ -67,7 +68,7 @@ describe("fila de revisão de eventos", () => {
 
   it("mostra falha de carregamento sem anunciar uma fila concluída", async () => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("Servidor indisponível")));
-    render(<CuradoriaEventos demo={false} />);
+    renderWithToasts(<CuradoriaEventos demo={false} />);
     expect(await screen.findByRole("alert")).toHaveTextContent("Servidor indisponível");
     expect(
       screen.queryByRole("heading", { name: "Tudo revisado por aqui" }),
@@ -77,7 +78,7 @@ describe("fila de revisão de eventos", () => {
 
   it("começa pelas pendências e preserva a revisão ao recarregar", async () => {
     const user = userEvent.setup();
-    const view = render(<CuradoriaEventos />);
+    const view = renderWithToasts(<CuradoriaEventos />);
     await screen.findByRole("heading", { name: "Eventos a revisar" });
     expect(
       screen.queryByRole("heading", { name: "Aprovação de novo medicamento para diabetes" }),
@@ -87,7 +88,7 @@ describe("fila de revisão de eventos", () => {
     await screen.findByText("Agrupamento confirmado. O evento foi movido para os revisados.");
     expect(saved().events.find((event) => event.id === 1).status).toBe("Revisado");
     view.unmount();
-    render(<CuradoriaEventos />);
+    renderWithToasts(<CuradoriaEventos />);
     await screen.findByRole("heading", { name: "Eventos a revisar" });
     expect(
       screen.queryByRole("heading", { name: "Reunião do Copom e decisão da Selic" }),
@@ -100,7 +101,7 @@ describe("fila de revisão de eventos", () => {
 
   it("retira um artigo sem excluir e o associa a outro evento", async () => {
     const user = userEvent.setup();
-    render(<CuradoriaEventos />);
+    renderWithToasts(<CuradoriaEventos />);
     await openFirst(user);
     await user.click(screen.getAllByRole("button", { name: "Retirar do evento" })[0]);
     await user.click(
@@ -129,9 +130,37 @@ describe("fila de revisão de eventos", () => {
     ).toBe(true);
   });
 
+  it("volta à primeira página ao filtrar a fila", async () => {
+    localStorage.setItem(
+      "wisen:curadoria:v2",
+      JSON.stringify({
+        events: Array.from({ length: 12 }, (_, index) => ({
+          id: index + 1,
+          titulo: `Evento ${index + 1}`,
+          resumo: "Resumo para revisão",
+          categoria: "Economia",
+          status: "Pendente",
+          artigos: [],
+        })),
+        unassociated: [],
+      }),
+    );
+    const user = userEvent.setup();
+    renderWithToasts(<CuradoriaEventos />);
+    const pages = within(await screen.findByRole("navigation", { name: "Paginação da fila" }));
+    await user.click(pages.getByRole("button", { name: "Próxima página" }));
+    expect(pages.getByText("2 de 2")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Evento 12", exact: true })).toBeInTheDocument();
+    await user.type(screen.getByRole("textbox", { name: "Buscar na fila" }), "Evento 12");
+    expect(pages.getByText("1 de 1")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Limpar filtros" }));
+    expect(pages.getByText("1 de 2")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Evento 1", exact: true })).toBeInTheDocument();
+  });
+
   it("compara duplicados e une os artigos sem confirmar a revisão automaticamente", async () => {
     const user = userEvent.setup();
-    render(<CuradoriaEventos />);
+    renderWithToasts(<CuradoriaEventos />);
     await screen.findByRole("heading", { name: "Eventos a revisar" });
     await user.click(screen.getByRole("button", { name: /Possíveis duplicados/ }));
     await user.click(screen.getByRole("button", { name: "Comparar eventos" }));
@@ -147,7 +176,7 @@ describe("fila de revisão de eventos", () => {
 
   it("não anuncia sucesso quando o navegador impede salvar", async () => {
     const user = userEvent.setup();
-    render(<CuradoriaEventos />);
+    renderWithToasts(<CuradoriaEventos />);
     await openFirst(user);
     vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
       throw new Error("quota");
@@ -162,7 +191,7 @@ describe("fila de revisão de eventos", () => {
 
   it("edita o resumo mantendo a revisão pendente até a confirmação", async () => {
     const user = userEvent.setup();
-    render(<CuradoriaEventos />);
+    renderWithToasts(<CuradoriaEventos />);
     await openFirst(user);
     await user.click(screen.getByRole("button", { name: "Editar informações" }));
     fireEvent.change(screen.getByLabelText("Título do evento"), {

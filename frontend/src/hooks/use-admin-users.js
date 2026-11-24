@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { usuariosIniciais } from "@/data/usuariosDemo";
+import { toast } from "@/lib/toast";
 import { requisitar } from "@/services/api";
 
 const storageKey = "wisen:usuarios:v1";
@@ -24,13 +25,17 @@ export function useAdminUsers(demo) {
   const [users, setUsers] = useState([]);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [historyLoading, setHistoryLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [historyError, setHistoryError] = useState("");
   const lock = useRef(false);
   const reload = useCallback(
     async (signal) => {
       setLoading(true);
+      setHistoryLoading(true);
       setError("");
+      setHistoryError("");
       try {
         if (demo) {
           const stored = localStorage.getItem(storageKey);
@@ -40,26 +45,46 @@ export function useAdminUsers(demo) {
           setUsers(parsed.users);
           setHistory(parsed.history);
         } else {
-          const [accounts, audit] = await Promise.all([
-            requisitar("/admin/users", { signal }),
-            requisitar("/admin/audit", { signal }),
-          ]);
-          const normalized = accounts.items.map((user) => ({
-            id: user.id,
-            nome: user.name,
-            email: user.email,
-            iniciais: user.name
-              .trim()
-              .split(/\s+/)
-              .slice(0, 2)
-              .map((part) => part[0])
-              .join(""),
-            permissao: user.role === "admin" ? "Admin" : "Usuário",
-            status: user.active ? "Ativo" : "Bloqueado",
-            dataCadastro: formatDate(user.created_at),
-            limite: user.generation_limit,
-          }));
-          setUsers(normalized);
+          const accountsRequest = requisitar("/admin/users", { signal })
+            .then((accounts) =>
+              accounts.items.map((user) => {
+                const name = user.name.trim();
+                return {
+                  id: user.id,
+                  nome: name || "Nome não informado",
+                  email: user.email,
+                  avatarUrl: user.has_avatar ? `/api/admin/users/${user.id}/avatar` : undefined,
+                  iniciais: (name || user.email)
+                    .split(/\s+/)
+                    .slice(0, 2)
+                    .map((part) => part[0])
+                    .join("")
+                    .toLocaleUpperCase("pt-BR"),
+                  permissao: user.role === "admin" ? "Admin" : "Usuário",
+                  status: user.active ? "Ativo" : "Bloqueado",
+                  dataCadastro: formatDate(user.created_at),
+                  limite: user.generation_limit,
+                };
+              }),
+            )
+            .then((accounts) => {
+              if (!signal?.aborted) setUsers(accounts);
+              return accounts;
+            })
+            .catch((failure) => {
+              if (!signal?.aborted) setError(failure.message);
+              return [];
+            })
+            .finally(() => {
+              if (!signal?.aborted) setLoading(false);
+            });
+          const auditRequest = requisitar("/admin/audit", { signal }).catch((failure) => {
+            if (!signal?.aborted) setHistoryError(failure.message);
+            return null;
+          });
+          const [accounts, audit] = await Promise.all([accountsRequest, auditRequest]);
+          if (signal?.aborted || !audit) return;
+          const names = new Map(accounts.map((user) => [user.id, user.nome]));
           setHistory(
             audit.items
               .filter((entry) => entry.action === "user")
@@ -69,9 +94,7 @@ export function useAdminUsers(demo) {
                 return {
                   id: entry.id,
                   usuarioId: entry.target_id,
-                  usuario:
-                    normalized.find((user) => user.id === entry.target_id)?.nome ||
-                    "Conta indisponível",
+                  usuario: names.get(entry.target_id) || "Conta indisponível",
                   data: formatDate(entry.created_at, true),
                   descricao:
                     describe(
@@ -81,7 +104,7 @@ export function useAdminUsers(demo) {
                         limite: before.generation_limit,
                       },
                       {
-                        permissao: before.role === "admin" ? "Admin" : "Usuário",
+                        permissao: (after.role ?? before.role) === "admin" ? "Admin" : "Usuário",
                         status: after.active ? "Ativo" : "Bloqueado",
                         limite: after.generationLimit,
                       },
@@ -91,9 +114,15 @@ export function useAdminUsers(demo) {
           );
         }
       } catch (failure) {
-        if (!signal?.aborted) setError(failure.message);
+        if (!signal?.aborted) {
+          if (demo) setError(failure.message);
+          setHistoryError(failure.message);
+        }
       } finally {
-        if (!signal?.aborted) setLoading(false);
+        if (!signal?.aborted) {
+          if (demo) setLoading(false);
+          setHistoryLoading(false);
+        }
       }
     },
     [demo],
@@ -139,14 +168,17 @@ export function useAdminUsers(demo) {
             id,
             active: values.status === "Ativo",
             generationLimit: Number(values.limite),
+            ...(current.permissao !== "Admin" && values.permissao === "Admin" && { role: "admin" }),
           },
         });
         await reload();
       }
       return true;
     } catch (failure) {
-      setError(
-        demo ? "Não foi possível salvar neste navegador. Tente novamente." : failure.message,
+      toast.error(
+        demo
+          ? "Não foi possível salvar neste navegador. Tente novamente."
+          : failure.message || "Não foi possível atualizar a conta.",
       );
       return false;
     } finally {
@@ -154,5 +186,5 @@ export function useAdminUsers(demo) {
       setBusy(false);
     }
   }
-  return { users, history, loading, busy, error, reload, save };
+  return { users, history, loading, historyLoading, busy, error, historyError, reload, save };
 }

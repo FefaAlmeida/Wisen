@@ -4,11 +4,11 @@ import { Ban } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { toast } from "@/lib/toast";
 import { requisitar } from "@/services/api";
 
 export default function CardNoticia({ item, onDismiss }) {
   const [dismissing, setDismissing] = useState(false);
-  const [actionError, setActionError] = useState("");
   const story = {
     id: item.id,
     title: item.title,
@@ -32,7 +32,6 @@ export default function CardNoticia({ item, onDismiss }) {
   async function dismiss() {
     if (dismissing) return;
     setDismissing(true);
-    setActionError("");
     try {
       await requisitar("/feed/interactions", {
         method: "POST",
@@ -40,7 +39,7 @@ export default function CardNoticia({ item, onDismiss }) {
       });
       onDismiss();
     } catch {
-      setActionError("Falha ao salvar preferência. Tente novamente.");
+      toast.error("Falha ao salvar preferência. Tente novamente.");
     } finally {
       setDismissing(false);
     }
@@ -97,11 +96,6 @@ export default function CardNoticia({ item, onDismiss }) {
           <Ban aria-hidden="true" className="size-3.5" />
           Não tenho interesse
         </button>
-        {actionError && (
-          <p role="alert" className="mt-2 text-xs text-red-700">
-            {actionError}
-          </p>
-        )}
       </div>
     </article>
   );

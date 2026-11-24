@@ -3,6 +3,7 @@
 import { Tabs as TabsPrimitive } from "@base-ui/react/tabs";
 import { cva } from "class-variance-authority";
 import { cn } from "cn";
+import { segmentListStyle, segmentStyle } from "./segmented-control";
 
 function Tabs({ className, orientation = "horizontal", ...props }) {
   return (
@@ -20,7 +21,7 @@ const tabsListVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-muted",
+        default: `${segmentListStyle} group-data-horizontal/tabs:h-auto`,
         line: "gap-1 bg-transparent",
       },
     },
@@ -35,6 +36,7 @@ function TabsList({ className, variant = "default", ...props }) {
     <TabsPrimitive.List
       data-slot="tabs-list"
       data-variant={variant}
+      data-wisen-hover={variant === "default" ? "preserve" : undefined}
       className={cn(tabsListVariants({ variant }), className)}
       {...props}
     />
@@ -57,6 +59,19 @@ function TabsTrigger({ className, ...props }) {
   );
 }
 
+function SegmentedTab({ className, ...props }) {
+  return (
+    <TabsTrigger
+      className={cn(
+        segmentStyle,
+        "group-data-[variant=default]/tabs-list:data-active:shadow-none",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
 function TabsContent({ className, ...props }) {
   return (
     <TabsPrimitive.Panel
@@ -67,4 +82,4 @@ function TabsContent({ className, ...props }) {
   );
 }
 
-export { Tabs, TabsContent, TabsList, TabsTrigger, tabsListVariants };
+export { SegmentedTab, Tabs, TabsContent, TabsList, TabsTrigger, tabsListVariants };

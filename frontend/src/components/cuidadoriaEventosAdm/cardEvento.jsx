@@ -1,51 +1,50 @@
-﻿import { ArrowRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import MiniaturaCuradoria from "./miniaturaCuradoria";
+
+export function StatusEvento({ reviewed }) {
+  return (
+    <span
+      className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${reviewed ? "bg-emerald-100 text-emerald-800" : "bg-[#FBF4D5] text-[#725A13]"}`}
+    >
+      {reviewed ? "Revisado" : "A revisar"}
+    </span>
+  );
+}
 
 export default function CardEvento({ evento, aoRevisar, busy }) {
   const reviewed = evento.status === "Revisado";
+  const articleCount = evento.artigos.length;
   return (
-    <article className="min-w-0 rounded-xl border border-wisen-borda bg-white p-4 sm:p-5">
-      <div className="flex items-start gap-3">
-        <MiniaturaCuradoria
-          categoria={evento.categoria}
-          titulo={evento.titulo}
-          className="hidden size-12 shrink-0 sm:flex"
-        />
-        <div className="min-w-0 flex-1">
-          <div className="mb-2 flex flex-wrap items-center gap-2 text-xs">
-            <span
-              className={`rounded-full px-2.5 py-1 font-medium ${reviewed ? "bg-emerald-50 text-emerald-700" : "bg-wisen-admin-hover text-[#866D16]"}`}
-            >
-              {reviewed ? "Revisado" : "A revisar"}
-            </span>
-            <span className="text-[#7182A1]">
-              {evento.categoria} · {evento.artigos.length}{" "}
-              {evento.artigos.length === 1 ? "artigo" : "artigos"}
-            </span>
-          </div>
-          <h3 className="break-words text-base font-medium leading-6 text-wisen-titulo">
-            {evento.titulo}
-          </h3>
-          <p className="mt-1.5 line-clamp-2 break-words text-sm leading-6 text-[#7182A1]">
-            {evento.resumo ||
-              "Este acontecimento ainda não tem um resumo. Confira os artigos e complete as informações."}
-          </p>
+    <article className="grid min-w-0 items-center gap-x-5 gap-y-3 px-4 py-4 transition-colors hover:bg-[#FBF7E5] sm:px-5 @min-[38rem]/curadoria:grid-cols-[minmax(0,1fr)_auto]">
+      <div className="min-w-0">
+        <h3 className="text-sm font-semibold leading-6 break-words text-wisen-titulo">
+          {evento.titulo}
+        </h3>
+        <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-wisen-texto-suave">
+          <StatusEvento reviewed={reviewed} />
+          <span className="break-words">{evento.categoria}</span>
+          <span>
+            {articleCount} {articleCount === 1 ? "artigo" : "artigos"}
+          </span>
+          <span className="tabular-nums">{evento.data}</span>
         </div>
+        {evento.resumo && (
+          <p className="mt-2 line-clamp-2 text-sm leading-6 break-words text-wisen-texto-suave">
+            {evento.resumo}
+          </p>
+        )}
       </div>
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-[#E8EDF4] pt-3">
-        <span className="text-xs text-[#7182A1]">{evento.data}</span>
-        <Button
-          onClick={() => aoRevisar(evento)}
-          disabled={busy}
-          aria-label={`Revisar evento: ${evento.titulo}`}
-          variant="outline"
-          className="h-10 border-wisen-borda text-[#30466E] hover:bg-wisen-admin-hover"
-        >
-          {reviewed ? "Ver revisão" : "Revisar evento"}
-          <ArrowRight className="size-4" />
-        </Button>
-      </div>
+      <Button
+        onClick={() => aoRevisar(evento)}
+        disabled={busy}
+        aria-label={`${reviewed ? "Ver revisão de" : "Revisar evento:"} ${evento.titulo}`}
+        variant="outline"
+        size="sm"
+        className="justify-self-start border-wisen-borda text-xs text-wisen-texto-forte hover:bg-wisen-admin-hover"
+      >
+        {reviewed ? "Ver revisão" : "Revisar evento"}
+        <ArrowUpRight aria-hidden="true" className="size-3.5" />
+      </Button>
     </article>
   );
 }

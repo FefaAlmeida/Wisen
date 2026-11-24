@@ -9,6 +9,7 @@ import { Footer } from "@/components/footer";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
 import Sidebar from "@/components/sidebar";
 import { useDemoSavedConcepts } from "@/hooks/use-demo-saved-concepts";
+import { toast } from "@/lib/toast";
 import styles from "./newsDetail.module.css";
 
 const concepts = [
@@ -47,14 +48,13 @@ export default function NewsDetail({ reading = false }) {
   const savedConcepts = useDemoSavedConcepts();
   const [showSources, setShowSources] = useState(false);
   const [showTimeline, setShowTimeline] = useState(true);
-  const [shareFeedback, setShareFeedback] = useState("");
 
   async function handleShare() {
     try {
       await navigator.clipboard.writeText(window.location.href);
-      setShareFeedback("Link copiado!");
+      toast.success("Link copiado!");
     } catch {
-      setShareFeedback("Não foi possível copiar o link.");
+      toast.error("Não foi possível copiar o link.");
     }
   }
 
@@ -88,11 +88,6 @@ export default function NewsDetail({ reading = false }) {
               </button>
             </div>
           </nav>
-          {shareFeedback && (
-            <p role="status" className={styles.feedback}>
-              {shareFeedback}
-            </p>
-          )}
 
           <div className={styles.grid}>
             <article className={styles.article}>

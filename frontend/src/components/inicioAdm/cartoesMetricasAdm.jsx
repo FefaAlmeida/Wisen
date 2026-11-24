@@ -81,17 +81,15 @@ export function CartoesMetricasAdm({ counts } = {}) {
             key={item.titulo}
             className="min-w-0 rounded-2xl border border-[#EBDD80] bg-[#FBF7E5] p-5 shadow-xs"
           >
-            <div className="flex items-start justify-between gap-3 pb-3">
+            <div className="flex items-center gap-3 pb-3">
+              <Icone className="h-5 w-5 shrink-0 text-wisen-destaque" />
               <span className="min-w-0 break-words text-sm font-semibold text-[#526584]">
                 {item.titulo}
               </span>
-              <div className="shrink-0 rounded-xl bg-[#2B333F] p-2 text-[#EBDD80]">
-                <Icone className="h-5 w-5" />
-              </div>
             </div>
 
             <div className="flex flex-wrap items-baseline gap-2">
-              <span className="text-3xl font-semibold tabular-nums text-wisen-titulo">
+              <span className="text-3xl font-semibold tabular-nums text-[#30466E]">
                 {item.valor}
               </span>
               {item.variacao && (

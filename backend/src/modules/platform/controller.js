@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { transaction } from "../../database/index.js";
+import { ADMIN_ACTION_LOCK, transaction } from "../../database/index.js";
 import { enqueue } from "../../queue/index.js";
 import { MODEL_VERSION, QUEUES, SOURCES } from "../../shared.js";
 import { budgetService } from "../generation/budget.js";
@@ -288,8 +288,9 @@ export function platformController(app, pool, boss, config) {
     concepts:
       "SELECT c.*,COALESCE((SELECT jsonb_agg(alias) FROM concept_aliases WHERE concept_id=c.id),'[]') aliases FROM concepts c ORDER BY name LIMIT 100",
     entities: "SELECT * FROM entities ORDER BY name LIMIT 100",
-    users:
-      "SELECT id,name,email,role,active,email_verified_at,generation_limit,created_at FROM users ORDER BY created_at DESC LIMIT 100",
+    users: `SELECT id,name,email,role,active,email_verified_at,generation_limit,created_at,
+        avatar_data_url IS NOT NULL AS has_avatar
+      FROM users ORDER BY created_at DESC,id DESC`,
     tasks:
       "SELECT id,operation,status,error,created_at FROM generation_tasks ORDER BY created_at DESC LIMIT 100",
     charges:
@@ -301,6 +302,22 @@ export function platformController(app, pool, boss, config) {
     { ...admin, schema: { params: z.object({ resource: z.enum(Object.keys(lists)) }) } },
     async (req) => ({ items: (await pool.query(lists[req.params.resource])).rows }),
   );
+  app.get(
+    "/api/admin/users/:id/avatar",
+    { ...admin, schema: { params: z.object({ id }) } },
+    async (req, reply) => {
+      reply.header("Cache-Control", "no-store");
+      const { rows } = await pool.query("SELECT avatar_data_url FROM users WHERE id=$1", [
+        req.params.id,
+      ]);
+      const avatar = rows[0]?.avatar_data_url?.match(
+        /^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/]+={0,2})$/,
+      );
+      if (!avatar) return reply.code(404).send({ message: "Foto de perfil não encontrada" });
+      const [, contentType, base64] = avatar;
+      return reply.type(contentType).send(Buffer.from(base64, "base64"));
+    },
+  );
   const action = z.discriminatedUnion("action", [
     z.object({ action: z.literal("source"), id, enabled: z.boolean() }),
     z.object({ action: z.literal("collect"), id }),
@@ -311,6 +328,7 @@ export function platformController(app, pool, boss, config) {
       id,
       active: z.boolean(),
       generationLimit: z.number().int().min(1).max(10000),
+      role: z.literal("admin").optional(),
     }),
     z.object({
       action: z.literal("concept"),
@@ -348,8 +366,15 @@ export function platformController(app, pool, boss, config) {
   ]);
   app.post("/api/admin/actions", { ...admin, schema: { body: action } }, async (req) => {
     await transaction(pool, async (c) => {
-      await c.query("SELECT pg_advisory_xact_lock(891723)");
+      await c.query("SELECT pg_advisory_xact_lock($1)", [ADMIN_ACTION_LOCK]);
       const b = req.body;
+      if (b.action === "user") {
+        const actor = await c.query("SELECT 1 FROM users WHERE id=$1 AND role='admin' AND active", [
+          req.user.id,
+        ]);
+        if (!actor.rowCount)
+          throw Object.assign(new Error("Acesso administrativo necessário"), { statusCode: 403 });
+      }
       const table = {
         source: "sources",
         collect: "sources",
@@ -397,11 +422,10 @@ export function platformController(app, pool, boss, config) {
       if (b.action === "user") {
         if (b.id === req.user.id && !b.active)
           throw Object.assign(new Error("Não desative a própria conta"), { statusCode: 400 });
-        await c.query("UPDATE users SET active=$2,generation_limit=$3 WHERE id=$1", [
-          b.id,
-          b.active,
-          b.generationLimit,
-        ]);
+        await c.query(
+          "UPDATE users SET active=$2,generation_limit=$3,role=COALESCE($4,role) WHERE id=$1",
+          [b.id, b.active, b.generationLimit, b.role ?? null],
+        );
         if (!b.active) await c.query("DELETE FROM auth_sessions WHERE user_id=$1", [b.id]);
       }
       if (b.action === "concept") {

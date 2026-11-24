@@ -1,7 +1,8 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import FormularioAuth from "../../frontend/src/components/formularioAuth.jsx";
+import { renderWithToasts } from "./render-with-toasts";
 
 const mocks = vi.hoisted(() => ({ requisitar: vi.fn() }));
 vi.mock("@/services/api", () => ({ requisitar: mocks.requisitar }));
@@ -24,7 +25,7 @@ describe("autenticação unificada", () => {
   async function continueWithEmail(exists) {
     mocks.requisitar.mockResolvedValueOnce({ exists });
     const user = userEvent.setup();
-    render(<FormularioAuth glass />);
+    renderWithToasts(<FormularioAuth glass />);
     expect(screen.queryByLabelText("Senha")).not.toBeInTheDocument();
     await user.type(screen.getByLabelText("E-mail"), "Ana@Example.test");
     await user.click(screen.getByRole("button", { name: "Continuar" }));
@@ -123,7 +124,7 @@ describe("autenticação unificada", () => {
       }),
     );
     mocks.requisitar.mockResolvedValueOnce({ categories: [{ name: "Economia" }] });
-    render(<FormularioAuth glass initialOnboarding />);
+    renderWithToasts(<FormularioAuth glass initialOnboarding />);
     expect(
       await screen.findByRole("heading", { name: "Quais assuntos interessam a você?" }),
     ).toBeInTheDocument();
@@ -194,7 +195,7 @@ describe("autenticação unificada", () => {
 
   it("permite tentar novamente após falha e bloqueia envios simultâneos", async () => {
     const user = userEvent.setup();
-    render(<FormularioAuth />);
+    renderWithToasts(<FormularioAuth />);
     await user.type(screen.getByLabelText("E-mail"), "ana@example.test");
     let rejectRequest;
     mocks.requisitar.mockImplementationOnce(
@@ -235,7 +236,7 @@ describe("autenticação unificada", () => {
     const user = userEvent.setup();
     const token = "a".repeat(43);
     window.history.replaceState(null, "", `/auth?action=reset&token=${token}`);
-    render(<FormularioAuth glass initialAction="reset" resetToken={token} />);
+    renderWithToasts(<FormularioAuth glass initialAction="reset" resetToken={token} />);
     await user.type(screen.getByLabelText("Nova senha", { exact: true }), "senha-segura-nova");
     await user.type(screen.getByLabelText("Confirmar nova senha"), "senha-diferente");
     await user.click(screen.getByRole("button", { name: "Salvar nova senha" }));
@@ -256,7 +257,7 @@ describe("autenticação unificada", () => {
 
   it("permite solicitar outro link quando o token expirou", async () => {
     const user = userEvent.setup();
-    render(<FormularioAuth glass initialAction="reset" resetToken={"b".repeat(43)} />);
+    renderWithToasts(<FormularioAuth glass initialAction="reset" resetToken={"b".repeat(43)} />);
     await user.type(screen.getByLabelText("Nova senha", { exact: true }), "senha-segura-nova");
     await user.type(screen.getByLabelText("Confirmar nova senha"), "senha-segura-nova");
     mocks.requisitar.mockRejectedValueOnce(

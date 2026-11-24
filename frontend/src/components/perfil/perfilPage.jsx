@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AdminPageHeader } from "@/components/admin/adminPageHeader";
+import { AdminSummary } from "@/components/admin/adminSummary";
 import { AppTopBar } from "@/components/app/appTopBar";
 import { Footer } from "@/components/footer";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
@@ -12,6 +13,7 @@ import { ProfileHeader } from "@/components/perfil/profileHeader";
 import { SecurityCard } from "@/components/perfil/securityCard";
 import Sidebar from "@/components/sidebar";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/lib/toast";
 import { requisitar } from "@/services/api";
 
 export default function PerfilPage({ admin = false } = {}) {
@@ -30,9 +32,6 @@ export default function PerfilPage({ admin = false } = {}) {
   const [reload, setReload] = useState(0);
   const [saving, setSaving] = useState({});
   const inFlight = useRef(new Set());
-  const [feedback, setFeedback] = useState(null);
-  const [interestsFeedback, setInterestsFeedback] = useState(null);
-  const [notificationsFeedback, setNotificationsFeedback] = useState(null);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: reload é o gatilho explícito de retentativa do carregamento.
   useEffect(() => {
@@ -73,11 +72,10 @@ export default function PerfilPage({ admin = false } = {}) {
     return () => controller.abort();
   }, [reload]);
 
-  async function persistProfile(block, body, successMessage, setResult) {
+  async function persistProfile(block, body, successMessage) {
     if (loading || loadError || inFlight.current.has(block)) return;
     inFlight.current.add(block);
     setSaving((current) => ({ ...current, [block]: true }));
-    setResult(null);
     try {
       const data = await requisitar("/auth/profile", { method: "PUT", body });
       if (block === "personal") {
@@ -85,9 +83,9 @@ export default function PerfilPage({ admin = false } = {}) {
       }
       if (block === "interests") setSavedInterests(body.interests);
       if (block === "notifications") setSavedNotifications(body.notifications);
-      setResult({ type: "success", text: successMessage });
+      toast.success(successMessage);
     } catch (error) {
-      setResult({ type: "error", text: error.message || "Erro ao atualizar o perfil." });
+      toast.error(error.message || "Erro ao atualizar o perfil.");
     } finally {
       inFlight.current.delete(block);
       setSaving((current) => ({ ...current, [block]: false }));
@@ -100,7 +98,6 @@ export default function PerfilPage({ admin = false } = {}) {
       "personal",
       { name: profile.name, email: profile.email },
       "Perfil atualizado com sucesso!",
-      setFeedback,
     );
   }
 
@@ -109,7 +106,6 @@ export default function PerfilPage({ admin = false } = {}) {
       "interests",
       { interests: profile.interests },
       "Assuntos de interesse salvos.",
-      setInterestsFeedback,
     );
   }
 
@@ -118,7 +114,6 @@ export default function PerfilPage({ admin = false } = {}) {
       "notifications",
       { notifications: profile.notifications },
       "Notificações salvas.",
-      setNotificationsFeedback,
     );
   }
 
@@ -126,11 +121,10 @@ export default function PerfilPage({ admin = false } = {}) {
     if (loading || loadError || inFlight.current.has("avatar")) return;
     inFlight.current.add("avatar");
     setSaving((current) => ({ ...current, avatar: true }));
-    setFeedback(null);
     try {
       const data = await requisitar("/auth/avatar", { method: "PUT", body: { avatarDataUrl } });
       setProfile((current) => ({ ...current, avatarDataUrl: data.avatarDataUrl }));
-      setFeedback({ type: "success", text: "Foto de perfil atualizada." });
+      toast.success("Foto de perfil atualizada.");
     } finally {
       inFlight.current.delete("avatar");
       setSaving((current) => ({ ...current, avatar: false }));
@@ -144,7 +138,6 @@ export default function PerfilPage({ admin = false } = {}) {
         ? current.interests.filter((item) => item !== interest)
         : [...current.interests, interest],
     }));
-    setInterestsFeedback(null);
   }
 
   const interestsChanged =
@@ -159,17 +152,18 @@ export default function PerfilPage({ admin = false } = {}) {
       ...current,
       notifications: { ...current.notifications, [name]: checked },
     }));
-    setNotificationsFeedback(null);
   }
 
   const profileContent = (
     <div className="wisen-container space-y-7 pt-7 pb-12">
       {admin ? (
-        <AdminPageHeader
-          title="Meu"
-          highlight="perfil."
-          description="Gerencie suas informações, preferências e configurações da conta."
-        />
+        <>
+          <AdminPageHeader title="Meu" highlight="perfil." />
+          <AdminSummary
+            title="Configurações da conta"
+            description="Atualize seu nome, e-mail e foto, altere a senha e escolha seus assuntos de interesse e as notificações que deseja receber."
+          />
+        </>
       ) : (
         <ProfileHeader />
       )}
@@ -201,9 +195,8 @@ export default function PerfilPage({ admin = false } = {}) {
           onSubmit={saveProfile}
           loading={loading || Boolean(loadError)}
           saving={Boolean(saving.personal || saving.avatar)}
-          feedback={feedback}
         />
-        <SecurityCard showDeleteAccount={!admin} />
+        <SecurityCard admin={admin} showDeleteAccount={!admin} />
         <InterestsCard
           categories={interestCategories}
           interests={profile.interests}
@@ -212,7 +205,6 @@ export default function PerfilPage({ admin = false } = {}) {
           saving={Boolean(saving.interests || loading || loadError)}
           minimumSelections={3}
           hasChanges={interestsChanged}
-          feedback={interestsFeedback}
           selectionTiles
           systemColors
         />
@@ -222,7 +214,6 @@ export default function PerfilPage({ admin = false } = {}) {
           onSave={saveNotifications}
           saving={Boolean(saving.notifications || loading || loadError)}
           hasChanges={notificationsChanged}
-          feedback={notificationsFeedback}
         />
       </div>
     </div>

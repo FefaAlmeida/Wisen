@@ -276,6 +276,50 @@ test("admin fica na administração e pode sair em desktop e celular", async ({ 
   }
 });
 
+test("gestão de usuários mostra o cadastro e a foto de perfil salvos", async ({ page }) => {
+  const email = `admin-avatar-${Date.now()}@example.test`;
+  const password = "senha-admin-avatar-123";
+  const registered = await page.request.post("/api/auth/register", {
+    data: { name: "Pessoa com Foto", email, password },
+  });
+  expect(registered.status()).toBe(201);
+  const { user } = await registered.json();
+  const avatarUrl = `/api/admin/users/${user.id}/avatar`;
+  const photo =
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jP1sAAAAASUVORK5CYII=";
+  const uploaded = await page.request.put("/api/auth/avatar", {
+    data: { avatarDataUrl: photo },
+  });
+  expect(uploaded.status()).toBe(200);
+  expect((await page.request.get("/api/admin/users")).status()).toBe(403);
+  expect((await page.request.get(avatarUrl)).status()).toBe(403);
+
+  const pool = createPool(process.env.DATABASE_URL);
+  try {
+    await pool.query("UPDATE users SET role='admin' WHERE id=$1", [user.id]);
+  } finally {
+    await pool.end();
+  }
+  await page.route("**/api/account/status", (route) =>
+    route.fulfill({ json: { aiProvider: "mock" } }),
+  );
+  await page.goto("/paginaGestaoUsuariosAdm");
+  await page.getByRole("textbox", { name: "Buscar usuários por nome ou e-mail" }).fill(email);
+  const account = page.getByRole("row").filter({ hasText: email });
+  await expect(account).toContainText("Pessoa com Foto");
+  const avatar = account.locator("img");
+  await expect(avatar).toBeVisible();
+  await expect(avatar).toHaveAttribute("src", avatarUrl);
+  await expect.poll(() => avatar.evaluate((image) => image.naturalWidth)).toBe(1);
+
+  const removed = await page.request.put("/api/auth/avatar", { data: { avatarDataUrl: null } });
+  expect(removed.status()).toBe(200);
+  expect((await page.request.get(avatarUrl)).status()).toBe(404);
+  await page.reload();
+  await page.getByRole("textbox", { name: "Buscar usuários por nome ou e-mail" }).fill(email);
+  await expect(account.getByText("PC", { exact: true })).toBeVisible();
+});
+
 test("onboarding no celular exige três interesses e uma opção de familiaridade", async ({
   page,
 }) => {

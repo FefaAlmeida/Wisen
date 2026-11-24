@@ -56,6 +56,34 @@ after(async () => {
   await pool.end();
 });
 
+test("gestão lista todos os cadastros, incluindo contas antigas e bloqueadas", async () => {
+  const admin = await register();
+  await pool.query("UPDATE users SET role='admin' WHERE id=$1", [admin.body.user.id]);
+  const older = await register();
+  await pool.query("UPDATE users SET active=false,created_at='2000-01-01' WHERE id=$1", [
+    older.body.user.id,
+  ]);
+  const prefix = randomUUID();
+  await pool.query(
+    `INSERT INTO users(name,email)
+     SELECT 'Conta de teste', $1 || '-' || number || '@example.test'
+     FROM generate_series(1, 100) AS number`,
+    [prefix],
+  );
+
+  const response = await app.inject({
+    url: "/api/admin/users",
+    headers: { cookie: admin.cookie },
+  });
+  assert.equal(response.statusCode, 200, response.body);
+  const { items } = response.json();
+  assert.equal(items.filter((account) => account.email.startsWith(prefix)).length, 100);
+  const listed = items.find((account) => account.id === older.body.user.id);
+  assert.ok(listed, "a conta antiga deve aparecer na lista");
+  assert.equal(listed.active, false);
+  assert.equal(listed.email_verified_at, null);
+});
+
 test("health, validação e proteção da sessão respondem corretamente", async () => {
   const health = await app.inject({ method: "GET", url: "/api/health" });
   assert.equal(health.statusCode, 200);

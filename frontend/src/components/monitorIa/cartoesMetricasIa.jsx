@@ -1,132 +1,103 @@
-import { Cloud, FileText, Laptop, Wallet } from "lucide-react";
+import cards from "@/components/meuConhecimento/constancia.module.css";
+
+function CartaoMetrica({ titulo, children, detalhe }) {
+  return (
+    <div className={cards.card}>
+      <header className={cards.heading}>
+        <h2>{titulo}</h2>
+      </header>
+      <div className={cards.body}>{children}</div>
+      <div className={cards.support}>{detalhe}</div>
+      <div className={cards.bottomRule} aria-hidden="true" />
+    </div>
+  );
+}
+
+function LinhaTendencia({ caminho, cor }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className="block h-8 w-full"
+      viewBox="0 0 100 20"
+      preserveAspectRatio="none"
+    >
+      <path
+        d={caminho}
+        fill="none"
+        stroke={cor}
+        strokeWidth="2"
+        vectorEffect="non-scaling-stroke"
+      />
+    </svg>
+  );
+}
 
 export function CartoesMetricasIa() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-      {/* Cartão 1: Orçamento Mensal */}
-      <div className="flex flex-col justify-between space-y-4 rounded-2xl border border-wisen-borda bg-white p-5 shadow-2xs">
-        <div className="flex items-center gap-2.5">
-          <div className="rounded-lg bg-slate-100 p-2 text-[#2B333F]">
-            <Wallet className="h-5 w-5" />
-          </div>
-          <span className="text-sm font-semibold text-slate-600">Orçamento mensal</span>
-        </div>
-
-        <div className="space-y-2">
-          <div className="flex items-baseline justify-between">
-            <div>
-              <span className="text-3xl font-bold text-[#2B333F]">R$ 68,40</span>
-              <span className="ml-1.5 text-sm font-medium text-slate-500">de R$ 100,00</span>
+    <section className={`grid ${cards.group}`} aria-label="Resumo de uso de IA">
+      <CartaoMetrica
+        titulo="Orçamento mensal"
+        detalhe={
+          <div className="grid gap-2">
+            <div className={cards.masteredProgress}>
+              <div
+                className={cards.progress}
+                role="progressbar"
+                aria-label="Orçamento mensal utilizado"
+                aria-valuenow={68}
+              >
+                <span style={{ width: "68%", backgroundColor: "#d4ad2b" }} />
+              </div>
+              <span className={cards.masteredPercent}>68%</span>
             </div>
-            <span className="text-sm font-semibold text-[#2B333F]">68%</span>
+            <p className="text-xs text-wisen-texto-suave">R$ 31,60 restantes até o limite mensal</p>
           </div>
-
-          {/* Barra de Progresso */}
-          <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-            <div
-              className="h-full rounded-full bg-[#EBDD80] transition-all duration-300"
-              style={{ width: "68%" }}
-            />
-          </div>
+        }
+      >
+        <div className="grid gap-1">
+          <strong className="text-[clamp(1.5rem,16cqi,2.75rem)] leading-none font-[650] tracking-[-0.04em] whitespace-nowrap">
+            R$ 68,40
+          </strong>
+          <span className="text-xs text-wisen-texto-suave">de R$ 100,00</span>
         </div>
+      </CartaoMetrica>
 
-        <p className="text-xs font-medium text-slate-500">R$ 31,60 restantes até o limite mensal</p>
-      </div>
-
-      {/* Cartão 2: Requisições Totais */}
-      <div className="flex flex-col justify-between space-y-3 rounded-2xl border border-wisen-borda bg-white p-5 shadow-2xs">
-        <div className="flex items-center gap-2.5">
-          <div className="rounded-lg bg-slate-100 p-2 text-[#2B333F]">
-            <FileText className="h-5 w-5" />
-          </div>
-          <span className="text-sm font-semibold text-slate-600">Requisições totais</span>
-        </div>
-
-        <div className="space-y-1">
-          <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-bold text-[#2B333F]">1.248</span>
-            <span className="rounded-full bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-600">
-              +12%
+      <CartaoMetrica
+        titulo="Requisições totais"
+        detalhe={<LinhaTendencia caminho="M 0 15 Q 25 18, 50 10 T 100 5" cor="#94a3b8" />}
+      >
+        <div>
+          <div className={`${cards.value} flex-wrap`}>
+            <strong>1.248</strong>
+            <span className="rounded-full bg-emerald-50 px-2 py-1">
+              <b className="font-semibold text-emerald-700">+12%</b>
             </span>
           </div>
-          <p className="text-xs text-slate-500">em relação ao mês anterior</p>
+          <p className="mt-1 text-xs text-wisen-texto-suave">em relação ao mês anterior</p>
         </div>
+      </CartaoMetrica>
 
-        {/* Sparkline SVG */}
-        <div className="h-6 w-full pt-1">
-          <svg
-            aria-hidden="true"
-            className="w-full h-full"
-            viewBox="0 0 100 20"
-            preserveAspectRatio="none"
-          >
-            <path d="M 0 15 Q 25 18, 50 10 T 100 5" fill="none" stroke="#94A3B8" strokeWidth="2" />
-          </svg>
+      <CartaoMetrica
+        titulo="Processamentos locais"
+        detalhe={
+          <LinhaTendencia caminho="M 0 16 Q 20 12, 40 14 T 80 6 T 100 8" cor="currentColor" />
+        }
+      >
+        <div className={cards.value}>
+          <strong>892</strong>
+          <span>72% do total</span>
         </div>
-      </div>
+      </CartaoMetrica>
 
-      {/* Cartão 3: Processamentos Locais */}
-      <div className="flex flex-col justify-between space-y-3 rounded-2xl border border-wisen-borda bg-white p-5 shadow-2xs">
-        <div className="flex items-center gap-2.5">
-          <div className="rounded-lg bg-slate-100 p-2 text-[#2B333F]">
-            <Laptop className="h-5 w-5" />
-          </div>
-          <span className="text-sm font-semibold text-slate-600">Processamentos locais</span>
+      <CartaoMetrica
+        titulo="Chamadas a APIs externas"
+        detalhe={<LinhaTendencia caminho="M 0 18 Q 30 15, 60 8 T 100 3" cor="#d4ad2b" />}
+      >
+        <div className={cards.value}>
+          <strong>356</strong>
+          <span>28% do total</span>
         </div>
-
-        <div className="space-y-1">
-          <span className="text-3xl font-bold text-[#2B333F]">892</span>
-          <p className="text-xs text-slate-500">
-            <strong className="text-slate-600">72%</strong> do total
-          </p>
-        </div>
-
-        {/* Sparkline SVG Azul */}
-        <div className="h-6 w-full pt-1">
-          <svg
-            aria-hidden="true"
-            className="w-full h-full"
-            viewBox="0 0 100 20"
-            preserveAspectRatio="none"
-          >
-            <path
-              d="M 0 16 Q 20 12, 40 14 T 80 6 T 100 8"
-              fill="none"
-              stroke="#2B333F"
-              strokeWidth="2"
-            />
-          </svg>
-        </div>
-      </div>
-
-      {/* Cartão 4: Chamadas a APIs Externas */}
-      <div className="flex flex-col justify-between space-y-3 rounded-2xl border border-wisen-borda bg-white p-5 shadow-2xs">
-        <div className="flex items-center gap-2.5">
-          <div className="rounded-lg bg-slate-100 p-2 text-[#2B333F]">
-            <Cloud className="h-5 w-5" />
-          </div>
-          <span className="text-sm font-semibold text-slate-600">Chamadas a APIs externas</span>
-        </div>
-
-        <div className="space-y-1">
-          <span className="text-3xl font-bold text-[#2B333F]">356</span>
-          <p className="text-xs text-slate-500">
-            <strong className="text-slate-600">28%</strong> do total
-          </p>
-        </div>
-
-        {/* Sparkline SVG Amarelo */}
-        <div className="h-6 w-full pt-1">
-          <svg
-            aria-hidden="true"
-            className="w-full h-full"
-            viewBox="0 0 100 20"
-            preserveAspectRatio="none"
-          >
-            <path d="M 0 18 Q 30 15, 60 8 T 100 3" fill="none" stroke="#EBDD80" strokeWidth="2.5" />
-          </svg>
-        </div>
-      </div>
-    </div>
+      </CartaoMetrica>
+    </section>
   );
 }

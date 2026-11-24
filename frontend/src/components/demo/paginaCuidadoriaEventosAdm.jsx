@@ -5,11 +5,7 @@ import CuradoriaEventos from "@/components/cuidadoriaEventosAdm/cuidadoriaEvento
 export default function PaginaCuradoriaEventos({ demo = true }) {
   return (
     <AdminLayout activeItem="Revisão de eventos">
-      <AdminPage
-        title="Revisão de"
-        highlight="eventos."
-        description="Confira os acontecimentos identificados pela IA e organize os artigos que pertencem a cada um."
-      >
+      <AdminPage title="Revisão de" highlight="eventos.">
         <CuradoriaEventos demo={demo} />
       </AdminPage>
     </AdminLayout>

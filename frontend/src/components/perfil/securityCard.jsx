@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronRight, Eye, EyeOff, Lock, LogOut, ShieldCheck, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast } from "@/lib/toast";
 import { requisitar } from "@/services/api";
 import styles from "../authForm.module.css";
 import { ProfileSection, profileInputIcon } from "./profileSection";
@@ -23,26 +24,39 @@ const securityAction =
   "group flex w-full items-center justify-between gap-3 rounded-xl border p-3 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-50";
 const defaultSecurityAction = `${securityAction} border-wisen-borda/70 hover:bg-wisen-superficie focus-visible:outline-wisen-titulo`;
 
-export function SecurityCard({ showDeleteAccount = false }) {
+export function SecurityCard({ admin = false, showDeleteAccount = false }) {
   const [signingOut, setSigningOut] = useState(false);
-  const [logoutError, setLogoutError] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [visiblePassword, setVisiblePassword] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [feedback, setFeedback] = useState(null);
+  const [validationError, setValidationError] = useState("");
+  const [canDeleteAccount, setCanDeleteAccount] = useState(null);
+
+  useEffect(() => {
+    if (!admin) return;
+    const controller = new AbortController();
+    requisitar("/account/status", { signal: controller.signal })
+      .then(({ user }) => {
+        if (!controller.signal.aborted) setCanDeleteAccount(user.can_delete_account);
+      })
+      .catch(() => {
+        if (!controller.signal.aborted)
+          toast.error("Não foi possível verificar se a conta pode ser excluída.");
+      });
+    return () => controller.abort();
+  }, [admin]);
 
   async function signOut() {
     if (signingOut) return;
     setSigningOut(true);
-    setLogoutError("");
     try {
       await requisitar("/auth/logout", { method: "POST" });
       window.location.assign("/auth");
     } catch {
-      setLogoutError("Não foi possível encerrar a sessão. Tente novamente.");
+      toast.error("Não foi possível encerrar a sessão. Tente novamente.");
       setSigningOut(false);
     }
   }
@@ -59,9 +73,9 @@ export function SecurityCard({ showDeleteAccount = false }) {
 
   async function changePassword(event) {
     event.preventDefault();
-    setFeedback(null);
+    setValidationError("");
     if (newPassword !== confirmPassword) {
-      setFeedback({ type: "error", text: "A confirmação não corresponde à nova senha." });
+      setValidationError("A confirmação não corresponde à nova senha.");
       return;
     }
 
@@ -85,10 +99,10 @@ export function SecurityCard({ showDeleteAccount = false }) {
           : data.message || data.error || `Erro HTTP ${response.status}`;
         throw new Error(message);
       }
-      setFeedback({ type: "success", text: data.message || "Senha alterada com sucesso." });
+      toast.success(data.message || "Senha alterada com sucesso.");
       handleDialogChange(false);
     } catch (error) {
-      setFeedback({ type: "error", text: error.message || "Não foi possível alterar a senha." });
+      toast.error(error.message || "Não foi possível alterar a senha.");
     } finally {
       setSaving(false);
     }
@@ -105,7 +119,7 @@ export function SecurityCard({ showDeleteAccount = false }) {
         <button
           type="button"
           onClick={() => {
-            setFeedback(null);
+            setValidationError("");
             setDialogOpen(true);
           }}
           aria-haspopup="dialog"
@@ -121,12 +135,6 @@ export function SecurityCard({ showDeleteAccount = false }) {
           </div>
           <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#2B333F] transition-colors" />
         </button>
-
-        {feedback?.type === "success" && (
-          <p role="status" className="text-xs text-green-700">
-            {feedback.text}
-          </p>
-        )}
 
         {/* Opção 2 */}
         <button
@@ -145,13 +153,13 @@ export function SecurityCard({ showDeleteAccount = false }) {
           </div>
           <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#2B333F] transition-colors" />
         </button>
-        {logoutError && (
-          <p role="alert" className="text-xs text-red-600">
-            {logoutError}
+
+        {admin && canDeleteAccount === false && (
+          <p className="text-sm text-wisen-texto-suave">
+            Para excluir sua conta, é preciso ter outro administrador ativo.
           </p>
         )}
-
-        {showDeleteAccount && (
+        {(admin ? canDeleteAccount === true : showDeleteAccount) && (
           <button
             type="button"
             onClick={() => window.location.assign("/conta?action=delete")}
@@ -174,7 +182,11 @@ export function SecurityCard({ showDeleteAccount = false }) {
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={handleDialogChange}>
-        <DialogContent className={styles.authDialog} size="sm">
+        <DialogContent
+          className={styles.authDialog}
+          size="sm"
+          data-wisen-area={admin ? "admin" : undefined}
+        >
           <DialogHeader eyebrow={null} className="pr-14 pb-1">
             <DialogTitle>Alterar senha</DialogTitle>
             <DialogDescription>
@@ -235,9 +247,9 @@ export function SecurityCard({ showDeleteAccount = false }) {
                 );
               })}
 
-              {feedback?.type === "error" && (
+              {validationError && (
                 <p role="alert" className="rounded-md bg-red-950/55 px-3 py-2 text-sm text-red-200">
-                  {feedback.text}
+                  {validationError}
                 </p>
               )}
             </DialogBody>

@@ -5,11 +5,7 @@ import GestaoFontes from "@/components/gestaoFontesAdm/gestaoFontes";
 export default function PaginaFontes({ demo = true }) {
   return (
     <AdminLayout activeItem="Gestão de fontes">
-      <AdminPage
-        title="Gestão de"
-        highlight="fontes."
-        description="Cadastre e monitore os veículos integrados à plataforma."
-      >
+      <AdminPage title="Gestão de" highlight="fontes.">
         <GestaoFontes demo={demo} />
       </AdminPage>
     </AdminLayout>

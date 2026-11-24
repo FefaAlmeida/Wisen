@@ -1,17 +1,35 @@
 ﻿"use client";
 
-import { History, Plus, Search, X } from "lucide-react";
+import { History, Plus, Rss, Search, X } from "lucide-react";
 import { useState } from "react";
 import { AdminSummary } from "@/components/admin/adminSummary";
+import {
+  AdminTableFilter,
+  adminFilterControl,
+  adminFilterHover,
+} from "@/components/admin/adminTableFilter";
+import { AdminTableFooter } from "@/components/admin/adminTableFooter";
 import { Notice } from "@/components/app/feedback";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { segmentCountStyle } from "@/components/ui/segmented-control";
+import { SegmentedTab, Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import { useAdminSources } from "@/hooks/use-admin-sources";
+import { toast } from "@/lib/toast";
 import FormularioFonte, { frequenciasFonte } from "./formularioFonte";
 import LogsColeta from "./logsColeta";
 import TabelaFontes from "./tabelaFontes";
 
-const control = "wisen-control w-full min-w-0";
+const pageSize = 10;
+const statusOptions = { todos: "Todos os status", ativas: "Ativas", pausadas: "Pausadas" };
+const frequencyOptions = {
+  todas: "Todas as frequências",
+  ...Object.fromEntries(frequenciasFonte.map((item) => [item, item])),
+};
+const automaticFrequencyOptions = {
+  todas: "Todas as frequências",
+  Automática: "Automática",
+};
 const normalize = (value) =>
   value
     .normalize("NFD")
@@ -22,20 +40,21 @@ export default function GestaoFontes({ demo = true }) {
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("todos");
   const [frequency, setFrequency] = useState("todas");
+  const [page, setPage] = useState(1);
   const [opened, setOpened] = useState(false);
   const [editing, setEditing] = useState(null);
-  const [logsOpen, setLogsOpen] = useState(false);
-  const [message, setMessage] = useState("");
   const filtered = sources.filter(
     (source) =>
       normalize(`${source.nome} ${source.url}`).includes(normalize(query)) &&
       (status === "todos" || (status === "ativas" ? source.ativo : !source.ativo)) &&
       (frequency === "todas" || source.frequencia === frequency),
   );
+  const pages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const currentPage = Math.min(page, pages);
+  const start = (currentPage - 1) * pageSize;
   function edit(source) {
     setEditing(source);
     setOpened(true);
-    setMessage("");
   }
   function close() {
     if (!busy) {
@@ -47,26 +66,26 @@ export default function GestaoFontes({ demo = true }) {
     setQuery("");
     setStatus("todos");
     setFrequency("todas");
+    setPage(1);
   }
   async function save(values) {
     if (await perform("save", { ...values, id: editing?.id })) {
-      setMessage(editing ? "Configurações da fonte salvas." : "Fonte adicionada.");
+      toast.success(editing ? "Configurações da fonte salvas." : "Fonte adicionada.");
       close();
     }
   }
   async function toggle(source) {
     if (await perform("toggle", source))
-      setMessage(source.ativo ? "Fonte pausada." : "Fonte ativada.");
+      toast.success(source.ativo ? "Fonte pausada." : "Fonte ativada.");
   }
   async function collect(source) {
     if (await perform("collect", source)) {
-      setMessage("Coleta solicitada. Confira o resultado após o processamento.");
+      toast.success("Coleta solicitada. Confira o resultado após o processamento.");
       close();
     }
   }
   return (
     <div className="min-w-0 space-y-7">
-      {message && <Notice>{message}</Notice>}
       {error && !opened && (
         <Notice tone="error">
           <p>{error}</p>
@@ -77,112 +96,125 @@ export default function GestaoFontes({ demo = true }) {
       )}
       <AdminSummary
         title="Fontes cadastradas"
-        description="Consulte os veículos integrados e acompanhe a coleta de notícias da plataforma."
+        description={
+          demo
+            ? "Adicione fontes de notícias, ajuste a frequência de coleta e ative ou pause fontes. Abra Registros de coleta para consultar erros e avisos da demonstração."
+            : "Veja a última coleta de cada fonte, ative ou pause as coletas e solicite uma coleta manual nas configurações da fonte. Abra Registros de coleta para consultar falhas."
+        }
         loading={loading}
+        itemColors="border-transparent bg-[#FBF7E5]"
         items={[
           `${sources.length} fontes`,
           `${sources.filter((source) => source.ativo).length} ativas`,
           `${sources.filter((source) => !source.ativo).length} pausadas`,
         ]}
       />
-      <div className="min-w-0 space-y-3">
-        <div className="flex min-w-0 flex-wrap items-center gap-2">
-          <div className="relative min-w-0 w-full sm:w-[230px]">
-            <Search
-              aria-hidden="true"
-              className="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-[#8190A8]"
-            />
-            <Input
-              aria-label="Buscar fontes por nome ou endereço"
-              placeholder="Buscar nome ou endereço"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              className={`${control} pl-9`}
-            />
-          </div>
-          <select
-            aria-label="Filtrar fontes por status"
-            className={`${control} sm:w-[165px]`}
-            value={status}
-            onChange={(event) => setStatus(event.target.value)}
-          >
-            <option value="todos">Todos os status</option>
-            <option value="ativas">Ativas</option>
-            <option value="pausadas">Pausadas</option>
-          </select>
-          <select
-            aria-label="Filtrar fontes por frequência"
-            className={`${control} sm:w-[185px]`}
-            value={frequency}
-            onChange={(event) => setFrequency(event.target.value)}
-          >
-            <option value="todas">Todas as frequências</option>
-            {(demo ? frequenciasFonte : ["Automática"]).map((item) => (
-              <option key={item}>{item}</option>
-            ))}
-          </select>
-          <Button
-            variant="outline"
-            onClick={clear}
-            className="h-9 w-full gap-1.5 rounded-[10px] border-wisen-borda bg-white/85 px-3 text-xs font-normal text-[#607092] shadow-none hover:bg-wisen-admin-hover sm:w-auto"
-          >
-            <X aria-hidden="true" className="size-3.5" />
-            Limpar filtros
-          </Button>
+      <Tabs defaultValue="fontes" className="w-full gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <TabsList aria-label="Gestão de fontes">
+            <SegmentedTab value="fontes">
+              <Rss aria-hidden="true" className="size-[18px]" />
+              Fontes cadastradas{" "}
+              {!loading && <span className={segmentCountStyle}>{sources.length}</span>}
+            </SegmentedTab>
+            <SegmentedTab value="registros">
+              <History aria-hidden="true" className="size-[18px]" />
+              Registros de coleta{" "}
+              {!loading && <span className={segmentCountStyle}>{logs.length}</span>}
+            </SegmentedTab>
+          </TabsList>
           {demo && (
             <Button
+              aria-haspopup="dialog"
               onClick={() => edit(null)}
               disabled={loading || busy}
-              className="h-9 w-full gap-1.5 rounded-[10px] bg-[#101A40] px-3 text-xs font-medium text-white hover:bg-[#30466E] sm:ml-auto sm:w-auto"
+              className="h-11 w-full gap-2.5 rounded-xl bg-[#101A40] px-2.5 text-xs font-semibold text-white shadow-2xs hover:bg-[#30466E] sm:w-auto"
             >
-              <Plus aria-hidden="true" className="size-3.5" />
+              <Plus aria-hidden="true" className="size-4" />
               Adicionar fonte
             </Button>
           )}
         </div>
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="text-xs text-[#8290A8]">
-            {loading
-              ? "Carregando fontes..."
-              : `${filtered.length} ${filtered.length === 1 ? "fonte encontrada" : "fontes encontradas"}`}
-          </p>
-          <Button
-            variant="outline"
-            disabled={loading}
-            onClick={() => setLogsOpen(true)}
-            className="h-9 gap-1.5 rounded-[10px] border-wisen-borda bg-white/85 px-3 text-xs font-normal text-[#607092] shadow-none hover:bg-wisen-admin-hover"
+        <TabsContent value="fontes" className="min-w-0">
+          <section
+            aria-label="Gestão de fontes RSS"
+            className="min-w-0 overflow-hidden rounded-2xl border border-wisen-borda bg-white shadow-2xs"
           >
-            <History aria-hidden="true" className="size-3.5" />
-            Registros de coleta
-          </Button>
-        </div>
-      </div>
-      <section
-        aria-label="Gestão de fontes RSS"
-        className="min-w-0 overflow-hidden rounded-2xl border border-wisen-borda bg-white shadow-2xs"
-      >
-        {loading ? (
-          <p role="status" className="p-8 text-center text-sm text-[#7182A1]">
-            Carregando fontes...
-          </p>
-        ) : (
-          <TabelaFontes fontes={filtered} aoEditar={edit} aoAlternarStatus={toggle} busy={busy} />
-        )}
-        <footer className="border-t border-[#E8EDF4] bg-[#FAFBFD] px-4 py-4 sm:px-5">
-          <p className="text-xs text-[#7182A1]">
-            {filtered.length
-              ? `Mostrando ${filtered.length} de ${sources.length} fontes`
-              : "Nenhuma fonte nesta lista"}
-          </p>
-        </footer>
-      </section>
-      {demo && (
-        <p className="text-xs leading-5 text-[#7182A1]">
-          Fontes e registros ilustrativos de demonstração. As configurações ficam salvas neste
-          navegador.
-        </p>
-      )}
-      <LogsColeta aberto={logsOpen} aoFechar={() => setLogsOpen(false)} logs={logs} demo={demo} />
+            <div className="flex min-w-0 flex-wrap items-center gap-2 px-4 py-4 sm:px-5">
+              <div className="relative min-w-0 w-full sm:w-[230px]">
+                <Search
+                  aria-hidden="true"
+                  className="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-[#8190A8]"
+                />
+                <Input
+                  aria-label="Buscar fontes por nome ou endereço"
+                  placeholder="Buscar nome ou endereço"
+                  value={query}
+                  onChange={(event) => {
+                    setQuery(event.target.value);
+                    setPage(1);
+                  }}
+                  className={`${adminFilterControl} pl-9`}
+                />
+              </div>
+              <AdminTableFilter
+                label="Filtrar fontes por status"
+                options={statusOptions}
+                width="sm:w-[165px]"
+                value={status}
+                onChange={(value) => {
+                  setStatus(value);
+                  setPage(1);
+                }}
+              />
+              <AdminTableFilter
+                label="Filtrar fontes por frequência"
+                options={demo ? frequencyOptions : automaticFrequencyOptions}
+                width="sm:w-[185px]"
+                value={frequency}
+                onChange={(value) => {
+                  setFrequency(value);
+                  setPage(1);
+                }}
+              />
+              <Button
+                variant="outline"
+                onClick={clear}
+                className={`h-9 w-full gap-1.5 rounded-[10px] border-wisen-borda bg-white/85 px-3 text-xs font-normal text-[#607092] shadow-none sm:w-auto ${adminFilterHover}`}
+              >
+                <X aria-hidden="true" className="size-3.5" />
+                Limpar filtros
+              </Button>
+            </div>
+            {loading ? (
+              <p
+                role="status"
+                className="border-t border-[#E8EDF4] p-8 text-center text-sm text-[#7182A1]"
+              >
+                Carregando fontes...
+              </p>
+            ) : (
+              <TabelaFontes
+                fontes={filtered.slice(start, start + pageSize)}
+                aoEditar={edit}
+                aoAlternarStatus={toggle}
+                busy={busy}
+              />
+            )}
+            <AdminTableFooter
+              countLabel={`${filtered.length} ${filtered.length === 1 ? "fonte encontrada" : "fontes encontradas"}`}
+              paginationLabel="Paginação de fontes"
+              loading={loading}
+              page={currentPage}
+              pages={pages}
+              onPageChange={setPage}
+            />
+          </section>
+        </TabsContent>
+        <TabsContent value="registros" className="min-w-0">
+          <LogsColeta logs={logs} demo={demo} loading={loading} error={error} />
+        </TabsContent>
+      </Tabs>
       <FormularioFonte
         aberto={opened}
         aoFechar={close}
@@ -190,7 +222,6 @@ export default function GestaoFontes({ demo = true }) {
         aoSalvar={save}
         aoColetar={collect}
         busy={busy}
-        error={error}
         demo={demo}
       />
     </div>

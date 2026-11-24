@@ -1,8 +1,9 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import PaginaExplorar from "../../frontend/src/components/demo/paginaExplorar";
 import HomeFeed from "../../frontend/src/components/platform/homeFeed";
+import { renderWithToasts } from "./render-with-toasts";
 
 vi.mock("@/components/app/appTopBar", () => ({ AppTopBar: () => null }));
 vi.mock("@/components/sidebar", () => ({ default: () => null }));
@@ -54,7 +55,7 @@ describe.each([
 
   it("abre pelo título e registra desinteresse, atualizando o feed", async () => {
     const user = userEvent.setup();
-    render(<Feed />);
+    renderWithToasts(<Feed />);
     expect(await screen.findByRole("link", { name: item.title })).toHaveAttribute(
       "href",
       "/paginaEvento?id=evento-1",
@@ -88,7 +89,7 @@ describe.each([
   it("mantém a notícia e permite tentar novamente quando salvar falha", async () => {
     failDismiss = true;
     const user = userEvent.setup();
-    render(<Feed />);
+    renderWithToasts(<Feed />);
     await user.click(await screen.findByRole("button", { name: "Não tenho interesse" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("Falha ao salvar preferência");
     expect(screen.getByRole("link", { name: item.title })).toBeInTheDocument();

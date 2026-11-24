@@ -1,7 +1,11 @@
-﻿"use client";
+"use client";
 
-import { Search } from "lucide-react";
-import { useMemo, useState } from "react";
+import { ClipboardCheck, Files, Newspaper, Search, X } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import { AdminSummary } from "@/components/admin/adminSummary";
+import { adminFilterControl, adminFilterHover } from "@/components/admin/adminTableFilter";
+import { AdminTableFooter } from "@/components/admin/adminTableFooter";
+import { Feedback, Notice } from "@/components/app/feedback";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,27 +20,61 @@ import {
   dialogSecondaryAction,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { SegmentedButton, segmentListStyle } from "@/components/ui/segmented-control";
 import { useEventCuration } from "@/hooks/use-event-curation";
 import { findDuplicatePairs } from "@/lib/event-curation";
+import { toast } from "@/lib/toast";
 import CardEvento from "./cardEvento";
-import PainelArtigos from "./painelArtigos";
+import PainelArtigos, { ArticleSource } from "./painelArtigos";
 
-const control =
-  "h-11 w-full min-w-0 rounded-lg border border-wisen-borda bg-white px-3 text-sm text-[#30466E] outline-none transition-colors hover:bg-wisen-admin-hover focus-visible:ring-2 focus-visible:ring-[#D7BF4D]/40";
 const secondary =
-  "h-auto min-h-10 whitespace-normal border-wisen-borda px-4 py-2 text-[#30466E] hover:bg-wisen-admin-hover";
+  "h-auto min-h-8 whitespace-normal border-wisen-borda px-3 py-1.5 text-xs text-wisen-texto-forte hover:bg-wisen-admin-hover";
+const pageSize = 10;
+const statusTitles = {
+  pendentes: "Eventos a revisar",
+  revisados: "Eventos revisados",
+  todos: "Todos os eventos",
+};
+const eventEmpty = {
+  pendentes: {
+    title: "Tudo revisado por aqui",
+    description: "Novos agrupamentos aparecerão nesta fila.",
+  },
+  revisados: {
+    title: "Nenhum evento revisado",
+    description: "Os agrupamentos confirmados aparecerão nesta fila.",
+  },
+  todos: {
+    title: "Nenhum evento encontrado",
+    description: "Os agrupamentos feitos pela IA aparecerão nesta fila.",
+  },
+};
 const queues = {
   pendentes: {
     title: "Revisar eventos",
-    description: "Confira se os artigos foram agrupados corretamente.",
+    icon: ClipboardCheck,
+    column: "Evento",
+    count: ["evento", "eventos"],
   },
   artigos: {
     title: "Artigos sem evento",
-    description: "Encontre o acontecimento ao qual cada artigo pertence.",
+    icon: Newspaper,
+    column: "Artigo",
+    count: ["artigo", "artigos"],
+    empty: {
+      title: "Nenhum artigo sem evento",
+      description: "Os artigos disponíveis já estão organizados em eventos.",
+    },
   },
   duplicados: {
     title: "Possíveis duplicados",
-    description: "Compare eventos semelhantes antes de unir.",
+    icon: Files,
+    column: "Eventos semelhantes",
+    count: ["par de eventos", "pares de eventos"],
+    empty: {
+      title: "Nenhum possível duplicado",
+      description: "Novos agrupamentos podem gerar sugestões de eventos semelhantes.",
+    },
   },
 };
 const contains = (text, query) =>
@@ -58,13 +96,14 @@ export default function CuradoriaEventos({ demo = true }) {
   const [status, setStatus] = useState("pendentes");
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("todas");
+  const [page, setPage] = useState(1);
   const [openedId, setOpenedId] = useState(null);
   const [articleQuery, setArticleQuery] = useState("");
   const [modal, setModal] = useState(null);
   const [destination, setDestination] = useState("");
   const [editing, setEditing] = useState(null);
   const [formError, setFormError] = useState("");
-  const [message, setMessage] = useState("");
+  const queueButton = useRef(null);
   const opened = events.find((event) => event.id === openedId);
   const pairs = useMemo(() => findDuplicatePairs(events), [events]);
   const pending = events.filter((event) => event.status !== "Revisado");
@@ -84,29 +123,42 @@ export default function CuradoriaEventos({ demo = true }) {
       (status === "todos" ||
         (status === "revisados" ? event.status === "Revisado" : event.status !== "Revisado")) &&
       (category === "todas" || event.categoria === category) &&
-      contains(`${event.titulo} ${event.resumo}`, query),
+      contains(`${event.titulo} ${event.resumo}`, query.trim()),
   );
   const articles = unassociated.filter(
     (article) =>
       (category === "todas" || article.categoria === category) &&
-      contains(`${article.titulo} ${article.fonte}`, query),
+      contains(`${article.titulo} ${article.fonte ?? ""}`, query.trim()),
   );
   const duplicates = pairs.filter(
     ({ first, second }) =>
       (category === "todas" || first.categoria === category || second.categoria === category) &&
-      contains(`${first.titulo} ${second.titulo}`, query),
+      contains(`${first.titulo} ${second.titulo}`, query.trim()),
   );
+  const items = { pendentes: filtered, artigos: articles, duplicados: duplicates }[queue];
+  const pages = Math.max(1, Math.ceil(items.length / pageSize));
+  const currentPage = Math.min(page, pages);
+  const visible = items.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+  const hasFilters = Boolean(query || category !== "todas");
+  const empty = queue === "pendentes" ? eventEmpty[status] : queues[queue].empty;
 
-  function switchQueue(value) {
-    setQueue(value);
+  function clearFilters() {
     setQuery("");
     setCategory("todas");
-    setMessage("");
+    setPage(1);
+  }
+  function switchQueue(value) {
+    if (value === queue) return;
+    setQueue(value);
+    clearFilters();
   }
   function openReview(event) {
     setOpenedId(event.id);
     setArticleQuery("");
-    setMessage("");
+  }
+  function closeReview() {
+    setOpenedId(null);
+    requestAnimationFrame(() => queueButton.current?.focus());
   }
   function openModal(value) {
     setModal(value);
@@ -115,7 +167,7 @@ export default function CuradoriaEventos({ demo = true }) {
   }
   async function saveAction(action, feedback) {
     if (!(await dispatch(action))) return false;
-    setMessage(feedback);
+    toast.success(feedback);
     setModal(null);
     return true;
   }
@@ -169,39 +221,32 @@ export default function CuradoriaEventos({ demo = true }) {
   };
 
   return (
-    <div className="@container/curadoria min-w-0 space-y-5">
-      {message && (
-        <p
-          role="status"
-          className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm leading-6 text-emerald-800"
-        >
-          {message}
-        </p>
-      )}
-      {error && (
-        <div
-          role="alert"
-          className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-800"
-        >
+    <div className="@container/curadoria min-w-0 space-y-4">
+      {loaded && error && (
+        <Notice tone="error">
           <p>{error}</p>
-          {!modal && (
-            <Button variant="outline" onClick={() => reload()} className="mt-3">
-              Tentar novamente
-            </Button>
-          )}
-        </div>
+          <Button variant="outline" onClick={() => reload()} className="mt-3">
+            Tentar novamente
+          </Button>
+        </Notice>
       )}
       {loading ? (
-        <p role="status" className="rounded-xl bg-white p-6 text-sm text-[#7182A1]">
-          Carregando a fila de revisão...
-        </p>
-      ) : !loaded ? null : opened ? (
+        <Feedback tone="loading" title="Carregando a fila de revisão..." />
+      ) : !loaded ? (
+        <Feedback
+          tone="error"
+          title="Não foi possível carregar a fila"
+          description={error}
+          onRetry={() => reload()}
+        />
+      ) : opened ? (
         <PainelArtigos
           evento={opened}
           busy={busy}
+          canMove={events.some((event) => event.id !== opened.id)}
           buscaArtigo={articleQuery}
           setBuscaArtigo={setArticleQuery}
-          aoFechar={() => setOpenedId(null)}
+          aoFechar={closeReview}
           aoEditar={(event) => {
             setEditing({ titulo: event.titulo, resumo: event.resumo, categoria: event.categoria });
             openModal({ type: "editar", event });
@@ -215,242 +260,219 @@ export default function CuradoriaEventos({ demo = true }) {
                 "Agrupamento confirmado. O evento foi movido para os revisados.",
               )
             )
-              setOpenedId(null);
+              closeReview();
           }}
         />
       ) : (
         <>
-          <div className="rounded-xl border border-[#E8DDA4] bg-[#FBF7E5] p-4 sm:p-5">
-            <h2 className="text-base font-medium text-wisen-titulo">
-              A IA agrupou os artigos. Agora, confira se fazem sentido juntos.
-            </h2>
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-[#7182A1]">
-              Um evento reúne notícias sobre o mesmo acontecimento. Comece pelos eventos a revisar,
-              confira o resumo e os artigos e confirme o agrupamento.
-            </p>
-          </div>
-          <nav
-            aria-label="Filas de revisão"
-            className="grid min-w-0 grid-cols-1 gap-3 @min-[48rem]/curadoria:grid-cols-3"
-          >
+          <AdminSummary
+            title="Organização dos eventos"
+            description="Confira os agrupamentos feitos pela IA, associe artigos avulsos e compare possíveis duplicatas."
+            items={[
+              `${counts.pendentes} ${counts.pendentes === 1 ? "evento" : "eventos"} a revisar`,
+              `${counts.artigos} ${counts.artigos === 1 ? "artigo" : "artigos"} sem evento`,
+              `${counts.duplicados} ${counts.duplicados === 1 ? "possível duplicado" : "possíveis duplicados"}`,
+            ]}
+            itemColors="border-transparent bg-[#FBF7E5]"
+          />
+          <nav aria-label="Filas de revisão" className={segmentListStyle}>
             {Object.entries(queues).map(([key, item]) => (
-              <button
+              <SegmentedButton
                 key={key}
-                type="button"
+                ref={queue === key ? queueButton : null}
                 aria-pressed={queue === key}
                 onClick={() => switchQueue(key)}
-                className={`min-w-0 rounded-xl border p-4 text-left transition-colors hover:bg-wisen-admin-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D7BF4D] ${queue === key ? "border-[#E0CF82] bg-[#FBF7E5]" : "border-wisen-borda bg-white"}`}
               >
-                <span className="flex items-start justify-between gap-3">
-                  <span className="text-sm font-medium text-wisen-titulo">{item.title}</span>
-                  <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-xs font-semibold tabular-nums text-[#866D16]">
-                    {counts[key]}
-                  </span>
-                </span>
-                <span className="mt-2 block text-xs leading-5 text-[#7182A1]">
-                  {item.description}
-                </span>
-              </button>
+                <item.icon aria-hidden="true" className="size-[18px]" />
+                {item.title}
+              </SegmentedButton>
             ))}
           </nav>
-          <section className="min-w-0 space-y-4" aria-label={queues[queue].title}>
-            <header className="space-y-2">
-              <h2 className="text-lg font-medium text-wisen-titulo">
-                {queue === "pendentes"
-                  ? status === "revisados"
-                    ? "Eventos revisados"
-                    : status === "todos"
-                      ? "Todos os eventos"
-                      : "Eventos a revisar"
-                  : queues[queue].title}
+          <section className="wisen-panel overflow-hidden" aria-labelledby="curadoria-fila">
+            <div className="space-y-4 px-4 py-4 sm:px-5">
+              <h2 id="curadoria-fila" className="text-sm font-semibold text-wisen-titulo">
+                {queue === "pendentes" ? statusTitles[status] : queues[queue].title}
               </h2>
-              <p className="text-sm leading-6 text-[#7182A1]">
-                {queue === "pendentes"
-                  ? "Abra um evento para conferir as informações e os artigos associados."
-                  : queue === "artigos"
-                    ? "Estes artigos ainda não pertencem a nenhum evento. Escolha um acontecimento existente para associá-los."
-                    : "Títulos semelhantes podem se referir ao mesmo acontecimento. Compare o conteúdo antes de decidir unir os eventos."}
-              </p>
-            </header>
-            <div className="grid min-w-0 grid-cols-1 gap-3 @min-[32rem]/curadoria:grid-cols-2 @min-[60rem]/curadoria:grid-cols-[minmax(0,1.5fr)_repeat(2,minmax(0,1fr))]">
-              <div className="relative min-w-0">
-                <Search
-                  aria-hidden="true"
-                  className="pointer-events-none absolute top-3.5 left-3 size-4 text-[#7182A1]"
-                />
-                <Input
-                  aria-label="Buscar na fila"
-                  placeholder={queue === "artigos" ? "Buscar artigo ou fonte" : "Buscar evento"}
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  className={`${control} pl-10`}
-                />
-              </div>
-              <select
-                aria-label="Filtrar por categoria"
-                className={control}
-                value={category}
-                onChange={(event) => setCategory(event.target.value)}
-              >
-                <option value="todas">Todas as categorias</option>
-                {categories.map((item) => (
-                  <option key={item}>{item}</option>
-                ))}
-              </select>
-              {queue === "pendentes" && (
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="relative w-full min-w-0 sm:w-60">
+                  <Search
+                    aria-hidden="true"
+                    className="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-wisen-texto-suave"
+                  />
+                  <Input
+                    aria-label="Buscar na fila"
+                    placeholder={queue === "artigos" ? "Buscar artigo ou fonte" : "Buscar evento"}
+                    value={query}
+                    onChange={(event) => {
+                      setQuery(event.target.value);
+                      setPage(1);
+                    }}
+                    className={`${adminFilterControl} pl-9`}
+                  />
+                </div>
                 <select
-                  aria-label="Mostrar eventos"
-                  className={control}
-                  value={status}
-                  onChange={(event) => setStatus(event.target.value)}
+                  aria-label="Filtrar por categoria"
+                  className={`${adminFilterControl} sm:w-48`}
+                  value={category}
+                  onChange={(event) => {
+                    setCategory(event.target.value);
+                    setPage(1);
+                  }}
                 >
-                  <option value="pendentes">A revisar ({pending.length})</option>
-                  <option value="revisados">Revisados ({events.length - pending.length})</option>
-                  <option value="todos">Todos os eventos</option>
+                  <option value="todas">Todas as categorias</option>
+                  {categories.map((item) => (
+                    <option key={item}>{item}</option>
+                  ))}
                 </select>
-              )}
-            </div>
-            {(query || category !== "todas") && (
-              <Button
-                variant="ghost"
-                onClick={() => {
-                  setQuery("");
-                  setCategory("todas");
-                }}
-                className="text-xs text-[#7182A1] hover:bg-wisen-admin-hover"
-              >
-                Limpar filtros
-              </Button>
-            )}
-            {queue === "pendentes" && (
-              <div className="space-y-3">
-                {filtered.map((event) => (
-                  <CardEvento key={event.id} evento={event} aoRevisar={openReview} busy={busy} />
-                ))}
-                {!filtered.length && (
-                  <Empty
-                    title={
-                      status === "pendentes" && !pending.length
-                        ? "Tudo revisado por aqui"
-                        : "Nenhum evento encontrado"
-                    }
-                    description={
-                      query || category !== "todas"
-                        ? "Tente outra busca ou limpe os filtros."
-                        : "Quando houver novos agrupamentos para conferir, eles aparecerão nesta fila."
-                    }
+                {queue === "pendentes" && (
+                  <select
+                    aria-label="Mostrar eventos"
+                    className={`${adminFilterControl} sm:w-44`}
+                    value={status}
+                    onChange={(event) => {
+                      setStatus(event.target.value);
+                      setPage(1);
+                    }}
                   >
-                    {status === "pendentes" &&
-                      events.some((event) => event.status === "Revisado") && (
+                    <option value="pendentes">A revisar ({pending.length})</option>
+                    <option value="revisados">Revisados ({events.length - pending.length})</option>
+                    <option value="todos">Todos os eventos</option>
+                  </select>
+                )}
+                {hasFilters && (
+                  <Button
+                    variant="outline"
+                    onClick={clearFilters}
+                    className={`h-10 gap-1.5 border-wisen-borda px-3 text-xs font-normal text-wisen-texto-suave shadow-none ${adminFilterHover}`}
+                  >
+                    <X aria-hidden="true" className="size-3.5" />
+                    Limpar filtros
+                  </Button>
+                )}
+              </div>
+            </div>
+            {visible.length ? (
+              <>
+                <div className="flex items-center justify-between border-y border-[#E8EDF4] bg-[#E8EFFA] px-4 py-3 text-[10px] font-bold tracking-wider text-[#30466E] uppercase sm:px-5">
+                  <span>{queues[queue].column}</span>
+                  <span className="hidden @min-[38rem]/curadoria:inline">Ação</span>
+                </div>
+                <div className="divide-y divide-[#E8EDF4]">
+                  {queue === "pendentes" &&
+                    visible.map((event) => (
+                      <CardEvento
+                        key={event.id}
+                        evento={event}
+                        aoRevisar={openReview}
+                        busy={busy}
+                      />
+                    ))}
+                  {queue === "artigos" &&
+                    visible.map((article) => (
+                      <article
+                        key={article.id}
+                        className="flex min-w-0 flex-wrap items-center justify-between gap-3 px-4 py-4 transition-colors hover:bg-[#FBF7E5] sm:px-5"
+                      >
+                        <div className="min-w-0 flex-1 basis-56">
+                          <h3 className="text-sm font-semibold leading-6 break-words text-wisen-titulo">
+                            {article.titulo}
+                          </h3>
+                          <p className="mt-1 text-xs leading-5 break-words text-wisen-texto-suave">
+                            {[article.fonte, article.categoria, article.data]
+                              .filter(Boolean)
+                              .join(" · ")}
+                          </p>
+                          {!events.length && (
+                            <p className="mt-1 text-xs text-wisen-texto-suave">
+                              Ainda não há eventos disponíveis para associação.
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <ArticleSource url={article.url} />
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={!events.length || busy}
+                            onClick={() => openModal({ type: "mover", article, sourceId: null })}
+                            className={secondary}
+                          >
+                            Associar a um evento
+                          </Button>
+                        </div>
+                      </article>
+                    ))}
+                  {queue === "duplicados" &&
+                    visible.map((pair) => (
+                      <article
+                        key={`${pair.first.id}-${pair.second.id}`}
+                        className="grid min-w-0 items-center gap-3 px-4 py-4 transition-colors hover:bg-[#FBF7E5] sm:px-5 @min-[48rem]/curadoria:grid-cols-[minmax(0,1fr)_auto]"
+                      >
+                        <div className="grid min-w-0 gap-2 @min-[32rem]/curadoria:grid-cols-2">
+                          {[pair.first, pair.second].map((event) => (
+                            <div
+                              key={event.id}
+                              className="min-w-0 rounded-lg border border-wisen-borda bg-wisen-superficie px-3 py-2.5"
+                            >
+                              <h3 className="text-sm font-semibold leading-5 break-words text-wisen-titulo">
+                                {event.titulo}
+                              </h3>
+                              <p className="mt-1 text-xs break-words text-wisen-texto-suave">
+                                {event.categoria} · {event.artigos.length}{" "}
+                                {event.artigos.length === 1 ? "artigo" : "artigos"}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
                         <Button
                           variant="outline"
-                          onClick={() => setStatus("revisados")}
-                          className={secondary}
+                          size="sm"
+                          disabled={busy}
+                          onClick={() => {
+                            openModal({ type: "comparar", pair });
+                            setDestination(String(pair.first.id));
+                          }}
+                          className={`${secondary} justify-self-start`}
                         >
-                          Ver eventos revisados
+                          Comparar eventos
                         </Button>
-                      )}
-                  </Empty>
-                )}
-              </div>
-            )}
-            {queue === "artigos" && (
-              <div className="space-y-3">
-                {articles.map((article) => (
-                  <article
-                    key={article.id}
-                    className="min-w-0 rounded-xl border border-wisen-borda bg-white p-4 sm:p-5"
-                  >
-                    <h3 className="break-words text-base font-medium leading-6 text-wisen-titulo">
-                      {article.titulo}
-                    </h3>
-                    <p className="mt-2 text-xs leading-5 text-[#7182A1]">
-                      {article.fonte} · {article.data}
-                    </p>
-                    <div className="mt-4 flex flex-wrap gap-3">
-                      {article.url && (
-                        <a
-                          href={article.url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex min-h-10 items-center text-sm text-[#30466E] hover:underline"
-                        >
-                          Abrir fonte
-                        </a>
-                      )}
-                      <Button
-                        variant="outline"
-                        disabled={!events.length || busy}
-                        onClick={() => openModal({ type: "mover", article, sourceId: null })}
-                        className={secondary}
-                      >
-                        Associar a um evento
-                      </Button>
-                    </div>
-                    {!events.length && (
-                      <p className="mt-2 text-xs text-[#7182A1]">
-                        Ainda não há eventos disponíveis para associação.
-                      </p>
-                    )}
-                  </article>
-                ))}
-                {!articles.length && (
-                  <Empty
-                    title="Nenhum artigo sem evento"
-                    description={
-                      query || category !== "todas"
-                        ? "Nenhum artigo corresponde aos filtros."
-                        : "Os artigos disponíveis já estão organizados em eventos."
-                    }
-                  />
-                )}
-              </div>
-            )}
-            {queue === "duplicados" && (
-              <div className="space-y-3">
-                {duplicates.map((pair) => (
-                  <article
-                    key={`${pair.first.id}-${pair.second.id}`}
-                    className="min-w-0 space-y-4 rounded-xl border border-wisen-borda bg-white p-4 sm:p-5"
-                  >
-                    <p className="text-xs font-medium text-[#866D16]">
-                      Títulos semelhantes · confira se é o mesmo acontecimento
-                    </p>
-                    <div className="grid min-w-0 grid-cols-1 gap-3 @min-[36rem]/curadoria:grid-cols-2">
-                      {[pair.first, pair.second].map((event) => (
-                        <div key={event.id} className="min-w-0 rounded-lg bg-[#F8FAFD] p-3">
-                          <h3 className="break-words text-sm font-medium leading-6 text-wisen-titulo">
-                            {event.titulo}
-                          </h3>
-                          <p className="mt-2 text-xs text-[#7182A1]">
-                            {event.artigos.length} artigos · {event.categoria}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
+                      </article>
+                    ))}
+                </div>
+              </>
+            ) : (
+              <div className="space-y-2 border-t border-[#E8EDF4] px-4 py-12 text-center">
+                <h3 className="text-sm font-semibold text-wisen-titulo">
+                  {hasFilters ? "Nenhum resultado encontrado" : empty.title}
+                </h3>
+                <p className="text-sm leading-6 text-wisen-texto-suave">
+                  {hasFilters ? "Tente outra busca ou limpe os filtros." : empty.description}
+                </p>
+                {!hasFilters &&
+                  queue === "pendentes" &&
+                  status === "pendentes" &&
+                  events.length > pending.length && (
                     <Button
                       variant="outline"
-                      onClick={() => {
-                        openModal({ type: "comparar", pair });
-                        setDestination(String(pair.first.id));
-                      }}
+                      size="sm"
+                      onClick={() => setStatus("revisados")}
                       className={secondary}
                     >
-                      Comparar eventos
+                      Ver eventos revisados
                     </Button>
-                  </article>
-                ))}
-                {!duplicates.length && (
-                  <Empty
-                    title="Nenhum possível duplicado"
-                    description="Nenhum par de títulos semelhantes foi encontrado nesta fila. Novos agrupamentos podem gerar outras sugestões."
-                  />
-                )}
+                  )}
               </div>
             )}
+            <AdminTableFooter
+              countLabel={`${items.length} ${queues[queue].count[items.length === 1 ? 0 : 1]}`}
+              paginationLabel="Paginação da fila"
+              page={currentPage}
+              pages={pages}
+              onPageChange={setPage}
+            />
           </section>
           {demo && (
-            <p className="text-xs leading-5 text-[#7182A1]">
+            <p className="text-xs leading-5 text-wisen-texto-suave">
               Demonstração com conteúdo fictício. Suas alterações ficam salvas neste navegador.
             </p>
           )}
@@ -463,7 +485,7 @@ export default function CuradoriaEventos({ demo = true }) {
           if (!open) closeModal();
         }}
       >
-        <DialogContent size="lg">
+        <DialogContent size={modal?.type === "comparar" ? "wide" : "md"} data-wisen-area="admin">
           <DialogHeader eyebrow="Revisão de eventos">
             <DialogTitle>
               {modal?.type === "editar"
@@ -478,64 +500,66 @@ export default function CuradoriaEventos({ demo = true }) {
             </DialogTitle>
             <DialogDescription>
               {modal?.type === "editar"
-                ? "Corrija o título, o resumo ou a categoria. Depois, confirme o agrupamento na revisão."
+                ? "Atualize os dados e volte à revisão do agrupamento."
                 : modal?.type === "retirar"
-                  ? "O artigo irá para a fila de artigos sem evento. Ele não será excluído."
+                  ? "O artigo voltará à fila de artigos sem evento."
                   : modal?.type === "comparar"
-                    ? "Una somente se os artigos tratam do mesmo acontecimento. O evento escolhido manterá seu título e receberá todos os artigos."
+                    ? "Se os artigos tratarem do mesmo acontecimento, escolha qual evento receberá todos os artigos."
                     : "Escolha o acontecimento que corresponde ao assunto deste artigo. O agrupamento ficará disponível para revisão."}
             </DialogDescription>
           </DialogHeader>
           {modal?.type === "editar" && editing ? (
             <DialogForm onSubmit={saveEdit}>
               <DialogBody className="space-y-4">
-                {error && (
-                  <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-800">
-                    {error}
-                  </p>
-                )}
                 {formError && (
                   <p role="alert" className="text-sm text-red-700">
                     {formError}
                   </p>
                 )}
 
-                <label htmlFor="revisao-titulo" className="block space-y-2 text-sm text-[#526584]">
-                  <span>Título do evento</span>
-                  <Input
-                    required
-                    maxLength={300}
-                    id="revisao-titulo"
-                    value={editing.titulo}
-                    onChange={(event) => setEditing({ ...editing, titulo: event.target.value })}
-                    className={control}
-                  />
-                </label>
-                <label className="block space-y-2 text-sm text-[#526584]">
-                  <span>Resumo do acontecimento</span>
-                  <textarea
-                    required
-                    maxLength={10000}
-                    rows={5}
-                    value={editing.resumo}
-                    onChange={(event) => setEditing({ ...editing, resumo: event.target.value })}
-                    className="w-full min-w-0 resize-y rounded-lg border border-wisen-borda bg-white p-3 text-sm leading-6 outline-none focus-visible:ring-2 focus-visible:ring-[#D7BF4D]/40"
-                  />
-                </label>
-                <label
-                  htmlFor="revisao-categoria"
-                  className="block space-y-2 text-sm text-[#526584]"
-                >
-                  <span>Categoria</span>
-                  <Input
-                    required
-                    maxLength={120}
-                    id="revisao-categoria"
-                    value={editing.categoria}
-                    onChange={(event) => setEditing({ ...editing, categoria: event.target.value })}
-                    className={control}
-                  />
-                </label>
+                <div className="admin-dialog-panel space-y-4">
+                  <label
+                    htmlFor="revisao-titulo"
+                    className="block space-y-2 text-sm text-[#526584]"
+                  >
+                    <span>Título do evento</span>
+                    <Input
+                      required
+                      maxLength={300}
+                      id="revisao-titulo"
+                      value={editing.titulo}
+                      onChange={(event) => setEditing({ ...editing, titulo: event.target.value })}
+                      className="wisen-control w-full"
+                    />
+                  </label>
+                  <label className="block space-y-2 text-sm text-[#526584]">
+                    <span>Resumo do acontecimento</span>
+                    <textarea
+                      required
+                      maxLength={10000}
+                      rows={5}
+                      value={editing.resumo}
+                      onChange={(event) => setEditing({ ...editing, resumo: event.target.value })}
+                      className="wisen-control w-full min-w-0 resize-y py-2 leading-6"
+                    />
+                  </label>
+                  <label
+                    htmlFor="revisao-categoria"
+                    className="block space-y-2 text-sm text-[#526584]"
+                  >
+                    <span>Categoria</span>
+                    <Input
+                      required
+                      maxLength={120}
+                      id="revisao-categoria"
+                      value={editing.categoria}
+                      onChange={(event) =>
+                        setEditing({ ...editing, categoria: event.target.value })
+                      }
+                      className="wisen-control w-full"
+                    />
+                  </label>
+                </div>
               </DialogBody>
               <DialogFooter>
                 <Button
@@ -555,23 +579,9 @@ export default function CuradoriaEventos({ demo = true }) {
           ) : modal?.type === "comparar" ? (
             <>
               <DialogBody className="space-y-4">
-                {error && (
-                  <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-800">
-                    {error}
-                  </p>
-                )}
-                {formError && (
-                  <p role="alert" className="text-sm text-red-700">
-                    {formError}
-                  </p>
-                )}
-
                 <div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2">
                   {[modal.pair.first, modal.pair.second].map((event) => (
-                    <section
-                      key={event.id}
-                      className="min-w-0 rounded-xl border border-wisen-borda bg-white p-4"
-                    >
+                    <section key={event.id} className="admin-dialog-panel">
                       <h3 className="break-words font-medium leading-6 text-wisen-titulo">
                         {event.titulo}
                       </h3>
@@ -585,16 +595,17 @@ export default function CuradoriaEventos({ demo = true }) {
                         {event.artigos.map((article) => (
                           <li key={article.id} className="break-words">
                             {article.titulo}
+                            <ArticleSource url={article.url} />
                           </li>
                         ))}
                       </ul>
                     </section>
                   ))}
                 </div>
-                <label className="block space-y-2 text-sm text-[#526584]">
+                <label className="admin-dialog-panel block space-y-2 text-sm text-[#526584]">
                   <span>Manter o título e resumo de</span>
                   <select
-                    className={control}
+                    className={adminFilterControl}
                     value={destination}
                     onChange={(event) => setDestination(event.target.value)}
                   >
@@ -628,25 +639,14 @@ export default function CuradoriaEventos({ demo = true }) {
             modal && (
               <>
                 <DialogBody className="space-y-4">
-                  {error && (
-                    <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-800">
-                      {error}
-                    </p>
-                  )}
-                  {formError && (
-                    <p role="alert" className="text-sm text-red-700">
-                      {formError}
-                    </p>
-                  )}
-
-                  <p className="break-words rounded-lg bg-[#F8FAFD] p-4 text-sm font-medium leading-6 text-wisen-titulo">
+                  <p className="admin-dialog-panel break-words text-sm font-medium leading-6 text-wisen-titulo">
                     {modal.article.titulo}
                   </p>
                   {modal.type === "mover" && (
-                    <label className="block space-y-2 text-sm text-[#526584]">
+                    <label className="admin-dialog-panel block space-y-2 text-sm text-[#526584]">
                       <span>Evento de destino</span>
                       <select
-                        className={control}
+                        className={adminFilterControl}
                         value={destination}
                         onChange={(event) => setDestination(event.target.value)}
                       >
@@ -696,15 +696,6 @@ export default function CuradoriaEventos({ demo = true }) {
           )}
         </DialogContent>
       </Dialog>
-    </div>
-  );
-}
-function Empty({ title, description, children }) {
-  return (
-    <div className="space-y-3 rounded-xl border border-dashed border-wisen-borda bg-white px-4 py-10 text-center">
-      <h3 className="text-base font-medium text-wisen-titulo">{title}</h3>
-      <p className="mx-auto max-w-md text-sm leading-6 text-[#7182A1]">{description}</p>
-      {children}
     </div>
   );
 }

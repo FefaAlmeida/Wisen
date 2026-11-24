@@ -4,12 +4,10 @@ import { Button } from "@/components/ui/button";
 function SourceStatus({ active }) {
   return (
     <span
-      className={`inline-flex items-center gap-2 text-xs font-medium ${active ? "text-emerald-700" : "text-[#8190A8]"}`}
+      className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
+        active ? "bg-emerald-100 text-emerald-800" : "bg-red-100 text-red-800"
+      }`}
     >
-      <span
-        aria-hidden="true"
-        className={`size-1.5 rounded-full ${active ? "bg-emerald-500" : "bg-[#A7B3C5]"}`}
-      />
       {active ? "Ativa" : "Pausada"}
     </span>
   );
@@ -31,20 +29,24 @@ function SourceName({ source, onEdit }) {
         >
           {source.nome}
         </button>
-        <p className="mt-1 max-w-sm break-all text-xs leading-5 text-[#7182A1]">{source.url}</p>
+        <p className="mt-1 max-w-sm break-all text-xs text-[#7182A1]">{source.url}</p>
       </div>
     </div>
   );
 }
-function SourceActions({ source, onEdit, onToggle, busy }) {
+function SourceActions({ source, onEdit, onToggle, busy, mobile = false }) {
   return (
-    <div className="flex flex-wrap items-center justify-end gap-1">
+    <div className="flex items-center justify-end gap-1">
       <Button
-        variant="ghost"
+        variant={mobile ? "outline" : "ghost"}
         disabled={busy}
         onClick={() => onEdit(source)}
         aria-label={`Editar ${source.nome}`}
-        className="text-xs text-[#526584] hover:bg-wisen-admin-hover"
+        className={
+          mobile
+            ? "h-10 grow border-wisen-borda text-xs text-[#526584] hover:bg-wisen-admin-hover"
+            : "text-xs text-[#526584] hover:bg-transparent hover:text-wisen-destaque dark:hover:bg-transparent"
+        }
       >
         Gerenciar
         <ArrowUpRight className="size-3.5" />
@@ -55,7 +57,11 @@ function SourceActions({ source, onEdit, onToggle, busy }) {
         disabled={busy}
         onClick={() => onToggle(source)}
         aria-label={`${source.ativo ? "Pausar" : "Ativar"} ${source.nome}`}
-        className="size-8 text-[#7182A1] hover:bg-wisen-admin-hover"
+        className={
+          mobile
+            ? "size-10 shrink-0 text-[#7182A1] hover:bg-wisen-admin-hover"
+            : "size-8 text-[#7182A1] hover:bg-transparent hover:text-wisen-destaque dark:hover:bg-transparent"
+        }
       >
         {source.ativo ? <Pause className="size-3.5" /> : <Play className="size-3.5" />}
       </Button>
@@ -77,12 +83,12 @@ export default function TabelaFontes({ fontes, aoEditar, aoAlternarStatus, busy 
       <div className="hidden overflow-x-auto @min-[48rem]/sources:block">
         <table className="w-full text-left text-sm">
           <caption className="sr-only">Fontes RSS cadastradas e configurações de coleta</caption>
-          <thead className="border-y border-[#E8EDF4] bg-[#FAFBFD]">
-            <tr className="text-[10px] font-semibold tracking-wider text-[#8190A8] uppercase">
+          <thead className="border-y border-[#E8EDF4] bg-[#E8EFFA]">
+            <tr className="text-[10px] font-semibold tracking-wider text-wisen-titulo uppercase">
               <th scope="col" className="px-5 py-3">
                 Fonte
               </th>
-              <th scope="col" className="px-4 py-3">
+              <th scope="col" className="px-4 py-3 text-center">
                 Status
               </th>
               <th scope="col" className="px-4 py-3">
@@ -98,14 +104,14 @@ export default function TabelaFontes({ fontes, aoEditar, aoAlternarStatus, busy 
           </thead>
           <tbody className="divide-y divide-[#EDF0F5]">
             {fontes.map((source) => (
-              <tr key={source.id} className="transition-colors hover:bg-wisen-admin-hover">
+              <tr key={source.id} className="transition-colors hover:bg-[#FBF7E5]">
                 <td className="px-5 py-4">
                   <SourceName source={source} onEdit={aoEditar} />
                 </td>
-                <td className="whitespace-nowrap px-4 py-4">
+                <td className="px-4 py-4 text-center whitespace-nowrap">
                   <SourceStatus active={source.ativo} />
                 </td>
-                <td className="px-4 py-4 text-xs leading-5 tabular-nums text-[#7182A1]">
+                <td className="px-4 py-4 text-xs tabular-nums text-[#7182A1]">
                   {source.ultimaColeta}
                 </td>
                 <td className="px-4 py-4 text-xs text-[#7182A1]">{source.frequencia}</td>
@@ -126,19 +132,18 @@ export default function TabelaFontes({ fontes, aoEditar, aoAlternarStatus, busy 
         {fontes.map((source) => (
           <article key={source.id} className="min-w-0 space-y-4 p-4 sm:p-5">
             <SourceName source={source} onEdit={aoEditar} />
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
               <SourceStatus active={source.ativo} />
-              <span className="text-xs text-[#7182A1]">{source.frequencia}</span>
+              <span className="text-[#7182A1]">{source.frequencia}</span>
+              <span className="text-[#7182A1]">Última coleta: {source.ultimaColeta}</span>
             </div>
-            <p className="text-xs leading-5 text-[#7182A1]">Última coleta: {source.ultimaColeta}</p>
-            <div className="border-t border-[#E8EDF4] pt-3">
-              <SourceActions
-                source={source}
-                onEdit={aoEditar}
-                onToggle={aoAlternarStatus}
-                busy={busy}
-              />
-            </div>
+            <SourceActions
+              source={source}
+              onEdit={aoEditar}
+              onToggle={aoAlternarStatus}
+              busy={busy}
+              mobile
+            />
           </article>
         ))}
       </div>

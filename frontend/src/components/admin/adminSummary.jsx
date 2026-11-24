@@ -1,4 +1,10 @@
-﻿export function AdminSummary({ title, description, items, loading = false }) {
+﻿export function AdminSummary({
+  title,
+  description,
+  items = [],
+  loading = false,
+  itemColors = "border-wisen-borda bg-wisen-superficie",
+}) {
   return (
     <section
       aria-label={title}
@@ -9,16 +15,18 @@
         <span aria-hidden="true" className="mt-2 block h-0.5 w-8 rounded-full bg-[#D7BF4D]" />
         <p className="mt-1 text-xs leading-5 text-wisen-texto-suave">{description}</p>
       </div>
-      <div className="flex flex-wrap gap-2 sm:justify-end">
-        {items.map((item) => (
-          <span
-            key={item}
-            className="rounded-full border border-wisen-borda bg-wisen-superficie px-3 py-1.5 text-[11px] font-medium text-wisen-titulo"
-          >
-            {loading ? "..." : item}
-          </span>
-        ))}
-      </div>
+      {items.length > 0 && (
+        <div aria-live="polite" className="flex flex-wrap gap-2 sm:justify-end">
+          {items.map((item) => (
+            <span
+              key={item}
+              className={`rounded-full border px-3 py-1.5 text-[11px] font-medium text-wisen-titulo ${itemColors}`}
+            >
+              {loading ? "..." : item}
+            </span>
+          ))}
+        </div>
+      )}
     </section>
   );
 }

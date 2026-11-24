@@ -1,11 +1,11 @@
 "use client";
 
 import { Bookmark, BookOpen, ListFilter, Search } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { segmentCountStyle } from "@/components/ui/segmented-control";
 import {
   Select,
   SelectContent,
@@ -13,7 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SegmentedTab, Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
+import { toast } from "@/lib/toast";
 import CardConceitoMarcado from "./cardConceitoMarcado";
 import CardEventoSalvo from "./cardEventoSalvo";
 
@@ -86,9 +87,6 @@ const conceitosIniciais = [
   },
 ];
 
-const estiloAba =
-  "h-8 gap-1.5 rounded-md px-2 text-xs font-semibold text-wisen-texto-suave hover:not-data-active:bg-wisen-superficie data-active:bg-wisen-cliente-hover data-active:text-wisen-titulo sm:px-3";
-
 const opcoesOrdenacao = [
   { value: "recentes", label: "Mais recentes" },
   { value: "alfabetica", label: "Ordem alfabética" },
@@ -136,23 +134,6 @@ function Ordenacao({ valor, aoAlterar }) {
   );
 }
 
-function AvisoRemocao({ mensagem, aoDesfazer }) {
-  return (
-    <div className="flex items-center justify-between gap-2 rounded-lg border border-wisen-borda bg-white px-3 py-1 text-xs text-wisen-texto-forte">
-      <span role="status">{mensagem}</span>
-      <Button
-        type="button"
-        size="sm"
-        variant="ghost"
-        className="cursor-pointer text-xs font-semibold text-wisen-titulo"
-        onClick={aoDesfazer}
-      >
-        Desfazer
-      </Button>
-    </div>
-  );
-}
-
 function SecaoGuardados({ titulo, descricao, busca, ordenacao, children }) {
   return (
     <Card className="gap-0 rounded-xl border-wisen-borda bg-white p-0">
@@ -183,13 +164,33 @@ export default function PainelGuardados() {
   const [aba, setAba] = useState("eventos");
   const [idsEventosRemovidos, setIdsEventosRemovidos] = useState([]);
   const [idsConceitosRemovidos, setIdsConceitosRemovidos] = useState([]);
+  const pendingUndo = useRef(new Set());
   const [buscaEventos, setBuscaEventos] = useState("");
   const [buscaConceitos, setBuscaConceitos] = useState("");
   const [ordemEventos, setOrdemEventos] = useState("recentes");
   const [ordemConceitos, setOrdemConceitos] = useState("recentes");
 
-  function removerEvento(id) {
-    setIdsEventosRemovidos((ids) => [...ids, id]);
+  useEffect(() => {
+    const toastIds = pendingUndo.current;
+    return () => {
+      for (const toastId of toastIds) toast.close(toastId);
+    };
+  }, []);
+
+  function removerSalvo(id, setRemovidos, mensagem) {
+    setRemovidos((ids) => [...ids, id]);
+    const toastId = toast.success(mensagem, {
+      timeout: 8000,
+      actionProps: {
+        children: "Desfazer",
+        onClick: () => {
+          setRemovidos((ids) => ids.filter((removido) => removido !== id));
+          toast.close(toastId);
+        },
+      },
+      onClose: () => pendingUndo.current.delete(toastId),
+    });
+    pendingUndo.current.add(toastId);
   }
 
   const eventosSalvos = eventosIniciais.filter(
@@ -220,22 +221,18 @@ export default function PainelGuardados() {
 
   return (
     <Tabs value={aba} onValueChange={setAba} className="w-full gap-3">
-      <TabsList className="max-w-full flex-wrap justify-start gap-1 border border-wisen-borda bg-white group-data-horizontal/tabs:h-auto">
-        <TabsTrigger value="eventos" className={estiloAba}>
-          <Bookmark className="hidden size-3.5 sm:block" aria-hidden="true" />
+      <TabsList aria-label="Guardados">
+        <SegmentedTab value="eventos">
+          <Bookmark className="size-[18px]" aria-hidden="true" />
           Notícias salvas
-          <span className="rounded-full bg-wisen-superficie px-1.5 py-0.5 text-[11px] text-wisen-texto-forte">
-            {eventosSalvos.length}
-          </span>
-        </TabsTrigger>
+          <span className={segmentCountStyle}>{eventosSalvos.length}</span>
+        </SegmentedTab>
 
-        <TabsTrigger value="conceitos" className={estiloAba}>
-          <BookOpen className="hidden size-3.5 sm:block" aria-hidden="true" />
+        <SegmentedTab value="conceitos">
+          <BookOpen className="size-[18px]" aria-hidden="true" />
           Conceitos marcados
-          <span className="rounded-full bg-wisen-superficie px-1.5 py-0.5 text-[11px] text-wisen-texto-forte">
-            {conceitosSalvos.length}
-          </span>
-        </TabsTrigger>
+          <span className={segmentCountStyle}>{conceitosSalvos.length}</span>
+        </SegmentedTab>
       </TabsList>
 
       <TabsContent value="eventos" className="mt-0">
@@ -249,18 +246,13 @@ export default function PainelGuardados() {
           }}
           ordenacao={{ valor: ordemEventos, aoAlterar: setOrdemEventos }}
         >
-          {idsEventosRemovidos.length > 0 && (
-            <AvisoRemocao
-              mensagem="Notícia removida dos salvos."
-              aoDesfazer={() => setIdsEventosRemovidos((ids) => ids.slice(0, -1))}
-            />
-          )}
-
           {eventosFiltrados.map((evento) => (
             <CardEventoSalvo
               key={evento.id}
               evento={evento}
-              aoRemover={() => removerEvento(evento.id)}
+              aoRemover={() =>
+                removerSalvo(evento.id, setIdsEventosRemovidos, "Notícia removida dos salvos.")
+              }
             />
           ))}
 
@@ -285,18 +277,13 @@ export default function PainelGuardados() {
           }}
           ordenacao={{ valor: ordemConceitos, aoAlterar: setOrdemConceitos }}
         >
-          {idsConceitosRemovidos.length > 0 && (
-            <AvisoRemocao
-              mensagem="Conceito removido dos salvos."
-              aoDesfazer={() => setIdsConceitosRemovidos((ids) => ids.slice(0, -1))}
-            />
-          )}
-
           {conceitosFiltrados.map((conceito) => (
             <CardConceitoMarcado
               key={conceito.id}
               conceito={conceito}
-              aoRemover={() => setIdsConceitosRemovidos((ids) => [...ids, conceito.id])}
+              aoRemover={() =>
+                removerSalvo(conceito.id, setIdsConceitosRemovidos, "Conceito removido dos salvos.")
+              }
             />
           ))}
 

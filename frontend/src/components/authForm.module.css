@@ -390,6 +390,17 @@
   background: transparent;
 }
 
+.authDialog[data-wisen-area="admin"] [data-slot="dialog-header"] {
+  border-bottom: 1px solid #334359;
+  background: #192a43;
+  padding-bottom: 1rem;
+}
+
+.authDialog[data-wisen-area="admin"] [data-slot="dialog-footer"] {
+  border-top: 1px solid #334359;
+  background: #152238;
+}
+
 .authDialog [data-slot="dialog-title"] {
   color: #f5f7fb;
 }

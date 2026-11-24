@@ -21,7 +21,7 @@ const acoes = [
 export default function AcoesConceito() {
   const [marked, setMarked] = useState(false);
   return (
-    <Card className="h-full gap-0 rounded-xl border-0 bg-white p-0 shadow-none">
+    <Card className="h-full gap-0 rounded-xl border-0 bg-card p-0 shadow-none">
       <CardContent className="p-5">
         <div className="mb-5 flex items-center gap-3">
           <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FFF8DD] text-2xl text-wisen-titulo">

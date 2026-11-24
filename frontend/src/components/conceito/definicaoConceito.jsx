@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export default function DefinicaoConceito() {
   return (
-    <Card className="h-full gap-0 rounded-xl border-0 bg-white p-0 shadow-none">
+    <Card className="h-full gap-0 rounded-xl border-0 bg-card p-0 shadow-none">
       <CardContent className="p-5">
         <div className="mb-4 flex items-center gap-3">
           <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FFF8DD]">

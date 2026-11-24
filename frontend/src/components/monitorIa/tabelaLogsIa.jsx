@@ -120,8 +120,8 @@ function LogAction({ log, onOpen, mobile = false }) {
       onClick={() => onOpen(log)}
       className={
         mobile
-          ? "h-10 w-full border-wisen-borda text-xs text-[#526584] hover:bg-wisen-destaque-suave active:bg-wisen-destaque-suave"
-          : "text-xs text-[#526584] hover:bg-transparent hover:text-wisen-destaque dark:hover:bg-transparent"
+          ? "h-10 w-full border-wisen-borda text-xs text-[#526584] hover:bg-wisen-admin-control-hover active:bg-wisen-admin-control-hover"
+          : "text-xs text-[#526584] hover:bg-wisen-admin-control-hover hover:text-wisen-titulo"
       }
     >
       Ver detalhes
@@ -149,7 +149,7 @@ export function TabelaLogsIa() {
   return (
     <section
       aria-labelledby="logs-ia-title"
-      className="@container/ai-logs min-w-0 overflow-hidden rounded-2xl border border-wisen-borda bg-white shadow-2xs"
+      className="@container/ai-logs min-w-0 overflow-hidden rounded-2xl border border-wisen-borda bg-card shadow-2xs"
     >
       <div className="space-y-4 px-4 py-4 sm:px-5">
         <div>
@@ -210,7 +210,7 @@ export function TabelaLogsIa() {
           <div className="hidden @min-[54rem]/ai-logs:block">
             <table className="w-full text-left text-sm">
               <caption className="sr-only">Requisições de IA e métricas de consumo</caption>
-              <thead className="border-y border-[#E8EDF4] bg-[#E8EFFA]">
+              <thead className="border-y border-[#E8EDF4]">
                 <tr className="text-[10px] font-semibold tracking-wider text-wisen-titulo uppercase">
                   <th scope="col" className="px-5 py-3">
                     Modelo
@@ -236,7 +236,7 @@ export function TabelaLogsIa() {
               </thead>
               <tbody className="divide-y divide-[#EDF0F5]">
                 {visibleLogs.map((log) => (
-                  <tr key={log.dataHora} className="transition-colors hover:bg-[#FBF7E5]">
+                  <tr key={log.dataHora} className="transition-colors hover:bg-wisen-admin-hover">
                     <td className="px-5 py-4">
                       <LogModel log={log} />
                     </td>

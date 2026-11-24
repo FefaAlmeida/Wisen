@@ -23,7 +23,7 @@ export default function PaginaDemonstracao() {
 
         {/* Blocos de Conteúdo para Gerar Altura de Scroll */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-2xs space-y-2">
+          <div className="bg-card p-6 rounded-2xl border border-wisen-borda shadow-2xs space-y-2">
             <Layout className="w-5 h-5 text-[#2B333F]" />
             <h3 className="font-bold text-sm">Design Isolado</h3>
             <p className="text-xs text-slate-500">
@@ -32,7 +32,7 @@ export default function PaginaDemonstracao() {
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-2xs space-y-2">
+          <div className="bg-card p-6 rounded-2xl border border-wisen-borda shadow-2xs space-y-2">
             <div className="w-3 h-3 rounded-full bg-[#E8E191]" />
             <h3 className="font-bold text-sm">Paleta Oficial</h3>
             <p className="text-xs text-slate-500">
@@ -41,7 +41,7 @@ export default function PaginaDemonstracao() {
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-2xs space-y-2">
+          <div className="bg-card p-6 rounded-2xl border border-wisen-borda shadow-2xs space-y-2">
             <span className="text-xs font-extrabold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">
               100%
             </span>

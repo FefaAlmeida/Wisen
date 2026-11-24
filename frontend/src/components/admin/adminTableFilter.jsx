@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/select";
 
 export const adminFilterHover =
-  "transition-colors hover:bg-wisen-destaque-suave hover:text-wisen-titulo";
+  "transition-colors hover:bg-wisen-admin-control-hover hover:text-wisen-titulo";
 export const adminFilterControl = `wisen-control w-full min-w-0 ${adminFilterHover}`;
 
 export function AdminTableFilter({ label, options, value, onChange, width }) {
@@ -21,7 +21,7 @@ export function AdminTableFilter({ label, options, value, onChange, width }) {
           <SelectItem
             key={value}
             value={value}
-            className="data-highlighted:bg-wisen-cliente-hover data-highlighted:text-wisen-titulo focus:bg-wisen-cliente-hover focus:text-wisen-titulo"
+            className="data-highlighted:bg-wisen-admin-control-hover data-highlighted:text-wisen-titulo focus:bg-wisen-admin-control-hover focus:text-wisen-titulo"
           >
             {label}
           </SelectItem>

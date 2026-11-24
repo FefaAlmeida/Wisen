@@ -4,6 +4,13 @@
 
 @custom-variant dark (&:is(.dark *));
 
+[data-wisen-area="admin"] {
+  --button-hover: var(--color-wisen-admin-control-hover);
+  --button-primary: var(--color-wisen-titulo);
+  --button-primary-foreground: #fff;
+  --button-primary-hover: var(--color-wisen-admin-primary-hover);
+}
+
 @utility admin-dialog-panel {
   @apply min-w-0 rounded-xl border border-wisen-borda bg-white p-4;
 }
@@ -30,11 +37,12 @@
   --color-wisen-titulo: #101a40;
   --color-wisen-texto-forte: #253452;
   --color-wisen-superficie: #f0f4f9;
-  --color-wisen-card: #ffffff;
   --color-wisen-sidebar: #172542;
   --color-wisen-texto-suave: #607092;
   --color-wisen-destaque: #d7bf4d;
-  --color-wisen-admin-hover: #f0f4f9;
+  --color-wisen-admin-hover: #fffae8;
+  --color-wisen-admin-control-hover: #fff5d6;
+  --color-wisen-admin-primary-hover: #30466e;
   --color-wisen-cliente-hover: #fff9df;
   --color-wisen-borda: #dce3ed;
   --color-wisen-destaque-suave: #f3e69a;
@@ -163,6 +171,9 @@
   html {
     @apply font-sans;
   }
+  thead {
+    @apply bg-wisen-admin-control-hover dark:bg-secondary;
+  }
 }
 
 @keyframes admin-chart-card-enter {
@@ -267,7 +278,7 @@
   min-width: 0;
   border: 1px solid var(--color-wisen-borda);
   border-radius: 1rem;
-  background-color: var(--color-wisen-card);
+  background-color: var(--card);
   box-shadow: 0 2px 8px -6px rgb(16 26 64 / 18%);
 }
 @utility wisen-page-title {
@@ -295,7 +306,7 @@
   min-height: 2.5rem;
   border: 1px solid var(--color-wisen-borda);
   border-radius: 0.625rem;
-  background-color: var(--color-wisen-card);
+  background-color: #ffffff;
   padding-inline: 0.75rem;
   font-size: 0.8125rem;
   color: var(--color-wisen-texto-forte);

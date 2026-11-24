@@ -28,7 +28,7 @@ const noticias = [
 
 export default function NoticiasRelacionadas() {
   return (
-    <Card className="gap-0 rounded-xl border-0 bg-white p-0 shadow-none">
+    <Card className="gap-0 rounded-xl border-0 bg-card p-0 shadow-none">
       <CardContent className="p-5">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-start gap-3">

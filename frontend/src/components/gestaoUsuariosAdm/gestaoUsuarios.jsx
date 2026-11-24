@@ -128,7 +128,7 @@ export default function GestaoUsuarios({ demo = true }) {
         <TabsContent value="contas" className="min-w-0">
           <section
             aria-label="Gestão de contas"
-            className="min-w-0 overflow-hidden rounded-2xl border border-wisen-borda bg-white shadow-2xs"
+            className="min-w-0 overflow-hidden rounded-2xl border border-wisen-borda bg-card shadow-2xs"
           >
             <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">
               <div className="grid w-full min-w-0 grid-cols-2 items-center gap-2 sm:flex sm:w-auto sm:flex-wrap">

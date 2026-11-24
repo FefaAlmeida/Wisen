@@ -44,7 +44,7 @@ export default function TabelaUsuarios({ usuarios, aoAbrirUsuario }) {
       <div className="hidden overflow-x-auto @min-[48rem]/users:block">
         <table className="w-full text-left text-sm">
           <caption className="sr-only">Contas cadastradas e configurações de acesso</caption>
-          <thead className="border-y border-[#E8EDF4] bg-[#E8EFFA]">
+          <thead className="border-y border-[#E8EDF4]">
             <tr className="text-[10px] font-bold tracking-wider text-[#30466E] uppercase">
               <th scope="col" className="px-5 py-3">
                 Usuário
@@ -65,7 +65,7 @@ export default function TabelaUsuarios({ usuarios, aoAbrirUsuario }) {
           </thead>
           <tbody className="divide-y divide-[#EDF0F5]">
             {usuarios.map((user) => (
-              <tr key={user.id} className="transition-colors hover:bg-[#FBF7E5]">
+              <tr key={user.id} className="transition-colors hover:bg-wisen-admin-hover">
                 <td className="px-5 py-4">
                   <Account user={user} />
                 </td>
@@ -87,7 +87,7 @@ export default function TabelaUsuarios({ usuarios, aoAbrirUsuario }) {
                     variant="ghost"
                     onClick={() => aoAbrirUsuario(user)}
                     aria-label={`Gerenciar ${user.nome}`}
-                    className="text-xs text-[#526584] hover:bg-transparent hover:text-wisen-destaque dark:hover:bg-transparent"
+                    className="text-xs text-[#526584] hover:bg-wisen-admin-control-hover hover:text-wisen-titulo"
                   >
                     Gerenciar
                     <ArrowUpRight className="size-3.5" />
@@ -113,7 +113,7 @@ export default function TabelaUsuarios({ usuarios, aoAbrirUsuario }) {
               variant="outline"
               onClick={() => aoAbrirUsuario(user)}
               aria-label={`Gerenciar ${user.nome}`}
-              className="h-10 w-full border-wisen-borda text-xs text-[#526584] hover:bg-wisen-destaque-suave active:bg-wisen-destaque-suave"
+              className="h-10 w-full border-wisen-borda text-xs text-[#526584] hover:bg-wisen-admin-control-hover active:bg-wisen-admin-control-hover"
             >
               Gerenciar conta
               <ArrowUpRight className="size-3.5" />

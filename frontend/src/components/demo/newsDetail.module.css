@@ -33,7 +33,7 @@
 }
 .action {
   border: 1px solid var(--color-wisen-borda);
-  background: var(--color-wisen-card);
+  background: var(--card);
   padding: 8px 14px;
   cursor: pointer;
 }
@@ -62,7 +62,7 @@
   min-width: 0;
   border: 1px solid var(--color-wisen-borda);
   border-radius: 16px;
-  background: var(--color-wisen-card);
+  background: var(--card);
 }
 .article {
   overflow: hidden;

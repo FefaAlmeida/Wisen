@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 
 export function PerguntasFrequentes() {
@@ -44,16 +45,24 @@ export function PerguntasFrequentes() {
       className="relative w-screen -mx-[calc(50vw-50%)] mt-0 scroll-mt-24"
     >
       <div className="relative isolate overflow-hidden border-y border-[#293B5C] bg-[#172542] px-6 py-8 text-white sm:px-10 md:px-14 md:py-10">
-        <div className="relative z-10 mx-auto grid max-w-[1360px] grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-14">
+        <div className="relative z-10 mx-auto grid max-w-[1360px] grid-cols-1 items-start gap-4 lg:grid-cols-12 lg:gap-10">
           {/* Introdução */}
-          <div className="space-y-4 lg:col-span-5">
+          <div className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-6 lg:col-span-5 lg:justify-start lg:self-center">
             <h2
               id="faq-titulo"
-              className="whitespace-nowrap text-center text-[clamp(1.5rem,6.5vw,1.875rem)] font-bold leading-[1.15] tracking-[-0.045em] text-white sm:whitespace-normal sm:text-left sm:text-[clamp(1.875rem,2.8vw,2.5rem)]"
+              className="text-center text-[clamp(1.5rem,6.5vw,1.875rem)] font-bold leading-[1.15] tracking-[-0.045em] text-white sm:text-left sm:text-[clamp(1.875rem,2.8vw,2.5rem)]"
             >
               Ainda tem <br className="hidden sm:block" />
               perguntas<span className="text-[#E8E191]">?</span>
             </h2>
+            <Image
+              src="/coruja-wisen-faq.png"
+              alt=""
+              width={367}
+              height={384}
+              unoptimized
+              className="h-auto w-20 shrink-0 sm:w-28 xl:w-32"
+            />
           </div>
 
           {/* Perguntas */}

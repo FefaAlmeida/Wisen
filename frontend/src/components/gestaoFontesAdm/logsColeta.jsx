@@ -4,7 +4,7 @@ export default function LogsColeta({ logs, demo, loading, error }) {
   return (
     <section
       aria-labelledby="registros-coleta-titulo"
-      className="min-w-0 overflow-hidden rounded-2xl border border-wisen-borda bg-white shadow-2xs"
+      className="min-w-0 overflow-hidden rounded-2xl border border-wisen-borda bg-card shadow-2xs"
     >
       <header className="border-b border-wisen-borda px-4 py-4 sm:px-5">
         <h2 id="registros-coleta-titulo" className="font-semibold text-wisen-titulo">

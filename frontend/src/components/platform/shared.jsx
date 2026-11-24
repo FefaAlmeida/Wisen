@@ -65,7 +65,10 @@ export function Frame({
   children,
 }) {
   return (
-    <div className="min-h-screen bg-wisen-superficie font-[family-name:var(--font-geist-sans)] text-wisen-titulo">
+    <div
+      data-wisen-area={admin ? "admin" : undefined}
+      className="min-h-screen bg-wisen-superficie font-[family-name:var(--font-geist-sans)] text-wisen-titulo"
+    >
       {admin ? <AdminSidebar activeItem={active} /> : <Sidebar activeItem={active} />}
       <main className="relative isolate min-h-screen min-w-0 pt-[76px] sm:ml-[76px] lg:ml-[240px]">
         <ConnectionsBackground fadeTop={false} />

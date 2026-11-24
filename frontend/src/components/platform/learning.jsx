@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -404,7 +405,31 @@ export function Saved() {
               ))}
             </ul>
           ) : (
-            <p className="text-sm text-wisen-texto-suave">Você ainda não tem conteúdos salvos.</p>
+            <div className="flex items-center gap-4 py-2">
+              <Image
+                src="/tour-cliente/salvos.png"
+                alt=""
+                width={60}
+                height={60}
+                className="shrink-0"
+                unoptimized
+              />
+              <div className="space-y-1 text-sm text-wisen-texto-suave">
+                <p className="font-semibold text-wisen-titulo">
+                  Você ainda não tem conteúdos salvos.
+                </p>
+                <p>
+                  <span className="font-medium">Dica da Zuzu.</span> Toque no marcador de uma
+                  notícia ou de um conceito para guardar aqui.
+                </p>
+                <Link
+                  href="/paginaExplorar"
+                  className="inline-block font-medium text-wisen-titulo underline"
+                >
+                  Explorar notícias
+                </Link>
+              </div>
+            </div>
           )}
         </State>
         {error && <p role="alert">{error}</p>}
@@ -421,13 +446,26 @@ export function Reviews() {
           resource.data.items.map((r) => <Review key={r.id} review={r} onDone={resource.reload} />)
         ) : (
           <Panel>
-            <p>
-              Você não tem revisões disponíveis. Explore conceitos e registre suas dúvidas para
-              começar.
-            </p>
-            <Link href="/paginaExplorar" className="mt-4 block underline">
-              Explorar notícias
-            </Link>
+            <div className="flex items-center gap-4">
+              <Image
+                src="/tour-cliente/revisoes.png"
+                alt=""
+                width={60}
+                height={60}
+                className="shrink-0"
+                unoptimized
+              />
+              <div>
+                <p>Você não tem revisões disponíveis.</p>
+                <p className="mt-1 text-sm text-wisen-texto-suave">
+                  <span className="font-medium">Dica da Zuzu.</span> Explore conceitos e registre
+                  suas dúvidas para começar.
+                </p>
+                <Link href="/paginaExplorar" className="mt-3 inline-block underline">
+                  Explorar notícias
+                </Link>
+              </div>
+            </div>
           </Panel>
         )}
       </State>

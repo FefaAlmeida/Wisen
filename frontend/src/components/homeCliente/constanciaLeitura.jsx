@@ -22,6 +22,7 @@ export function ConstanciaLeitura() {
           </strong>
         </div>
       </div>
+      <p className={cards.streakMessage}>A Zuzu está orgulhosa de você!</p>
       <div
         className={`${cards.support} ${cards.week}`}
         role="img"

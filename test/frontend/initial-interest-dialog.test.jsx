@@ -1,5 +1,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { AppTopBar } from "../../frontend/src/components/app/appTopBar.jsx";
+import { HomeClientNavigation } from "../../frontend/src/components/homeCliente/homeClientNavigation.jsx";
 import { InitialInterestDialog } from "../../frontend/src/components/homeCliente/initialInterestDialog.jsx";
 
 function mockProfile(preferences = {}, saveError = false, name = "Ana") {
@@ -37,7 +39,7 @@ function mockProfile(preferences = {}, saveError = false, name = "Ana") {
           options?.method === "PUT"
             ? { user: { name: "Lia" }, message: "Falha ao salvar" }
             : {
-                user: { name },
+                user: { id: 42, name },
                 location: name ? { countryCode: "BR", stateId: 2021 } : null,
                 preferences: { interests: [], onboardingCompleted: false, ...preferences },
               },
@@ -58,6 +60,66 @@ async function selectInterests() {
 
 const savedBody = (mock) =>
   JSON.parse(mock.mock.calls.find(([, options]) => options?.method === "PUT")[1].body);
+
+describe("tour da área do cliente", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    window.localStorage.clear();
+  });
+
+  it("aguarda o perfil, permite pular e abre novamente pelo menu", async () => {
+    mockProfile({
+      interests: ["Tecnologia", "Meio ambiente", "Saúde"],
+      onboardingCompleted: true,
+    });
+    const firstVisit = render(<HomeClientNavigation />);
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(await screen.findByRole("dialog", { name: "Boas-vindas ao Wisen!" })).toBeVisible();
+    expect(screen.getByText(/eu sou a Zuzu/)).toBeVisible();
+    fireEvent.click(screen.getByRole("button", { name: "Próximo" }));
+    expect(screen.getByRole("dialog", { name: "Notícias" })).toBeVisible();
+    fireEvent.click(screen.getByRole("button", { name: "Voltar" }));
+    expect(screen.getByRole("dialog", { name: "Boas-vindas ao Wisen!" })).toBeVisible();
+    fireEvent.click(screen.getByRole("button", { name: "Pular tour" }));
+    firstVisit.unmount();
+
+    render(<HomeClientNavigation />);
+    const replay = await screen.findByRole("button", { name: "Rever tour" });
+    expect(replay.closest('header[data-wisen-area="cliente"]')).toBeInTheDocument();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    fireEvent.click(replay);
+    expect(await screen.findByRole("dialog", { name: "Boas-vindas ao Wisen!" })).toBeVisible();
+  });
+});
+
+describe("tour administrativo", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    window.localStorage.clear();
+  });
+
+  it("abre para o admin independentemente do tour do cliente e permite concluir e rever", async () => {
+    const user = { id: 42, role: "admin", name: "Ana" };
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => ({ user }) }));
+    window.localStorage.setItem("wisen:client-tour:v1:42", "seen");
+    const adminVisit = render(<AppTopBar admin />);
+    const welcome = "Boas-vindas à administração do Wisen";
+    expect(await screen.findByRole("dialog", { name: welcome })).toBeVisible();
+    for (let index = 0; index < 5; index++) {
+      fireEvent.click(screen.getByRole("button", { name: "Próximo" }));
+    }
+    expect(screen.getByRole("dialog", { name: "Monitor de IA" })).toBeVisible();
+    fireEvent.click(screen.getByRole("button", { name: "Concluir" }));
+    adminVisit.unmount();
+
+    render(<AppTopBar admin />);
+    const replay = await screen.findByRole("button", { name: "Rever tour" });
+    expect(replay.closest('header[data-wisen-area="admin"]')).toBeInTheDocument();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    fireEvent.click(replay);
+    expect(await screen.findByRole("dialog", { name: welcome })).toBeVisible();
+  });
+});
 
 async function selectLocation() {
   fireEvent.click(screen.getByRole("button", { name: "Mostrar localizações" }));

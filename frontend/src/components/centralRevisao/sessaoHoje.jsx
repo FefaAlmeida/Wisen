@@ -9,7 +9,7 @@ const conceitos = [
 
 export default function SessaoHoje() {
   return (
-    <Card className="gap-0 rounded-xl border-0 bg-white p-0 shadow-none">
+    <Card className="gap-0 rounded-xl border-0 bg-card p-0 shadow-none">
       <CardContent className="p-5">
         <div className="mb-5 flex items-center gap-3">
           <span className="h-[2px] w-6 bg-[#E8C637]" />

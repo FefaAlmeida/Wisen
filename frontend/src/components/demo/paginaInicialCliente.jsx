@@ -1,23 +1,19 @@
 import Link from "next/link";
-import { AppTopBar } from "@/components/app/appTopBar";
 import { Footer } from "@/components/footer";
 import CardInteresse from "@/components/homeCliente/cardInteresse";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
 import HeroHome from "@/components/homeCliente/heroHome";
-import { InitialInterestDialog } from "@/components/homeCliente/initialInterestDialog";
+import { HomeClientNavigation } from "@/components/homeCliente/homeClientNavigation";
 import PainelRevisoes from "@/components/homeCliente/painelRevisoes";
 import HomeFeed from "@/components/platform/homeFeed";
-import Sidebar from "@/components/sidebar";
 
 export default function Home() {
   return (
     <div className="min-h-screen">
-      <InitialInterestDialog />
-      <Sidebar activeItem="Início" />
+      <HomeClientNavigation />
       <main className="relative isolate min-h-screen min-w-0 pt-[76px] bg-wisen-superficie font-[family-name:var(--font-geist-sans)] sm:ml-[76px] lg:ml-[240px]">
         <ConnectionsBackground />
         <div className="relative z-10 mx-auto w-full max-w-[1600px]">
-          <AppTopBar />
           <div className="wisen-container pt-7">
             <HeroHome />
           </div>

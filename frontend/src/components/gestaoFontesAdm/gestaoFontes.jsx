@@ -128,7 +128,7 @@ export default function GestaoFontes({ demo = true }) {
               aria-haspopup="dialog"
               onClick={() => edit(null)}
               disabled={loading || busy}
-              className="h-11 w-full gap-2.5 rounded-xl bg-[#101A40] px-2.5 text-xs font-semibold text-white shadow-2xs hover:bg-[#30466E] sm:w-auto"
+              className="h-11 w-full gap-2.5 rounded-xl bg-[#101A40] px-2.5 text-xs font-semibold text-white shadow-2xs hover:bg-wisen-admin-primary-hover sm:w-auto"
             >
               <Plus aria-hidden="true" className="size-4" />
               Adicionar fonte
@@ -138,7 +138,7 @@ export default function GestaoFontes({ demo = true }) {
         <TabsContent value="fontes" className="min-w-0">
           <section
             aria-label="Gestão de fontes RSS"
-            className="min-w-0 overflow-hidden rounded-2xl border border-wisen-borda bg-white shadow-2xs"
+            className="min-w-0 overflow-hidden rounded-2xl border border-wisen-borda bg-card shadow-2xs"
           >
             <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] items-center gap-2 px-4 py-4 sm:flex sm:flex-wrap sm:px-5">
               <div className="relative col-span-2 w-full min-w-0 sm:w-[230px]">

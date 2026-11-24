@@ -1,6 +1,6 @@
 .page {
   --ink: var(--color-wisen-titulo);
-  --card-surface: var(--color-wisen-card);
+  --card-surface: var(--card);
   --card-border: var(--color-wisen-borda);
   --card-divider: var(--color-wisen-borda);
   --muted: var(--color-wisen-texto-suave);
@@ -94,7 +94,7 @@
   margin-bottom: 20px;
 }
 .stat {
-  background: var(--color-wisen-card);
+  background: var(--card);
   border: 1px solid var(--line);
   border-radius: 16px;
   padding: 22px 24px;
@@ -240,7 +240,7 @@
   margin-top: 18px;
   position: relative;
 }
-.chartPlot > :where(svg) {
+.chartPlot svg {
   width: 100%;
   height: 206px;
   display: block;
@@ -258,20 +258,6 @@
 .chartReadout :where(strong) {
   color: var(--ink);
   font-weight: 600;
-}
-.chartInput {
-  position: absolute;
-  top: 42px;
-  left: 5.15%;
-  width: 92%;
-  height: 160px;
-  opacity: 0;
-  cursor: crosshair;
-}
-.chart:has(.chartInput:focus-visible) {
-  outline: 3px solid var(--ring);
-  outline-offset: 4px;
-  border-radius: 4px;
 }
 .chartFooter {
   display: flex;
@@ -459,11 +445,8 @@
 }
 
 @media (min-width: 1600px) {
-  .chartPlot > svg {
+  .chartPlot svg {
     height: 232px;
-  }
-  .chartInput {
-    height: 180px;
   }
 }
 @media (max-width: 1199px) {
@@ -549,11 +532,8 @@
   .chartToolbar {
     gap: 18px;
   }
-  .chartPlot > svg {
+  .chartPlot svg {
     height: 190px;
-  }
-  .chartInput {
-    height: 145px;
   }
 
   .activity {

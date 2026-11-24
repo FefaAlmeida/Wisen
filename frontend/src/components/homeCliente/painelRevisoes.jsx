@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const revisoes = [
@@ -101,9 +102,20 @@ export default function PainelRevisoes() {
             ))}
           </div>
 
-          <p className="mt-5 text-[12px] leading-5 text-[#A9B8CB]">
-            Revisar regularmente ajuda a consolidar o que você aprendeu.
-          </p>
+          <div className="mt-5 flex items-center gap-3">
+            <Image
+              src="/tour-cliente/revisoes.png"
+              alt=""
+              width={44}
+              height={44}
+              className="shrink-0"
+              unoptimized
+            />
+            <p className="text-xs leading-5 text-[#C6D0DD]">
+              <span className="block font-semibold text-[#F3E69A]">Dica da Zuzu</span>
+              Antes de abrir um conceito, tente lembrar como você o explicaria com suas palavras.
+            </p>
+          </div>
         </div>
       </div>
     </section>

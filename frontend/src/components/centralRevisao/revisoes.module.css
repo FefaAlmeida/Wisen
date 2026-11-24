@@ -1,7 +1,7 @@
 .page {
   --ink: var(--color-wisen-titulo);
   --muted: var(--color-wisen-texto-suave);
-  --surface: var(--color-wisen-card);
+  --surface: var(--card);
   --accent: var(--color-wisen-destaque-suave);
   padding: 28px clamp(16px, 2vw, 32px) 48px;
   color: var(--ink);
@@ -553,7 +553,7 @@
   flex-shrink: 0;
 }
 .statFlame {
-  width: 44px;
+  width: 52px;
   height: 48px;
   flex-shrink: 0;
   color: var(--color-wisen-titulo);

@@ -65,12 +65,12 @@ export function TabelasDesempenhoAdm() {
     <div className="@container min-w-0">
       <div className="grid min-w-0 grid-cols-1 gap-6 @min-[40rem]:grid-cols-2">
         {/* 1. Utilizadores Mais Ativos */}
-        <div className="col-span-full min-w-0 space-y-4 rounded-2xl border border-wisen-borda bg-white p-5 shadow-2xs">
+        <div className="col-span-full min-w-0 space-y-4 rounded-2xl border border-wisen-borda bg-card p-5 shadow-2xs">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#E3E9F1] pb-3">
             <TituloCartaoAdm titulo="Usuários mais ativos" />
             <Link
               href="/paginaGestaoUsuariosAdm"
-              className="text-sm font-semibold text-[#30466E] transition-colors hover:text-[#D6B92F]"
+              className="text-sm font-semibold text-[#30466E] underline-offset-4 hover:underline focus-visible:underline"
             >
               Ver todos →
             </Link>
@@ -78,7 +78,7 @@ export function TabelasDesempenhoAdm() {
 
           <div className="max-w-full overflow-x-auto overscroll-x-contain pt-3">
             <table className="w-full min-w-[540px] text-left text-sm [&_td]:px-4 [&_th]:px-4">
-              <thead className="bg-[#E8EFFA]">
+              <thead>
                 <tr className="border-b border-[#E3E9F1] text-xs font-semibold text-[#7182A1] uppercase [&_th]:py-3">
                   <th scope="col">Usuário</th>
                   <th scope="col">Revisões</th>
@@ -112,7 +112,7 @@ export function TabelasDesempenhoAdm() {
         </div>
 
         {/* 2. Conteúdos Mais Acessados */}
-        <div className="min-w-0 space-y-4 rounded-2xl border border-wisen-borda bg-white p-5 shadow-2xs">
+        <div className="min-w-0 space-y-4 rounded-2xl border border-wisen-borda bg-card p-5 shadow-2xs">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#E3E9F1] pb-3">
             <TituloCartaoAdm titulo="Conteúdos mais acessados" />
           </div>
@@ -136,7 +136,7 @@ export function TabelasDesempenhoAdm() {
         </div>
 
         {/* 3. Conceitos Com Mais Lacunas */}
-        <div className="min-w-0 space-y-4 rounded-2xl border border-wisen-borda bg-white p-5 shadow-2xs">
+        <div className="min-w-0 space-y-4 rounded-2xl border border-wisen-borda bg-card p-5 shadow-2xs">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#E3E9F1] pb-3">
             <TituloCartaoAdm titulo="Conceitos com mais lacunas" />
           </div>

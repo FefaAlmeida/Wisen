@@ -104,14 +104,14 @@ export default function GestaoCategorias() {
             : []
         }
       />
-      <Card className="gap-0 rounded-xl border border-[#DCE3ED] bg-white p-0 shadow-none">
+      <Card className="gap-0 rounded-xl border border-wisen-borda bg-card p-0 shadow-none">
         <CardContent className="gap-0 p-0">
           <div className="flex justify-end p-4 sm:p-5">
             <Button
               type="button"
               onClick={saveCategories}
               disabled={loading || saving || !hasChanges}
-              className="h-11 w-full rounded-xl bg-[#101A40] px-2.5 text-xs font-semibold text-white shadow-2xs hover:bg-[#30466E] sm:w-auto"
+              className="h-11 w-full rounded-xl bg-[#101A40] px-2.5 text-xs font-semibold text-white shadow-2xs hover:bg-wisen-admin-primary-hover sm:w-auto"
             >
               {saving ? "Salvando..." : "Salvar disponibilidade"}
             </Button>
@@ -147,7 +147,7 @@ export default function GestaoCategorias() {
                 <caption className="sr-only">
                   Disponibilidade das categorias nas preferências
                 </caption>
-                <thead className="border-y border-[#E8EDF4] bg-[#E8EFFA]">
+                <thead className="border-y border-[#E8EDF4]">
                   <tr className="text-[10px] font-semibold tracking-wider text-wisen-titulo uppercase">
                     <th scope="col" className="w-full px-4 py-3 sm:px-5">
                       Categoria
@@ -162,7 +162,7 @@ export default function GestaoCategorias() {
                 </thead>
                 <tbody className="divide-y divide-[#EDF0F5]">
                   {categories.map((category) => (
-                    <tr key={category.id} className="transition-colors hover:bg-[#FBF7E5]">
+                    <tr key={category.id} className="transition-colors hover:bg-wisen-admin-hover">
                       <th scope="row" className="px-4 py-3 font-medium text-wisen-titulo sm:px-5">
                         {category.name}
                         {category.description && (

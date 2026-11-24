@@ -10,7 +10,7 @@ export const profileInputIcon =
 export function ProfileSection({ icon: Icon, title, description, className = "", children }) {
   return (
     <Card
-      className={`min-w-0 gap-5 rounded-2xl border-wisen-borda bg-wisen-card [--card-spacing:--spacing(5)] sm:[--card-spacing:--spacing(6)] ${className}`}
+      className={`min-w-0 gap-5 rounded-2xl border-wisen-borda bg-card [--card-spacing:--spacing(5)] sm:[--card-spacing:--spacing(6)] ${className}`}
     >
       <div className="flex items-start gap-3 px-(--card-spacing)">
         <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-wisen-superficie text-wisen-titulo in-data-[wisen-profile]:bg-wisen-titulo in-data-[wisen-profile]:text-wisen-destaque-suave">

@@ -5,7 +5,10 @@ import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackg
 
 export function AdminLayout({ activeItem, backgroundParticleDensity, children }) {
   return (
-    <div className="min-h-screen bg-wisen-superficie font-[family-name:var(--font-geist-sans)]">
+    <div
+      data-wisen-area="admin"
+      className="min-h-screen bg-wisen-superficie font-[family-name:var(--font-geist-sans)]"
+    >
       <AdminSidebar activeItem={activeItem} />
       <div className="relative isolate min-h-screen bg-wisen-superficie sm:ml-[76px] lg:ml-[240px]">
         <ConnectionsBackground particleDensity={backgroundParticleDensity} />

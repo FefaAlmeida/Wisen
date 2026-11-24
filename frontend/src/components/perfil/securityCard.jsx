@@ -163,7 +163,7 @@ export function SecurityCard({ admin = false, showDeleteAccount = false }) {
           <button
             type="button"
             onClick={() => window.location.assign("/conta?action=delete")}
-            className={`${securityAction} cursor-pointer border-transparent bg-red-100 text-wisen-titulo hover:border-red-700 hover:bg-wisen-card hover:text-red-700 focus-visible:outline-red-700`}
+            className={`${securityAction} cursor-pointer border-transparent bg-red-100 text-wisen-titulo hover:border-red-700 hover:bg-card hover:text-red-700 focus-visible:outline-red-700`}
           >
             <div className="flex items-center gap-3">
               <div className="flex size-10 shrink-0 items-center justify-center">

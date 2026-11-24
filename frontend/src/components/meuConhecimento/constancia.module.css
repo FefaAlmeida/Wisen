@@ -18,7 +18,7 @@
   min-height: 270px;
   padding: 0 var(--card-padding);
   color: var(--card-ink);
-  background: var(--color-wisen-card);
+  background: var(--card);
   border: 1px solid var(--color-wisen-borda);
   border-radius: 16px;
   overflow: hidden;
@@ -335,6 +335,12 @@
   letter-spacing: -0.025em;
 }
 
+.group .masteredValue strong,
+.group .gapValue strong,
+.group .streakValue strong {
+  font-size: clamp(28px, 13cqi, 40px);
+}
+
 .streakBody {
   justify-content: center;
 }
@@ -342,6 +348,13 @@
 .streakValue {
   align-items: center;
   gap: 6px;
+}
+
+.streakMessage {
+  margin: 0 0 8px;
+  color: var(--card-muted);
+  font-size: 12px;
+  text-align: center;
 }
 
 .flame {
@@ -467,4 +480,38 @@
   .record {
     font-size: 10px;
   }
+}
+
+.card.compact {
+  --card-header-height: 40px;
+  --card-padding: 14px;
+  min-height: 0;
+  padding-bottom: 10px;
+}
+
+.compact .heading {
+  padding-block: 8px;
+}
+
+.compact .body {
+  min-height: 64px;
+  padding-block: 8px;
+}
+
+.compact .value {
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.compact .value strong {
+  font-size: clamp(26px, 14cqi, 36px);
+}
+
+.compact .support {
+  min-height: 44px;
+  padding-bottom: 8px;
+}
+
+.compact .bottomRule {
+  height: 1px;
 }

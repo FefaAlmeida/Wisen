@@ -8,7 +8,7 @@ import { dialogPrimaryAction } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { StatusEvento } from "./cardEvento";
 
-const rowAction = "border-wisen-borda text-xs text-wisen-texto-forte hover:bg-wisen-admin-hover";
+const rowAction = "border-wisen-borda text-xs text-wisen-texto-forte hover:bg-wisen-admin-control-hover";
 
 export function ArticleSource({ url }) {
   if (!url) return null;
@@ -17,7 +17,7 @@ export function ArticleSource({ url }) {
       href={url}
       target="_blank"
       rel="noreferrer"
-      className="inline-flex min-h-8 items-center gap-1.5 rounded-lg px-2 text-xs font-medium text-wisen-texto-forte hover:bg-wisen-admin-hover hover:underline focus-visible:outline-2 focus-visible:outline-ring"
+      className="inline-flex min-h-8 items-center gap-1.5 rounded-lg px-2 text-xs font-medium text-wisen-texto-forte hover:bg-wisen-admin-control-hover hover:underline focus-visible:outline-2 focus-visible:outline-ring"
     >
       Abrir fonte
       <ExternalLink aria-hidden="true" className="size-3.5" />
@@ -157,7 +157,7 @@ export default function PainelArtigos({
                     size="sm"
                     disabled={busy}
                     onClick={() => aoRetirar(article)}
-                    className="text-xs text-wisen-texto-suave hover:bg-wisen-admin-hover"
+                    className="text-xs text-wisen-texto-suave hover:bg-wisen-admin-control-hover"
                   >
                     Retirar do evento
                   </Button>

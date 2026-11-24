@@ -119,7 +119,7 @@ export function InitialInterestDialog({ embedded = false, onComplete, onReady })
             needsName || !onboardingCompleted || selectedInterests.length < MINIMUM_INTERESTS,
           );
           if (!needsName && onboardingCompleted && selectedInterests.length >= MINIMUM_INTERESTS) {
-            onComplete?.();
+            onComplete?.(data.user);
           } else {
             onReady?.();
           }
@@ -239,7 +239,7 @@ export function InitialInterestDialog({ embedded = false, onComplete, onReady })
       }
 
       setOpen(false);
-      onComplete?.();
+      onComplete?.(profile.user);
     } catch (saveError) {
       setError(saveError.message || "Não foi possível salvar suas preferências.");
     } finally {

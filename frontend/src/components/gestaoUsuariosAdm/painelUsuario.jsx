@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { History } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -18,7 +18,7 @@ import {
 import { UserStatus } from "./tabelaUsuarios";
 
 const control =
-  "mt-2 h-11 w-full min-w-0 rounded-lg border border-wisen-borda bg-white px-3 text-sm text-[#30466E] outline-none hover:bg-wisen-admin-hover focus-visible:ring-2 focus-visible:ring-[#D7BF4D]/40";
+  "mt-2 h-11 w-full min-w-0 rounded-lg border border-wisen-borda bg-white px-3 text-sm text-[#30466E] outline-none hover:bg-wisen-admin-control-hover focus-visible:ring-2 focus-visible:ring-[#D7BF4D]/40";
 export default function PainelUsuario({
   usuario,
   aberto,
@@ -131,7 +131,7 @@ export default function PainelUsuario({
                   variant="ghost"
                   disabled={busy}
                   onClick={() => aoHistorico(usuario)}
-                  className="px-0 text-xs text-[#526584] hover:bg-wisen-admin-hover"
+                  className="px-0 text-xs text-[#526584] hover:bg-wisen-admin-control-hover"
                 >
                   <History className="size-4" />
                   Ver histórico desta conta

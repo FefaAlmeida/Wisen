@@ -1,7 +1,28 @@
+"use client";
+
 import { BarChart2, CalendarDays, FileText, Lightbulb, UserPlus } from "lucide-react";
+import { useState } from "react";
+import { ExploradorGrafico } from "../ui/exploradorGrafico";
 import { TituloCartaoAdm } from "./tituloCartaoAdm";
 
 export function GraficosAtividadeAdm() {
+  const [temaAtivo, setTemaAtivo] = useState(null);
+  const meses = [
+    { nome: "Abril", ativos: 50, novos: 30 },
+    { nome: "Maio", ativos: 68, novos: 41 },
+    { nome: "Junho", ativos: 85, novos: 55 },
+    { nome: "Julho", ativos: 96, novos: 64 },
+    { nome: "Agosto", ativos: 102, novos: 71 },
+    { nome: "Setembro", ativos: 105, novos: 80 },
+  ];
+  const pontos = meses.map(({ nome, ativos, novos }) => ({
+    titulo: nome,
+    linhas: [
+      { rotulo: "Usuários ativos", valor: ativos, cor: "#D7BF4D" },
+      { rotulo: "Usuários novos", valor: novos, cor: "#A9B8CB" },
+    ],
+  }));
+  const coordenadas = (serie) => meses.map((mes, index) => [index * 80, 120 - mes[serie]]);
   const temas = [
     { nome: "Economia", pct: "28%", cor: "bg-[#D7BF4D]", stroke: "#D7BF4D" },
     { nome: "Meio ambiente", pct: "22%", cor: "bg-[#30466E]", stroke: "#30466E" },
@@ -22,7 +43,7 @@ export function GraficosAtividadeAdm() {
   return (
     <div className="grid min-w-0 grid-cols-1 gap-6 xl:grid-cols-2">
       {/* Evolucao de usuarios */}
-      <section className="admin-chart-card flex min-w-0 flex-col overflow-hidden rounded-2xl border border-[#E3E9F1] bg-white shadow-2xs">
+      <section className="admin-chart-card flex min-w-0 flex-col overflow-hidden rounded-2xl border border-wisen-borda bg-card shadow-2xs">
         <header className="flex min-h-24 items-center border-b border-[#E8EDF4] px-5 py-5 sm:px-6">
           <TituloCartaoAdm
             titulo="Evolução dos usuários"
@@ -32,45 +53,82 @@ export function GraficosAtividadeAdm() {
 
         <div className="flex flex-1 flex-col p-4 sm:p-5">
           <div className="flex min-h-64 flex-1 flex-col rounded-xl border border-[#E8EDF4] bg-[#F8FAFD] px-4 pt-5 pb-3 sm:min-h-72 sm:px-5">
-            <div className="relative min-h-48 flex-1">
-              <svg
-                aria-hidden="true"
-                className="absolute inset-0 h-full w-full overflow-visible"
-                viewBox="-4 0 408 120"
-                preserveAspectRatio="none"
+            <div className="flex-1">
+              <ExploradorGrafico
+                pontos={pontos}
+                rotulo="Explorar usuários por mês"
+                inicio={4 / 408}
+                fim={404 / 408}
               >
-                {[20, 60, 100].map((y) => (
-                  <line
-                    key={y}
-                    x1="0"
-                    y1={y}
-                    x2="400"
-                    y2={y}
-                    stroke="#E3E9F1"
-                    strokeWidth="1"
-                    vectorEffect="non-scaling-stroke"
-                  />
-                ))}
-                <path
-                  className="admin-chart-line admin-chart-line-secondary"
-                  pathLength={1}
-                  d="M 0 90 Q 80 80, 160 65 T 320 50 T 400 40"
-                  fill="none"
-                  stroke="#A9B8CB"
-                  strokeWidth="2.5"
-                  vectorEffect="non-scaling-stroke"
-                />
-                <path
-                  className="admin-chart-line admin-chart-line-primary"
-                  pathLength={1}
-                  d="M 0 70 Q 80 50, 160 35 T 320 20 T 400 15"
-                  fill="none"
-                  stroke="#D7BF4D"
-                  strokeWidth="3"
-                  vectorEffect="non-scaling-stroke"
-                />
-                <circle className="admin-chart-point" cx="400" cy="15" r="3" fill="#D7BF4D" />
-              </svg>
+                {(ativo) => (
+                  <div className="relative min-h-48">
+                    <svg
+                      aria-hidden="true"
+                      className="absolute inset-0 h-full w-full overflow-visible"
+                      viewBox="-4 0 408 120"
+                      preserveAspectRatio="none"
+                    >
+                      {[20, 60, 100].map((y) => (
+                        <line
+                          key={y}
+                          x1="0"
+                          y1={y}
+                          x2="400"
+                          y2={y}
+                          stroke="#E3E9F1"
+                          strokeWidth="1"
+                          vectorEffect="non-scaling-stroke"
+                        />
+                      ))}
+                      <polyline
+                        className="admin-chart-line admin-chart-line-secondary"
+                        pathLength={1}
+                        points={coordenadas("novos").join(" ")}
+                        fill="none"
+                        stroke="#A9B8CB"
+                        strokeWidth="2.5"
+                        vectorEffect="non-scaling-stroke"
+                      />
+                      <polyline
+                        className="admin-chart-line admin-chart-line-primary"
+                        pathLength={1}
+                        points={coordenadas("ativos").join(" ")}
+                        fill="none"
+                        stroke="#D7BF4D"
+                        strokeWidth="3"
+                        vectorEffect="non-scaling-stroke"
+                      />
+                      {ativo !== null && (
+                        <g>
+                          <line
+                            x1={ativo * 80}
+                            x2={ativo * 80}
+                            y1="0"
+                            y2="120"
+                            stroke="#7182A1"
+                            strokeDasharray="3 4"
+                            vectorEffect="non-scaling-stroke"
+                          />
+                          <circle
+                            cx={ativo * 80}
+                            cy={120 - meses[ativo].ativos}
+                            r="3"
+                            fill="#D7BF4D"
+                            stroke="#30466E"
+                          />
+                          <circle
+                            cx={ativo * 80}
+                            cy={120 - meses[ativo].novos}
+                            r="3"
+                            fill="#A9B8CB"
+                            stroke="#30466E"
+                          />
+                        </g>
+                      )}
+                    </svg>
+                  </div>
+                )}
+              </ExploradorGrafico>
             </div>
             <div className="mt-4 flex justify-between border-t border-[#E3E9F1] pt-3 text-[11px] text-[#7182A1] sm:text-xs">
               {["Abr", "Mai", "Jun", "Jul", "Ago", "Set"].map((mes) => (
@@ -95,7 +153,7 @@ export function GraficosAtividadeAdm() {
       </section>
 
       {/* Distribuicao dos temas */}
-      <section className="admin-chart-card admin-chart-card-delayed @container/chart flex min-w-0 flex-col overflow-hidden rounded-2xl border border-[#E3E9F1] bg-white shadow-2xs">
+      <section className="admin-chart-card admin-chart-card-delayed @container/chart flex min-w-0 flex-col overflow-hidden rounded-2xl border border-wisen-borda bg-card shadow-2xs">
         <header className="flex min-h-24 items-center border-b border-[#E8EDF4] px-5 py-5 sm:px-6">
           <TituloCartaoAdm
             titulo="Temas mais acessados"
@@ -116,7 +174,12 @@ export function GraficosAtividadeAdm() {
                     pathLength="100"
                     fill="none"
                     stroke={item.stroke}
-                    strokeWidth="3.5"
+                    strokeWidth={temaAtivo === item ? 4.2 : 3.5}
+                    className="cursor-default"
+                    opacity={temaAtivo && temaAtivo !== item ? 0.45 : 1}
+                    onPointerDown={() => setTemaAtivo(item)}
+                    onPointerEnter={() => setTemaAtivo(item)}
+                    onPointerLeave={() => setTemaAtivo(null)}
                     strokeDasharray={`${Number.parseFloat(item.pct)} ${100 - Number.parseFloat(item.pct)}`}
                     strokeDashoffset={
                       -temas
@@ -126,11 +189,13 @@ export function GraficosAtividadeAdm() {
                   />
                 ))}
               </svg>
-              <div className="absolute text-center">
+              <div className="pointer-events-none absolute max-w-24 text-center">
                 <span className="block text-2xl font-semibold tracking-tight text-wisen-titulo">
-                  1.248
+                  {temaAtivo?.pct ?? "1.248"}
                 </span>
-                <span className="mt-1 block text-xs text-[#7182A1]">acessos no total</span>
+                <span className="mt-1 block text-xs text-[#7182A1]">
+                  {temaAtivo?.nome ?? "acessos no total"}
+                </span>
               </div>
             </div>
           </div>

@@ -5,7 +5,7 @@ export default function ResumoRevisoes({ concluidas = 4, total = 12 }) {
   const percentual = (concluidas / total) * 100;
 
   return (
-    <Card className="grid gap-0 rounded-xl border-0 bg-white p-0 shadow-none md:grid-cols-3">
+    <Card className="grid gap-0 rounded-xl border-0 bg-card p-0 shadow-none md:grid-cols-3">
       <div className="flex items-center gap-5 px-6 py-6">
         <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#FFF3B7] text-3xl text-wisen-titulo">
           <svg

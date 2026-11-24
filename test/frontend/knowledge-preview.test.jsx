@@ -86,7 +86,7 @@ describe("prévia do conhecimento", () => {
       series.add(container.querySelector("[data-evolution-line]").getAttribute("points"));
       expect(screen.getByRole("slider")).toHaveAttribute(
         "aria-valuetext",
-        "13 nov 2026: 72 pontos",
+        "13 nov 2026, Nível estimado: 72 pontos",
       );
     }
     expect(series.size).toBe(4);
@@ -96,9 +96,15 @@ describe("prévia do conhecimento", () => {
     const user = userEvent.setup();
     render(<GraficoEvolucao />);
     fireEvent.change(screen.getByRole("slider"), { target: { value: "0" } });
-    expect(screen.getByRole("slider")).toHaveAttribute("aria-valuetext", "15 out 2026: 61 pontos");
+    expect(screen.getByRole("slider")).toHaveAttribute(
+      "aria-valuetext",
+      "15 out 2026, Nível estimado: 61 pontos",
+    );
     await user.click(screen.getByRole("button", { name: "7 dias" }));
-    expect(screen.getByRole("slider")).toHaveAttribute("aria-valuetext", "13 nov 2026: 72 pontos");
+    expect(screen.getByRole("slider")).toHaveAttribute(
+      "aria-valuetext",
+      "13 nov 2026, Nível estimado: 72 pontos",
+    );
   });
 
   it("mantém as janelas de tempo coerentes com um único histórico", () => {

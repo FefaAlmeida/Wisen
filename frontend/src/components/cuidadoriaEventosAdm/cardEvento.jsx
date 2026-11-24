@@ -15,7 +15,7 @@ export default function CardEvento({ evento, aoRevisar, busy }) {
   const reviewed = evento.status === "Revisado";
   const articleCount = evento.artigos.length;
   return (
-    <article className="grid min-w-0 items-center gap-x-5 gap-y-3 px-4 py-4 transition-colors hover:bg-[#FBF7E5] sm:px-5 @min-[38rem]/curadoria:grid-cols-[minmax(0,1fr)_auto]">
+    <article className="grid min-w-0 items-center gap-x-5 gap-y-3 px-4 py-4 transition-colors hover:bg-wisen-admin-hover sm:px-5 @min-[38rem]/curadoria:grid-cols-[minmax(0,1fr)_auto]">
       <div className="min-w-0">
         <h3 className="text-sm font-semibold leading-6 break-words text-wisen-titulo">
           {evento.titulo}
@@ -40,7 +40,7 @@ export default function CardEvento({ evento, aoRevisar, busy }) {
         aria-label={`${reviewed ? "Ver revisão de" : "Revisar evento:"} ${evento.titulo}`}
         variant="outline"
         size="sm"
-        className="justify-self-start border-wisen-borda text-xs text-wisen-texto-forte hover:bg-wisen-destaque-suave active:bg-wisen-destaque-suave @min-[38rem]/curadoria:hover:bg-wisen-admin-hover"
+        className="justify-self-start border-wisen-borda text-xs text-wisen-texto-forte hover:bg-wisen-admin-control-hover active:bg-wisen-admin-control-hover"
       >
         {reviewed ? "Ver revisão" : "Revisar evento"}
         <ArrowUpRight aria-hidden="true" className="size-3.5" />

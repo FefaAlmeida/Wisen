@@ -1,3 +1,7 @@
+"use client";
+
+import { ExploradorGrafico } from "../ui/exploradorGrafico";
+
 const moeda = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 const percentual = new Intl.NumberFormat("pt-BR", { style: "percent", maximumFractionDigits: 1 });
 
@@ -43,74 +47,90 @@ export function GraficosConsumoIa() {
     { dia: "", local: 90, externa: 60 },
     { dia: "", local: 100, externa: 65 },
     { dia: "31 out", local: 85, externa: 50 },
-  ].map((bar, index) => ({ ...bar, date: `2026-10-${index + 1}` }));
+  ].map((bar, index) => ({ ...bar, date: `${index + 1} de outubro` }));
+
+  const pontos = barras.map(({ date, local, externa }) => ({
+    titulo: date,
+    linhas: [
+      { rotulo: "Processamentos locais", valor: local, cor: "#30466E" },
+      { rotulo: "APIs externas", valor: externa, cor: "#D7BF4D" },
+      { rotulo: "Total de requisições", valor: local + externa },
+    ],
+  }));
 
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-      <div className="flex min-w-0 flex-col gap-5 rounded-2xl border border-wisen-borda bg-white p-5 shadow-2xs lg:col-span-7">
+      <div className="flex min-w-0 flex-col gap-5 rounded-2xl border border-wisen-borda bg-card p-5 shadow-2xs lg:col-span-7">
         <div className="space-y-2">
-          <h3 className="text-base font-semibold text-[#2B333F]">
+          <h3 className="text-base font-semibold text-wisen-titulo">
             Requisições por tipo de processamento
           </h3>
-          <ul className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600">
+          <span aria-hidden="true" className="block h-0.5 w-8 rounded-full bg-[#D7BF4D]" />
+          <ul className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#526584]">
             <li className="flex items-center gap-1.5">
-              <span aria-hidden="true" className="size-2 rounded-full bg-[#52647C]" />
+              <span aria-hidden="true" className="size-2 rounded-full bg-[#30466E]" />
               Processamentos locais
             </li>
             <li className="flex items-center gap-1.5">
-              <span aria-hidden="true" className="size-2 rounded-full bg-[#E7CC72]" />
+              <span aria-hidden="true" className="size-2 rounded-full bg-[#D7BF4D]" />
               APIs externas
             </li>
           </ul>
         </div>
 
         <div className="mt-auto pb-6">
-          <div className="flex h-48 items-end gap-0.5 border-b border-slate-100 pb-1 sm:gap-1">
-            {barras.map((b, index) => {
-              const alturaLocal = (b.local / 180) * 100;
-              const alturaExterna = (b.externa / 180) * 100;
-              const visibilidadeData = index % 10 === 4 ? "hidden sm:block" : "";
-              return (
-                <div
-                  key={b.date}
-                  className="flex-1 flex flex-col items-center justify-end h-full group relative"
-                >
-                  <div className="pointer-events-none absolute -top-8 z-20 whitespace-nowrap rounded-lg bg-[#2B333F] px-2 py-1 text-[11px] text-white opacity-0 shadow transition-opacity group-hover:opacity-100">
-                    {b.local + b.externa} reqs
-                  </div>
-
-                  <div
-                    className="w-full rounded-t-xs bg-[#E7CC72]"
-                    style={{ height: `${alturaExterna}%` }}
-                  />
-                  <div
-                    className="w-full rounded-b-xs bg-[#52647C]"
-                    style={{ height: `${alturaLocal}%` }}
-                  />
-                  {b.dia && (
-                    <span
-                      className={`absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs text-slate-500 group-first:left-0 group-first:translate-x-0 group-last:right-0 group-last:left-auto group-last:translate-x-0 ${visibilidadeData}`}
+          <ExploradorGrafico
+            pontos={pontos}
+            rotulo="Explorar requisições por dia"
+            inicio={0.5 / barras.length}
+            fim={1 - 0.5 / barras.length}
+          >
+            {(ativo) => (
+              <div className="flex h-48 items-end border-b border-[#E3E9F1] bg-[#F8FAFD] pb-1">
+                {barras.map((b, index) => {
+                  const alturaLocal = (b.local / 180) * 100;
+                  const alturaExterna = (b.externa / 180) * 100;
+                  const visibilidadeData = index % 10 === 4 ? "hidden sm:block" : "";
+                  return (
+                    <div
+                      key={b.date}
+                      className={`group relative flex h-full min-w-0 flex-1 flex-col items-center justify-end px-px sm:px-0.5 ${ativo === index ? "bg-[#E3E9F1] ring-1 ring-inset ring-[#7182A1]" : ""}`}
                     >
-                      {b.dia}
-                    </span>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+                      <div
+                        className="w-full rounded-t-xs bg-[#D7BF4D]"
+                        style={{ height: `${alturaExterna}%` }}
+                      />
+                      <div
+                        className="w-full rounded-b-xs bg-[#30466E]"
+                        style={{ height: `${alturaLocal}%` }}
+                      />
+                      {b.dia && (
+                        <span
+                          className={`absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs text-[#7182A1] group-first:left-0 group-first:translate-x-0 group-last:right-0 group-last:left-auto group-last:translate-x-0 ${visibilidadeData}`}
+                        >
+                          {b.dia}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </ExploradorGrafico>
         </div>
       </div>
 
-      <div className="min-w-0 space-y-5 rounded-2xl border border-wisen-borda bg-white p-5 shadow-2xs lg:col-span-5">
+      <div className="min-w-0 space-y-5 rounded-2xl border border-wisen-borda bg-card p-5 shadow-2xs lg:col-span-5">
         <div className="space-y-2">
-          <h3 className="text-base font-semibold text-[#2B333F]">
+          <h3 className="text-base font-semibold text-wisen-titulo">
             Distribuição de custos por modelo
           </h3>
+          <span aria-hidden="true" className="block h-0.5 w-8 rounded-full bg-[#D7BF4D]" />
           <p className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-            <span className="text-2xl leading-tight font-semibold tabular-nums text-[#2B333F]">
+            <span className="text-2xl leading-tight font-semibold tabular-nums text-wisen-titulo">
               {moeda.format(totalCentavos / 100)}
             </span>
-            <span className="text-xs text-slate-500">em APIs externas no mês</span>
+            <span className="text-xs text-[#7182A1]">em APIs externas no mês</span>
           </p>
         </div>
 
@@ -119,19 +139,19 @@ export function GraficosConsumoIa() {
             const proporcao = centavos / totalCentavos;
 
             return (
-              <li key={nome} className="space-y-1.5">
+              <li key={nome} className="rounded-md px-2 py-1 space-y-1.5 hover:bg-[#F8FAFD]">
                 <div className="grid grid-cols-[1fr_auto_6ch] items-baseline gap-x-2 text-sm tabular-nums">
-                  <span className="font-medium text-[#2B333F]">{nome}</span>
-                  <span className="text-right font-semibold text-[#2B333F]">
+                  <span className="font-medium text-wisen-titulo">{nome}</span>
+                  <span className="text-right font-semibold text-wisen-titulo">
                     {moeda.format(centavos / 100)}
                   </span>
-                  <span className="text-right text-xs text-slate-500">
+                  <span className="text-right text-xs text-[#7182A1]">
                     {percentual.format(proporcao)}
                   </span>
                 </div>
-                <div aria-hidden="true" className="h-1.5 overflow-hidden rounded-full bg-slate-100">
+                <div aria-hidden="true" className="h-1.5 overflow-hidden rounded-full bg-[#E3E9F1]">
                   <div
-                    className="h-full rounded-full bg-[#E7CC72]"
+                    className="h-full rounded-full bg-[#D7BF4D]"
                     style={{ width: `${proporcao * 100}%` }}
                   />
                 </div>

@@ -54,10 +54,10 @@ export function PlanosLanding() {
           <article
             key={plano.nome}
             className={
-              "relative flex flex-col rounded-2xl border p-6 shadow-[0_12px_35px_-28px_rgba(16,26,64,0.35)] " +
+              "relative flex flex-col rounded-2xl border bg-card p-6 shadow-[0_12px_35px_-28px_rgba(16,26,64,0.35)] " +
               (plano.destaque
-                ? "border-[#D9C54E] bg-white ring-1 ring-[#D9C54E]/50"
-                : "border-[#DCE5EF] bg-white/90")
+                ? "border-[#D9C54E] ring-1 ring-[#D9C54E]/50"
+                : "border-wisen-borda")
             }
           >
             {plano.destaque && (

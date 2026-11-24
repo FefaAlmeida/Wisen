@@ -136,7 +136,7 @@ function Ordenacao({ valor, aoAlterar }) {
 
 function SecaoGuardados({ titulo, descricao, busca, ordenacao, children }) {
   return (
-    <Card className="gap-0 rounded-xl border-wisen-borda bg-white p-0">
+    <Card className="gap-0 rounded-xl border-wisen-borda bg-card p-0">
       <div className="flex flex-wrap items-center justify-between gap-3 p-3 sm:p-4">
         <div>
           <h2 className="text-base font-semibold text-wisen-titulo">{titulo}</h2>

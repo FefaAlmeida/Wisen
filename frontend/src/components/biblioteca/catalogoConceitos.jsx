@@ -50,7 +50,7 @@ export function CatalogoConceitos() {
               />
             ))
           ) : (
-            <p className="col-span-full rounded-2xl border border-slate-200/80 bg-white p-6 text-sm text-slate-500">
+            <p className="col-span-full rounded-2xl border border-wisen-borda bg-card p-6 text-sm text-slate-500">
               Nenhum conceito encontrado neste filtro.
             </p>
           )}

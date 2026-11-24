@@ -8,7 +8,7 @@ export default function CardConceitoMarcado({ conceito, aoRemover }) {
   return (
     <Card
       role="article"
-      className="relative flex-row items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-none transition-colors hover:border-[#BBC9DC] has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-2 has-[a:focus-visible]:outline-wisen-destaque sm:gap-3 sm:px-4"
+      className="relative flex-row items-center gap-2 rounded-xl bg-card px-3 py-2 shadow-none transition-colors hover:border-[#BBC9DC] has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-2 has-[a:focus-visible]:outline-wisen-destaque sm:gap-3 sm:px-4"
     >
       <div className="relative h-12 w-16 shrink-0 overflow-hidden rounded-lg bg-wisen-superficie sm:h-14 sm:w-24">
         <Image

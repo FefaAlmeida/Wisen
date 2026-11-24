@@ -36,8 +36,8 @@ function SourceActions({ source, onEdit, onToggle, busy, mobile = false }) {
         aria-label={`Editar ${source.nome}`}
         className={
           mobile
-            ? "h-10 grow border-wisen-borda text-xs text-[#526584] hover:bg-wisen-destaque-suave active:bg-wisen-destaque-suave"
-            : "text-xs text-[#526584] hover:bg-transparent hover:text-wisen-destaque dark:hover:bg-transparent"
+            ? "h-10 grow border-wisen-borda text-xs text-[#526584] hover:bg-wisen-admin-control-hover active:bg-wisen-admin-control-hover"
+            : "text-xs text-[#526584] hover:bg-wisen-admin-control-hover hover:text-wisen-titulo"
         }
       >
         Gerenciar
@@ -51,8 +51,8 @@ function SourceActions({ source, onEdit, onToggle, busy, mobile = false }) {
         aria-label={`${source.ativo ? "Pausar" : "Ativar"} ${source.nome}`}
         className={
           mobile
-            ? "size-10 shrink-0 text-[#7182A1] hover:bg-wisen-destaque-suave active:bg-wisen-destaque-suave"
-            : "size-8 text-[#7182A1] hover:bg-transparent hover:text-wisen-destaque dark:hover:bg-transparent"
+            ? "size-10 shrink-0 text-[#7182A1] hover:bg-wisen-admin-control-hover active:bg-wisen-admin-control-hover"
+            : "size-8 text-[#7182A1] hover:bg-wisen-admin-control-hover hover:text-wisen-titulo"
         }
       >
         {source.ativo ? <Pause className="size-3.5" /> : <Play className="size-3.5" />}
@@ -75,7 +75,7 @@ export default function TabelaFontes({ fontes, aoEditar, aoAlternarStatus, busy 
       <div className="hidden overflow-x-auto @min-[48rem]/sources:block">
         <table className="w-full text-left text-sm">
           <caption className="sr-only">Fontes RSS cadastradas e configurações de coleta</caption>
-          <thead className="border-y border-[#E8EDF4] bg-[#E8EFFA]">
+          <thead className="border-y border-[#E8EDF4]">
             <tr className="text-[10px] font-semibold tracking-wider text-wisen-titulo uppercase">
               <th scope="col" className="px-5 py-3">
                 Fonte
@@ -96,7 +96,7 @@ export default function TabelaFontes({ fontes, aoEditar, aoAlternarStatus, busy 
           </thead>
           <tbody className="divide-y divide-[#EDF0F5]">
             {fontes.map((source) => (
-              <tr key={source.id} className="transition-colors hover:bg-[#FBF7E5]">
+              <tr key={source.id} className="transition-colors hover:bg-wisen-admin-hover">
                 <td className="px-5 py-4">
                   <SourceName source={source} onEdit={aoEditar} />
                 </td>

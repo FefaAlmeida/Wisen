@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 export const dialogPrimaryAction =
   "h-auto min-h-11 rounded-xl bg-[#101A40] px-5 py-2.5 text-sm font-medium whitespace-normal text-white hover:bg-[#30466E] disabled:bg-[#E8ECF3] disabled:text-[#93A3BE] disabled:opacity-100";
 export const dialogSecondaryAction =
-  "h-auto min-h-11 rounded-xl border-wisen-borda bg-white px-4 py-2.5 text-sm font-medium whitespace-normal text-[#7182A1] hover:bg-wisen-superficie";
+  "h-auto min-h-11 rounded-xl border-wisen-borda bg-white px-4 py-2.5 text-sm font-medium whitespace-normal text-[#7182A1] hover:bg-[var(--button-hover,var(--color-wisen-superficie))]";
 
 function Dialog(props) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />;
@@ -69,7 +69,7 @@ function DialogContent({
             render={
               <Button
                 variant="ghost"
-                className="absolute top-4 right-4 size-8 rounded-lg text-[#7182A1] hover:bg-wisen-superficie"
+                className="absolute top-4 right-4 size-8 rounded-lg text-[#7182A1] hover:bg-[var(--button-hover,var(--color-wisen-superficie))]"
                 size="icon-sm"
               />
             }

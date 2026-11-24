@@ -1,4 +1,4 @@
-import { FileText, Globe, TrendingUp, UserPlus, Users } from "lucide-react";
+import { ArrowUp, FileText, Globe, TrendingUp, UserPlus, Users } from "lucide-react";
 
 export function CartoesMetricasAdm({ counts } = {}) {
   const metricas = counts
@@ -39,7 +39,7 @@ export function CartoesMetricasAdm({ counts } = {}) {
           titulo: "Usuários ativos",
           valor: "1.248",
           variacao: "+12%",
-          periodo: "nos últimos 30 dias",
+          periodo: "Últimos 30 dias · vs. 30 dias anteriores",
           icone: Users,
         },
         {
@@ -79,10 +79,10 @@ export function CartoesMetricasAdm({ counts } = {}) {
         return (
           <div
             key={item.titulo}
-            className="min-w-0 rounded-2xl border border-[#EBDD80] bg-[#FBF7E5] p-5 shadow-xs"
+            className="min-w-0 rounded-2xl border border-wisen-borda bg-[#FBF7E5] p-5 shadow-xs"
           >
             <div className="flex items-center gap-3 pb-3">
-              <Icone className="h-5 w-5 shrink-0 text-wisen-destaque" />
+              <Icone aria-hidden="true" className="h-5 w-5 shrink-0 text-[#526584]" />
               <span className="min-w-0 break-words text-sm font-semibold text-[#526584]">
                 {item.titulo}
               </span>
@@ -93,13 +93,15 @@ export function CartoesMetricasAdm({ counts } = {}) {
                 {item.valor}
               </span>
               {item.variacao && (
-                <span className="rounded-full bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-600">
-                  {item.variacao}
+                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-700">
+                  <ArrowUp aria-hidden="true" className="size-3" />
+                  <span className="sr-only">Aumento de </span>
+                  {item.variacao.slice(1)}
                 </span>
               )}
             </div>
 
-            <p className="mt-1 text-xs text-[#7182A1]">{item.periodo}</p>
+            <p className="mt-1 text-xs text-[#526584]">{item.periodo}</p>
           </div>
         );
       })}

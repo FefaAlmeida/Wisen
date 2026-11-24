@@ -46,7 +46,7 @@ export default function CardNoticia({ item, onDismiss }) {
   }
 
   return (
-    <article className="relative isolate flex h-full cursor-pointer flex-col overflow-hidden rounded-lg border border-[#E1E7F0] bg-white/95 shadow-sm transition-colors duration-300 hover:bg-[#F0F3F8] hover:shadow-md motion-reduce:transform-none motion-reduce:transition-none">
+    <article className="relative isolate flex h-full cursor-pointer flex-col overflow-hidden rounded-lg border border-wisen-borda bg-card shadow-sm transition-colors duration-300 hover:bg-[#F0F3F8] hover:shadow-md motion-reduce:transform-none motion-reduce:transition-none">
       <div className="relative h-40 shrink-0 overflow-hidden">
         <Image
           src={story.image}

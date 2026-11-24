@@ -105,6 +105,7 @@ function NavigationItems({ activeItem, mobile = false, admin = false }) {
             aria-label={label}
             title={label}
             aria-current={isActive ? "page" : undefined}
+            data-zuzu-tour-target={!mobile ? href : undefined}
             className={className}
           >
             <Icon size={mobile ? 19 : 17} strokeWidth={2.2} />
@@ -132,6 +133,7 @@ export function AppSidebar({ activeItem, admin = false }) {
         >
           <WisenBrand admin={admin} className="absolute left-1/2 -translate-x-1/2" />
           <SheetTrigger
+            data-zuzu-tour-target="mobile-menu"
             aria-label="Abrir menu de navegação"
             className="flex size-10 items-center justify-center rounded-md text-white transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           >

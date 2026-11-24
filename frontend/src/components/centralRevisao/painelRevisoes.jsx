@@ -111,7 +111,9 @@ export default function PainelRevisoes({ areas = [], questoes = [], summary }) {
             titulo: "Constância de revisão",
             valor: summary?.streak ?? 4,
             unidade: "dias seguidos",
-            detalhe: "Dias consecutivos de prática",
+            detalhe: (summary?.streak ?? 4) > 0
+              ? "A Zuzu está orgulhosa de você!"
+              : "Dias consecutivos de prática",
             flame: true,
           },
         ].map(({ titulo, valor, unidade, detalhe, icon: Icon, flame }) => (

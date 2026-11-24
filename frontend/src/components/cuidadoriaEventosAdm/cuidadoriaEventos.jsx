@@ -28,7 +28,7 @@ import CardEvento from "./cardEvento";
 import PainelArtigos, { ArticleSource } from "./painelArtigos";
 
 const secondary =
-  "h-auto min-h-8 whitespace-normal border-wisen-borda px-3 py-1.5 text-xs text-wisen-texto-forte hover:bg-wisen-admin-hover";
+  "h-auto min-h-8 whitespace-normal border-wisen-borda px-3 py-1.5 text-xs text-wisen-texto-forte hover:bg-wisen-admin-control-hover";
 const pageSize = 10;
 const statusTitles = {
   pendentes: "Eventos a revisar",
@@ -371,7 +371,7 @@ export default function CuradoriaEventos({ demo = true }) {
                     visible.map((article) => (
                       <article
                         key={article.id}
-                        className="flex min-w-0 flex-wrap items-center justify-between gap-3 px-4 py-4 transition-colors hover:bg-[#FBF7E5] sm:px-5"
+                        className="flex min-w-0 flex-wrap items-center justify-between gap-3 px-4 py-4 transition-colors hover:bg-wisen-admin-hover sm:px-5"
                       >
                         <div className="min-w-0 flex-1 basis-56">
                           <h3 className="text-sm font-semibold leading-6 break-words text-wisen-titulo">
@@ -406,7 +406,7 @@ export default function CuradoriaEventos({ demo = true }) {
                     visible.map((pair) => (
                       <article
                         key={`${pair.first.id}-${pair.second.id}`}
-                        className="grid min-w-0 items-center gap-3 px-4 py-4 transition-colors hover:bg-[#FBF7E5] sm:px-5 @min-[48rem]/curadoria:grid-cols-[minmax(0,1fr)_auto]"
+                        className="grid min-w-0 items-center gap-3 px-4 py-4 transition-colors hover:bg-wisen-admin-hover sm:px-5 @min-[48rem]/curadoria:grid-cols-[minmax(0,1fr)_auto]"
                       >
                         <div className="grid min-w-0 gap-2 @min-[32rem]/curadoria:grid-cols-2">
                           {[pair.first, pair.second].map((event) => (

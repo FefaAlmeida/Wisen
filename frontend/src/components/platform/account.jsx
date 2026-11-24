@@ -28,7 +28,7 @@ export default function Account() {
   }
   return (
     <main className="grid min-h-screen place-items-center bg-wisen-superficie px-5 text-[#101A40]">
-      <section className="w-full max-w-md rounded-2xl bg-white p-8">
+      <section className="w-full max-w-md rounded-2xl bg-card p-8">
         <Link href="/" className="text-sm font-semibold">
           Wisen
         </Link>

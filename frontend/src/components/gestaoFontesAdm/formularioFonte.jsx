@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -27,7 +27,7 @@ export const frequenciasFonte = [
 ];
 const vazio = { nome: "", url: "", categoria: "", frequencia: "A cada 15 min", ativo: true };
 const control =
-  "mt-2 h-11 w-full min-w-0 rounded-lg border border-wisen-borda bg-white px-3 text-sm text-[#30466E] outline-none hover:bg-wisen-admin-hover focus-visible:ring-2 focus-visible:ring-[#D7BF4D]/40";
+  "mt-2 h-11 w-full min-w-0 rounded-lg border border-wisen-borda bg-white px-3 text-sm text-[#30466E] outline-none hover:bg-wisen-admin-control-hover focus-visible:ring-2 focus-visible:ring-[#D7BF4D]/40";
 export default function FormularioFonte({
   aberto,
   aoFechar,
@@ -183,7 +183,7 @@ export default function FormularioFonte({
                   variant="outline"
                   disabled={busy || !fonte.ativo || !dados.ativo}
                   onClick={() => aoColetar(fonte)}
-                  className="h-10 w-full border-wisen-borda text-[#526584] hover:bg-wisen-admin-hover"
+                  className="h-10 w-full border-wisen-borda text-[#526584] hover:bg-wisen-admin-control-hover"
                 >
                   Coletar agora
                 </Button>

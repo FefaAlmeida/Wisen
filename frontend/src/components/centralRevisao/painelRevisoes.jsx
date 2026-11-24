@@ -76,9 +76,6 @@ export default function PainelRevisoes({ areas = [], questoes = [], summary }) {
             <p>Escolha os assuntos e o formato da sua sessão.</p>
           </div>
         </div>
-        <span className={styles.novaRevisaoAcao} aria-hidden="true">
-          Começar <ArrowRight className={styles.novaRevisaoSeta} size={17} />
-        </span>
       </Link>
       {summary?.history
         .filter((s) => !s.completed_at)
@@ -232,11 +229,7 @@ export default function PainelRevisoes({ areas = [], questoes = [], summary }) {
               </li>
             ))}
           </ul>
-          <Link
-            href="/paginaConhecimento"
-            data-wisen-hover="preserve"
-            className={styles.voltar}
-          >
+          <Link href="/paginaConhecimento" data-wisen-hover="preserve" className={styles.voltar}>
             <span>Acompanhar meu aprendizado</span>
             <ArrowRight size={15} aria-hidden="true" />
           </Link>

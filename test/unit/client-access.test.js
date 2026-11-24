@@ -71,8 +71,14 @@ test("área de cliente rejeita admin e visitantes antes de executar operações"
 });
 
 test("cliente autenticado mantém acesso ao feed", async () => {
+  const session = { id, event_ids: [] };
   const app = await buildApp({
-    pool: { query: async () => ({ rows: [] }) },
+    pool: {
+      query: async (sql) =>
+        sql.startsWith("INSERT INTO feed_sessions")
+          ? { rows: [session], rowCount: 1 }
+          : { rows: [], rowCount: 0 },
+    },
     boss: {},
     config: { NODE_ENV: "test", FRONTEND_URL: "http://localhost:3000" },
     logger: false,
@@ -81,7 +87,7 @@ test("cliente autenticado mantém acesso ao feed", async () => {
   try {
     const response = await app.inject({ url: "/api/feed" });
     assert.equal(response.statusCode, 200, response.body);
-    assert.deepEqual(response.json(), { items: [] });
+    assert.deepEqual(response.json(), { items: [], sessionId: session.id, hasMore: false });
   } finally {
     await app.close();
   }

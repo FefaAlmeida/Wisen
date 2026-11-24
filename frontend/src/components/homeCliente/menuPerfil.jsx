@@ -2,7 +2,7 @@
 
 import { LogOut, UserRound } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { requisitar } from "@/services/api";
 
@@ -28,6 +28,18 @@ export default function MenuPerfil({ profileHref = "/paginaPerfil" }) {
   const [aberto, setAberto] = useState(false);
   const [saindo, setSaindo] = useState(false);
   const [erro, setErro] = useState("");
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    if (!aberto) return;
+
+    function fecharAoClicarFora(event) {
+      if (!menuRef.current?.contains(event.target)) setAberto(false);
+    }
+
+    document.addEventListener("click", fecharAoClicarFora, true);
+    return () => document.removeEventListener("click", fecharAoClicarFora, true);
+  }, [aberto]);
 
   async function sair() {
     if (saindo) return;
@@ -49,7 +61,7 @@ export default function MenuPerfil({ profileHref = "/paginaPerfil" }) {
   }
 
   return (
-    <div className="relative z-50 shrink-0">
+    <div ref={menuRef} className="relative z-50 shrink-0">
       <button
         type="button"
         onClick={() => setAberto((atual) => !atual)}

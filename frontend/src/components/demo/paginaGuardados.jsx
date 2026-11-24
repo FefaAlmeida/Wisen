@@ -1,5 +1,5 @@
 import { AppTopBar } from "@/components/app/appTopBar";
-import { PageHeader, PageIntro } from "@/components/app/pageHeader";
+import { PageHeader } from "@/components/app/pageHeader";
 import { Footer } from "@/components/footer";
 import PainelGuardados from "@/components/guardados/painelGuardados";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
@@ -19,10 +19,6 @@ export default function PaginaGuardados() {
           {/* Conteúdo principal */}
           <div className="wisen-container pt-7 pb-12">
             <PageHeader title="Meus" highlight="salvos" className="mb-7" />
-
-            <PageIntro title="Notícias e conceitos salvos">
-              Acesse os conteúdos que você salvou para ler ou revisar quando quiser.
-            </PageIntro>
 
             {/* Abas e conteúdo */}
             <PainelGuardados />

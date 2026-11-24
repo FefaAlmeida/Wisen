@@ -70,18 +70,24 @@ describe("navegação privada", () => {
     expect(fetch).not.toHaveBeenCalled();
   });
 
-  it("permite tentar novamente quando a saída do administrador falha", async () => {
+  it("oculta a saída da conta no menu lateral do cliente em desktop e celular", async () => {
     const userEvent = (await import("@testing-library/user-event")).default;
-    fetch.mockRejectedValue(new Error("offline"));
+    render(<Sidebar activeItem="Início" />);
+    expect(screen.queryByRole("button", { name: "Sair da conta" })).not.toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("button", { name: "Abrir menu de navegação" }));
+    expect(screen.getByRole("dialog", { name: "Navegação" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Sair da conta" })).not.toBeInTheDocument();
+  });
+
+  it("oculta a saída da conta no menu lateral do administrador em desktop e celular", async () => {
+    const userEvent = (await import("@testing-library/user-event")).default;
     render(<AdminSidebar activeItem="Visão geral" />);
-    const button = screen.getByRole("button", { name: "Sair da conta" });
-    await userEvent.click(button);
-    expect(await screen.findByRole("alert")).toHaveTextContent("Não foi possível sair da conta");
-    expect(button).toBeEnabled();
-    expect(fetch).toHaveBeenCalledWith(
-      "/api/auth/logout",
-      expect.objectContaining({ method: "POST" }),
-    );
+    expect(screen.queryByRole("button", { name: "Sair da conta" })).not.toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("button", { name: "Abrir menu de navegação" }));
+    expect(screen.getByRole("dialog", { name: "Navegação" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Sair da conta" })).not.toBeInTheDocument();
   });
 
   it("mantém os destinos de administração com o estilo da sidebar do cliente", () => {

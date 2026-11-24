@@ -32,9 +32,7 @@ export function DepoimentosLanding() {
             rotina.
           </span>
         </h2>
-        <p className="text-sm leading-relaxed text-[#647184]">
-          Quem usa, recomenda
-        </p>
+        <p className="text-sm leading-relaxed text-[#647184]">Quem usa, recomenda</p>
       </div>
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-3 lg:gap-6">

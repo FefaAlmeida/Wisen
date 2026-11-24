@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronRight, Eye, EyeOff, Lock, LogOut, ShieldCheck } from "lucide-react";
+import { ChevronRight, Eye, EyeOff, Lock, LogOut, ShieldCheck, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,7 +19,11 @@ import { requisitar } from "@/services/api";
 import styles from "../authForm.module.css";
 import { ProfileSection, profileInputIcon } from "./profileSection";
 
-export function SecurityCard() {
+const securityAction =
+  "group flex w-full items-center justify-between gap-3 rounded-xl border p-3 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-50";
+const defaultSecurityAction = `${securityAction} border-wisen-borda/70 hover:bg-wisen-superficie focus-visible:outline-wisen-titulo`;
+
+export function SecurityCard({ showDeleteAccount = false }) {
   const [signingOut, setSigningOut] = useState(false);
   const [logoutError, setLogoutError] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -105,20 +109,15 @@ export function SecurityCard() {
             setDialogOpen(true);
           }}
           aria-haspopup="dialog"
-          className="group flex w-full items-center justify-between gap-3 rounded-xl border border-wisen-borda/70 p-3 text-left transition-colors hover:bg-wisen-superficie focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wisen-titulo disabled:opacity-50"
+          className={defaultSecurityAction}
         >
           <div className="flex items-center gap-3">
             <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-wisen-superficie text-wisen-texto-suave">
               <Lock className="w-4 h-4" />
             </div>
-            <div className="space-y-1">
-              <h4 className="text-sm font-medium text-wisen-titulo group-hover:opacity-80 transition-opacity">
-                Alterar senha
-              </h4>
-              <p className="text-xs text-wisen-texto-suave leading-relaxed">
-                Atualize sua senha para manter sua conta segura.
-              </p>
-            </div>
+            <span className="text-sm font-medium text-wisen-titulo transition-opacity group-hover:opacity-80">
+              Alterar senha
+            </span>
           </div>
           <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#2B333F] transition-colors" />
         </button>
@@ -134,20 +133,15 @@ export function SecurityCard() {
           type="button"
           onClick={signOut}
           disabled={signingOut}
-          className="group flex w-full items-center justify-between gap-3 rounded-xl border border-wisen-borda/70 p-3 text-left transition-colors hover:bg-wisen-superficie focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wisen-titulo disabled:opacity-50"
+          className={defaultSecurityAction}
         >
           <div className="flex items-center gap-3">
             <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-wisen-superficie text-wisen-texto-suave">
               <LogOut className="w-4 h-4" />
             </div>
-            <div className="space-y-1">
-              <h4 className="text-sm font-medium text-wisen-titulo group-hover:opacity-80 transition-opacity">
-                {signingOut ? "Encerrando…" : "Encerrar sessão"}
-              </h4>
-              <p className="text-xs text-wisen-texto-suave leading-relaxed">
-                Desconecte sua conta deste dispositivo.
-              </p>
-            </div>
+            <span className="text-sm font-medium text-wisen-titulo transition-opacity group-hover:opacity-80">
+              {signingOut ? "Encerrando…" : "Encerrar sessão"}
+            </span>
           </div>
           <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#2B333F] transition-colors" />
         </button>
@@ -155,6 +149,27 @@ export function SecurityCard() {
           <p role="alert" className="text-xs text-red-600">
             {logoutError}
           </p>
+        )}
+
+        {showDeleteAccount && (
+          <button
+            type="button"
+            onClick={() => window.location.assign("/conta?action=delete")}
+            className={`${securityAction} cursor-pointer border-transparent bg-red-100 text-wisen-titulo hover:border-red-700 hover:bg-wisen-card hover:text-red-700 focus-visible:outline-red-700`}
+          >
+            <div className="flex items-center gap-3">
+              <div className="flex size-10 shrink-0 items-center justify-center">
+                <Trash2
+                  aria-hidden="true"
+                  className="size-4 transition-colors group-hover:text-red-700"
+                />
+              </div>
+              <span className="text-sm font-medium transition-colors group-hover:text-red-700">
+                Excluir minha conta
+              </span>
+            </div>
+            <ChevronRight aria-hidden="true" className="size-4 shrink-0" />
+          </button>
         )}
       </div>
 

@@ -60,20 +60,20 @@ A busca usa os trechos já indexados e retorna até cinco artigos por padrão. O
 
 ## Comandos
 
-| Comando               | Uso                                 |
-| --------------------- | ----------------------------------- |
-| `npm run dev`         | Frontend local + API, worker e banco no Docker |
-| `npm run dev:docker`  | Iniciar todos os serviços no Docker |
-| `npm run dev:logs`    | Acompanhar logs dos containers       |
-| `npm run dev:status`  | Conferir containers e saúde (frontend local aparece no terminal) |
-| `npm run dev:down`    | Parar containers sem apagar volumes (frontend local: Ctrl+C) |
-| `npm run db:migrate`  | Aplicar migrations pendentes        |
-| `npm run db:seed:locations` | Reimportar países e estados sem duplicar registros |
-| `npm run setup:model` | Preparar o modelo local             |
-| `npm run check`       | Biome e build do frontend           |
-| `npm run build`       | Build de produção do frontend       |
-| `npm test`            | Unidade, integração, frontend e E2E |
-| `npm run lint:fix`    | Aplicar correções seguras do Biome  |
+| Comando                     | Uso                                                              |
+| --------------------------- | ---------------------------------------------------------------- |
+| `npm run dev`               | Frontend local + API, worker e banco no Docker                   |
+| `npm run dev:docker`        | Iniciar todos os serviços no Docker                              |
+| `npm run dev:logs`          | Acompanhar logs dos containers                                   |
+| `npm run dev:status`        | Conferir containers e saúde (frontend local aparece no terminal) |
+| `npm run dev:down`          | Parar containers sem apagar volumes (frontend local: Ctrl+C)     |
+| `npm run db:migrate`        | Aplicar migrations pendentes                                     |
+| `npm run db:seed:locations` | Reimportar países e estados sem duplicar registros               |
+| `npm run setup:model`       | Preparar o modelo local                                          |
+| `npm run check`             | Biome e build do frontend                                        |
+| `npm run build`             | Build de produção do frontend                                    |
+| `npm test`                  | Unidade, integração, frontend e E2E                              |
+| `npm run lint:fix`          | Aplicar correções seguras do Biome                               |
 
 ## Testes
 

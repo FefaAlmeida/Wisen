@@ -2,25 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-
-const imagens = {
-  "Taxa Selic":
-    "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=800&q=80",
-  Inflação:
-    "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=800&q=80",
-  "Política monetária":
-    "https://images.unsplash.com/photo-1559526324-593bc073d938?auto=format&fit=crop&w=800&q=80",
-  "Gases de efeito estufa":
-    "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=800&q=80",
-  "Aquecimento global":
-    "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=800&q=80",
-  "Aprendizado de máquina":
-    "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80",
-  "Regulação de IA":
-    "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=800&q=80",
-  "Comércio internacional":
-    "https://images.unsplash.com/photo-1494412651409-8963ce7935a7?auto=format&fit=crop&w=800&q=80",
-};
+import { imagensConceitos } from "@/data/imagensConceitos";
 
 function getStatusStyles(status) {
   if (status === "Dominado") {
@@ -58,7 +40,7 @@ export function CardConceito({ titulo, descricao, status, progresso = 0 }) {
       {/* Imagem do conceito */}
       <div className="relative h-32 w-full shrink-0 overflow-hidden">
         <Image
-          src={imagens[titulo]}
+          src={imagensConceitos[titulo]}
           alt={titulo}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 25vw"

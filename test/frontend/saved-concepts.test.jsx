@@ -55,4 +55,19 @@ describe("conceitos salvos", () => {
     expect(await screen.findByText("Você ainda não salvou nenhum conceito.")).toBeVisible();
     expect(screen.queryByRole("link", { name: /^Inflação/ })).not.toBeInTheDocument();
   });
+
+  it("mostra a falha de carregamento e permite tentar novamente", async () => {
+    const user = userEvent.setup();
+    requisitar.mockRejectedValue(new Error("Serviço indisponível"));
+    render(<ConceitosSalvos />);
+
+    expect(screen.getByRole("status")).toHaveTextContent("Carregando conceitos salvos…");
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Não foi possível carregar seus conceitos salvos.",
+    );
+
+    requisitar.mockResolvedValue({ items: [] });
+    await user.click(screen.getByRole("button", { name: "Tentar novamente" }));
+    expect(await screen.findByText("Você ainda não salvou nenhum conceito.")).toBeVisible();
+  });
 });

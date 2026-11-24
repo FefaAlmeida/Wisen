@@ -20,7 +20,7 @@ export function NotificationsCard({
       <div className="space-y-5">
         {/* Item 1 */}
         <div className="flex items-center justify-between gap-4 rounded-[10px] border border-wisen-borda p-3">
-          <div className="flex items-start gap-3">
+          <div className="flex items-center gap-3">
             <div className="flex size-10 items-center justify-center rounded-xl bg-wisen-superficie text-wisen-texto-suave shrink-0">
               <Calendar className="w-4 h-4" />
             </div>
@@ -32,6 +32,7 @@ export function NotificationsCard({
             </div>
           </div>
           <Switch
+            className="data-checked:bg-wisen-titulo"
             disabled={saving}
             checked={notifications.reviewReminders}
             aria-label="Lembretes de revisão"
@@ -42,7 +43,7 @@ export function NotificationsCard({
 
         {/* Item 2 */}
         <div className="flex items-center justify-between gap-4 rounded-[10px] border border-wisen-borda p-3">
-          <div className="flex items-start gap-3">
+          <div className="flex items-center gap-3">
             <div className="flex size-10 items-center justify-center rounded-xl bg-wisen-superficie text-wisen-texto-suave shrink-0">
               <Bell className="w-4 h-4" />
             </div>
@@ -54,6 +55,7 @@ export function NotificationsCard({
             </div>
           </div>
           <Switch
+            className="data-checked:bg-wisen-titulo"
             disabled={saving}
             checked={notifications.weeklySummary}
             data-wisen-hover="preserve"
@@ -79,6 +81,7 @@ export function NotificationsCard({
             onClick={onSave}
             disabled={!hasChanges || saving}
             className={profileSaveAction}
+            data-wisen-hover="preserve"
           >
             {saving ? "Salvando..." : "Salvar notificações"}
           </Button>

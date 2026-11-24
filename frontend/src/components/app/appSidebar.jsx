@@ -10,7 +10,6 @@ import {
   Globe,
   GraduationCap,
   Home,
-  LogOut,
   Menu,
   Newspaper,
   Tags,
@@ -19,9 +18,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { requisitar } from "@/services/api";
 
 const navigation = [
   { label: "Início", href: "/paginaInicialCliente", icon: Home },
@@ -125,44 +122,6 @@ function NavigationItems({ activeItem, mobile = false, admin = false }) {
   );
 }
 
-function Logout() {
-  const [pending, setPending] = useState(false);
-  const [error, setError] = useState("");
-
-  async function logout() {
-    if (pending) return;
-    setPending(true);
-    setError("");
-    try {
-      await requisitar("/auth/logout", { method: "POST" });
-      window.location.assign("/auth");
-    } catch {
-      setError("Não foi possível sair da conta. Tente novamente.");
-      setPending(false);
-    }
-  }
-
-  return (
-    <div className="mt-auto border-t border-white/15 pt-4">
-      <button
-        type="button"
-        onClick={logout}
-        disabled={pending}
-        aria-label="Sair da conta"
-        className="flex min-h-11 w-full items-center justify-center gap-2.5 lg:justify-start rounded-xl px-2.5 text-left text-xs text-white hover:bg-white/10 disabled:opacity-50"
-      >
-        <LogOut size={17} />
-        <span className="sm:hidden lg:inline">{pending ? "Saindo…" : "Sair da conta"}</span>
-      </button>
-      {error && (
-        <p role="alert" className="px-2.5 text-xs text-red-200">
-          {error}
-        </p>
-      )}
-    </div>
-  );
-}
-
 export function AppSidebar({ activeItem, admin = false }) {
   return (
     <>
@@ -201,7 +160,6 @@ export function AppSidebar({ activeItem, admin = false }) {
           </div>
 
           <NavigationItems admin={admin} activeItem={activeItem} mobile />
-          <Logout />
         </SheetContent>
       </Sheet>
 
@@ -214,7 +172,6 @@ export function AppSidebar({ activeItem, admin = false }) {
         </div>
 
         <NavigationItems admin={admin} activeItem={activeItem} />
-        <Logout />
       </aside>
     </>
   );

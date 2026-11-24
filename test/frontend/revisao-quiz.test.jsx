@@ -9,12 +9,13 @@ vi.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
 describe("prévia de revisões", () => {
   it("abre com indicadores e leva à preparação em uma página separada", () => {
     render(<CentralRevisao />);
-    expect(screen.getByRole("heading", { name: "Central de revisões" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Central de revisões." })).toBeInTheDocument();
     expect(screen.getByRole("region", { name: "Resumo das revisões" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Nova revisão" })).toHaveAttribute(
       "href",
       "/paginaRevisoes/nova",
     );
+    expect(screen.queryByText("Começar")).not.toBeInTheDocument();
     expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Últimas revisões" })).toBeInTheDocument();
   });

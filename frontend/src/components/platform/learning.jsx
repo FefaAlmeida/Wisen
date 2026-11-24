@@ -59,7 +59,6 @@ export function Library({ knowledge = false }) {
         )}
         <div className="mt-5">
           <FiltrosBiblioteca
-            includeSaved
             filtroAtivo={filter}
             onFiltroChange={setFilter}
             items={(resource.data?.items ?? []).map((c) => ({
@@ -69,7 +68,7 @@ export function Library({ knowledge = false }) {
         </div>
         {filter === "salvos" ? (
           <div className="mt-6">
-            <ConceitosSalvos />
+            <ConceitosSalvos onExplore={() => setFilter("todos")} />
           </div>
         ) : (
           <State resource={resource}>

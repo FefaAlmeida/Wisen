@@ -40,7 +40,6 @@ export function PerguntasFrequentes() {
       className="relative w-screen -mx-[calc(50vw-50%)] mt-0 scroll-mt-24"
     >
       <div className="relative isolate overflow-hidden border-y border-[#293B5C] bg-[#172542] px-6 py-8 text-white sm:px-10 md:px-14 md:py-10">
-
         <div className="relative z-10 mx-auto grid max-w-[1360px] grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-14">
           {/* Introdução */}
           <div className="space-y-4 lg:col-span-5">
@@ -51,7 +50,6 @@ export function PerguntasFrequentes() {
               Ainda tem <br className="hidden sm:block" />
               perguntas<span className="text-[#E8E191]">?</span>
             </h2>
-
           </div>
 
           {/* Perguntas */}

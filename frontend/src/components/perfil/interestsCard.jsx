@@ -188,6 +188,7 @@ export function InterestsCard({
               onClick={onSave}
               disabled={!hasChanges || saving || !canSave}
               className={profileSaveAction}
+              data-wisen-hover="preserve"
             >
               {saving ? "Salvando..." : "Salvar interesses"}
             </Button>

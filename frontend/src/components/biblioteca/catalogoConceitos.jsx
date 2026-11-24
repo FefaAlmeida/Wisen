@@ -18,7 +18,7 @@ export function CatalogoConceitos() {
   const params = useSearchParams();
   const initialFilter = params?.get("filtro");
   const [filtroAtivo, setFiltroAtivo] = useState(
-    initialFilter in filtros ? initialFilter : "todos",
+    initialFilter === "salvos" || Object.hasOwn(filtros, initialFilter) ? initialFilter : "todos",
   );
   const statusFiltrado = filtros[filtroAtivo];
   const conceitosFiltrados = conceitos.filter(
@@ -28,11 +28,11 @@ export function CatalogoConceitos() {
   return (
     <>
       <section className="mb-5 w-full">
-        <FiltrosBiblioteca filtroAtivo={filtroAtivo} onFiltroChange={setFiltroAtivo} includeSaved />
+        <FiltrosBiblioteca filtroAtivo={filtroAtivo} onFiltroChange={setFiltroAtivo} />
       </section>
 
       {filtroAtivo === "salvos" ? (
-        <ConceitosSalvos />
+        <ConceitosSalvos onExplore={() => setFiltroAtivo("todos")} />
       ) : (
         <section
           aria-label="Conceitos"

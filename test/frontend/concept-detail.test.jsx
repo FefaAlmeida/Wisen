@@ -9,9 +9,10 @@ vi.mock("@/services/api", () => ({
   requisitar: vi.fn().mockResolvedValue({ user: { id: "test-user" } }),
 }));
 
-const navigation = vi.hoisted(() => ({ name: "Inflação" }));
+const navigation = vi.hoisted(() => ({ name: "Inflação", filter: "todos" }));
 vi.mock("next/navigation", () => ({
-  useSearchParams: () => new URLSearchParams({ conceito: navigation.name }),
+  useSearchParams: () =>
+    new URLSearchParams({ conceito: navigation.name, filtro: navigation.filter }),
 }));
 vi.mock("next/link", () => ({
   default: ({ href, children, ...props }) => (
@@ -28,6 +29,7 @@ describe("detalhe de conceito", () => {
   beforeEach(() => {
     localStorage.clear();
     navigation.name = "Inflação";
+    navigation.filter = "todos";
   });
 
   it("abre o conceito escolhido e oferece conexões com destinos distintos", () => {
@@ -86,7 +88,7 @@ describe("detalhe de conceito", () => {
     );
   });
 
-  it("mostra os conceitos salvos na biblioteca e mantém a remoção ao reabrir", async () => {
+  it("abre conceitos salvos pelo endereço direto e mantém a remoção ao reabrir", async () => {
     const user = userEvent.setup();
     const detail = render(<PaginaConceito />);
     await waitFor(() =>
@@ -95,12 +97,12 @@ describe("detalhe de conceito", () => {
     await user.click(screen.getByRole("button", { name: "Salvar conceito" }));
     detail.unmount();
 
+    navigation.filter = "salvos";
     const library = render(
       <DemoContext value={true}>
         <CatalogoConceitos />
       </DemoContext>,
     );
-    await user.click(screen.getByRole("button", { name: "Conceitos salvos" }));
     expect(await screen.findByRole("heading", { name: "Conceitos salvos (1)" })).toBeVisible();
     expect(screen.getByRole("link", { name: /^Inflação/ })).toHaveAttribute(
       "href",
@@ -109,6 +111,9 @@ describe("detalhe de conceito", () => {
     expect(screen.queryByRole("link", { name: "Taxa Selic" })).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Remover Inflação dos salvos" }));
     expect(await screen.findByText("Você ainda não salvou nenhum conceito.")).toBeVisible();
+    await user.click(screen.getByRole("button", { name: "Explorar conceitos" }));
+    expect(screen.getByRole("button", { name: /^Todas/ })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.queryByRole("button", { name: "Conceitos salvos" })).not.toBeInTheDocument();
     library.unmount();
 
     render(<PaginaConceito />);

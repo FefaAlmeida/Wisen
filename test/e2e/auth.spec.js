@@ -170,14 +170,17 @@ test("landing oferece acesso e navegação funcional em desktop e celular", asyn
     ).toBe(true);
     await page.getByRole("link", { name: "Veja como funciona" }).click();
     await expect(page).toHaveURL(/\/#sobre$/);
+    await expect(page.getByRole("heading", { name: /Transforme informação/ })).toBeInViewport();
+    const startLink = page.getByRole("link", { name: "Começar a usar o Wisen" });
+    await startLink.scrollIntoViewIfNeeded();
+    await expect(page.locator("#inicio")).not.toBeInViewport();
     await expect.poll(() => page.locator("video").evaluate((video) => video.paused)).toBe(true);
     await navigation.getByRole("link", { name: "Entrar", exact: true }).click();
     await expect(page).toHaveURL(/\/auth$/);
     await page.goto("/");
-    await page.getByRole("link", { name: "Começar a usar o Wisen" }).click();
+    await startLink.click();
     await expect(page).toHaveURL(/\/auth$/);
   }
-  await page.goto("/");
   await page.goto("/");
   await expect(page.locator('a[href="/paginaLanding"]')).toHaveCount(0);
 });
@@ -252,16 +255,18 @@ test("admin fica na administração e pode sair em desktop e celular", async ({ 
       await page.getByLabel("Senha", { exact: true }).fill(password);
       await page.getByRole("button", { name: /^entrar/i }).click();
       await expect(page).toHaveURL(/\/paginaInicioAdm$/);
-      await expect(page.getByRole("button", { name: "Abrir menu do perfil" })).toHaveCount(0);
+      await page.getByRole("button", { name: "Abrir menu do perfil" }).click();
+      await expect(page.getByRole("link", { name: "Meu perfil" })).toHaveAttribute(
+        "href",
+        "/paginaPerfilAdm",
+      );
       for (const path of ["/paginaInicialCliente", "/paginaPerfil", "/paginaSessaoRevisao"]) {
         await page.goto(path);
         await expect(page).toHaveURL(/\/paginaInicioAdm$/);
       }
       expect((await page.request.get("/api/feed")).status()).toBe(403);
       expect((await page.request.get("/api/admin/overview")).status()).toBe(200);
-      if (width === 390) {
-        await page.getByRole("button", { name: "Abrir menu de navegação" }).click();
-      }
+      await page.getByRole("button", { name: "Abrir menu do perfil" }).click();
       await page.getByRole("button", { name: "Sair da conta", exact: true }).click();
       await expect(page).toHaveURL(/\/auth$/);
       expect((await page.request.get("/api/auth/session")).status()).toBe(401);

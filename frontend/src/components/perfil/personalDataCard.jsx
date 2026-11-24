@@ -91,7 +91,7 @@ export function PersonalDataCard({
           <div className="relative shrink-0">
             <Avatar className="size-16 border-4 border-white shadow-sm sm:size-20">
               <AvatarImage src={avatarDataUrl || undefined} alt={name || "Foto de perfil"} />
-              <AvatarFallback className="bg-wisen-destaque-suave text-xl font-semibold text-wisen-titulo">
+              <AvatarFallback className="bg-[#E8EFFA] text-xl font-semibold text-wisen-titulo">
                 {initials}
               </AvatarFallback>
             </Avatar>
@@ -190,7 +190,12 @@ export function PersonalDataCard({
         )}
 
         <div className="flex justify-end border-t border-wisen-borda/70 pt-4">
-          <Button type="submit" disabled={loading || saving} className={profileSaveAction}>
+          <Button
+            type="submit"
+            disabled={loading || saving}
+            className={profileSaveAction}
+            data-wisen-hover="preserve"
+          >
             {saving ? (
               <span className="flex items-center gap-2">
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />

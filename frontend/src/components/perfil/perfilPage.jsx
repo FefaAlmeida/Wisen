@@ -187,57 +187,44 @@ export default function PerfilPage({ admin = false } = {}) {
         </div>
       )}
 
-      <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-        <div className="min-w-0 space-y-6">
-          <PersonalDataCard
-            name={profile.name}
-            email={profile.email}
-            avatarDataUrl={profile.avatarDataUrl}
-            onAvatarUpload={saveAvatar}
-            onNameChange={(name) => setProfile((current) => ({ ...current, name }))}
-            onEmailChange={(email) => setProfile((current) => ({ ...current, email }))}
-            onSubmit={saveProfile}
-            loading={loading || Boolean(loadError)}
-            saving={Boolean(saving.personal || saving.avatar)}
-            feedback={feedback}
-          />
-          <SecurityCard />
-        </div>
-        <div className="min-w-0 space-y-6">
-          <InterestsCard
-            categories={interestCategories}
-            interests={profile.interests}
-            onToggle={toggleInterest}
-            onSave={saveInterests}
-            saving={Boolean(saving.interests || loading || loadError)}
-            minimumSelections={3}
-            hasChanges={interestsChanged}
-            feedback={interestsFeedback}
-            selectionTiles
-            systemColors
-          />
-          <NotificationsCard
-            notifications={profile.notifications}
-            onChange={updateNotification}
-            onSave={saveNotifications}
-            saving={Boolean(saving.notifications || loading || loadError)}
-            hasChanges={notificationsChanged}
-            feedback={notificationsFeedback}
-          />
-        </div>
+      <div
+        data-wisen-profile
+        className="grid grid-cols-1 gap-6 xl:grid-flow-col xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] xl:grid-rows-[auto_auto]"
+      >
+        <PersonalDataCard
+          name={profile.name}
+          email={profile.email}
+          avatarDataUrl={profile.avatarDataUrl}
+          onAvatarUpload={saveAvatar}
+          onNameChange={(name) => setProfile((current) => ({ ...current, name }))}
+          onEmailChange={(email) => setProfile((current) => ({ ...current, email }))}
+          onSubmit={saveProfile}
+          loading={loading || Boolean(loadError)}
+          saving={Boolean(saving.personal || saving.avatar)}
+          feedback={feedback}
+        />
+        <SecurityCard showDeleteAccount={!admin} />
+        <InterestsCard
+          categories={interestCategories}
+          interests={profile.interests}
+          onToggle={toggleInterest}
+          onSave={saveInterests}
+          saving={Boolean(saving.interests || loading || loadError)}
+          minimumSelections={3}
+          hasChanges={interestsChanged}
+          feedback={interestsFeedback}
+          selectionTiles
+          systemColors
+        />
+        <NotificationsCard
+          notifications={profile.notifications}
+          onChange={updateNotification}
+          onSave={saveNotifications}
+          saving={Boolean(saving.notifications || loading || loadError)}
+          hasChanges={notificationsChanged}
+          feedback={notificationsFeedback}
+        />
       </div>
-      {!admin && (
-        <div className="flex border-t border-wisen-borda pt-5 sm:justify-end">
-          <Button
-            type="button"
-            variant="destructive"
-            className="cursor-pointer border-destructive/30"
-            onClick={() => window.location.assign("/conta?action=delete")}
-          >
-            Excluir minha conta
-          </Button>
-        </div>
-      )}
     </div>
   );
 

@@ -790,8 +790,7 @@
 }
 
 .onboarding .onboardingPrimaryAction,
-.authDialog .dialogPrimaryAction,
-.profileSaveAction {
+.authDialog .dialogPrimaryAction {
   border: 1px solid transparent;
   background: #f2df73;
   color: #172542;
@@ -799,8 +798,7 @@
 }
 
 .onboarding .onboardingPrimaryAction:hover,
-.authDialog .dialogPrimaryAction:hover,
-.profileSaveAction:hover {
+.authDialog .dialogPrimaryAction:hover {
   background: #e6d264;
 }
 

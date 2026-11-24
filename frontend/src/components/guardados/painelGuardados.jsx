@@ -3,6 +3,7 @@
 import { Bookmark, BookOpen, ListFilter, Search } from "lucide-react";
 import { useState } from "react";
 
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
@@ -20,17 +21,17 @@ const eventosIniciais = [
   {
     id: 1,
     categoria: "Meio ambiente",
-    data: "1 de out. de 2026",
-    titulo: "Estudo aponta aceleração do derretimento das geleiras no mundo",
+    data: "1 out. 2026",
+    titulo: "Derretimento das geleiras acelera no mundo",
     descricao:
-      "Pesquisa internacional alerta que o derretimento das geleiras está acelerando nas últimas décadas.",
+      "A perda de gelo contribui para a elevação do nível do mar e afeta ecossistemas costeiros.",
     imagem:
       "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=500&q=80",
   },
   {
     id: 2,
     categoria: "Política",
-    data: "28 de set. de 2026",
+    data: "28 set. 2026",
     titulo: "Novos projetos de reforma tributária avançam no Congresso",
     descricao:
       "Texto prevê mudanças na tributação do consumo e serviços, com impacto direto na economia brasileira.",
@@ -40,7 +41,7 @@ const eventosIniciais = [
   {
     id: 3,
     categoria: "Economia",
-    data: "25 de set. de 2026",
+    data: "25 set. 2026",
     titulo: "Petrobras anuncia nova política de preços dos combustíveis",
     descricao: "Empresa confirma alterações na estratégia de reajustes de gasolina e diesel.",
     imagem:
@@ -49,7 +50,7 @@ const eventosIniciais = [
   {
     id: 4,
     categoria: "Meio ambiente",
-    data: "22 de set. de 2026",
+    data: "22 set. 2026",
     titulo: "Desmatamento na Amazônia cai pelo segundo ano consecutivo",
     descricao: "Dados de monitoramento revelam uma redução nas áreas afetadas.",
     imagem:
@@ -62,37 +63,26 @@ const conceitosIniciais = [
     id: 1,
     titulo: "Taxa Selic",
     descricao: "Taxa básica de juros da economia brasileira, definida pelo Banco Central.",
-    status: "Em revisão",
-    icone: "M4 19h16M6 16V9m4 7V5m4 11v-6m4 6V7",
   },
   {
     id: 2,
     titulo: "Gases de efeito estufa",
     descricao: "Gases que retêm calor na atmosfera, como CO₂ e metano.",
-    status: "Lacuna",
-    icone: "M20 4c-9 0-15 4-15 11a5 5 0 0 0 5 5c7 0 11-6 10-16ZM5 20c3-6 7-9 12-12",
   },
   {
     id: 3,
     titulo: "Política monetária",
     descricao: "Conjunto de medidas para controlar a moeda, o crédito e os juros.",
-    status: "Dominado",
-    icone: "M3 21h18M5 21V9l7-5 7 5v12M9 12v5m6-5v5",
   },
   {
     id: 4,
     titulo: "Aquecimento global",
     descricao: "Aumento da temperatura média do planeta associado ao efeito estufa.",
-    status: "Em revisão",
-    icone:
-      "M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M19 5l-2 2M7 17l-2 2M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z",
   },
   {
     id: 5,
     titulo: "Nível do mar",
     descricao: "Altura média da superfície do mar, que pode aumentar com mudanças climáticas.",
-    status: "Lacuna",
-    icone: "M2 13c3-3 5 3 8 0s5-3 8 0 4 0 4 0M2 18c3-3 5 3 8 0s5-3 8 0 4 0 4 0M12 3v7m-3-3 3 3 3-3",
   },
 ];
 
@@ -146,12 +136,33 @@ function Ordenacao({ valor, aoAlterar }) {
   );
 }
 
+function AvisoRemocao({ mensagem, aoDesfazer }) {
+  return (
+    <div className="flex items-center justify-between gap-2 rounded-lg border border-wisen-borda bg-white px-3 py-1 text-xs text-wisen-texto-forte">
+      <span role="status">{mensagem}</span>
+      <Button
+        type="button"
+        size="sm"
+        variant="ghost"
+        className="cursor-pointer text-xs font-semibold text-wisen-titulo"
+        onClick={aoDesfazer}
+      >
+        Desfazer
+      </Button>
+    </div>
+  );
+}
+
 function SecaoGuardados({ titulo, descricao, busca, ordenacao, children }) {
   return (
     <Card className="gap-0 rounded-xl border-wisen-borda bg-white p-0">
       <div className="flex flex-wrap items-center justify-between gap-3 p-3 sm:p-4">
         <div>
           <h2 className="text-base font-semibold text-wisen-titulo">{titulo}</h2>
+          <span
+            aria-hidden="true"
+            className="mt-2 block h-0.5 w-8 rounded-full bg-wisen-destaque"
+          />
           <p className="mt-0.5 text-xs leading-5 text-wisen-texto-suave">{descricao}</p>
         </div>
 
@@ -170,12 +181,21 @@ function SecaoGuardados({ titulo, descricao, busca, ordenacao, children }) {
 
 export default function PainelGuardados() {
   const [aba, setAba] = useState("eventos");
+  const [idsEventosRemovidos, setIdsEventosRemovidos] = useState([]);
+  const [idsConceitosRemovidos, setIdsConceitosRemovidos] = useState([]);
   const [buscaEventos, setBuscaEventos] = useState("");
   const [buscaConceitos, setBuscaConceitos] = useState("");
   const [ordemEventos, setOrdemEventos] = useState("recentes");
   const [ordemConceitos, setOrdemConceitos] = useState("recentes");
 
-  const eventosFiltrados = eventosIniciais
+  function removerEvento(id) {
+    setIdsEventosRemovidos((ids) => [...ids, id]);
+  }
+
+  const eventosSalvos = eventosIniciais.filter(
+    (evento) => !idsEventosRemovidos.includes(evento.id),
+  );
+  const eventosFiltrados = eventosSalvos
     .filter((evento) =>
       `${evento.titulo} ${evento.categoria} ${evento.descricao}`
         .toLocaleLowerCase("pt-BR")
@@ -185,9 +205,12 @@ export default function PainelGuardados() {
       ordemEventos === "alfabetica" ? a.titulo.localeCompare(b.titulo, "pt-BR") : a.id - b.id,
     );
 
-  const conceitosFiltrados = conceitosIniciais
+  const conceitosSalvos = conceitosIniciais.filter(
+    (conceito) => !idsConceitosRemovidos.includes(conceito.id),
+  );
+  const conceitosFiltrados = conceitosSalvos
     .filter((conceito) =>
-      `${conceito.titulo} ${conceito.descricao} ${conceito.status}`
+      `${conceito.titulo} ${conceito.descricao}`
         .toLocaleLowerCase("pt-BR")
         .includes(buscaConceitos.toLocaleLowerCase("pt-BR")),
     )
@@ -200,9 +223,9 @@ export default function PainelGuardados() {
       <TabsList className="max-w-full flex-wrap justify-start gap-1 border border-wisen-borda bg-white group-data-horizontal/tabs:h-auto">
         <TabsTrigger value="eventos" className={estiloAba}>
           <Bookmark className="hidden size-3.5 sm:block" aria-hidden="true" />
-          Eventos salvos
+          Notícias salvas
           <span className="rounded-full bg-wisen-superficie px-1.5 py-0.5 text-[11px] text-wisen-texto-forte">
-            {eventosIniciais.length}
+            {eventosSalvos.length}
           </span>
         </TabsTrigger>
 
@@ -210,25 +233,42 @@ export default function PainelGuardados() {
           <BookOpen className="hidden size-3.5 sm:block" aria-hidden="true" />
           Conceitos marcados
           <span className="rounded-full bg-wisen-superficie px-1.5 py-0.5 text-[11px] text-wisen-texto-forte">
-            {conceitosIniciais.length}
+            {conceitosSalvos.length}
           </span>
         </TabsTrigger>
       </TabsList>
 
       <TabsContent value="eventos" className="mt-0">
         <SecaoGuardados
-          titulo="Eventos salvos"
+          titulo="Notícias salvas"
           descricao="Notícias que você salvou para ler ou revisar mais tarde."
-          busca={{ valor: buscaEventos, aoAlterar: setBuscaEventos, placeholder: "Buscar eventos" }}
+          busca={{
+            valor: buscaEventos,
+            aoAlterar: setBuscaEventos,
+            placeholder: "Buscar notícias",
+          }}
           ordenacao={{ valor: ordemEventos, aoAlterar: setOrdemEventos }}
         >
+          {idsEventosRemovidos.length > 0 && (
+            <AvisoRemocao
+              mensagem="Notícia removida dos salvos."
+              aoDesfazer={() => setIdsEventosRemovidos((ids) => ids.slice(0, -1))}
+            />
+          )}
+
           {eventosFiltrados.map((evento) => (
-            <CardEventoSalvo key={evento.id} evento={evento} />
+            <CardEventoSalvo
+              key={evento.id}
+              evento={evento}
+              aoRemover={() => removerEvento(evento.id)}
+            />
           ))}
 
           {eventosFiltrados.length === 0 && (
             <p role="status" className="py-6 text-center text-xs text-wisen-texto-suave">
-              Nenhum evento encontrado.
+              {eventosSalvos.length === 0
+                ? "Nenhuma notícia salva."
+                : "Nenhuma notícia encontrada."}
             </p>
           )}
         </SecaoGuardados>
@@ -245,13 +285,26 @@ export default function PainelGuardados() {
           }}
           ordenacao={{ valor: ordemConceitos, aoAlterar: setOrdemConceitos }}
         >
+          {idsConceitosRemovidos.length > 0 && (
+            <AvisoRemocao
+              mensagem="Conceito removido dos salvos."
+              aoDesfazer={() => setIdsConceitosRemovidos((ids) => ids.slice(0, -1))}
+            />
+          )}
+
           {conceitosFiltrados.map((conceito) => (
-            <CardConceitoMarcado key={conceito.id} conceito={conceito} />
+            <CardConceitoMarcado
+              key={conceito.id}
+              conceito={conceito}
+              aoRemover={() => setIdsConceitosRemovidos((ids) => [...ids, conceito.id])}
+            />
           ))}
 
           {conceitosFiltrados.length === 0 && (
             <p role="status" className="py-6 text-center text-xs text-wisen-texto-suave">
-              Nenhum conceito encontrado.
+              {conceitosSalvos.length === 0
+                ? "Nenhum conceito marcado."
+                : "Nenhum conceito encontrado."}
             </p>
           )}
         </SecaoGuardados>

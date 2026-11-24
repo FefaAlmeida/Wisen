@@ -11,9 +11,7 @@ import { RecursosLanding } from "@/components/landingPage/recursosLanding";
 export default function PaginaLanding() {
   return (
     <div className="relative isolate min-h-screen overflow-x-clip bg-[#EEF5FB] text-[#2B333F] selection:bg-[#E8E191] selection:text-[#101A40]">
-      <div className="pointer-events-none fixed inset-0 z-0">
-        <ConnectionsBackground fadeTop={false} fullSpread particleDensity={0.3} />
-      </div>
+      <ConnectionsBackground />
       <main className="relative z-10 w-full">
         <HeroLanding />
 

@@ -1,4 +1,5 @@
 import { ArrowUpRight, Pause, Play } from "lucide-react";
+import { AdminZuzuPortrait } from "@/components/admin/adminZuzuPortrait";
 import { Button } from "@/components/ui/button";
 
 function SourceStatus({ active }) {
@@ -37,7 +38,7 @@ function SourceActions({ source, onEdit, onToggle, busy, mobile = false }) {
         className={
           mobile
             ? "h-10 grow border-wisen-borda text-xs text-[#526584] hover:bg-wisen-admin-control-hover active:bg-wisen-admin-control-hover"
-            : "text-xs text-[#526584] hover:bg-wisen-admin-control-hover hover:text-wisen-titulo"
+            : "text-xs text-[#526584] hover:bg-transparent hover:text-wisen-destaque dark:hover:bg-transparent"
         }
       >
         Gerenciar
@@ -51,8 +52,8 @@ function SourceActions({ source, onEdit, onToggle, busy, mobile = false }) {
         aria-label={`${source.ativo ? "Pausar" : "Ativar"} ${source.nome}`}
         className={
           mobile
-            ? "size-10 shrink-0 text-[#7182A1] hover:bg-wisen-admin-control-hover active:bg-wisen-admin-control-hover"
-            : "size-8 text-[#7182A1] hover:bg-wisen-admin-control-hover hover:text-wisen-titulo"
+            ? "size-10 shrink-0 text-[#7182A1] hover:bg-transparent hover:text-wisen-destaque dark:hover:bg-transparent"
+            : "size-8 text-[#7182A1] hover:bg-transparent hover:text-wisen-destaque dark:hover:bg-transparent"
         }
       >
         {source.ativo ? <Pause className="size-3.5" /> : <Play className="size-3.5" />}
@@ -64,6 +65,7 @@ export default function TabelaFontes({ fontes, aoEditar, aoAlternarStatus, busy 
   if (!fontes.length)
     return (
       <div className="px-5 py-14 text-center">
+        <AdminZuzuPortrait className="mx-auto mb-3" />
         <h3 className="text-sm font-medium text-wisen-titulo">Nenhuma fonte encontrada</h3>
         <p className="mt-2 text-sm text-[#7182A1]">
           Tente outro nome, endereço ou combinação de filtros.

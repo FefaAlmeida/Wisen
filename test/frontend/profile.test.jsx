@@ -129,7 +129,7 @@ it("mostra a senha escolhida e limpa os campos ao fechar a alteração de senha"
   await user.click(screen.getByRole("button", { name: "Mostrar: Senha atual" }));
   expect(currentPassword).toHaveAttribute("type", "text");
   expect(newPassword).toHaveAttribute("type", "password");
-  await user.click(screen.getByRole("button", { name: "Cancelar" }));
+  await user.click(screen.getByRole("button", { name: "Fechar" }));
   await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
 
   await user.click(screen.getByRole("button", { name: /Alterar senha/ }));

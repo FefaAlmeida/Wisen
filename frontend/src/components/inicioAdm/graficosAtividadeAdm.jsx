@@ -230,7 +230,7 @@ export function GraficosAtividadeAdm() {
       <section className="@container/atividade col-span-full min-w-0 rounded-2xl bg-[#263343] px-4 pt-4 pb-2 shadow-2xs sm:px-5">
         <h3 className="mb-2 text-lg font-semibold text-white">Atividade recente</h3>
 
-        <ol>
+        <ol className="max-w-sm">
           {atividades.map((item) => {
             const Icone = item.icone;
             return (
@@ -241,11 +241,11 @@ export function GraficosAtividadeAdm() {
                 <span className="relative grid size-8 shrink-0 place-items-center rounded-lg bg-[#3F484D] text-[#F3E69A]">
                   <Icone aria-hidden="true" className="size-4" />
                 </span>
-                <div className="grid min-w-0 flex-1 items-center gap-x-4 gap-y-0.5 @min-[24rem]/atividade:grid-cols-[minmax(0,1fr)_auto]">
+                <div className="grid min-w-0 flex-1 items-baseline gap-x-4 gap-y-0.5 @min-[24rem]/atividade:grid-cols-[minmax(0,1fr)_6.5rem]">
                   <span className="wrap-break-word text-sm leading-5 font-medium text-white">
                     {item.texto}
                   </span>
-                  <span className="text-xs text-[#C6D0DD] @min-[24rem]/atividade:text-right">
+                  <span className="text-xs text-[#C6D0DD]">
                     {item.tempo}
                   </span>
                 </div>

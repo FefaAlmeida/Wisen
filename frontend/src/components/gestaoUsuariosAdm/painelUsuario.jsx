@@ -13,7 +13,6 @@ import {
   DialogHeader,
   DialogTitle,
   dialogPrimaryAction,
-  dialogSecondaryAction,
 } from "@/components/ui/dialog";
 import { UserStatus } from "./tabelaUsuarios";
 
@@ -138,15 +137,6 @@ export default function PainelUsuario({
                 </Button>
               </DialogBody>
               <DialogFooter>
-                <Button
-                  variant="outline"
-                  type="button"
-                  disabled={busy}
-                  onClick={aoFechar}
-                  className={dialogSecondaryAction}
-                >
-                  Cancelar
-                </Button>
                 <Button type="submit" disabled={busy} className={dialogPrimaryAction}>
                   {busy ? "Salvando..." : "Salvar alterações"}
                 </Button>

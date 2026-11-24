@@ -1,4 +1,5 @@
 import { ArrowUpRight } from "lucide-react";
+import { AdminZuzuPortrait } from "@/components/admin/adminZuzuPortrait";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
@@ -33,6 +34,7 @@ export default function TabelaUsuarios({ usuarios, aoAbrirUsuario }) {
   if (!usuarios.length)
     return (
       <div className="px-5 py-14 text-center">
+        <AdminZuzuPortrait className="mx-auto mb-3" />
         <h3 className="text-sm font-medium text-wisen-titulo">Nenhum usuário encontrado</h3>
         <p className="mt-2 text-sm text-[#7182A1]">
           Tente outro nome, e-mail ou combinação de filtros.
@@ -87,7 +89,7 @@ export default function TabelaUsuarios({ usuarios, aoAbrirUsuario }) {
                     variant="ghost"
                     onClick={() => aoAbrirUsuario(user)}
                     aria-label={`Gerenciar ${user.nome}`}
-                    className="text-xs text-[#526584] hover:bg-wisen-admin-control-hover hover:text-wisen-titulo"
+                    className="text-xs text-[#526584] hover:bg-transparent hover:text-wisen-destaque dark:hover:bg-transparent"
                   >
                     Gerenciar
                     <ArrowUpRight className="size-3.5" />

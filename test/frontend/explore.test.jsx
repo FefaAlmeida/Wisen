@@ -98,7 +98,7 @@ describe("filtros da página Explorar integrada", () => {
     const selected = dialog.getByRole("button", { name: "Comércio", pressed: true });
     await user.click(selected);
     expect(dialog.getByRole("button", { name: "Salvar interesses" })).toBeDisabled();
-    await user.click(dialog.getByRole("button", { name: "Cancelar" }));
+    await user.click(dialog.getByRole("button", { name: "Fechar" }));
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
     expect(card.getByText("Comércio")).toBeInTheDocument();
 

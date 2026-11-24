@@ -253,16 +253,7 @@ export function SecurityCard({ admin = false, showDeleteAccount = false }) {
                 </p>
               )}
             </DialogBody>
-            <DialogFooter className="grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
-              <Button
-                type="button"
-                variant="outline"
-                className={`h-11 min-w-0 rounded-[10px] ${styles.dialogSecondaryAction}`}
-                onClick={() => handleDialogChange(false)}
-                disabled={saving}
-              >
-                Cancelar
-              </Button>
+            <DialogFooter>
               <Button
                 type="submit"
                 disabled={saving}

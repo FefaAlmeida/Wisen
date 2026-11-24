@@ -12,7 +12,6 @@ import {
   DialogHeader,
   DialogTitle,
   dialogPrimaryAction,
-  dialogSecondaryAction,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -191,15 +190,6 @@ export default function FormularioFonte({
             </fieldset>
           </DialogBody>
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              disabled={busy}
-              onClick={aoFechar}
-              className={dialogSecondaryAction}
-            >
-              Cancelar
-            </Button>
             <Button type="submit" disabled={busy} className={dialogPrimaryAction}>
               {busy ? "Salvando..." : fonte ? "Salvar alterações" : "Adicionar fonte"}
             </Button>

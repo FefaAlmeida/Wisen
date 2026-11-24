@@ -21,6 +21,8 @@ import LogsColeta from "./logsColeta";
 import TabelaFontes from "./tabelaFontes";
 
 const pageSize = 10;
+const sourceTabStyle =
+  "min-w-0 gap-1.5 rounded-lg px-1.5 text-xs whitespace-normal data-active:border-wisen-selecao sm:px-3 sm:text-sm";
 const statusOptions = { todos: "Todos os status", ativas: "Ativas", pausadas: "Pausadas" };
 const frequencyOptions = {
   todas: "Todas as frequências",
@@ -111,14 +113,17 @@ export default function GestaoFontes({ demo = true }) {
       />
       <Tabs defaultValue="fontes" className="w-full gap-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <TabsList aria-label="Gestão de fontes">
-            <SegmentedTab value="fontes">
-              <Rss aria-hidden="true" className="size-[18px]" />
+          <TabsList
+            aria-label="Gestão de fontes"
+            className="grid w-full grid-cols-2 rounded-xl sm:w-auto"
+          >
+            <SegmentedTab value="fontes" className={sourceTabStyle}>
+              <Rss aria-hidden="true" className="hidden size-4 min-[380px]:block" />
               Fontes cadastradas{" "}
               {!loading && <span className={segmentCountStyle}>{sources.length}</span>}
             </SegmentedTab>
-            <SegmentedTab value="registros">
-              <History aria-hidden="true" className="size-[18px]" />
+            <SegmentedTab value="registros" className={sourceTabStyle}>
+              <History aria-hidden="true" className="hidden size-4 min-[380px]:block" />
               Registros de coleta{" "}
               {!loading && <span className={segmentCountStyle}>{logs.length}</span>}
             </SegmentedTab>
@@ -140,7 +145,7 @@ export default function GestaoFontes({ demo = true }) {
             aria-label="Gestão de fontes RSS"
             className="min-w-0 overflow-hidden rounded-2xl border border-wisen-borda bg-card shadow-2xs"
           >
-            <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] items-center gap-2 px-4 py-4 sm:flex sm:flex-wrap sm:px-5">
+            <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-4 py-4 sm:flex sm:flex-wrap sm:px-5">
               <div className="relative col-span-2 w-full min-w-0 sm:w-[230px]">
                 <Search
                   aria-hidden="true"
@@ -160,7 +165,7 @@ export default function GestaoFontes({ demo = true }) {
               <AdminTableFilter
                 label="Filtrar fontes por status"
                 options={statusOptions}
-                width="sm:w-[165px]"
+                width="col-span-2 sm:w-[165px]"
                 value={status}
                 onChange={(value) => {
                   setStatus(value);
@@ -180,7 +185,7 @@ export default function GestaoFontes({ demo = true }) {
               <Button
                 variant="outline"
                 onClick={clear}
-                className={`col-span-2 h-9 justify-self-end gap-1.5 rounded-[10px] border-wisen-borda bg-white/85 px-3 text-xs font-normal text-[#607092] shadow-none ${adminFilterHover}`}
+                className={`h-9 justify-self-end gap-1.5 rounded-[10px] border-wisen-borda bg-white/85 px-3 text-xs font-normal text-[#607092] shadow-none ${adminFilterHover}`}
               >
                 <X aria-hidden="true" className="size-3.5" />
                 Limpar filtros

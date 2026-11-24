@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogBody,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -16,7 +15,6 @@ import {
   DialogTitle,
   DialogTrigger,
   dialogPrimaryAction,
-  dialogSecondaryAction,
 } from "@/components/ui/dialog";
 import { requisitar } from "@/services/api";
 
@@ -179,12 +177,6 @@ export function NewsInterests({ onSaved }) {
             )}
           </DialogBody>
           <DialogFooter>
-            <DialogClose
-              disabled={saving}
-              render={<Button type="button" variant="outline" className={dialogSecondaryAction} />}
-            >
-              Cancelar
-            </DialogClose>
             <Button
               type="button"
               className={dialogPrimaryAction}

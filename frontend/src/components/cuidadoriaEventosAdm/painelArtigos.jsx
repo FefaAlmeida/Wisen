@@ -3,12 +3,14 @@
 import { ArrowLeft, Check, ExternalLink, Pencil, Search } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { adminFilterControl } from "@/components/admin/adminTableFilter";
+import { AdminZuzuPortrait } from "@/components/admin/adminZuzuPortrait";
 import { Button } from "@/components/ui/button";
 import { dialogPrimaryAction } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { StatusEvento } from "./cardEvento";
 
-const rowAction = "border-wisen-borda text-xs text-wisen-texto-forte hover:bg-wisen-admin-control-hover";
+const rowAction =
+  "border-wisen-borda text-xs text-wisen-texto-forte hover:bg-wisen-admin-control-hover";
 
 export function ArticleSource({ url }) {
   if (!url) return null;
@@ -176,11 +178,14 @@ export default function PainelArtigos({
       </div>
       {!reviewed && (
         <footer className="wisen-panel flex flex-wrap items-center justify-between gap-4 p-4 sm:p-5">
-          <div>
-            <h3 className="text-sm font-semibold text-wisen-titulo">Concluir revisão</h3>
-            <p className="mt-1 text-sm leading-6 text-wisen-texto-suave">
-              {missing || "Confirme se todos os artigos tratam do mesmo acontecimento."}
-            </p>
+          <div className="flex min-w-0 items-center gap-3">
+            {!missing && <AdminZuzuPortrait className="size-9 shrink-0" />}
+            <div>
+              <h3 className="text-sm font-semibold text-wisen-titulo">Concluir revisão</h3>
+              <p className="mt-1 text-sm leading-6 text-wisen-texto-suave">
+                {missing || "Confirme se todos os artigos tratam do mesmo acontecimento."}
+              </p>
+            </div>
           </div>
           <Button
             disabled={busy || Boolean(missing)}

@@ -14,7 +14,6 @@ import {
   DialogBody,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -121,7 +120,7 @@ function LogAction({ log, onOpen, mobile = false }) {
       className={
         mobile
           ? "h-10 w-full border-wisen-borda text-xs text-[#526584] hover:bg-wisen-admin-control-hover active:bg-wisen-admin-control-hover"
-          : "text-xs text-[#526584] hover:bg-wisen-admin-control-hover hover:text-wisen-titulo"
+          : "text-xs text-[#526584] hover:bg-transparent hover:text-wisen-destaque dark:hover:bg-transparent"
       }
     >
       Ver detalhes
@@ -181,28 +180,30 @@ export function TabelaLogsIa() {
               className={`${adminFilterControl} pl-9`}
             />
           </div>
-          <AdminTableFilter
-            label="Filtrar chamadas por tipo"
-            options={typeOptions}
-            width="sm:w-[165px]"
-            value={type}
-            onChange={(value) => {
-              setType(value);
-              setPage(1);
-            }}
-          />
-          <Button
-            variant="outline"
-            onClick={() => {
-              setQuery("");
-              setType("all");
-              setPage(1);
-            }}
-            className={`h-9 w-full gap-1.5 rounded-[10px] border-wisen-borda bg-white/85 px-3 text-xs font-normal text-[#607092] shadow-none sm:w-auto ${adminFilterHover}`}
-          >
-            <X aria-hidden="true" className="size-3.5" />
-            Limpar filtros
-          </Button>
+          <div className="flex w-full min-w-0 items-center gap-2 sm:w-auto">
+            <AdminTableFilter
+              label="Filtrar chamadas por tipo"
+              options={typeOptions}
+              width="flex-1 sm:w-[165px] sm:flex-none"
+              value={type}
+              onChange={(value) => {
+                setType(value);
+                setPage(1);
+              }}
+            />
+            <Button
+              variant="outline"
+              onClick={() => {
+                setQuery("");
+                setType("all");
+                setPage(1);
+              }}
+              className={`h-9 shrink-0 gap-1.5 rounded-[10px] border-wisen-borda bg-white/85 px-3 text-xs font-normal text-[#607092] shadow-none ${adminFilterHover}`}
+            >
+              <X aria-hidden="true" className="size-3.5" />
+              Limpar filtros
+            </Button>
+          </div>
         </div>
       </div>
       {visibleLogs.length ? (
@@ -303,7 +304,6 @@ export function TabelaLogsIa() {
               </div>
               <LogMetrics log={selectedLog} />
             </DialogBody>
-            <DialogFooter showCloseButton />
           </DialogContent>
         )}
       </Dialog>

@@ -312,7 +312,7 @@ export default function CuradoriaEventos({ demo = true }) {
                 </div>
                 <select
                   aria-label="Filtrar por categoria"
-                  className={`${adminFilterControl} sm:w-48`}
+                  className={`${adminFilterControl} ${queue === "pendentes" ? "flex-1 sm:flex-none" : ""} sm:w-48`}
                   value={category}
                   onChange={(event) => {
                     setCategory(event.target.value);
@@ -327,7 +327,7 @@ export default function CuradoriaEventos({ demo = true }) {
                 {queue === "pendentes" && (
                   <select
                     aria-label="Mostrar eventos"
-                    className={`${adminFilterControl} sm:w-44`}
+                    className={`${adminFilterControl} flex-1 sm:w-44 sm:flex-none`}
                     value={status}
                     onChange={(event) => {
                       setStatus(event.target.value);
@@ -562,15 +562,6 @@ export default function CuradoriaEventos({ demo = true }) {
                 </div>
               </DialogBody>
               <DialogFooter>
-                <Button
-                  type="button"
-                  disabled={busy}
-                  variant="outline"
-                  onClick={closeModal}
-                  className={dialogSecondaryAction}
-                >
-                  Cancelar
-                </Button>
                 <Button type="submit" disabled={busy} className={dialogPrimaryAction}>
                   {busy ? "Salvando..." : "Salvar alterações"}
                 </Button>
@@ -643,7 +634,7 @@ export default function CuradoriaEventos({ demo = true }) {
                     {modal.article.titulo}
                   </p>
                   {modal.type === "mover" && (
-                    <label className="admin-dialog-panel block space-y-2 text-sm text-[#526584]">
+                    <label className="admin-dialog-panel grid gap-3 text-sm text-[#526584]">
                       <span>Evento de destino</span>
                       <select
                         className={adminFilterControl}
@@ -663,14 +654,6 @@ export default function CuradoriaEventos({ demo = true }) {
                   )}
                 </DialogBody>
                 <DialogFooter>
-                  <Button
-                    disabled={busy}
-                    variant="outline"
-                    onClick={closeModal}
-                    className={dialogSecondaryAction}
-                  >
-                    Cancelar
-                  </Button>
                   <Button
                     disabled={busy || (modal.type === "mover" && !destination)}
                     onClick={

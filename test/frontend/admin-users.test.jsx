@@ -175,7 +175,7 @@ describe("gestão de contas", () => {
     renderWithToasts(<GestaoUsuarios />);
     await openUser(user, "Mariana Costa");
     await user.selectOptions(screen.getByLabelText("Acesso à plataforma"), "Bloqueado");
-    await user.click(screen.getByRole("button", { name: "Cancelar" }));
+    await user.click(screen.getByRole("button", { name: "Fechar" }));
     await openUser(user, "Mariana Costa");
     expect(screen.getByLabelText("Acesso à plataforma")).toHaveValue("Ativo");
     expect(localStorage.getItem("wisen:usuarios:v1")).toBeNull();

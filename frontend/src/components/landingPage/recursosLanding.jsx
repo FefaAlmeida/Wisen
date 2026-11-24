@@ -88,7 +88,7 @@ export function RecursosLanding() {
             return (
               <div
                 key={item.id}
-                className="group relative flex min-h-[218px] flex-col items-center justify-center overflow-hidden rounded-[20px] border-2 border-[#E8E191] bg-[#F6FAFD] p-6 text-center shadow-[0_8px_28px_-20px_rgba(16,26,64,0.22)] transition-all duration-300 hover:-translate-y-1 hover:border-[#D9C54E] hover:shadow-[0_20px_38px_-22px_rgba(16,26,64,0.24)]"
+                className="group relative flex min-h-[218px] flex-col items-center justify-center overflow-hidden rounded-[20px] border border-[#DCE5EF] bg-white/90 p-6 text-center shadow-[0_8px_28px_-20px_rgba(16,26,64,0.2)] transition-all duration-300 hover:-translate-y-1 hover:border-[#D9C54E] hover:shadow-[0_20px_38px_-22px_rgba(16,26,64,0.24)]"
               >
                 <div className="pointer-events-none absolute -right-10 -top-12 h-28 w-28 rounded-full bg-white/20 blur-2xl" />
 
@@ -105,7 +105,7 @@ export function RecursosLanding() {
                     {item.titulo}
                   </h3>
 
-                  <p className="max-w-[220px] text-center text-sm leading-[1.85] text-[#30466E]">
+                  <p className="max-w-[260px] text-center text-sm leading-[1.7] text-[#52627A]">
                     {item.descricao}
                   </p>
                 </div>

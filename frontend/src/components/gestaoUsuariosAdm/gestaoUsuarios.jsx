@@ -131,8 +131,8 @@ export default function GestaoUsuarios({ demo = true }) {
             className="min-w-0 overflow-hidden rounded-2xl border border-wisen-borda bg-white shadow-2xs"
           >
             <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">
-              <div className="flex w-full min-w-0 flex-wrap items-center gap-2 sm:w-auto">
-                <div className="relative min-w-0 w-full sm:w-[230px]">
+              <div className="grid w-full min-w-0 grid-cols-2 items-center gap-2 sm:flex sm:w-auto sm:flex-wrap">
+                <div className="relative col-span-2 w-full min-w-0 sm:w-[230px]">
                   <Search
                     aria-hidden="true"
                     className="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-[#8190A8]"
@@ -178,7 +178,7 @@ export default function GestaoUsuarios({ demo = true }) {
                 <Button
                   variant="outline"
                   onClick={clearFilters}
-                  className={`h-9 w-full gap-1.5 rounded-[10px] border-wisen-borda bg-white/85 px-3 text-xs font-normal text-[#607092] shadow-none sm:w-auto ${adminFilterHover}`}
+                  className={`h-10 w-full gap-1.5 rounded-[10px] border-wisen-borda bg-white/85 px-2 text-xs font-normal text-[#607092] shadow-none sm:h-9 sm:w-auto sm:px-3 ${adminFilterHover}`}
                 >
                   <X aria-hidden="true" className="size-3.5" />
                   Limpar filtros

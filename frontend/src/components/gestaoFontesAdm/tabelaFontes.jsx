@@ -1,4 +1,4 @@
-﻿import { ArrowUpRight, Pause, Play, Rss } from "lucide-react";
+import { ArrowUpRight, Pause, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 function SourceStatus({ active }) {
@@ -14,23 +14,15 @@ function SourceStatus({ active }) {
 }
 function SourceName({ source, onEdit }) {
   return (
-    <div className="flex min-w-0 items-center gap-3">
-      <span
-        aria-hidden="true"
-        className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#EEF2F8] text-[#526584]"
+    <div className="min-w-0">
+      <button
+        type="button"
+        onClick={() => onEdit(source)}
+        className="text-left text-sm font-medium text-wisen-titulo outline-none hover:underline focus-visible:underline"
       >
-        <Rss className="size-4" />
-      </span>
-      <div className="min-w-0">
-        <button
-          type="button"
-          onClick={() => onEdit(source)}
-          className="text-left text-sm font-medium text-wisen-titulo outline-none hover:underline focus-visible:underline"
-        >
-          {source.nome}
-        </button>
-        <p className="mt-1 max-w-sm break-all text-xs text-[#7182A1]">{source.url}</p>
-      </div>
+        {source.nome}
+      </button>
+      <p className="mt-1 max-w-sm break-all text-xs text-[#7182A1]">{source.url}</p>
     </div>
   );
 }
@@ -44,7 +36,7 @@ function SourceActions({ source, onEdit, onToggle, busy, mobile = false }) {
         aria-label={`Editar ${source.nome}`}
         className={
           mobile
-            ? "h-10 grow border-wisen-borda text-xs text-[#526584] hover:bg-wisen-admin-hover"
+            ? "h-10 grow border-wisen-borda text-xs text-[#526584] hover:bg-wisen-destaque-suave active:bg-wisen-destaque-suave"
             : "text-xs text-[#526584] hover:bg-transparent hover:text-wisen-destaque dark:hover:bg-transparent"
         }
       >
@@ -59,7 +51,7 @@ function SourceActions({ source, onEdit, onToggle, busy, mobile = false }) {
         aria-label={`${source.ativo ? "Pausar" : "Ativar"} ${source.nome}`}
         className={
           mobile
-            ? "size-10 shrink-0 text-[#7182A1] hover:bg-wisen-admin-hover"
+            ? "size-10 shrink-0 text-[#7182A1] hover:bg-wisen-destaque-suave active:bg-wisen-destaque-suave"
             : "size-8 text-[#7182A1] hover:bg-transparent hover:text-wisen-destaque dark:hover:bg-transparent"
         }
       >

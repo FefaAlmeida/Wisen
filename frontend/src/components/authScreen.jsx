@@ -1,12 +1,16 @@
 import FormularioAuth from "@/components/formularioAuth";
 
-export default function AuthScreen({ action = null, token = "", onboarding = false }) {
+export default function AuthScreen({
+  action = null,
+  token = "",
+  onboarding = false,
+}) {
   return (
     <div className="relative isolate min-h-svh overflow-hidden font-[family-name:var(--font-geist-sans)]">
       <div
         aria-hidden="true"
         className="absolute inset-0 -z-20 bg-cover bg-[position:center_top] bg-no-repeat"
-        style={{ backgroundImage: "url('/globoWisen-v1.webp')" }}
+        style={{ backgroundImage: "url('/globoWisen-original-hd.png')" }}
       />
       <div
         aria-hidden="true"

@@ -120,7 +120,7 @@ function LogAction({ log, onOpen, mobile = false }) {
       onClick={() => onOpen(log)}
       className={
         mobile
-          ? "h-10 w-full border-wisen-borda text-xs text-[#526584] hover:bg-wisen-admin-hover"
+          ? "h-10 w-full border-wisen-borda text-xs text-[#526584] hover:bg-wisen-destaque-suave active:bg-wisen-destaque-suave"
           : "text-xs text-[#526584] hover:bg-transparent hover:text-wisen-destaque dark:hover:bg-transparent"
       }
     >

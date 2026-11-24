@@ -56,6 +56,7 @@ test("ciclo real de leitura, lacuna, revisão e adaptação persiste no navegado
   await page.goto("/auth");
   await page.getByLabel("E-mail").fill(email);
   await page.getByRole("button", { name: "Continuar", exact: true }).click();
+  await page.getByRole("button", { name: "Quero criar uma conta" }).click();
   await page.getByLabel("Senha", { exact: true }).fill("senha-do-mvp-123");
   await page.getByRole("button", { name: /criar conta/i }).click();
   await expect(page).toHaveURL(/\/onboarding$/);

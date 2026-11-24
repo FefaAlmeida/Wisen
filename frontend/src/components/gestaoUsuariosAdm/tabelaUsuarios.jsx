@@ -1,4 +1,4 @@
-﻿import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
@@ -113,7 +113,7 @@ export default function TabelaUsuarios({ usuarios, aoAbrirUsuario }) {
               variant="outline"
               onClick={() => aoAbrirUsuario(user)}
               aria-label={`Gerenciar ${user.nome}`}
-              className="h-10 w-full border-wisen-borda text-xs text-[#526584] hover:bg-wisen-admin-hover"
+              className="h-10 w-full border-wisen-borda text-xs text-[#526584] hover:bg-wisen-destaque-suave active:bg-wisen-destaque-suave"
             >
               Gerenciar conta
               <ArrowUpRight className="size-3.5" />

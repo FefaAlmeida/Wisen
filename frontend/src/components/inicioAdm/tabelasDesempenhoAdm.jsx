@@ -77,14 +77,14 @@ export function TabelasDesempenhoAdm() {
           </div>
 
           <div className="max-w-full overflow-x-auto overscroll-x-contain pt-3">
-            <table className="w-full min-w-[540px] text-left text-sm [&_td]:pr-4 [&_th]:pr-4 [&_td:last-child]:pr-0 [&_th:last-child]:pr-0">
+            <table className="w-full min-w-[540px] text-left text-sm [&_td]:px-4 [&_th]:px-4">
               <thead className="bg-[#E8EFFA]">
-                <tr className="border-b border-[#E3E9F1] text-xs font-semibold text-[#7182A1] uppercase">
-                  <th className="pb-2">Usuário</th>
-                  <th className="pb-2">Revisões</th>
-                  <th className="pb-2">Leituras</th>
-                  <th className="pb-2">Tempo</th>
-                  <th className="pb-2">Nível</th>
+                <tr className="border-b border-[#E3E9F1] text-xs font-semibold text-[#7182A1] uppercase [&_th]:py-3">
+                  <th scope="col">Usuário</th>
+                  <th scope="col">Revisões</th>
+                  <th scope="col">Leituras</th>
+                  <th scope="col">Tempo</th>
+                  <th scope="col">Nível</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E3E9F1]">

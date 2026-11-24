@@ -40,7 +40,7 @@ export default function CardEvento({ evento, aoRevisar, busy }) {
         aria-label={`${reviewed ? "Ver revisão de" : "Revisar evento:"} ${evento.titulo}`}
         variant="outline"
         size="sm"
-        className="justify-self-start border-wisen-borda text-xs text-wisen-texto-forte hover:bg-wisen-admin-hover"
+        className="justify-self-start border-wisen-borda text-xs text-wisen-texto-forte hover:bg-wisen-destaque-suave active:bg-wisen-destaque-suave @min-[38rem]/curadoria:hover:bg-wisen-admin-hover"
       >
         {reviewed ? "Ver revisão" : "Revisar evento"}
         <ArrowUpRight aria-hidden="true" className="size-3.5" />

@@ -8,24 +8,28 @@ export function PerguntasFrequentes() {
 
   const faqs = [
     {
-      pergunta: "Como começo a usar o Wisen?",
+      pergunta: "O que está incluído nos planos?",
       resposta:
-        "Crie sua conta, escolha os temas que interessam a você e explore as notícias. Durante a leitura, você pode descobrir conceitos, salvar conteúdos e retomar o aprendizado nas revisões.",
+        "Todos os planos dão acesso às notícias explicadas, às conexões entre temas e conceitos e às revisões para retomar o que você aprendeu.",
     },
     {
-      pergunta: "Quais tipos de conteúdo estão disponíveis?",
+      pergunta: "Qual é a diferença entre os planos?",
       resposta:
-        "Você encontra notícias organizadas por temas, explicações dos conceitos relacionados e perguntas de revisão para retomar o que aprendeu.",
+        "Os recursos são os mesmos. Você escolhe pagar por mês, a cada seis meses ou uma vez por ano. Os períodos mais longos têm um custo mensal equivalente menor.",
     },
     {
-      pergunta: "Posso consultar as fontes das notícias?",
+      pergunta: "Já tenho uma conta. Preciso me cadastrar de novo?",
       resposta:
-        "Sim. As notícias identificam suas fontes e oferecem acesso à publicação original, para você consultar o conteúdo e aprofundar a leitura.",
+        "Não. Use o mesmo e-mail e a sua senha para entrar. O cadastro é apenas para quem ainda não tem uma conta no Wisen.",
     },
     {
-      pergunta: "Posso usar a plataforma no celular ou tablet?",
+      pergunta: "As notícias mostram de onde vieram?",
       resposta:
-        "Sim. Você pode acessar o Wisen pelo navegador do celular, tablet ou computador, sem precisar instalar um aplicativo.",
+        "Sim. As notícias identificam suas fontes e dão acesso à publicação original para você consultar o conteúdo completo.",
+    },
+    {
+      pergunta: "Preciso instalar um aplicativo?",
+      resposta: "Não. O Wisen funciona pelo navegador no celular, tablet ou computador.",
     },
   ];
 

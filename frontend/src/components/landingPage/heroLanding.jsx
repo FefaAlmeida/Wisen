@@ -2,7 +2,7 @@
 
 import { Play } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import HeroVideo from "./heroVideo";
+import HeroBackground from "./heroBackground";
 import { LandingNavbar } from "./landingNavbar";
 
 export function HeroLanding() {
@@ -25,8 +25,16 @@ export function HeroLanding() {
   }, []);
 
   return (
-    <section ref={heroRef} id="inicio" className="relative w-full overflow-x-clip bg-[#080E21]">
-      <HeroVideo />
+    <section
+      ref={heroRef}
+      id="inicio"
+      className="relative min-h-[112svh] w-full overflow-x-clip bg-[#080E21]"
+    >
+      <HeroBackground />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-[1] bg-[#080E21]/50"
+      />
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-12 bg-[linear-gradient(180deg,rgba(238,245,251,0)_0%,rgba(238,245,251,0.03)_30%,rgba(238,245,251,0.2)_55%,rgba(238,245,251,0.65)_80%,#EEF5FB_100%)] sm:h-16"
@@ -59,7 +67,7 @@ export function HeroLanding() {
             <div className="flex w-full flex-col items-center gap-5">
               <a
                 href="#sobre"
-                className="group inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#E8E191] px-6 py-3 text-sm font-semibold text-[#101A40] transition-colors duration-200 hover:bg-[#F3EB9B] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E8E191]"
+                className="group inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#E8E191] px-6 py-3 text-sm font-semibold text-[#101A40] shadow-[0_8px_24px_rgba(232,225,145,0.12)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#D8CB72] hover:shadow-[0_10px_28px_rgba(232,225,145,0.28)] active:translate-y-0 active:bg-[#D8CB72] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E8E191]"
               >
                 <Play aria-hidden="true" className="h-3.5 w-3.5 fill-current" />
                 <span>Veja como funciona</span>

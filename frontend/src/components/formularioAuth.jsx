@@ -4,6 +4,7 @@ import { LoaderCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useRef, useState } from "react";
+import CheckoutPlanos from "@/components/checkoutPlanos";
 import { InitialInterestDialog } from "@/components/homeCliente/initialInterestDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -52,10 +53,16 @@ export default function FormularioAuth({
   }, [authenticatedUser]);
   const recovery = mode === "forgot" || mode === "reset";
   const recoveryTitle = mode === "reset" ? "Crie sua nova senha." : "Recupere seu acesso.";
+  const choosing = mode === "choose";
+
+  function showPasswordStep(nextMode) {
+    setMode(nextMode);
+    requestAnimationFrame(() => passwordRef.current?.focus());
+  }
 
   async function handleSubmit(event) {
     event.preventDefault();
-    if (busy.current) return;
+    if (busy.current || choosing) return;
     busy.current = true;
     setEnviando(true);
     const normalizedEmail = email.trim().toLowerCase();
@@ -66,8 +73,11 @@ export default function FormularioAuth({
           body: { email: normalizedEmail },
         });
         setEmail(normalizedEmail);
-        setMode(exists ? "login" : "register");
-        requestAnimationFrame(() => passwordRef.current?.focus());
+        if (exists) {
+          showPasswordStep("login");
+        } else {
+          setMode("plans");
+        }
         return;
       }
       const { user } = await requisitar(`/auth/${mode}`, {
@@ -80,6 +90,8 @@ export default function FormularioAuth({
       });
       const requestedPath = new URLSearchParams(window.location.search).get("next");
       if (user.role === "admin") {
+        window.location.assign(loginDestination(requestedPath, window.location.origin, user.role));
+      } else if (mode === "login") {
         window.location.assign(loginDestination(requestedPath, window.location.origin, user.role));
       } else {
         setPassword("");
@@ -147,10 +159,14 @@ export default function FormularioAuth({
                 <h1 className={`${styles.headline} ${mode !== null ? styles.stepHeadline : ""}`}>
                   {recovery ? (
                     recoveryTitle
+                  ) : choosing ? (
+                    "E-mail não encontrado."
                   ) : mode === "login" ? (
                     "Que bom te ver de novo."
                   ) : mode === "register" ? (
                     "Prazer em te conhecer."
+                  ) : mode === "plans" ? (
+                    "Escolha seu plano."
                   ) : (
                     <>
                       Seu próximo capítulo <span>começa aqui.</span>
@@ -159,10 +175,14 @@ export default function FormularioAuth({
                 </h1>
               ) : recovery ? (
                 recoveryTitle
+              ) : choosing ? (
+                "E-mail não encontrado."
               ) : mode === "login" ? (
                 "Que bom te ver de novo."
               ) : mode === "register" ? (
                 "Prazer em te conhecer."
+              ) : mode === "plans" ? (
+                "Escolha seu plano."
               ) : (
                 "Entrar"
               )}
@@ -263,7 +283,24 @@ export default function FormularioAuth({
                   </div>
                 </div>
 
-                {mode !== null && (
+                {mode === "plans" && <CheckoutPlanos />}
+
+                {choosing && (
+                  <div className="grid gap-2">
+                    <Button type="button" onClick={() => showPasswordStep("login")}>
+                      Já tenho conta
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => showPasswordStep("register")}
+                    >
+                      Quero criar uma conta
+                    </Button>
+                  </div>
+                )}
+
+                {(mode === "login" || mode === "register") && (
                   <>
                     <div className="space-y-2">
                       <Label
@@ -382,26 +419,28 @@ export default function FormularioAuth({
                   </>
                 )}
 
-                <Button
-                  type="submit"
-                  disabled={waiting}
-                  className="mt-1 h-11 w-full rounded-md bg-[#F3E69A] font-semibold text-[#273651] shadow-none transition-colors hover:bg-[#EBDD80]"
-                >
-                  {waiting
-                    ? "Aguarde…"
-                    : mode === null
-                      ? "Continuar"
-                      : mode === "login"
-                        ? "Entrar"
-                        : "Criar conta"}
-                  {waiting ? (
-                    <LoaderCircle aria-hidden="true" className="ml-2 motion-safe:animate-spin" />
-                  ) : (
-                    <span aria-hidden="true" className="ml-2 text-lg">
-                      {glass ? "↗" : "→"}
-                    </span>
-                  )}
-                </Button>
+                {!choosing && mode !== "plans" && (
+                  <Button
+                    type="submit"
+                    disabled={waiting}
+                    className="mt-1 h-11 w-full rounded-md bg-[#F3E69A] font-semibold text-[#273651] shadow-none transition-colors hover:bg-[#EBDD80]"
+                  >
+                    {waiting
+                      ? "Aguarde…"
+                      : mode === null
+                        ? "Continuar"
+                        : mode === "login"
+                          ? "Entrar"
+                          : "Criar conta"}
+                    {waiting ? (
+                      <LoaderCircle aria-hidden="true" className="ml-2 motion-safe:animate-spin" />
+                    ) : (
+                      <span aria-hidden="true" className="ml-2 text-lg">
+                        {glass ? "↗" : "→"}
+                      </span>
+                    )}
+                  </Button>
+                )}
               </form>
             )}
           </CardContent>

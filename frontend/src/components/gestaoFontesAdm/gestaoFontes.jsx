@@ -140,8 +140,8 @@ export default function GestaoFontes({ demo = true }) {
             aria-label="Gestão de fontes RSS"
             className="min-w-0 overflow-hidden rounded-2xl border border-wisen-borda bg-white shadow-2xs"
           >
-            <div className="flex min-w-0 flex-wrap items-center gap-2 px-4 py-4 sm:px-5">
-              <div className="relative min-w-0 w-full sm:w-[230px]">
+            <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] items-center gap-2 px-4 py-4 sm:flex sm:flex-wrap sm:px-5">
+              <div className="relative col-span-2 w-full min-w-0 sm:w-[230px]">
                 <Search
                   aria-hidden="true"
                   className="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-[#8190A8]"
@@ -180,7 +180,7 @@ export default function GestaoFontes({ demo = true }) {
               <Button
                 variant="outline"
                 onClick={clear}
-                className={`h-9 w-full gap-1.5 rounded-[10px] border-wisen-borda bg-white/85 px-3 text-xs font-normal text-[#607092] shadow-none sm:w-auto ${adminFilterHover}`}
+                className={`col-span-2 h-9 justify-self-end gap-1.5 rounded-[10px] border-wisen-borda bg-white/85 px-3 text-xs font-normal text-[#607092] shadow-none ${adminFilterHover}`}
               >
                 <X aria-hidden="true" className="size-3.5" />
                 Limpar filtros

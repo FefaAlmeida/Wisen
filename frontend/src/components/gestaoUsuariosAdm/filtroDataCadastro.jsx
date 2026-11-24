@@ -53,12 +53,12 @@ export default function FiltroDataCadastro({ value, onChange }) {
               trigger.current?.click();
             }
           }}
-          className="wisen-control pr-10 transition-colors group-hover:bg-wisen-destaque-suave group-hover:text-wisen-titulo [&::-webkit-calendar-picker-indicator]:hidden"
+          className="wisen-control w-full min-w-0 px-2 pr-8 text-sm transition-colors group-hover:bg-wisen-destaque-suave group-hover:text-wisen-titulo sm:px-3 sm:pr-10 [&::-webkit-calendar-picker-indicator]:hidden"
         />
         <Popover.Trigger
           ref={trigger}
           aria-label="Abrir calendário de data de cadastro"
-          className="absolute inset-y-0 right-1 my-auto grid size-8 place-items-center rounded-md text-wisen-titulo hover:bg-wisen-cliente-hover focus-visible:outline-2 focus-visible:outline-wisen-titulo data-open:bg-wisen-destaque-suave"
+          className="absolute inset-y-0 right-0.5 my-auto grid size-7 place-items-center rounded-md text-wisen-titulo hover:bg-wisen-cliente-hover focus-visible:outline-2 focus-visible:outline-wisen-titulo data-open:bg-wisen-destaque-suave sm:right-1 sm:size-8"
         >
           <CalendarDays aria-hidden="true" className="size-4" />
         </Popover.Trigger>

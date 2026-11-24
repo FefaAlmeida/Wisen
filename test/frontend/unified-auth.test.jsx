@@ -22,7 +22,7 @@ describe("autenticação unificada", () => {
   });
   afterEach(() => vi.unstubAllGlobals());
 
-  async function continueWithEmail(exists) {
+  async function continueWithEmail(exists, createAccount = !exists) {
     mocks.requisitar.mockResolvedValueOnce({ exists });
     const user = userEvent.setup();
     renderWithToasts(<FormularioAuth glass />);
@@ -33,8 +33,28 @@ describe("autenticação unificada", () => {
       method: "POST",
       body: { email: "ana@example.test" },
     });
+    if (createAccount) {
+      await user.click(screen.getByRole("button", { name: "Quero criar uma conta" }));
+    }
     return user;
   }
+
+  it("permite tentar login quando a consulta não encontra o e-mail", async () => {
+    const user = await continueWithEmail(false, false);
+    expect(screen.getByRole("heading", { name: "E-mail não encontrado." })).toBeVisible();
+    expect(screen.queryByLabelText("Senha")).not.toBeInTheDocument();
+    expect(mocks.requisitar).toHaveBeenCalledTimes(1);
+
+    await user.click(screen.getByRole("button", { name: "Já tenho conta" }));
+    await user.type(screen.getByLabelText("Senha"), "senha-existente");
+    mocks.requisitar.mockRejectedValueOnce(new Error("E-mail ou senha inválidos"));
+    await user.click(screen.getByRole("button", { name: "Entrar", exact: true }));
+    expect(mocks.requisitar).toHaveBeenLastCalledWith("/auth/login", {
+      method: "POST",
+      body: { email: "ana@example.test", password: "senha-existente", remember: false },
+    });
+    expect(await screen.findByRole("alert")).toHaveTextContent("E-mail ou senha inválidos");
+  });
 
   it.each([true, false])(
     "continua no cartão com onboarding após autenticar (login: %s)",

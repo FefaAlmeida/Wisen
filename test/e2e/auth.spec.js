@@ -51,6 +51,7 @@ test("cadastro, rota privada, busca, logout e login funcionam no navegador", asy
   await page.goto("/auth");
   await page.getByLabel("E-mail").fill(email);
   await page.getByRole("button", { name: "Continuar", exact: true }).click();
+  await page.getByRole("button", { name: "Quero criar uma conta" }).click();
   await page.getByLabel("Senha", { exact: true }).fill(password);
   await page.getByRole("button", { name: /criar conta/i }).click();
   await expect(page).toHaveURL(/\/onboarding$/);
@@ -120,6 +121,7 @@ test("formulário impede senha curta no navegador", async ({ page }) => {
   await page.goto("/auth");
   await page.getByLabel("E-mail").fill(`senha-curta-${Date.now()}@example.test`);
   await page.getByRole("button", { name: "Continuar", exact: true }).click();
+  await page.getByRole("button", { name: "Quero criar uma conta" }).click();
   await page.getByLabel("Senha", { exact: true }).fill("1234567");
   await page.getByRole("button", { name: /criar conta/i }).click();
   await expect(page).toHaveURL(/\/auth$/);
@@ -130,6 +132,7 @@ test("rotas de administração exigem sessão e papel de administrador", async (
   await page.goto("/auth");
   await page.getByLabel("E-mail").fill(`admin-route-${Date.now()}@example.test`);
   await page.getByRole("button", { name: "Continuar", exact: true }).click();
+  await page.getByRole("button", { name: "Quero criar uma conta" }).click();
   await page.getByLabel("Senha", { exact: true }).fill("senha-de-teste-123");
   await page.getByRole("button", { name: /criar conta/i }).click();
   await expect(page).toHaveURL(/\/onboarding$/);
@@ -192,6 +195,7 @@ test("perfil salva cartões independentemente, mantém alterações e encerra se
   await page.goto("/auth");
   await page.getByLabel("E-mail").fill(email);
   await page.getByRole("button", { name: "Continuar", exact: true }).click();
+  await page.getByRole("button", { name: "Quero criar uma conta" }).click();
   await page.getByLabel("Senha", { exact: true }).fill("senha-de-perfil-123");
   await page.getByRole("button", { name: /criar conta/i }).click();
   await expect(page).toHaveURL(/\/onboarding$/);

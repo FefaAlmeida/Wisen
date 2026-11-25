@@ -1,13 +1,14 @@
 "use client";
 
 import { ArrowLeft, ArrowRight, Check, Layers, ListChecks } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
+import Link, { useDemoHref } from "@/components/demo/link";
 import styles from "./revisoes.module.css";
 
 export default function NovaRevisao({ areas = [], questoes = [], onStart, busy = false }) {
   const router = useRouter();
+  const demoHref = useDemoHref();
   const [passo, setPasso] = useState(1);
   const [temas, setTemas] = useState([]);
   const [modo, setModo] = useState("quiz");
@@ -206,7 +207,9 @@ export default function NovaRevisao({ areas = [], questoes = [], onStart, busy =
               else if (onStart) onStart(temas, modo);
               else
                 router.push(
-                  `/paginaSessaoRevisao?${new URLSearchParams({ temas: temas.join(","), formato: modo })}`,
+                  demoHref(
+                    `/paginaSessaoRevisao?${new URLSearchParams({ temas: temas.join(","), formato: modo })}`,
+                  ),
                 );
             }}
           >

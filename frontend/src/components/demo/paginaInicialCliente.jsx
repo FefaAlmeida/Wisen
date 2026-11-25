@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/demo/link";
 import { Footer } from "@/components/footer";
 import CardInteresse from "@/components/homeCliente/cardInteresse";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";

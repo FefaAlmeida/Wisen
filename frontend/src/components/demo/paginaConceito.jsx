@@ -1,11 +1,11 @@
 "use client";
 
 import { Bookmark, Check, CircleHelp } from "lucide-react";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import ConceptDetail, { ConceptPanel } from "@/components/conceito/conceptDetail";
 import styles from "@/components/conceito/conceptDetail.module.css";
+import Link from "@/components/demo/link";
 import { Frame } from "@/components/platform/shared";
 import { conceitosDetalhados, demoConceptHref } from "@/data/conceitoDetalhes";
 import { useDemoSavedConcepts } from "@/hooks/use-demo-saved-concepts";

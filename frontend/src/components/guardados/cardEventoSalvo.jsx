@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/demo/link";
 import { Card } from "@/components/ui/card";
 import BotaoRemoverSalvo from "./botaoRemoverSalvo";
 
@@ -22,7 +22,7 @@ export default function CardEventoSalvo({ evento, aoRemover }) {
       <div className="min-w-0">
         <h3 className="text-sm leading-snug font-semibold text-wisen-titulo sm:text-base sm:leading-snug">
           <Link
-            href="/paginaEvento"
+            href={evento.href ?? "/paginaEvento"}
             className="underline-offset-4 outline-none after:absolute after:inset-0 hover:text-wisen-destaque hover:underline focus-visible:underline"
           >
             {evento.titulo}

@@ -1,3 +1,5 @@
+import { isPublicDemoPath } from "../lib/public-demo.js";
+
 export class ApiError extends Error {
   constructor(message, status, code) {
     super(message);
@@ -8,6 +10,11 @@ export class ApiError extends Error {
 }
 
 export async function requisitar(caminho, { body, headers, signal, ...options } = {}) {
+  if (typeof window !== "undefined" && isPublicDemoPath(window.location.pathname)) {
+    const { demoRequest } = await import("./public-demo");
+    signal?.throwIfAborted();
+    return demoRequest(caminho, options.method ?? "GET", body);
+  }
   const response = await fetch(`/api${caminho}`, {
     ...options,
     credentials: "same-origin",

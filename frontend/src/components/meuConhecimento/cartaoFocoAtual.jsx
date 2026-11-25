@@ -1,5 +1,5 @@
 import { ArrowRight, ChevronRight, Cpu, Landmark, Leaf } from "lucide-react";
-import Link from "next/link";
+import Link from "@/components/demo/link";
 import styles from "./conhecimento.module.css";
 
 const topics = [

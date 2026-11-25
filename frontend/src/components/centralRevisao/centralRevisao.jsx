@@ -1,9 +1,9 @@
 "use client";
 
 import { ArrowLeft, ArrowRight, CheckCheck } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
+import Link, { useDemoHref } from "@/components/demo/link";
 import NovaRevisao from "./novaRevisao";
 import PainelRevisoes from "./painelRevisoes";
 import QuizRevisao from "./quizRevisao";
@@ -16,6 +16,7 @@ export default function CentralRevisao({
   initialModo = "quiz",
 }) {
   const router = useRouter();
+  const demoHref = useDemoHref();
   const [etapa, setEtapa] = useState("sessao");
   const temas = initialTemas;
   const modo = initialModo === "flashcards" ? "flashcards" : "quiz";
@@ -75,7 +76,7 @@ export default function CentralRevisao({
               type="button"
               className={styles.textButton}
               onClick={() => {
-                router.push("/paginaRevisoes");
+                router.push(demoHref("/paginaRevisoes"));
               }}
             >
               Sair da revisão
@@ -164,7 +165,7 @@ export default function CentralRevisao({
             data-wisen-hover="preserve"
             className={styles.primario}
             onClick={() => {
-              router.push("/paginaRevisoes/nova");
+              router.push(demoHref("/paginaRevisoes/nova"));
             }}
           >
             Preparar outra revisão <ArrowRight size={17} aria-hidden="true" />

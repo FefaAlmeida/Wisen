@@ -2,8 +2,8 @@
 
 import { Ban } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { useState } from "react";
+import Link from "@/components/demo/link";
 import { toast } from "@/lib/toast";
 import { requisitar } from "@/services/api";
 
@@ -15,9 +15,10 @@ export default function CardNoticia({ item, onDismiss }) {
     summary: item.summary,
     category: item.topics?.[0] ?? "Notícias",
     image:
+      item.image ??
       "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=900&q=80",
-    source: `${item.source_count ?? 0} fonte(s)`,
-    age: new Date(item.updated_at).toLocaleDateString("pt-BR"),
+    source: item.source ?? `${item.source_count ?? 0} fonte(s)`,
+    age: item.age ?? new Date(item.updated_at).toLocaleDateString("pt-BR"),
     concepts: [
       ...(item.recommendation_reason ? [item.recommendation_reason] : []),
       ...(item.updated ? ["Atualizada"] : []),

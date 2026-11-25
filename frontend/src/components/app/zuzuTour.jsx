@@ -81,21 +81,21 @@ function TourSpotlight({ target }) {
   );
 }
 
-export function ZuzuTour({ steps, storageKey, portrait }) {
+export function ZuzuTour({ steps, storageKey, portrait, autoStart = true }) {
   const [stepIndex, setStepIndex] = useState(null);
   const step = steps[stepIndex];
   const isLast = stepIndex === steps.length - 1;
   const owlOnRight = stepIndex % 2 === 1;
 
   useEffect(() => {
-    if (!storageKey) return;
+    if (!autoStart || !storageKey) return;
     try {
       if (window.localStorage.getItem(storageKey)) return;
     } catch {
       // The guide is still available when the browser blocks storage.
     }
     setStepIndex(0);
-  }, [storageKey]);
+  }, [autoStart, storageKey]);
 
   function finishTour() {
     setStepIndex(null);

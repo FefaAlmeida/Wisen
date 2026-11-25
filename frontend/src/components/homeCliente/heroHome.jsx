@@ -1,8 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { HomeBanner } from "@/components/app/homeBanner";
+import Link from "@/components/demo/link";
+import { requisitar } from "@/services/api";
 
 export default function HeroHome() {
   const [name, setName] = useState("");
@@ -10,9 +11,7 @@ export default function HeroHome() {
   useEffect(() => {
     async function loadName() {
       try {
-        const response = await fetch("/api/auth/session");
-        if (!response.ok) return;
-        const data = await response.json();
+        const data = await requisitar("/auth/session");
         setName(data.user?.name?.trim() ?? "");
       } catch {
         setName("");

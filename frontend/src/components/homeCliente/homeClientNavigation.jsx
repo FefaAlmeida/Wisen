@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import { AppSidebar } from "@/components/app/appSidebar";
 import { AppTopBar } from "@/components/app/appTopBar";
 import { ZuzuTour } from "@/components/app/zuzuTour";
+import { usePublicDemo } from "@/components/demo/mode";
 import { InitialInterestDialog } from "./initialInterestDialog";
 
 const steps = [
@@ -58,19 +59,21 @@ const steps = [
 ];
 
 export function HomeClientNavigation() {
+  const publicDemo = usePublicDemo();
   const [accountId, setAccountId] = useState(null);
   const handleProfileReady = useCallback((user) => setAccountId(user?.id ?? null), []);
   return (
     <>
-      <InitialInterestDialog onComplete={handleProfileReady} />
+      {!publicDemo && <InitialInterestDialog onComplete={handleProfileReady} />}
       <AppSidebar activeItem="Início" />
       <AppTopBar
         belowProfile={
-          accountId != null && (
+          (publicDemo || accountId != null) && (
             <ZuzuTour
               steps={steps}
-              storageKey={`wisen:client-tour:v1:${accountId}`}
+              storageKey={`wisen:client-tour:v1:${publicDemo ? "landing-preview" : accountId}`}
               portrait={steps[0].portrait}
+              autoStart={!publicDemo}
             />
           )
         }

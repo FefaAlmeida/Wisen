@@ -3,6 +3,7 @@
 import { Bookmark, BookOpen, ListFilter, Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import { usePublicDemo } from "@/components/demo/mode";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { segmentCountStyle } from "@/components/ui/segmented-control";
@@ -14,6 +15,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SegmentedTab, Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
+import { conceitosDetalhados } from "@/data/conceitoDetalhes";
+import { stories } from "@/data/noticiasDemo";
+import { useDemoSavedItems } from "@/hooks/use-demo-saved-concepts";
 import { toast } from "@/lib/toast";
 import CardConceitoMarcado from "./cardConceitoMarcado";
 import CardEventoSalvo from "./cardEventoSalvo";
@@ -161,6 +165,9 @@ function SecaoGuardados({ titulo, descricao, busca, ordenacao, children }) {
 }
 
 export default function PainelGuardados() {
+  const publicDemo = usePublicDemo();
+  const savedNews = useDemoSavedItems("news", publicDemo);
+  const savedConcepts = useDemoSavedItems("concepts", publicDemo);
   const [aba, setAba] = useState("eventos");
   const [idsEventosRemovidos, setIdsEventosRemovidos] = useState([]);
   const [idsConceitosRemovidos, setIdsConceitosRemovidos] = useState([]);
@@ -177,14 +184,18 @@ export default function PainelGuardados() {
     };
   }, []);
 
-  function removerSalvo(id, setRemovidos, mensagem) {
-    setRemovidos((ids) => [...ids, id]);
+  function removerSalvo(id, setRemovidos, collection, mensagem) {
+    function alterar(remover) {
+      if (publicDemo) collection.setSaved(id, !remover);
+      else setRemovidos((ids) => (remover ? [...ids, id] : ids.filter((item) => item !== id)));
+    }
+    alterar(true);
     const toastId = toast.success(mensagem, {
       timeout: 8000,
       actionProps: {
         children: "Desfazer",
         onClick: () => {
-          setRemovidos((ids) => ids.filter((removido) => removido !== id));
+          alterar(false);
           toast.close(toastId);
         },
       },
@@ -193,9 +204,24 @@ export default function PainelGuardados() {
     pendingUndo.current.add(toastId);
   }
 
-  const eventosSalvos = eventosIniciais.filter(
-    (evento) => !idsEventosRemovidos.includes(evento.id),
-  );
+  const eventosSalvos = publicDemo
+    ? savedNews.items.flatMap((id) => {
+        const story = stories.find((item) => item.id === id);
+        return story
+          ? [
+              {
+                id,
+                titulo: story.title,
+                descricao: story.summary,
+                categoria: story.category,
+                data: story.age,
+                imagem: story.image,
+                href: `/paginaEvento?id=${id}`,
+              },
+            ]
+          : [];
+      })
+    : eventosIniciais.filter((evento) => !idsEventosRemovidos.includes(evento.id));
   const eventosFiltrados = eventosSalvos
     .filter((evento) =>
       `${evento.titulo} ${evento.categoria} ${evento.descricao}`
@@ -203,12 +229,15 @@ export default function PainelGuardados() {
         .includes(buscaEventos.toLocaleLowerCase("pt-BR")),
     )
     .sort((a, b) =>
-      ordemEventos === "alfabetica" ? a.titulo.localeCompare(b.titulo, "pt-BR") : a.id - b.id,
+      ordemEventos === "alfabetica" ? a.titulo.localeCompare(b.titulo, "pt-BR") : 0,
     );
 
-  const conceitosSalvos = conceitosIniciais.filter(
-    (conceito) => !idsConceitosRemovidos.includes(conceito.id),
-  );
+  const conceitosSalvos = publicDemo
+    ? savedConcepts.items.flatMap((titulo) => {
+        const conceito = conceitosDetalhados.find((item) => item.titulo === titulo);
+        return conceito ? [{ ...conceito, id: titulo }] : [];
+      })
+    : conceitosIniciais.filter((conceito) => !idsConceitosRemovidos.includes(conceito.id));
   const conceitosFiltrados = conceitosSalvos
     .filter((conceito) =>
       `${conceito.titulo} ${conceito.descricao}`
@@ -216,7 +245,7 @@ export default function PainelGuardados() {
         .includes(buscaConceitos.toLocaleLowerCase("pt-BR")),
     )
     .sort((a, b) =>
-      ordemConceitos === "alfabetica" ? a.titulo.localeCompare(b.titulo, "pt-BR") : a.id - b.id,
+      ordemConceitos === "alfabetica" ? a.titulo.localeCompare(b.titulo, "pt-BR") : 0,
     );
 
   return (
@@ -251,7 +280,12 @@ export default function PainelGuardados() {
               key={evento.id}
               evento={evento}
               aoRemover={() =>
-                removerSalvo(evento.id, setIdsEventosRemovidos, "Notícia removida dos salvos.")
+                removerSalvo(
+                  evento.id,
+                  setIdsEventosRemovidos,
+                  savedNews,
+                  "Notícia removida dos salvos.",
+                )
               }
             />
           ))}
@@ -282,7 +316,12 @@ export default function PainelGuardados() {
               key={conceito.id}
               conceito={conceito}
               aoRemover={() =>
-                removerSalvo(conceito.id, setIdsConceitosRemovidos, "Conceito removido dos salvos.")
+                removerSalvo(
+                  conceito.id,
+                  setIdsConceitosRemovidos,
+                  savedConcepts,
+                  "Conceito removido dos salvos.",
+                )
               }
             />
           ))}

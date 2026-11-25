@@ -1,5 +1,5 @@
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
-import Link from "next/link";
+import Link from "@/components/demo/link";
 import news from "@/components/demo/newsDetail.module.css";
 import { coresStatusConceito } from "@/lib/coresStatusConceito";
 import styles from "./conceptDetail.module.css";

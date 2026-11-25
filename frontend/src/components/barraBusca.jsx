@@ -2,8 +2,8 @@
 
 import { ArrowUpRight, BookOpen, Search, SearchX, X } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import Link from "@/components/demo/link";
 import { useDemoMode } from "@/components/demo/mode";
 import {
   Dialog,
@@ -51,7 +51,11 @@ function contentItems(data) {
 }
 
 const demoItems = [
-  ...stories.map((item) => ({ ...item, type: "Notícias", href: "/paginaEvento" })),
+  ...stories.map((item) => ({
+    ...item,
+    type: "Notícias",
+    href: `/paginaEvento?id=${encodeURIComponent(item.id)}`,
+  })),
   ...conceitos.map((item) => ({
     id: item.titulo,
     title: item.titulo,

@@ -8,8 +8,8 @@ import {
   LoaderCircle,
   Trash2,
 } from "lucide-react";
-import Link from "next/link";
 import { useState } from "react";
+import Link from "@/components/demo/link";
 import { useDemoMode } from "@/components/demo/mode";
 import { useResource } from "@/components/platform/shared";
 import { Button } from "@/components/ui/button";

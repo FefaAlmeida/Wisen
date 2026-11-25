@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { AdminPageHeader } from "@/components/admin/adminPageHeader";
 import { AdminSummary } from "@/components/admin/adminSummary";
 import { AppTopBar } from "@/components/app/appTopBar";
+import { usePublicDemo } from "@/components/demo/mode";
 import { Footer } from "@/components/footer";
 import { ConnectionsBackground } from "@/components/homeCliente/connectionsBackground";
 import { InterestsCard } from "@/components/perfil/interestsCard";
@@ -17,6 +18,7 @@ import { toast } from "@/lib/toast";
 import { requisitar } from "@/services/api";
 
 export default function PerfilPage({ admin = false } = {}) {
+  const publicDemo = usePublicDemo();
   const [profile, setProfile] = useState({
     name: "",
     email: "",
@@ -196,7 +198,7 @@ export default function PerfilPage({ admin = false } = {}) {
           loading={loading || Boolean(loadError)}
           saving={Boolean(saving.personal || saving.avatar)}
         />
-        <SecurityCard admin={admin} showDeleteAccount={!admin} />
+        {!publicDemo && <SecurityCard admin={admin} showDeleteAccount={!admin} />}
         <InterestsCard
           categories={interestCategories}
           interests={profile.interests}

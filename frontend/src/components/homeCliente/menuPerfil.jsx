@@ -1,13 +1,16 @@
 "use client";
 
 import { LogOut, UserRound } from "lucide-react";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import Link from "@/components/demo/link";
+import { usePublicDemo } from "@/components/demo/mode";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { publicDemoHome } from "@/lib/public-demo";
 import { toast } from "@/lib/toast";
 import { requisitar } from "@/services/api";
 
 export default function MenuPerfil({ profileHref = "/paginaPerfil" }) {
+  const publicDemo = usePublicDemo();
   const [profile, setProfile] = useState(null);
   useEffect(() => {
     const controller = new AbortController();
@@ -51,7 +54,7 @@ export default function MenuPerfil({ profileHref = "/paginaPerfil" }) {
         method: "POST",
       });
 
-      window.location.assign("/auth");
+      window.location.assign(publicDemo ? publicDemoHome : "/auth");
     } catch (error) {
       console.error("Erro ao sair:", error);
       toast.error("Não foi possível sair da conta.");

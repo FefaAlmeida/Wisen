@@ -1,8 +1,8 @@
 "use client";
 
 import { ArrowRight, BookOpen, CheckCircle2, FileText, HelpCircle } from "lucide-react";
-import Link from "next/link";
 import { useState } from "react";
+import Link from "@/components/demo/link";
 import styles from "./conhecimento.module.css";
 import { SeletorSegmentado } from "./seletorSegmentado";
 

@@ -423,7 +423,7 @@ export default function FormularioAuth({
                   <Button
                     type="submit"
                     disabled={waiting}
-                    className="mt-1 h-11 w-full rounded-md bg-[#F3E69A] font-semibold text-[#273651] shadow-none transition-colors hover:bg-[#EBDD80]"
+                    className="mt-1 h-11 w-full rounded-md bg-[#F3E69A] font-semibold text-[#273651] shadow-none transition-colors hover:bg-wisen-hover"
                   >
                     {waiting
                       ? "Aguarde…"

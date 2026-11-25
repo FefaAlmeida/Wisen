@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 const calendarControl =
-  "grid size-8 place-items-center rounded-md border border-wisen-destaque bg-wisen-destaque-suave text-wisen-titulo hover:bg-wisen-destaque focus-visible:outline-2 focus-visible:outline-wisen-titulo disabled:opacity-40";
+  "grid size-8 place-items-center rounded-md border border-wisen-destaque bg-wisen-destaque-suave text-wisen-titulo hover:bg-wisen-hover focus-visible:outline-2 focus-visible:outline-wisen-titulo disabled:opacity-40";
 const calendarAction =
-  "h-8 border-wisen-destaque bg-wisen-destaque-suave text-wisen-titulo hover:bg-wisen-destaque";
+  "h-8 border-wisen-destaque bg-wisen-destaque-suave text-wisen-titulo hover:bg-wisen-hover";
 
 function parseDate(value) {
   if (!value) return undefined;
@@ -97,7 +97,7 @@ export default function FiltroDataCadastro({ value, onChange }) {
                 outside: "text-wisen-texto-suave",
                 today: "[&>button]:ring-1 [&>button]:ring-inset [&>button]:ring-wisen-destaque",
                 selected:
-                  "[&>button]:bg-wisen-destaque-suave [&>button]:font-semibold [&>button]:text-wisen-titulo [&>button:hover]:bg-wisen-destaque",
+                  "[&>button]:bg-wisen-destaque-suave [&>button]:font-semibold [&>button]:text-wisen-titulo [&>button:hover]:bg-wisen-hover",
               }}
             />
             <div className="mt-2 flex justify-between rounded-lg border border-wisen-borda bg-wisen-superficie p-2">

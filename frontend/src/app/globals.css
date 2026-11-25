@@ -40,10 +40,12 @@
   --color-wisen-sidebar: #172542;
   --color-wisen-texto-suave: #607092;
   --color-wisen-destaque: #d7bf4d;
-  --color-wisen-admin-hover: #fffae8;
-  --color-wisen-admin-control-hover: #fff5d6;
+  --color-wisen-link-hover: #b5a300;
+  --color-wisen-hover: #fffae8;
+  --color-wisen-admin-hover: var(--color-wisen-hover);
+  --color-wisen-admin-control-hover: var(--color-wisen-hover);
   --color-wisen-admin-primary-hover: #30466e;
-  --color-wisen-cliente-hover: #fff9df;
+  --color-wisen-cliente-hover: var(--color-wisen-hover);
   --color-wisen-borda: #dce3ed;
   --color-wisen-destaque-suave: #f3e69a;
   --color-wisen-texto: #192344;
@@ -172,7 +174,7 @@
     @apply font-sans;
   }
   thead {
-    @apply bg-wisen-admin-control-hover dark:bg-secondary;
+    @apply bg-[#fff5d6] dark:bg-secondary;
   }
 }
 
@@ -330,8 +332,7 @@
   }
 }
 
-/* One client hover policy, including menus/dialogs rendered through portals.
-   Keep sidebar interactions and filled yellow actions in their existing palette. */
+/* Client hover also covers portals. Sidebar items and filled actions have their own styles. */
 @media (hover: hover) and (pointer: fine) {
   body:has([data-wisen-area="cliente"])
     :is(

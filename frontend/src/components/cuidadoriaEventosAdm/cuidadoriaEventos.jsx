@@ -2,8 +2,13 @@
 
 import { ClipboardCheck, Files, Newspaper, Search, X } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
+import { adminActionHover } from "@/components/admin/adminButtonStyles";
 import { AdminSummary } from "@/components/admin/adminSummary";
-import { adminFilterControl, adminFilterHover } from "@/components/admin/adminTableFilter";
+import {
+  AdminTableFilter,
+  adminFilterControl,
+  adminFilterHover,
+} from "@/components/admin/adminTableFilter";
 import { AdminTableFooter } from "@/components/admin/adminTableFooter";
 import { Feedback, Notice } from "@/components/app/feedback";
 import { Button } from "@/components/ui/button";
@@ -20,7 +25,11 @@ import {
   dialogSecondaryAction,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { SegmentedButton, segmentListStyle } from "@/components/ui/segmented-control";
+import {
+  SegmentedButton,
+  segmentCountStyle,
+  segmentListStyle,
+} from "@/components/ui/segmented-control";
 import { useEventCuration } from "@/hooks/use-event-curation";
 import { findDuplicatePairs } from "@/lib/event-curation";
 import { toast } from "@/lib/toast";
@@ -28,7 +37,7 @@ import CardEvento from "./cardEvento";
 import PainelArtigos, { ArticleSource } from "./painelArtigos";
 
 const secondary =
-  "h-auto min-h-8 whitespace-normal border-wisen-borda px-3 py-1.5 text-xs text-wisen-texto-forte hover:bg-wisen-admin-control-hover";
+  "h-auto min-h-8 whitespace-normal border-wisen-borda px-3 py-1.5 text-xs text-wisen-texto-forte";
 const pageSize = 10;
 const statusTitles = {
   pendentes: "Eventos a revisar",
@@ -284,7 +293,7 @@ export default function CuradoriaEventos({ demo = true }) {
                 onClick={() => switchQueue(key)}
               >
                 <item.icon aria-hidden="true" className="size-[18px]" />
-                {item.title}
+                {item.title} <span className={segmentCountStyle}>{counts[key]}</span>
               </SegmentedButton>
             ))}
           </nav>
@@ -310,34 +319,34 @@ export default function CuradoriaEventos({ demo = true }) {
                     className={`${adminFilterControl} pl-9`}
                   />
                 </div>
-                <select
-                  aria-label="Filtrar por categoria"
-                  className={`${adminFilterControl} ${queue === "pendentes" ? "flex-1 sm:flex-none" : ""} sm:w-48`}
+                <AdminTableFilter
+                  label="Filtrar por categoria"
+                  width={queue === "pendentes" ? "flex-1 sm:w-48 sm:flex-none" : "sm:w-48"}
+                  options={[
+                    { value: "todas", label: "Todas as categorias" },
+                    ...categories.map((item) => ({ value: item, label: item })),
+                  ]}
                   value={category}
-                  onChange={(event) => {
-                    setCategory(event.target.value);
+                  onChange={(value) => {
+                    setCategory(value);
                     setPage(1);
                   }}
-                >
-                  <option value="todas">Todas as categorias</option>
-                  {categories.map((item) => (
-                    <option key={item}>{item}</option>
-                  ))}
-                </select>
+                />
                 {queue === "pendentes" && (
-                  <select
-                    aria-label="Mostrar eventos"
-                    className={`${adminFilterControl} flex-1 sm:w-44 sm:flex-none`}
+                  <AdminTableFilter
+                    label="Mostrar eventos"
+                    width="flex-1 sm:w-44 sm:flex-none"
+                    options={{
+                      pendentes: `A revisar (${pending.length})`,
+                      revisados: `Revisados (${events.length - pending.length})`,
+                      todos: "Todos os eventos",
+                    }}
                     value={status}
-                    onChange={(event) => {
-                      setStatus(event.target.value);
+                    onChange={(value) => {
+                      setStatus(value);
                       setPage(1);
                     }}
-                  >
-                    <option value="pendentes">A revisar ({pending.length})</option>
-                    <option value="revisados">Revisados ({events.length - pending.length})</option>
-                    <option value="todos">Todos os eventos</option>
-                  </select>
+                  />
                 )}
                 {hasFilters && (
                   <Button
@@ -395,7 +404,7 @@ export default function CuradoriaEventos({ demo = true }) {
                             size="sm"
                             disabled={!events.length || busy}
                             onClick={() => openModal({ type: "mover", article, sourceId: null })}
-                            className={secondary}
+                            className={`${secondary} ${adminActionHover}`}
                           >
                             Associar a um evento
                           </Button>
@@ -432,7 +441,7 @@ export default function CuradoriaEventos({ demo = true }) {
                             openModal({ type: "comparar", pair });
                             setDestination(String(pair.first.id));
                           }}
-                          className={`${secondary} justify-self-start`}
+                          className={`${secondary} justify-self-start ${adminActionHover}`}
                         >
                           Comparar eventos
                         </Button>
@@ -456,7 +465,7 @@ export default function CuradoriaEventos({ demo = true }) {
                       variant="outline"
                       size="sm"
                       onClick={() => setStatus("revisados")}
-                      className={secondary}
+                      className={`${secondary} hover:bg-wisen-admin-control-hover`}
                     >
                       Ver eventos revisados
                     </Button>

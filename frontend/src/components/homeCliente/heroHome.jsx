@@ -33,7 +33,7 @@ export default function HeroHome() {
     >
       <Link
         href="/paginaExplorar"
-        className="group inline-flex items-center justify-center mt-5 h-10 rounded-lg bg-[#F3E69A] px-6 font-semibold text-wisen-texto shadow-none transition-all hover:-translate-y-0.5 hover:bg-[#EBDD80] hover:shadow-md active:translate-y-0"
+        className="group inline-flex items-center justify-center mt-5 h-10 rounded-lg bg-[#F3E69A] px-6 font-semibold text-wisen-texto shadow-none transition-all hover:-translate-y-0.5 hover:bg-wisen-hover hover:shadow-md active:translate-y-0"
       >
         Explorar notícias
         <span

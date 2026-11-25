@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 export function ConnectionsBackground({
   fadeTop = false,
   fullSpread = true,
+  opacity,
   particleDensity = 1,
 } = {}) {
   const canvasRef = useRef(null);
@@ -216,6 +217,7 @@ export function ConnectionsBackground({
       className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
       style={{
         maskImage,
+        opacity,
         WebkitMaskImage: maskImage,
       }}
     >

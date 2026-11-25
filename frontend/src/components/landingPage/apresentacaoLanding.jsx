@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export function ApresentacaoLanding() {
   return (
-    <section id="sobre" className="scroll-mt-24 py-8 md:py-12">
+    <section id="sobre" className="scroll-mt-24">
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-stretch lg:gap-14 xl:gap-20">
         <div className="relative order-2 lg:order-1 lg:col-span-7">
           <div className="pointer-events-none absolute -inset-2 rotate-[2deg] rounded-[30px] border border-[#DDDCA9]/70 bg-[#E8E191]/35 sm:-inset-3" />

@@ -59,7 +59,7 @@ export default function PainelRevisoes() {
 
           <Link
             href="/paginaRevisoes"
-            className="group mt-7 inline-flex h-11 w-fit items-center rounded-lg bg-[#F3E69A] px-6 font-semibold text-[#263343] shadow-none transition-all hover:-translate-y-0.5 hover:bg-[#EBDD80] hover:shadow-md active:translate-y-0"
+            className="group mt-7 inline-flex h-11 w-fit items-center rounded-lg bg-[#F3E69A] px-6 font-semibold text-[#263343] shadow-none transition-all hover:-translate-y-0.5 hover:bg-wisen-hover hover:shadow-md active:translate-y-0"
           >
             Iniciar revisões
             <span

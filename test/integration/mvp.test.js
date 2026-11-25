@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { after, before, test } from "node:test";
 import { generationWorker } from "../../ai/src/generation.js";
+import { mailWorker } from "../../ai/src/mail.js";
 import { buildApp } from "../../backend/src/app.js";
 import { createPool } from "../../backend/src/database/index.js";
 import { accountService } from "../../backend/src/modules/accounts/accounts.js";
@@ -56,11 +57,36 @@ test("verificação usa token único; geração exige e-mail verificado", async 
     conceptId: concept.id,
   });
   assert.equal(denied.statusCode, 403);
-  const mail = (await pool.query("SELECT body FROM mail_outbox WHERE user_id=$1", [user.id]))
-    .rows[0];
-  const token = new URL(
-    decryptMail(mail.body, config).match(/https?:\/\/[^\s]+/)[0],
-  ).searchParams.get("token");
+  const mail = (await pool.query("SELECT * FROM mail_outbox WHERE user_id=$1", [user.id])).rows[0];
+  const text = decryptMail(mail.body, config);
+  const link = new URL(text.match(/https?:\/\/[^\s]+/)[0]);
+  const token = link.searchParams.get("token");
+  const attempts = [];
+  const send = mailWorker(
+    pool,
+    { ...config, RESEND_API_KEY: "test", EMAIL_FROM: "wisen@example.test" },
+    async (_url, options) => {
+      attempts.push(options);
+      return attempts.length === 1
+        ? new Response(null, { status: 503 })
+        : Response.json({ id: "email-verification" });
+    },
+  );
+  await send(mail.id);
+  await send(mail.id);
+  assert.equal(attempts.length, 2);
+  assert.equal(attempts[1].body, attempts[0].body);
+  assert.equal(attempts[1].headers["Idempotency-Key"], mail.id);
+  const payload = JSON.parse(attempts[1].body);
+  assert.equal(payload.text, text);
+  assert.equal(payload.html, decryptMail(mail.html_body, config));
+  assert.ok(payload.html.includes(`href="${link.href.replaceAll("&", "&amp;")}"`));
+  assert.match(payload.html, />Confirmar e-mail<\/a>/);
+  assert.match(payload.html, /boas-vindas\.png/);
+  const sent = (
+    await pool.query("SELECT status,body,html_body FROM mail_outbox WHERE id=$1", [mail.id])
+  ).rows[0];
+  assert.deepEqual(sent, { status: "sent", body: "", html_body: null });
   const verified = await call("/api/account/verify", "POST", { token });
   assert.equal(verified.statusCode, 200, verified.body);
   assert.equal((await call("/api/account/verify", "POST", { token })).statusCode, 400);
@@ -193,13 +219,18 @@ test("questões não expõem gabarito; respostas são idempotentes e salvos pers
 test("recuperação invalida sessões e token não pode ser reutilizado", async () => {
   await accountService(pool, boss, config).request(user.id, "reset");
   const mail = (
-    await pool.query("SELECT body FROM mail_outbox WHERE user_id=$1 AND subject LIKE 'Redefina%'", [
-      user.id,
-    ])
+    await pool.query(
+      "SELECT body,html_body FROM mail_outbox WHERE user_id=$1 AND subject LIKE 'Redefina%'",
+      [user.id],
+    )
   ).rows[0];
   const resetUrl = new URL(decryptMail(mail.body, config).match(/https?:\/\/[^\s]+/)[0]);
   assert.equal(resetUrl.pathname, "/auth");
   assert.equal(resetUrl.searchParams.get("action"), "reset");
+  const html = decryptMail(mail.html_body, config);
+  assert.ok(html.includes(`href="${resetUrl.href.replaceAll("&", "&amp;")}"`));
+  assert.match(html, />Redefinir senha<\/a>/);
+  assert.match(html, /30 minutos/);
   const token = resetUrl.searchParams.get("token");
   assert.match(token, /^[A-Za-z0-9_-]{43}$/);
   const stored = (

@@ -64,7 +64,7 @@ function SegmentedTab({ className, ...props }) {
     <TabsTrigger
       className={cn(
         segmentStyle,
-        "group-data-[variant=default]/tabs-list:data-active:shadow-none",
+        "group-data-[variant=default]/tabs-list:data-active:shadow-none dark:text-wisen-titulo dark:hover:text-wisen-titulo dark:data-active:text-wisen-titulo",
         className,
       )}
       {...props}

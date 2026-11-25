@@ -93,7 +93,8 @@ describe("fila de revisão de eventos", () => {
     expect(
       screen.queryByRole("heading", { name: "Reunião do Copom e decisão da Selic" }),
     ).not.toBeInTheDocument();
-    await user.selectOptions(screen.getByLabelText("Mostrar eventos"), "revisados");
+    await user.click(screen.getByRole("combobox", { name: "Mostrar eventos" }));
+    await user.click(await screen.findByRole("option", { name: /^Revisados/ }));
     expect(
       screen.getByRole("heading", { name: "Reunião do Copom e decisão da Selic" }),
     ).toBeInTheDocument();
@@ -138,7 +139,7 @@ describe("fila de revisão de eventos", () => {
           id: index + 1,
           titulo: `Evento ${index + 1}`,
           resumo: "Resumo para revisão",
-          categoria: "Economia",
+          categoria: index < 10 ? "Economia" : "Tecnologia",
           status: "Pendente",
           artigos: [],
         })),
@@ -156,6 +157,13 @@ describe("fila de revisão de eventos", () => {
     await user.click(screen.getByRole("button", { name: "Limpar filtros" }));
     expect(pages.getByText("1 de 2")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Evento 1", exact: true })).toBeInTheDocument();
+    await user.click(screen.getByRole("combobox", { name: "Filtrar por categoria" }));
+    await user.click(await screen.findByRole("option", { name: "Tecnologia" }));
+    expect(pages.getByText("1 de 1")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Evento 12", exact: true })).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: "Evento 1", exact: true }),
+    ).not.toBeInTheDocument();
   });
 
   it("compara duplicados e une os artigos sem confirmar a revisão automaticamente", async () => {

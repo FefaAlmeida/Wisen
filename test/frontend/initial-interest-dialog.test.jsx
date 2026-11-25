@@ -80,11 +80,11 @@ describe("tour da área do cliente", () => {
     expect(screen.getByRole("dialog", { name: "Notícias" })).toBeVisible();
     fireEvent.click(screen.getByRole("button", { name: "Voltar" }));
     expect(screen.getByRole("dialog", { name: "Boas-vindas ao Wisen!" })).toBeVisible();
-    fireEvent.click(screen.getByRole("button", { name: "Pular tour" }));
+    fireEvent.click(screen.getByRole("button", { name: "Ver depois" }));
     firstVisit.unmount();
 
     render(<HomeClientNavigation />);
-    const replay = await screen.findByRole("button", { name: "Rever tour" });
+    const replay = await screen.findByRole("button", { name: "Rever guia com a Zuzu" });
     expect(replay.closest('header[data-wisen-area="cliente"]')).toBeInTheDocument();
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     fireEvent.click(replay);
@@ -105,15 +105,27 @@ describe("tour administrativo", () => {
     const adminVisit = render(<AppTopBar admin />);
     const welcome = "Boas-vindas à administração do Wisen";
     expect(await screen.findByRole("dialog", { name: welcome })).toBeVisible();
-    for (let index = 0; index < 5; index++) {
-      fireEvent.click(screen.getByRole("button", { name: "Próximo" }));
+    const poses = [
+      ["boas-vindas", "-mt-2", false],
+      ["noticias", "self-end", true],
+      ["conceitos", "self-center", false],
+      ["revisoes", "-mt-2", true],
+      ["aprendizado", "-translate-y-2", false],
+      ["salvos", "self-end", true],
+    ];
+    for (const [index, [portrait, position, onRight]] of poses.entries()) {
+      if (index > 0) fireEvent.click(screen.getByRole("button", { name: "Próximo" }));
+      const zuzu = screen.getByRole("dialog").querySelector("img");
+      expect(zuzu).toHaveAttribute("src", `/tour-cliente/${portrait}.png`);
+      expect(zuzu).toHaveClass(position);
+      expect(zuzu.parentElement.classList.contains("flex-row-reverse")).toBe(onRight);
     }
     expect(screen.getByRole("dialog", { name: "Monitor de IA" })).toBeVisible();
     fireEvent.click(screen.getByRole("button", { name: "Concluir" }));
     adminVisit.unmount();
 
     render(<AppTopBar admin />);
-    const replay = await screen.findByRole("button", { name: "Rever tour" });
+    const replay = await screen.findByRole("button", { name: "Rever guia com a Zuzu" });
     expect(replay.closest('header[data-wisen-area="admin"]')).toBeInTheDocument();
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     fireEvent.click(replay);

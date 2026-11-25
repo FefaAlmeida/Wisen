@@ -13,7 +13,7 @@ const steps = [
     owlPosition: "-mt-2",
     title: "Boas-vindas ao Wisen!",
     description:
-      "Oi, eu sou a Zuzu, a coruja do Wisen! No Início, você encontra seu feed e as revisões do dia. Vem comigo que eu te mostro por onde começar.",
+      "Oi, eu sou a Zuzu! Vou te mostrar como usar as notícias para aprender no Wisen. No Início, você pode escolher uma leitura do seu feed ou retomar os estudos nas revisões do dia.",
   },
   {
     href: "/paginaExplorar",
@@ -21,7 +21,7 @@ const steps = [
     owlPosition: "self-end",
     title: "Notícias",
     description:
-      "Explore as notícias e descubra os conceitos que ajudam a entender cada acontecimento.",
+      "Quer acompanhar um assunto? Em Notícias, você pode usar a busca ou filtrar por tema. Ao abrir um acontecimento, confira o contexto, as fontes e os conceitos que ajudam a entender a notícia.",
   },
   {
     href: "/paginaBiblioteca",
@@ -29,7 +29,7 @@ const steps = [
     owlPosition: "self-center",
     title: "Conceitos",
     description:
-      "Consulte a biblioteca para entender os termos que aparecem nas notícias e explorar exemplos e leituras relacionadas.",
+      "Ficou com dúvida sobre um termo de uma notícia? Busque por ele em Conceitos. Ao abrir um conceito, você encontra uma explicação e pode consultar exemplos e conteúdos relacionados.",
   },
   {
     href: "/paginaRevisoes",
@@ -37,14 +37,15 @@ const steps = [
     owlPosition: "-mt-2",
     title: "Revisões",
     description:
-      "Confira os conceitos previstos para hoje e faça uma sessão para relembrar o que você estudou.",
+      "Quando quiser relembrar o que estudou, abra Revisões. Em Nova revisão, você pode escolher os assuntos e praticar com quizzes ou flashcards, no seu ritmo.",
   },
   {
     href: "/paginaConhecimento",
     portrait: "/tour-cliente/aprendizado.png",
     owlPosition: "self-center -translate-y-2",
     title: "Aprendizado",
-    description: "Acompanhe sua evolução e veja com que frequência você estuda ao longo do tempo.",
+    description:
+      "Em Aprendizado, você vê quais conceitos já consolidou e quais vale a pena praticar de novo. Use esse resumo para escolher o que revisar a seguir.",
   },
   {
     href: "/paginaGuardados",
@@ -52,7 +53,7 @@ const steps = [
     owlPosition: "self-end",
     title: "Salvos",
     description:
-      "Use o ícone de marcador para guardar notícias e conceitos. Você pode voltar a eles em Salvos quando quiser.",
+      "Encontrou uma notícia ou um conceito que quer retomar depois? Use o ícone de marcador para guardar. Em Salvos, você encontra tudo o que guardou para ler ou estudar quando quiser.",
   },
 ];
 

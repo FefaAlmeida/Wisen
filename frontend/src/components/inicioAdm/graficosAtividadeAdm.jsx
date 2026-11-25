@@ -227,8 +227,10 @@ export function GraficosAtividadeAdm() {
         </div>
       </section>
 
-      <section className="@container/atividade col-span-full min-w-0 rounded-2xl bg-[#263343] px-4 pt-4 pb-2 shadow-2xs sm:px-5">
-        <h3 className="mb-2 text-lg font-semibold text-white">Atividade recente</h3>
+      <section className="@container/atividade col-span-full min-w-0 rounded-2xl border border-[#526584] bg-[#E3EDFA] px-4 pt-4 pb-2 shadow-2xs sm:px-5">
+        <header className="mb-1.5">
+          <TituloCartaoAdm titulo="Atividade recente" />
+        </header>
 
         <ol className="max-w-sm">
           {atividades.map((item) => {
@@ -236,18 +238,16 @@ export function GraficosAtividadeAdm() {
             return (
               <li
                 key={item.texto}
-                className="relative flex min-h-12 items-center gap-3 py-1.5 before:absolute before:inset-y-0 before:start-[calc(1rem-0.5px)] before:w-px before:bg-white/20 first:before:top-1/2 last:before:bottom-1/2 only:before:hidden"
+                className="relative flex min-h-11 items-center gap-3 py-1 before:absolute before:start-[calc(1rem-0.5px)] before:top-0 before:bottom-[calc(50%+0.75rem)] before:w-px before:bg-[#30466E]/20 after:absolute after:start-[calc(1rem-0.5px)] after:top-[calc(50%+0.75rem)] after:bottom-0 after:w-px after:bg-[#30466E]/20 first:before:hidden last:after:hidden"
               >
-                <span className="relative grid size-8 shrink-0 place-items-center rounded-lg bg-[#3F484D] text-[#F3E69A]">
+                <span className="grid size-8 shrink-0 place-items-center text-[#A67C00]">
                   <Icone aria-hidden="true" className="size-4" />
                 </span>
                 <div className="grid min-w-0 flex-1 items-baseline gap-x-4 gap-y-0.5 @min-[24rem]/atividade:grid-cols-[minmax(0,1fr)_6.5rem]">
-                  <span className="wrap-break-word text-sm leading-5 font-medium text-white">
+                  <span className="wrap-break-word text-sm leading-5 font-medium text-wisen-texto-forte">
                     {item.texto}
                   </span>
-                  <span className="text-xs text-[#C6D0DD]">
-                    {item.tempo}
-                  </span>
+                  <span className="text-xs text-wisen-texto-suave">{item.tempo}</span>
                 </div>
               </li>
             );

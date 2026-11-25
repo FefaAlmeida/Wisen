@@ -17,11 +17,14 @@ export function AdminTableFilter({ label, options, value, onChange, width }) {
         <SelectValue />
       </SelectTrigger>
       <SelectContent alignItemWithTrigger={false} className="p-1">
-        {Object.entries(options).map(([value, label]) => (
+        {(Array.isArray(options)
+          ? options
+          : Object.entries(options).map(([value, label]) => ({ value, label }))
+        ).map(({ value, label }) => (
           <SelectItem
             key={value}
             value={value}
-            className="data-highlighted:bg-wisen-admin-control-hover data-highlighted:text-wisen-titulo focus:bg-wisen-admin-control-hover focus:text-wisen-titulo"
+            className="data-highlighted:bg-wisen-admin-control-hover data-highlighted:text-wisen-titulo focus:bg-wisen-admin-control-hover focus:text-wisen-titulo dark:focus:bg-wisen-admin-control-hover dark:focus:text-wisen-titulo [&>span:first-child]:min-w-0 [&>span:first-child]:whitespace-normal"
           >
             {label}
           </SelectItem>

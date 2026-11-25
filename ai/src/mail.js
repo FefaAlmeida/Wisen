@@ -40,12 +40,13 @@ export function mailWorker(pool, config, fetcher = fetch) {
           to: [mail.recipient],
           subject: mail.subject,
           text: decryptMail(mail.body, config),
+          html: mail.html_body ? decryptMail(mail.html_body, config) : undefined,
         }),
       });
       if (!response.ok) throw new Error(`E-mail indisponível (${response.status})`);
       const data = await response.json();
       await pool.query(
-        "UPDATE mail_outbox SET status='sent',sent_at=now(),provider_id=$2,body='',last_error=NULL WHERE id=$1",
+        "UPDATE mail_outbox SET status='sent',sent_at=now(),provider_id=$2,body='',html_body=NULL,last_error=NULL WHERE id=$1",
         [id, data.id],
       );
     } catch {

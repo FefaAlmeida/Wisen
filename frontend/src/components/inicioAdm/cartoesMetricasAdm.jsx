@@ -38,73 +38,79 @@ export function CartoesMetricasAdm({ counts } = {}) {
         {
           titulo: "Usuários ativos",
           valor: "1.248",
-          variacao: "+12%",
-          periodo: "Últimos 30 dias · vs. 30 dias anteriores",
+          variacao: "12%",
+          periodo: "Últimos 30 dias vs. período anterior",
           icone: Users,
         },
         {
           titulo: "Novos usuários",
           valor: "236",
-          variacao: "+18%",
-          periodo: "neste mês",
+          variacao: "18%",
+          periodo: "Mês atual vs. anterior",
           icone: UserPlus,
         },
         {
           titulo: "Conteúdos publicados",
           valor: "482",
-          variacao: "+8%",
-          periodo: "no total",
+          variacao: "8%",
+          descricao: "no total",
+          periodo: "Vs. acumulado até o mês anterior",
           icone: FileText,
         },
         {
           titulo: "Eventos monitorados",
           valor: "127",
-          variacao: "+24%",
-          periodo: "neste mês",
+          variacao: "24%",
+          periodo: "Mês atual vs. anterior",
           icone: Globe,
         },
         {
           titulo: "Engajamento geral",
           valor: "72%",
-          variacao: "+5%",
-          periodo: "de usuários ativos",
+          variacao: "5%",
+          descricao: "dos usuários ativos",
+          periodo: "Vs. mês anterior",
           icone: TrendingUp,
         },
       ];
 
   return (
-    <div className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,180px),1fr))] gap-4">
-      {metricas.map((item) => {
-        const Icone = item.icone;
-        return (
-          <div
-            key={item.titulo}
-            className="min-w-0 rounded-2xl border border-wisen-borda bg-[#FBF7E5] p-5 shadow-xs"
+    <section aria-label="Indicadores da visão geral" className="@container min-w-0">
+      <ul className="grid grid-cols-1 gap-3 @min-[24rem]:grid-cols-2 @min-[36rem]:grid-cols-6 @min-[60rem]:grid-cols-5">
+        {metricas.map(({ titulo, valor, descricao, variacao, periodo, icone: Icone }) => (
+          <li
+            key={titulo}
+            className="row-span-3 grid min-w-0 grid-rows-subgrid gap-y-3 rounded-2xl border border-wisen-borda bg-white px-4 py-4 shadow-xs @min-[24rem]:last:col-span-2 @min-[36rem]:col-span-2 @min-[36rem]:nth-last-[-n+2]:col-span-3 @min-[60rem]:nth-[n]:col-span-1 @min-[70rem]:px-5"
           >
-            <div className="flex items-center gap-3 pb-3">
-              <Icone aria-hidden="true" className="h-5 w-5 shrink-0 text-[#526584]" />
-              <span className="min-w-0 break-words text-sm font-semibold text-[#526584]">
-                {item.titulo}
+            <h2 className="flex items-center gap-2.5 text-sm/5 font-medium text-wisen-texto-forte">
+              <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-[#FBF5D9] text-[#795C0F]">
+                <Icone aria-hidden="true" className="size-4" />
               </span>
-            </div>
+              <span className="min-w-0 wrap-break-word">{titulo}</span>
+            </h2>
 
-            <div className="flex flex-wrap items-baseline gap-2">
-              <span className="text-3xl font-semibold tabular-nums text-[#30466E]">
-                {item.valor}
-              </span>
-              {item.variacao && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-700">
+            <p>
+              <strong className="block wrap-anywhere text-[2rem]/none font-semibold tracking-tight text-wisen-titulo tabular-nums @min-[60rem]:text-4xl/none">
+                {valor}
+              </strong>
+              {descricao && (
+                <span className="mt-1 block text-xs/4 text-wisen-texto-suave">{descricao}</span>
+              )}
+            </p>
+
+            <p className="text-xs/4 text-wisen-texto-suave">
+              {variacao && (
+                <span className="mb-0.5 flex items-center gap-1 font-semibold text-emerald-700 tabular-nums">
                   <ArrowUp aria-hidden="true" className="size-3" />
                   <span className="sr-only">Aumento de </span>
-                  {item.variacao.slice(1)}
+                  {variacao}
                 </span>
               )}
-            </div>
-
-            <p className="mt-1 text-xs text-[#526584]">{item.periodo}</p>
-          </div>
-        );
-      })}
-    </div>
+              {periodo}
+            </p>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }

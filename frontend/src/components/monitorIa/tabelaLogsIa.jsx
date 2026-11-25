@@ -211,7 +211,7 @@ export function TabelaLogsIa() {
           <div className="hidden @min-[54rem]/ai-logs:block">
             <table className="w-full text-left text-sm">
               <caption className="sr-only">Requisições de IA e métricas de consumo</caption>
-              <thead className="border-y border-[#E8EDF4]">
+              <thead className="border-y border-[#E8EDF4] bg-[#E8EFFA]">
                 <tr className="text-[10px] font-semibold tracking-wider text-wisen-titulo uppercase">
                   <th scope="col" className="px-5 py-3">
                     Modelo

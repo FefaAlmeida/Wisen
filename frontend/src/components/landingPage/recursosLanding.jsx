@@ -3,9 +3,9 @@ import {
   BarChart3,
   Bookmark,
   BookOpen,
-  Network,
-  ShieldCheck,
-  Sparkles,
+  Layers,
+  MessageCircle,
+  Newspaper,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -13,44 +13,46 @@ export function RecursosLanding() {
   const recursos = [
     {
       id: 1,
-      titulo: "Explicação simples",
-      descricao: "Um olhar simplificado, com linguagem acessível para qualquer perfil de público.",
-      icone: BookOpen,
+      titulo: "Notícias com contexto",
+      descricao:
+        "Acompanhe notícias de economia por tema e entenda os acontecimentos com uma linha do tempo e links para as fontes originais.",
+      icone: Newspaper,
       corIcone: "bg-[#E8E191] text-[#101A40] hover:bg-[#101A40] hover:text-[#E8E191]",
     },
     {
       id: 2,
-      titulo: "Conexão confiável",
-      descricao: "Fontes de qualidade, com curadoria e análise para a sua escolha.",
-      icone: ShieldCheck,
+      titulo: "Explicações personalizadas",
+      descricao:
+        "Peça uma explicação de uma notícia, de um conceito ou de um trecho, com linguagem adaptada ao seu nível de familiaridade.",
+      icone: MessageCircle,
       corIcone: "bg-[#E8E191] text-[#101A40] hover:bg-[#101A40] hover:text-[#E8E191]",
     },
     {
       id: 3,
-      titulo: "Mapas de conhecimento",
-      descricao: "Veja a relação entre ideias, temas e o conhecimento de forma visual.",
-      icone: Network,
+      titulo: "Biblioteca de conceitos",
+      descricao: "Consulte definições, veja exemplos e explore os conceitos por trás das notícias.",
+      icone: BookOpen,
       corIcone: "bg-[#E8E191] text-[#101A40] hover:bg-[#101A40] hover:text-[#E8E191]",
     },
     {
       id: 4,
-      titulo: "Resumo sob medida",
-      descricao: "Aprendizado no seu ritmo, com o nível de profundidade que você precisa.",
-      icone: BarChart3,
+      titulo: "Revisões com quizzes e flashcards",
+      descricao: "Escolha os temas que quer reforçar e teste o que você lembra.",
+      icone: Layers,
       corIcone: "bg-[#E8E191] text-[#101A40] hover:bg-[#101A40] hover:text-[#E8E191]",
     },
     {
       id: 5,
-      titulo: "Guardados",
-      descricao: "Salve conteúdos e construa seu conhecimento com total personalização.",
-      icone: Bookmark,
+      titulo: "Progresso de aprendizado",
+      descricao: "Veja quais conceitos você já consolidou e quais vale a pena revisar.",
+      icone: BarChart3,
       corIcone: "bg-[#E8E191] text-[#101A40] hover:bg-[#101A40] hover:text-[#E8E191]",
     },
     {
       id: 6,
-      titulo: "Temas que você gosta",
-      descricao: "Receba novas perspectivas sobre os assuntos que realmente importam.",
-      icone: Sparkles,
+      titulo: "Notícias e conceitos salvos",
+      descricao: "Guarde notícias e conceitos para voltar a eles quando quiser.",
+      icone: Bookmark,
       corIcone: "bg-[#E8E191] text-[#101A40] hover:bg-[#101A40] hover:text-[#E8E191]",
     },
   ];

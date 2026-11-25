@@ -1,32 +1,29 @@
 import { Check } from "lucide-react";
 import Link from "next/link";
 
-const beneficios = [
-  "Notícias explicadas com clareza",
-  "Conexões entre temas e conceitos",
-  "Revisões para fixar o que aprendeu",
-];
-
 const planos = [
   {
     nome: "Mensal",
     valor: "14,90",
     ciclo: "por mês",
-    cobranca: "Cobrado mensalmente",
+    indicacao: "Ideal para quem quer experimentar a Wisen por um mês.",
   },
   {
     nome: "Semestral",
     valor: "79,90",
     ciclo: "a cada 6 meses",
-    cobranca: "Equivale a R$ 13,32 por mês",
+    equivalenteMensal: "R$ 13,32 por mês",
     economia: "Economize R$ 9,50",
+    indicacao: "Ideal para quem quer criar uma rotina de estudos ao longo do semestre.",
   },
   {
     nome: "Anual",
     valor: "149,90",
     ciclo: "por ano",
-    cobranca: "Equivale a R$ 12,49 por mês",
+    equivalenteMensal: "R$ 12,49 por mês",
     economia: "Economize R$ 28,90",
+    indicacao:
+      "Ideal para quem quer usar a Wisen o ano todo e ter o menor custo mensal equivalente.",
     destaque: true,
   },
 ];
@@ -34,65 +31,78 @@ const planos = [
 export function PlanosLanding() {
   return (
     <section id="planos" aria-labelledby="planos-titulo" className="scroll-mt-24">
-      <div className="mx-auto max-w-[760px] space-y-4 text-center">
-        <p className="text-sm font-semibold tracking-[0.14em] text-[#7A6E26] uppercase">
-          Planos Wisen
-        </p>
-        <h2
-          id="planos-titulo"
-          className="text-[clamp(2rem,3.4vw,3rem)] font-bold leading-[1.12] tracking-[-0.045em] text-[#101A40]"
-        >
-          Mais clareza para aprender, no seu ritmo.
-        </h2>
-        <p className="text-base leading-relaxed text-[#647184]">
-          Escolha o período que funciona melhor para você.
-        </p>
-      </div>
+      <h2
+        id="planos-titulo"
+        className="mb-8 max-w-[640px] text-[clamp(2rem,3.4vw,3rem)] font-bold leading-[1.12] tracking-[-0.045em] text-[#101A40]"
+      >
+        Confira os planos da Wisen e{" "}
+        <span className="decoration-[#E8E191] decoration-[6px] underline underline-offset-[7px]">
+          comece já!
+        </span>
+      </h2>
 
-      <div className="mt-9 grid grid-cols-1 items-stretch gap-4 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:gap-x-6">
         {planos.map((plano) => (
           <article
             key={plano.nome}
             className={
-              "relative flex flex-col rounded-2xl border bg-card p-6 shadow-[0_12px_35px_-28px_rgba(16,26,64,0.35)] " +
-              (plano.destaque
-                ? "border-[#D9C54E] ring-1 ring-[#D9C54E]/50"
-                : "border-wisen-borda")
+              "grid min-w-0 gap-4 rounded-2xl border bg-card p-3 shadow-[0_12px_28px_-20px_rgba(16,26,64,0.45)] md:row-span-3 md:grid-rows-subgrid " +
+              (plano.destaque ? "border-[#D9C54E]" : "border-wisen-borda")
             }
           >
-            {plano.destaque && (
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#E8E191] px-3 py-1 text-xs font-semibold text-[#101A40]">
-                Melhor valor
-              </span>
-            )}
-            <h3 className="text-lg font-bold text-[#101A40]">{plano.nome}</h3>
-            <p className="mt-5 flex items-baseline gap-1 text-[#101A40]">
-              <span className="text-sm font-semibold">R$</span>
-              <span className="text-4xl font-bold tracking-tight">{plano.valor}</span>
-              <span className="text-sm text-[#647184]">{plano.ciclo}</span>
-            </p>
-            <p className="mt-2 min-h-5 text-sm text-[#647184]">{plano.cobranca}</p>
-            {plano.economia ? (
-              <p className="mt-1 text-sm font-semibold text-[#52621F]">{plano.economia}</p>
-            ) : (
-              <div className="mt-1 h-5" />
-            )}
+            <header className="rounded-xl bg-[#F0F5FB] p-4 lg:px-5">
+              <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
+                <h3 className="text-lg font-bold text-[#101A40] after:mt-1 after:block after:h-0.5 after:w-7 after:rounded-full after:bg-[#C8B340] after:content-['']">
+                  {plano.nome}
+                </h3>
+                {plano.destaque && (
+                  <span className="rounded-full bg-[#E8E191] px-2.5 py-1 text-xs font-semibold text-[#101A40]">
+                    Melhor valor
+                  </span>
+                )}
+              </div>
+              <p className="mt-4 text-sm text-[#52627B]">
+                <span className="block font-bold text-[#244C91]">
+                  <span className="text-lg">R$</span>{" "}
+                  <span className="text-[2.5rem] leading-none tracking-tight tabular-nums">
+                    {plano.valor}
+                  </span>
+                </span>
+                <span className="mt-1 block">{plano.ciclo}</span>
+              </p>
+            </header>
 
-            <ul className="mt-6 flex-1 space-y-3 border-t border-[#E7EDF4] pt-5">
-              {beneficios.map((beneficio) => (
-                <li key={beneficio} className="flex gap-2.5 text-sm leading-relaxed text-[#40516B]">
-                  <Check aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-[#7A6E26]" />
-                  {beneficio}
-                </li>
-              ))}
-            </ul>
+            <div className="space-y-2 px-2 text-sm leading-relaxed text-[#40516B] lg:px-3">
+              <p className="flex items-center gap-2 font-semibold text-[#101A40]">
+                <span className="grid size-6 shrink-0 place-items-center rounded-full bg-[#F3EDBC] text-[#6C5E22]">
+                  <Check aria-hidden="true" className="size-3.5" />
+                </span>
+                Acesso completo à Wisen
+              </p>
+              <p>
+                Cobrança de{" "}
+                <strong className="font-semibold">
+                  R$ {plano.valor} {plano.ciclo}
+                </strong>
+                .
+              </p>
+              <p>{plano.indicacao}</p>
+              {plano.equivalenteMensal && (
+                <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1 border-t border-wisen-borda pt-2">
+                  <p>
+                    Equivale a <strong className="font-semibold">{plano.equivalenteMensal}</strong>
+                  </p>
+                  <p className="font-semibold text-[#52621F]">{plano.economia}</p>
+                </div>
+              )}
+            </div>
             <Link
               href="/auth"
               className={
-                "mt-7 inline-flex min-h-11 items-center justify-center rounded-xl px-5 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#D9C54E] " +
+                "mx-2 mb-2 inline-flex min-h-11 items-center justify-center rounded-xl px-5 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#D9C54E] lg:mx-3 lg:mb-3 " +
                 (plano.destaque
                   ? "bg-[#101A40] text-white hover:bg-[#30466E]"
-                  : "border border-[#CAD5E3] bg-white text-[#101A40] hover:border-[#D9C54E] hover:bg-[#FBF7E5]")
+                  : "border border-[#CAD5E3] bg-white text-[#101A40] hover:border-[#D9C54E] hover:bg-wisen-hover")
               }
             >
               Começar

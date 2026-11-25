@@ -1,7 +1,7 @@
 import { PageHeader } from "@/components/app/pageHeader";
 
 export function AdminPageHeader(props) {
-  return <PageHeader eyebrow="Administração" {...props} />;
+  return <PageHeader {...props} />;
 }
 
 export function AdminPage({ title, highlight, description, children }) {

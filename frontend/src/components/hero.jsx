@@ -53,7 +53,7 @@ const Hero33 = () => {
                 Explorar Receitas
                 <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </Button>
-              <Button className="group h-10 w-full rounded-full px-5 font-medium hover:bg-primary/90 sm:w-fit">
+              <Button className="group h-10 w-full rounded-full px-5 font-medium hover:bg-wisen-hover sm:w-fit">
                 Partilhar Receita
                 <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </Button>

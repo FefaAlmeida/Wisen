@@ -265,7 +265,7 @@
 }
 
 .glass button[type="submit"]:hover {
-  background: #e6d264;
+  background: var(--color-wisen-hover);
 }
 
 .glass button[type="submit"] span {
@@ -810,7 +810,7 @@
 
 .onboarding .onboardingPrimaryAction:hover,
 .authDialog .dialogPrimaryAction:hover {
-  background: #e6d264;
+  background: var(--color-wisen-hover);
 }
 
 .onboarding .onboardingPrimaryAction:disabled,

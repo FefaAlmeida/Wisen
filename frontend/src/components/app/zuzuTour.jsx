@@ -112,10 +112,10 @@ export function ZuzuTour({ steps, storageKey, portrait }) {
     <>
       <button
         type="button"
-        aria-label="Rever tour"
-        title="Rever tour com a Zuzu"
+        aria-label="Rever guia com a Zuzu"
+        title="Rever guia com a Zuzu"
         onClick={() => setStepIndex(0)}
-        className="grid size-10 shrink-0 place-items-center rounded-full border border-wisen-borda bg-wisen-superficie shadow-sm transition-colors hover:bg-wisen-destaque-suave focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wisen-titulo"
+        className="grid size-10 shrink-0 place-items-center rounded-full border border-wisen-borda bg-wisen-superficie shadow-sm transition-colors hover:bg-wisen-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wisen-titulo"
       >
         <Image src={portrait} alt="" width={30} height={30} unoptimized />
       </button>
@@ -158,7 +158,7 @@ export function ZuzuTour({ steps, storageKey, portrait }) {
                   </div>
                 </div>
                 <p className="mt-3 text-sm text-wisen-texto-suave sm:hidden">
-                  Você encontra essas seções no menu no topo da tela.
+                  Depois de fechar o guia, abra o menu no topo da tela para acessar essas seções.
                 </p>
                 <div aria-hidden="true" className="mt-5 flex gap-1.5">
                   {steps.map(({ href }, index) => (
@@ -170,7 +170,7 @@ export function ZuzuTour({ steps, storageKey, portrait }) {
                 </div>
                 <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
                   <Button type="button" variant="ghost" onClick={finishTour}>
-                    Pular tour
+                    Ver depois
                   </Button>
                   <div className="flex gap-2">
                     {stepIndex > 0 && (

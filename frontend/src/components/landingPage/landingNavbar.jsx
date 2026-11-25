@@ -39,7 +39,7 @@ export function LandingNavbar({ headerRef, isScrolled = false, isOverLightSectio
         >
           <Link
             href="/auth"
-            className="rounded-full bg-[#E8E191] px-4 py-2 text-sm font-semibold text-[#101A40] shadow-[0_12px_20px_-12px_rgba(232,225,145,0.9)] transition-all duration-200 hover:bg-[#F3EB9B]"
+            className="rounded-full bg-[#E8E191] px-4 py-2 text-sm font-semibold text-[#101A40] shadow-[0_12px_20px_-12px_rgba(232,225,145,0.9)] transition-all duration-200 hover:bg-wisen-hover"
           >
             Entrar
           </Link>

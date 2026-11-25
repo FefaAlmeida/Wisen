@@ -1,4 +1,5 @@
 "use client";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -22,6 +23,9 @@ import {
   statusText,
   useResource,
 } from "./shared";
+
+const paginationButtonClassName = "hover:bg-background hover:text-inherit dark:hover:bg-input/30";
+
 export function Library({ knowledge = false }) {
   const initialFilter = useSearchParams()?.get("filtro");
   const [filter, setFilter] = useState(
@@ -104,18 +108,30 @@ export function Library({ knowledge = false }) {
               <div className="mt-5 flex justify-between">
                 <Button
                   variant="outline"
+                  className={paginationButtonClassName}
+                  data-wisen-hover="preserve"
                   disabled={page === 1}
                   onClick={() => setPage((v) => v - 1)}
                 >
+                  <ChevronLeft
+                    aria-hidden="true"
+                    className="group-hover/button:text-wisen-link-hover"
+                  />
                   Anterior
                 </Button>
                 <span>Página {page}</span>
                 <Button
                   variant="outline"
+                  className={paginationButtonClassName}
+                  data-wisen-hover="preserve"
                   disabled={(resource.data?.items?.length ?? 0) < 30}
                   onClick={() => setPage((v) => v + 1)}
                 >
                   Próxima
+                  <ChevronRight
+                    aria-hidden="true"
+                    className="group-hover/button:text-wisen-link-hover"
+                  />
                 </Button>
               </div>
             )}

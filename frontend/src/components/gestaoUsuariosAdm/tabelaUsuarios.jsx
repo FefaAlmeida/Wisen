@@ -46,7 +46,7 @@ export default function TabelaUsuarios({ usuarios, aoAbrirUsuario }) {
       <div className="hidden overflow-x-auto @min-[48rem]/users:block">
         <table className="w-full text-left text-sm">
           <caption className="sr-only">Contas cadastradas e configurações de acesso</caption>
-          <thead className="border-y border-[#E8EDF4]">
+          <thead className="border-y border-[#E8EDF4] bg-[#E8EFFA]">
             <tr className="text-[10px] font-bold tracking-wider text-[#30466E] uppercase">
               <th scope="col" className="px-5 py-3">
                 Usuário

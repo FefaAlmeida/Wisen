@@ -99,7 +99,7 @@ export function PersonalDataCard({
               onClick={() => photoInput.current?.click()}
               disabled={loading || saving}
               aria-label="Escolher foto de perfil"
-              className="absolute bottom-0 right-0 flex size-8 items-center justify-center rounded-full border-2 border-white bg-wisen-destaque-suave text-wisen-titulo shadow-xs transition-colors hover:bg-[#EBDD80] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wisen-titulo disabled:opacity-50"
+              className="absolute bottom-0 right-0 flex size-8 items-center justify-center rounded-full border-2 border-white bg-wisen-destaque-suave text-wisen-titulo shadow-xs transition-colors hover:bg-wisen-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wisen-titulo disabled:opacity-50"
               title="Alterar foto"
             >
               <Camera className="w-3.5 h-3.5" />

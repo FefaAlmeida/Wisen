@@ -106,7 +106,7 @@
 }
 .result:hover,
 .result:focus-visible {
-  background: #f6f2dd;
+  background: var(--color-wisen-hover);
 }
 .photo,
 .paper {

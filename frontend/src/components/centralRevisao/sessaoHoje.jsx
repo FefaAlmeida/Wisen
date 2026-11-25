@@ -60,7 +60,7 @@ export default function SessaoHoje() {
                   <p className="text-[12px] text-[#91A0BA]">{conceito.questoes} questões</p>
                 </div>
 
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F3E69A] text-wisen-titulo transition-all group-hover:translate-x-1 group-hover:bg-[#EBDD80]">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F3E69A] text-wisen-titulo transition-all group-hover:translate-x-1 group-hover:bg-wisen-hover">
                   →
                 </span>
               </div>

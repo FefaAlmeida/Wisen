@@ -91,7 +91,7 @@ export function InterestsCard({
                   aria-pressed={selected}
                   disabled={saving}
                   onClick={() => onToggle(tag)}
-                  className={`flex min-h-12 min-w-0 items-center justify-between gap-2 rounded-xl border px-3 py-3 text-left text-[13px] leading-5 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D7BF4D] disabled:opacity-60 ${selected ? "border-[#DCCA70] bg-[#FBF5D9] text-wisen-titulo" : "border-[#E0E6EF] bg-white text-[#526584] hover:border-[#DCCA70] hover:bg-[#FBF7E5]"}`}
+                  className={`flex min-h-12 min-w-0 items-center justify-between gap-2 rounded-xl border px-3 py-3 text-left text-[13px] leading-5 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D7BF4D] disabled:opacity-60 ${selected ? "border-[#DCCA70] bg-[#FBF5D9] text-wisen-titulo" : "border-[#E0E6EF] bg-white text-[#526584] hover:border-[#DCCA70] hover:bg-wisen-hover"}`}
                 >
                   <span className="min-w-0 break-words font-medium">{tag}</span>
                   <span
@@ -122,8 +122,8 @@ export function InterestsCard({
                   aria-pressed={true}
                   className={`${embedded ? "min-h-11 px-4 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wisen-titulo" : "min-h-10 px-3 text-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wisen-titulo"} inline-flex cursor-pointer items-center gap-1.5 rounded-xl border-none py-1.5 font-semibold transition-colors ${
                     systemColors
-                      ? "bg-[#F3E69A] text-wisen-titulo hover:bg-[#EBDD80]"
-                      : "bg-[#F3E69A] text-[#2B333F] hover:bg-[#EBDD80]"
+                      ? "bg-[#F3E69A] text-wisen-titulo hover:bg-wisen-hover"
+                      : "bg-[#F3E69A] text-[#2B333F] hover:bg-wisen-hover"
                   }`}
                 >
                   {tag}

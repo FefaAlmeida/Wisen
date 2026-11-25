@@ -66,7 +66,7 @@ export default function MenuPerfil({ profileHref = "/paginaPerfil" }) {
         onClick={() => setAberto((atual) => !atual)}
         aria-label="Abrir menu do perfil"
         aria-expanded={aberto}
-        className="flex size-9 cursor-pointer items-center justify-center rounded-full bg-[#F3E69A] text-[11px] font-semibold text-[#263551] shadow-sm hover:bg-[#EBDD80]"
+        className="flex size-9 cursor-pointer items-center justify-center rounded-full bg-[#F3E69A] text-[11px] font-semibold text-[#263551] shadow-sm hover:bg-wisen-hover"
       >
         <Avatar className="size-9">
           <AvatarImage src={profile?.avatarDataUrl || undefined} alt="" />
@@ -85,7 +85,7 @@ export default function MenuPerfil({ profileHref = "/paginaPerfil" }) {
 
           <Link
             href={profileHref}
-            className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-[#30466E] hover:bg-wisen-superficie"
+            className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-[#30466E] hover:bg-wisen-hover focus-visible:bg-wisen-hover"
           >
             <UserRound size={16} />
             Meu perfil

@@ -77,7 +77,7 @@ export default function TabelaFontes({ fontes, aoEditar, aoAlternarStatus, busy 
       <div className="hidden overflow-x-auto @min-[48rem]/sources:block">
         <table className="w-full text-left text-sm">
           <caption className="sr-only">Fontes RSS cadastradas e configurações de coleta</caption>
-          <thead className="border-y border-[#E8EDF4]">
+          <thead className="border-y border-[#E8EDF4] bg-[#E8EFFA]">
             <tr className="text-[10px] font-semibold tracking-wider text-wisen-titulo uppercase">
               <th scope="col" className="px-5 py-3">
                 Fonte

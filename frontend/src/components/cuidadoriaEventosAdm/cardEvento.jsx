@@ -1,4 +1,4 @@
-import { ArrowUpRight } from "lucide-react";
+import { adminActionHover } from "@/components/admin/adminButtonStyles";
 import { Button } from "@/components/ui/button";
 
 export function StatusEvento({ reviewed }) {
@@ -40,10 +40,9 @@ export default function CardEvento({ evento, aoRevisar, busy }) {
         aria-label={`${reviewed ? "Ver revisão de" : "Revisar evento:"} ${evento.titulo}`}
         variant="outline"
         size="sm"
-        className="justify-self-start border-wisen-borda text-xs text-wisen-texto-forte hover:bg-wisen-admin-control-hover active:bg-wisen-admin-control-hover"
+        className={`justify-self-start border-wisen-borda text-xs text-wisen-texto-forte active:bg-wisen-admin-control-hover ${adminActionHover}`}
       >
         {reviewed ? "Ver revisão" : "Revisar evento"}
-        <ArrowUpRight aria-hidden="true" className="size-3.5" />
       </Button>
     </article>
   );

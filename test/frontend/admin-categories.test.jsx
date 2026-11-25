@@ -24,6 +24,17 @@ it("exibe cada categoria em uma linha e salva a disponibilidade respeitando o m�
   renderWithToasts(<GestaoCategorias />);
 
   const table = await screen.findByRole("table");
+  const search = screen.getByRole("searchbox", { name: "Buscar categoria por nome ou descrição" });
+  await user.type(search, "CIENCIA");
+  expect(within(table).getByRole("rowheader", { name: "Ciência" })).toBeInTheDocument();
+  expect(within(table).getAllByRole("rowheader")).toHaveLength(1);
+
+  await user.clear(search);
+  await user.type(search, "inexistente");
+  expect(within(table).getByRole("status")).toHaveTextContent("Nenhuma categoria encontrada.");
+
+  await user.clear(search);
+  await user.type(search, "financas");
   const row = within(table).getByRole("row", { name: /Economia/ });
   const toggle = within(row).getByRole("switch", { name: "Disponibilizar Economia" });
   const save = screen.getByRole("button", { name: "Salvar disponibilidade" });
@@ -35,17 +46,22 @@ it("exibe cada categoria em uma linha e salva a disponibilidade respeitando o m�
 
   expect(within(row).getByRole("cell", { name: "Oculta" })).toBeInTheDocument();
   expect(screen.getByText(/3 de 4 disponíveis/)).toBeInTheDocument();
+  expect(within(table).getAllByRole("rowheader")).toHaveLength(1);
+
+  await user.click(save);
+
+  expect(await screen.findByText("Disponibilidade dos assuntos atualizada.")).toBeInTheDocument();
+  expect(save).toBeDisabled();
+
+  await user.clear(search);
+  expect(within(table).getAllByRole("rowheader")).toHaveLength(4);
   expect(within(table).getByRole("switch", { name: "Disponibilizar Cultura" })).toHaveAttribute(
     "aria-disabled",
     "true",
   );
 
-  await user.click(save);
-
-  expect(await screen.findByText("Disponibilidade dos assuntos atualizada.")).toBeInTheDocument();
   expect(requisitar).toHaveBeenLastCalledWith("/admin/categories", {
     method: "PUT",
     body: { categories: updatedCategories.map(({ id, available }) => ({ id, available })) },
   });
-  expect(save).toBeDisabled();
 });

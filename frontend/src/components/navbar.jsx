@@ -65,7 +65,7 @@ const Navbar = () => {
         </div>
 
         <div className="hidden items-center gap-6 lg:flex">
-          <Button className="group h-10 rounded-full px-5 font-medium hover:bg-primary/80 cursor-pointer">
+          <Button className="group h-10 rounded-full px-5 font-medium hover:bg-wisen-hover cursor-pointer">
             Faça Login!
             <ChevronRight className="size-4 transition-all group-hover:translate-x-0.5 duration-300" />
           </Button>
@@ -76,7 +76,7 @@ const Navbar = () => {
             render={
               <Button
                 size="icon"
-                className="h-10 w-10 rounded-full lg:hidden hover:bg-primary/80 cursor-pointer"
+                className="h-10 w-10 rounded-full lg:hidden hover:bg-wisen-hover cursor-pointer"
               >
                 <Equal className="size-4" />
                 <span className="sr-only">Menu</span>
@@ -100,7 +100,7 @@ const Navbar = () => {
                   </a>
                 }
               />
-              <SheetClose className="flex h-9 w-9 items-center justify-center rounded-lg border border-border text-foreground hover:bg-primary hover:text-primary-foreground cursor-pointer">
+              <SheetClose className="flex h-9 w-9 items-center justify-center rounded-lg border border-border text-foreground hover:bg-wisen-hover hover:text-primary-foreground cursor-pointer">
                 <X size={16} className="shrink-0" />
               </SheetClose>
             </SheetHeader>
@@ -114,7 +114,7 @@ const Navbar = () => {
                     <a
                       href={link.href}
                       className={cn(
-                        "rounded-lg px-3 py-2 text-base font-normal hover:bg-primary/10 hover:text-foreground",
+                        "rounded-lg px-3 py-2 text-base font-normal hover:bg-wisen-hover hover:text-wisen-titulo",
                         link.isActive ? "bg-primary/20 text-foreground" : "text-muted-foreground",
                       )}
                     >
@@ -140,7 +140,7 @@ const Navbar = () => {
               />
               <SheetClose
                 render={
-                  <Button className="group h-10 w-full rounded-full px-5 font-medium hover:bg-primary/80 cursor-pointer">
+                  <Button className="group h-10 w-full rounded-full px-5 font-medium hover:bg-wisen-hover cursor-pointer">
                     Enquire Now
                     <ChevronRight className="size-4 transition-all group-hover:translate-x-0.5 duration-300" />
                   </Button>

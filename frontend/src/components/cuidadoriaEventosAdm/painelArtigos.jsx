@@ -2,6 +2,7 @@
 
 import { ArrowLeft, Check, ExternalLink, Pencil, Search } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { adminActionHover } from "@/components/admin/adminButtonStyles";
 import { adminFilterControl } from "@/components/admin/adminTableFilter";
 import { AdminZuzuPortrait } from "@/components/admin/adminZuzuPortrait";
 import { Button } from "@/components/ui/button";
@@ -9,8 +10,7 @@ import { dialogPrimaryAction } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { StatusEvento } from "./cardEvento";
 
-const rowAction =
-  "border-wisen-borda text-xs text-wisen-texto-forte hover:bg-wisen-admin-control-hover";
+const rowAction = `border-wisen-borda text-xs text-wisen-texto-forte ${adminActionHover}`;
 
 export function ArticleSource({ url }) {
   if (!url) return null;
@@ -159,7 +159,7 @@ export default function PainelArtigos({
                     size="sm"
                     disabled={busy}
                     onClick={() => aoRetirar(article)}
-                    className="text-xs text-wisen-texto-suave hover:bg-wisen-admin-control-hover"
+                    className={`text-xs text-wisen-texto-suave ${adminActionHover}`}
                   >
                     Retirar do evento
                   </Button>

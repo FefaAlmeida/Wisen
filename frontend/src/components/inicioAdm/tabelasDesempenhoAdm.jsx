@@ -1,3 +1,4 @@
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { TituloCartaoAdm } from "./tituloCartaoAdm";
 
@@ -70,15 +71,16 @@ export function TabelasDesempenhoAdm() {
             <TituloCartaoAdm titulo="Usuários mais ativos" />
             <Link
               href="/paginaGestaoUsuariosAdm"
-              className="text-sm font-semibold text-[#30466E] underline-offset-4 hover:underline focus-visible:underline"
+              className="inline-flex items-center gap-2 text-[13px] font-semibold text-[#30466E] hover:text-wisen-link-hover focus-visible:text-wisen-link-hover"
             >
-              Ver todos →
+              <span>Ver todos</span>
+              <ArrowRight aria-hidden="true" className="size-4 shrink-0" />
             </Link>
           </div>
 
           <div className="max-w-full overflow-x-auto overscroll-x-contain pt-3">
             <table className="w-full min-w-[540px] text-left text-sm [&_td]:px-4 [&_th]:px-4">
-              <thead>
+              <thead className="bg-[#E8EFFA]">
                 <tr className="border-b border-[#E3E9F1] text-xs font-semibold text-[#7182A1] uppercase [&_th]:py-3">
                   <th scope="col">Usuário</th>
                   <th scope="col">Revisões</th>

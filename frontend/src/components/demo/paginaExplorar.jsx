@@ -23,7 +23,7 @@ const topics = ["Economia", "Meio ambiente", "Tecnologia"];
 const filterItemClassName =
   "data-[highlighted]:bg-[#F3E69A] data-[highlighted]:text-wisen-titulo focus:bg-[#F3E69A] focus:text-wisen-titulo";
 const paginationButtonClassName =
-  "cursor-pointer rounded-lg text-xs text-wisen-titulo hover:bg-wisen-superficie hover:text-wisen-titulo disabled:text-wisen-texto-suave disabled:opacity-60";
+  "cursor-pointer rounded-lg text-xs text-wisen-titulo hover:bg-transparent hover:text-wisen-titulo disabled:text-wisen-texto-suave disabled:opacity-60 dark:hover:bg-transparent";
 
 export default function PaginaExplorar() {
   const [topic, setTopic] = useState("Todos os assuntos");
@@ -87,7 +87,7 @@ export default function PaginaExplorar() {
                 >
                   <SelectTrigger
                     aria-label="Filtrar por assunto"
-                    className="h-9 w-[190px] rounded-[10px] border-wisen-borda bg-white/85 text-xs text-[#344469] transition-colors hover:bg-[#F3E69A] hover:text-wisen-titulo"
+                    className="h-9 w-[190px] rounded-[10px] border-wisen-borda bg-white/85 text-xs text-[#344469] transition-colors hover:bg-wisen-hover hover:text-wisen-titulo"
                   >
                     <SelectValue />
                   </SelectTrigger>
@@ -111,7 +111,7 @@ export default function PaginaExplorar() {
                 >
                   <SelectTrigger
                     aria-label="Ordenar notícias"
-                    className="h-9 w-[170px] rounded-[10px] border-wisen-borda bg-white/85 text-xs text-[#344469] transition-colors hover:bg-[#F3E69A] hover:text-wisen-titulo"
+                    className="h-9 w-[170px] rounded-[10px] border-wisen-borda bg-white/85 text-xs text-[#344469] transition-colors hover:bg-wisen-hover hover:text-wisen-titulo"
                   >
                     <div className="flex items-center gap-2">
                       <ArrowDownWideNarrow className="size-3.5" />
@@ -131,7 +131,7 @@ export default function PaginaExplorar() {
                   type="button"
                   variant="outline"
                   onClick={clearFilters}
-                  className="h-9 cursor-pointer gap-1.5 rounded-[10px] border-wisen-borda bg-white/85 px-3 text-xs text-[#607092] shadow-none transition-colors hover:bg-[#F3E69A] hover:text-wisen-titulo"
+                  className="h-9 cursor-pointer gap-1.5 rounded-[10px] border-wisen-borda bg-white/85 px-3 text-xs text-[#607092] shadow-none transition-colors hover:bg-wisen-hover hover:text-wisen-titulo"
                 >
                   <X aria-hidden="true" className="size-3.5" />
                   Limpar filtros
@@ -162,7 +162,7 @@ export default function PaginaExplorar() {
                       variant="outline"
                       size="sm"
                       onClick={clearFilters}
-                      className="mt-4 cursor-pointer rounded-full transition-colors hover:bg-[#F3E69A] hover:text-wisen-titulo"
+                      className="mt-4 cursor-pointer rounded-full transition-colors hover:bg-wisen-hover hover:text-wisen-titulo"
                     >
                       Limpar filtros
                     </Button>
@@ -176,10 +176,14 @@ export default function PaginaExplorar() {
                     variant="ghost"
                     size="sm"
                     className={paginationButtonClassName}
+                    data-wisen-hover="preserve"
                     disabled={page === 1 || resource.loading}
                     onClick={() => setPage((p) => p - 1)}
                   >
-                    <ChevronLeft aria-hidden="true" className="size-3.5" />
+                    <ChevronLeft
+                      aria-hidden="true"
+                      className="size-3.5 group-hover/button:text-wisen-link-hover"
+                    />
                     Anterior
                   </Button>
                   <span
@@ -194,11 +198,15 @@ export default function PaginaExplorar() {
                     variant="ghost"
                     size="sm"
                     className={paginationButtonClassName}
+                    data-wisen-hover="preserve"
                     disabled={!resource.data?.hasMore || resource.loading}
                     onClick={() => setPage((p) => p + 1)}
                   >
                     Próxima
-                    <ChevronRight aria-hidden="true" className="size-3.5" />
+                    <ChevronRight
+                      aria-hidden="true"
+                      className="size-3.5 group-hover/button:text-wisen-link-hover"
+                    />
                   </Button>
                 </div>
               </nav>

@@ -56,7 +56,7 @@ export function FiltrosBiblioteca({ filtroAtivo, onFiltroChange, items = conceit
       </fieldset>
 
       <Select defaultValue="relevantes">
-        <SelectTrigger className="h-9 w-[165px] rounded-[10px] border border-[#E1E7F0] bg-[#F8FAFD] px-3 text-xs font-medium text-[#344469] shadow-none transition-colors hover:bg-[#F3E69A] hover:text-wisen-titulo focus:ring-0 [&>svg:last-child]:h-3.5 [&>svg:last-child]:w-3.5">
+        <SelectTrigger className="h-9 w-[165px] rounded-[10px] border border-[#E1E7F0] bg-[#F8FAFD] px-3 text-xs font-medium text-[#344469] shadow-none transition-colors hover:bg-wisen-hover hover:text-wisen-titulo focus:ring-0 [&>svg:last-child]:h-3.5 [&>svg:last-child]:w-3.5">
           <div className="flex min-w-0 items-center gap-2">
             <svg
               viewBox="0 0 24 24"

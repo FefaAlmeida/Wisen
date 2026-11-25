@@ -2,7 +2,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const paginationButton =
-  "size-8 text-gray-600 hover:bg-wisen-admin-control-hover hover:text-wisen-titulo";
+  "size-8 text-gray-600 hover:bg-transparent hover:text-wisen-link-hover dark:hover:bg-transparent";
 
 export function AdminTableFooter({
   countLabel,

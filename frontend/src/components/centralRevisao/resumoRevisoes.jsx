@@ -67,7 +67,7 @@ export default function ResumoRevisoes({ concluidas = 4, total = 12 }) {
           <p className="text-[16px] font-semibold text-wisen-titulo">Política monetária</p>
           <p className="text-[12px] text-[#7183A6]">Com base no seu progresso</p>
         </div>
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#F3E69A] text-xl text-wisen-titulo transition-all group-hover:translate-x-1 group-hover:bg-[#EBDD80]">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#F3E69A] text-xl text-wisen-titulo transition-all group-hover:translate-x-1 group-hover:bg-wisen-hover">
           →
         </span>
       </div>

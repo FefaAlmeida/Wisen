@@ -7,36 +7,51 @@ import { requisitar } from "@/services/api";
 const steps = [
   {
     href: "/paginaInicioAdm",
+    portrait: "/tour-cliente/boas-vindas.png",
+    owlPosition: "-mt-2",
     title: "Boas-vindas à administração do Wisen",
     description:
-      "Sou a Zuzu. Na Visão geral, acompanhe os indicadores do Wisen e saiba onde começar seu trabalho.",
+      "Olá, eu sou a Zuzu! Vou apresentar as ferramentas do painel. A Visão geral é um bom ponto de partida para conferir indicadores como o total de usuários e de conteúdos publicados.",
   },
   {
     href: "/paginaCuradoriaEventosAdm",
+    portrait: "/tour-cliente/noticias.png",
+    owlPosition: "self-end",
     title: "Revisão de eventos",
     description:
-      "Confira os artigos associados a cada evento e ajuste o agrupamento quando necessário.",
+      "Na fila de Revisão de eventos, abra um evento pendente e confira se os artigos tratam do mesmo acontecimento. Se um artigo estiver fora de contexto, você pode movê-lo para outro evento ou devolvê-lo à fila de artigos sem evento.",
   },
   {
     href: "/paginaGestaoUsuariosAdm",
+    portrait: "/tour-cliente/conceitos.png",
+    owlPosition: "self-center",
     title: "Gestão de usuários",
-    description: "Encontre contas, confira o histórico de cada usuário e gerencie suas permissões.",
+    description:
+      "Para localizar uma conta, busque pelo nome ou e-mail. Abra a conta para gerenciar o acesso ou ajustar o limite diário de gerações. Se precisar conferir mudanças anteriores, veja o Histórico de alterações.",
   },
   {
     href: "/paginaGestaoFonteAdm",
+    portrait: "/tour-cliente/revisoes.png",
+    owlPosition: "-mt-2",
     title: "Gestão de fontes",
-    description: "Cadastre e acompanhe as fontes de notícias e consulte os registros das coletas.",
+    description:
+      "Em Fontes cadastradas, você pode ver quando cada fonte foi consultada, pausar coletas ou solicitar uma coleta manual. Se precisar investigar uma falha, abra Registros de coleta.",
   },
   {
     href: "/paginaGestaoCategoriasAdm",
+    portrait: "/tour-cliente/aprendizado.png",
+    owlPosition: "self-center -translate-y-2",
     title: "Gestão de categorias",
-    description: "Gerencie as categorias usadas para organizar os conteúdos do Wisen.",
+    description:
+      "Aqui você escolhe os assuntos que os usuários podem selecionar nas preferências. Depois de marcar as categorias que devem ficar disponíveis, selecione Salvar disponibilidade para aplicar as mudanças.",
   },
   {
     href: "/paginaMonitorIa",
+    portrait: "/tour-cliente/salvos.png",
+    owlPosition: "self-end",
     title: "Monitor de IA",
     description:
-      "Acompanhe o consumo da IA e consulte os registros de execução para investigar falhas.",
+      "No Monitor de IA, você pode conferir o orçamento mensal e os custos estimados das chamadas. Se uma tarefa falhar ou for pausada, consulte os detalhes em Processamento e tente executá-la novamente quando fizer sentido.",
   },
 ];
 

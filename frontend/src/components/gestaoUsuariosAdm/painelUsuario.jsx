@@ -2,6 +2,7 @@
 
 import { History } from "lucide-react";
 import { useEffect, useState } from "react";
+import { adminActionTextHover } from "@/components/admin/adminButtonStyles";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -130,7 +131,7 @@ export default function PainelUsuario({
                   variant="ghost"
                   disabled={busy}
                   onClick={() => aoHistorico(usuario)}
-                  className="px-0 text-xs text-[#526584] hover:bg-wisen-admin-control-hover"
+                  className={`px-0 text-xs text-[#526584] ${adminActionTextHover}`}
                 >
                   <History className="size-4" />
                   Ver histórico desta conta

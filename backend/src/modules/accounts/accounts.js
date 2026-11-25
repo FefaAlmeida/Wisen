@@ -5,6 +5,7 @@ import { enqueue } from "../../queue/index.js";
 import { QUEUES } from "../../shared.js";
 import { hashPassword } from "../auth/auth.service.js";
 import { generationMode } from "../generation/mode.js";
+import { ACCOUNT_TOKEN_MINUTES, accountMail } from "./account-mail.js";
 import { encryptMail } from "./mail-crypto.js";
 
 const digest = (token) => createHash("sha256").update(token).digest("hex");
@@ -45,22 +46,21 @@ export function accountService(pool, boss, config) {
         );
         await c.query(
           "INSERT INTO account_tokens(user_id,token_hash,purpose,email,expires_at) VALUES($1,$2,$3,$4,now()+($5 * interval '1 minute'))",
-          [userId, digest(token), purpose, user.email, purpose === "verify" ? 1440 : 30],
+          [userId, digest(token), purpose, user.email, ACCOUNT_TOKEN_MINUTES[purpose]],
         );
         const link = new URL(purpose === "reset" ? "/auth" : "/conta", config.FRONTEND_URL);
         link.searchParams.set("action", purpose);
         link.searchParams.set("token", token);
+        const message = accountMail(purpose, link);
         const mail = (
           await c.query(
-            "INSERT INTO mail_outbox(user_id,recipient,subject,body) VALUES($1,$2,$3,$4) RETURNING id",
+            "INSERT INTO mail_outbox(user_id,recipient,subject,body,html_body) VALUES($1,$2,$3,$4,$5) RETURNING id",
             [
               userId,
               user.email,
-              purpose === "verify" ? "Confirme seu e-mail no Wisen" : "Redefina sua senha do Wisen",
-              encryptMail(
-                `Use este link para continuar: ${link.href}\nSe não solicitou, ignore este e-mail.`,
-                config,
-              ),
+              message.subject,
+              encryptMail(message.text, config),
+              encryptMail(message.html, config),
             ],
           )
         ).rows[0];

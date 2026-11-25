@@ -74,14 +74,7 @@ export function Frame({
         <ConnectionsBackground fadeTop={false} />
         <AppTopBar admin={admin} value={pageSearch} onQueryChange={onPageSearchChange} />
         <div className="wisen-container relative z-10 pt-7 pb-12">
-          {title && (
-            <PageHeader
-              title={title}
-              description={description}
-              eyebrow={admin ? "Administração" : undefined}
-              className="mb-7"
-            />
-          )}
+          {title && <PageHeader title={title} description={description} className="mb-7" />}
           {children}
         </div>
         <Footer variant={admin ? "admin" : "cliente"} sidebarOffset={false} />

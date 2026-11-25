@@ -422,10 +422,10 @@
 }
 @media (hover: hover) and (pointer: fine) {
   .primario:not(:disabled):hover {
-    background: #ded579;
+    background: var(--color-wisen-hover);
   }
   .secundario:not(:disabled):hover {
-    background: #f3f0d6;
+    background: var(--color-wisen-hover);
   }
   .opcao[aria-disabled="false"]:hover {
     background: #f0f4f8;

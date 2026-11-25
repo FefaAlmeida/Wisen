@@ -11,7 +11,9 @@ export function AdminLayout({ activeItem, backgroundParticleDensity, children })
     >
       <AdminSidebar activeItem={activeItem} />
       <div className="relative isolate min-h-screen bg-wisen-superficie sm:ml-[76px] lg:ml-[240px]">
-        <ConnectionsBackground particleDensity={backgroundParticleDensity} />
+        {backgroundParticleDensity !== 0 && (
+          <ConnectionsBackground particleDensity={backgroundParticleDensity} />
+        )}
         <div className="relative z-10 pt-[76px]">
           <AdminTopBar />
           <main>{children}</main>

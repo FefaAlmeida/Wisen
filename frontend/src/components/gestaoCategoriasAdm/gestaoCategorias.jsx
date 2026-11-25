@@ -1,18 +1,26 @@
 "use client";
 
+import { Search } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AdminSummary } from "@/components/admin/adminSummary";
+import { adminFilterControl } from "@/components/admin/adminTableFilter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/lib/toast";
 import { requisitar } from "@/services/api";
 
 const MINIMUM_AVAILABLE_CATEGORIES = 3;
 
+function normalizeSearch(text) {
+  return text.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
+}
+
 export default function GestaoCategorias() {
   const [categories, setCategories] = useState([]);
   const [savedCategories, setSavedCategories] = useState([]);
+  const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -47,6 +55,14 @@ export default function GestaoCategorias() {
     return () => requestController.current?.abort();
   }, [loadCategories]);
 
+  const searchTerm = normalizeSearch(query.trim());
+  const visibleCategories = searchTerm
+    ? categories.filter(
+        ({ name, description }) =>
+          normalizeSearch(name).includes(searchTerm) ||
+          normalizeSearch(description ?? "").includes(searchTerm),
+      )
+    : categories;
   const availableCount = categories.filter((category) => category.available).length;
   const hasChanges = categories.some(
     (category) =>
@@ -106,7 +122,21 @@ export default function GestaoCategorias() {
       />
       <Card className="gap-0 rounded-xl border border-wisen-borda bg-card p-0 shadow-none">
         <CardContent className="gap-0 p-0">
-          <div className="flex justify-end p-4 sm:p-5">
+          <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
+            <div className="relative w-full min-w-0 sm:max-w-xs">
+              <Search
+                aria-hidden="true"
+                className="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-[#8190A8]"
+              />
+              <Input
+                type="search"
+                aria-label="Buscar categoria por nome ou descrição"
+                placeholder="Buscar categoria"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                className={`${adminFilterControl} pl-9`}
+              />
+            </div>
             <Button
               type="button"
               onClick={saveCategories}
@@ -147,7 +177,7 @@ export default function GestaoCategorias() {
                 <caption className="sr-only">
                   Disponibilidade das categorias nas preferências
                 </caption>
-                <thead className="border-y border-[#E8EDF4]">
+                <thead className="border-y border-[#E8EDF4] bg-[#E8EFFA]">
                   <tr className="text-[10px] font-semibold tracking-wider text-wisen-titulo uppercase">
                     <th scope="col" className="w-full px-4 py-3 sm:px-5">
                       Categoria
@@ -161,7 +191,14 @@ export default function GestaoCategorias() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#EDF0F5]">
-                  {categories.map((category) => (
+                  {visibleCategories.length === 0 && (
+                    <tr>
+                      <td colSpan={3} className="p-8 text-center text-wisen-texto-suave">
+                        <p role="status">Nenhuma categoria encontrada.</p>
+                      </td>
+                    </tr>
+                  )}
+                  {visibleCategories.map((category) => (
                     <tr key={category.id} className="transition-colors hover:bg-wisen-admin-hover">
                       <th scope="row" className="px-4 py-3 font-medium text-wisen-titulo sm:px-5">
                         {category.name}
